@@ -33,6 +33,7 @@ run('commercial_checker', () => {
   const candidates = [path.resolve('..', '..', 'docs'), path.resolve('docs')].filter((d) => fs.existsSync(d));
   if (!candidates.length) { return; } // docs not mounted here — skip (verified separately)
   sh(`npx tsx scripts/commercial-check.ts ${candidates[0]}`);
+  sh(`npx tsx scripts/proof-check.ts ${candidates[0]}`);
 });
 
 run('release_safety', () => {

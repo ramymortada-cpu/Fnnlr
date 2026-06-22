@@ -42,6 +42,7 @@
     "customer:issues": "tsx scripts/live-execution.ts issues",
     "customer:support-pack": "tsx scripts/live-execution.ts support-pack",
     "commercial:check": "tsx scripts/commercial-check.ts",
+    "proof:check": "tsx scripts/proof-check.ts",
     "sales:score": "tsx scripts/sales-ops.ts score",
     "sales:proposal-check": "tsx scripts/sales-ops.ts proposal-check",
     "sales:handoff": "tsx scripts/sales-ops.ts handoff",
