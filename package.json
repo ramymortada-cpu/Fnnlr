@@ -42,6 +42,12 @@
     "customer:issues": "tsx scripts/live-execution.ts issues",
     "customer:support-pack": "tsx scripts/live-execution.ts support-pack",
     "commercial:check": "tsx scripts/commercial-check.ts",
+    "sales:score": "tsx scripts/sales-ops.ts score",
+    "sales:proposal-check": "tsx scripts/sales-ops.ts proposal-check",
+    "sales:handoff": "tsx scripts/sales-ops.ts handoff",
+    "sales:proposal-draft": "tsx scripts/sales-ops.ts proposal-draft",
+    "support:intake": "tsx scripts/sales-ops.ts support-intake",
+    "support:review": "tsx scripts/sales-ops.ts support-review",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

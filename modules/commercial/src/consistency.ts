@@ -39,7 +39,7 @@ export interface CheckResult { ok: boolean; violations: { file: string; claim: s
 
 /** Files that are commercial/sales-facing and must obey the rules. */
 export function isCommercialDoc(filename: string): boolean {
-  return /COMMERCIAL|SALES|AGREEMENT|ONBOARDING_PROMISE|SUCCESS_CRITERIA|QUALIFICATION|FAQ/i.test(filename);
+  return /COMMERCIAL|SALES|AGREEMENT|ONBOARDING_PROMISE|SUCCESS_CRITERIA|QUALIFICATION|FAQ|PROPOSAL|SUPPORT_WORKFLOW|HANDOFF|OPERATING_SYSTEM/i.test(filename);
 }
 
 export function checkCommercialDocs(docDir: string): CheckResult {
