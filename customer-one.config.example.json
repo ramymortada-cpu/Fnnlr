@@ -1,0 +1,26 @@
+{
+  "workspaceName": "Noor Cosmetics",
+  "ownerEmail": "owner@noor.example",
+  "business": {
+    "name": "Noor Cosmetics",
+    "market": "ae",
+    "language": "masry"
+  },
+  "whatsappNumber": "+971500000000",
+  "offer": {
+    "promise": "توصيل خلال 48 ساعة داخل الإمارات",
+    "price": "199 درهم",
+    "package": "المنتج + عينة هدية"
+  },
+  "payment": {
+    "method": "bank_transfer",
+    "accountDetails": "Noor — Emirates NBD",
+    "instructions": "حوّل وابعت إيصال التحويل على الواتساب عشان نأكّد"
+  },
+  "publicAppUrl": "https://noor.fnnlr.app",
+  "apiUrl": "https://api.fnnlr.app",
+  "supportOwner": "care@noor.example",
+  "allowedIntegrations": ["whatsapp_cloud_api", "bank_transfer"],
+  "createFunnel": true,
+  "_note": "Customer One — a DIFFERENT customer, same config schema. No secrets. Proves the system runs a second customer with no new schema and no special-case."
+}

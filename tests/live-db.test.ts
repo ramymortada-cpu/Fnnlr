@@ -269,6 +269,48 @@ maybe('SECURITY: webhook with a configured secret rejects a missing/wrong signat
 });
 
 // ---------------------------------------------------------------------------
+maybe('REPEATABILITY: two customers via the same path → distinct tenants, idempotent, B smoke does not touch A', async () => {
+  const { repeatabilityCheck, repeatabilityReport } = await import('../modules/repeatability/src/runner.js');
+  const uniq = Date.now().toString(36);
+  const cfgA: any = {
+    workspaceName: `Repeat A ${uniq}`, ownerEmail: `a-${uniq}@repeat.example`,
+    business: { name: `Repeat A Biz ${uniq}`, market: 'eg' }, whatsappNumber: '+201000000001',
+    offer: { promise: 'x', price: '1', package: 'p' },
+    payment: { method: 'instapay', accountDetails: 'a@instapay', instructions: 'حوّل' },
+    publicAppUrl: 'https://a.fnnlr.app', supportOwner: 'a@fnnlr.app', createFunnel: true,
+  };
+  const cfgB: any = {
+    workspaceName: `Repeat B ${uniq}`, ownerEmail: `b-${uniq}@repeat.example`,
+    business: { name: `Repeat B Biz ${uniq}`, market: 'ae' }, whatsappNumber: '+971500000002',
+    offer: { promise: 'y', price: '2', package: 'q' },
+    payment: { method: 'bank_transfer', accountDetails: 'b-bank', instructions: 'حوّل' },
+    publicAppUrl: 'https://b.fnnlr.app', supportOwner: 'b@fnnlr.app', createFunnel: true,
+  };
+
+  const r = await repeatabilityCheck(
+    { label: 'customerA', config: cfgA, ownerPassword: 'PassA!234567' },
+    { label: 'customerB', config: cfgB, ownerPassword: 'PassB!234567' },
+  );
+  try {
+    // distinct tenants/businesses/funnels
+    assert.ok(r.separation.every((c) => c.ok), `separation failed: ${JSON.stringify(r.separation)}`);
+    // idempotent rerun (same ids)
+    assert.ok(r.idempotency.every((c) => c.ok), `idempotency failed: ${JSON.stringify(r.idempotency)}`);
+    // B's smoke did not change A's counts/desk, and B got its own signal
+    assert.ok(r.signalIsolation.every((c) => c.ok), `signal isolation failed: ${JSON.stringify(r.signalIsolation)}`);
+    assert.equal(r.status, 'PASS');
+
+    const report = repeatabilityReport(r);
+    assert.equal(report.decision, 'REPEATABLE');
+    assert.equal(report.customersTested, 2);
+    assert.ok(!/password|secret|token/i.test(JSON.stringify(report)), 'report leaks no secrets');
+  } finally {
+    // clean up both tenants
+    for (const cust of r.customers) if (cust.tenantId) await deleteTenant(cust.tenantId).catch(() => {});
+  }
+});
+
+// ---------------------------------------------------------------------------
 maybe('FRICTION: support pack is safe (no secrets), includes issues + daily check; launch-check fail names a route', async () => {
   const { supportPack } = await import('../modules/execution/src/support-pack.js');
   const { launchCheck } = await import('../modules/execution/src/service.js');

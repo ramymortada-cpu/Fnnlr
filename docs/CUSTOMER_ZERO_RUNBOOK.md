@@ -94,3 +94,17 @@ latest audit events + failed commands + webhook failures + scheduled runs
 `npm run deploy:check` prints `READY_FOR_CUSTOMER_ZERO` or `BLOCKED` with
 blocking issues, warnings, manual steps, next action, and the support owner.
 Blocking issues are never hidden.
+
+---
+
+## Repeatability (this is not a one-off)
+Customer Zero is the **first-use** case of a repeatable process, not a special
+case. The same flow runs customer one, two, three — see
+`CUSTOMER_DEPLOYMENT_RUNBOOK.md`. Repeatability (distinct tenants, idempotent
+setup, signal isolation) is proven by:
+```
+npm run customer:repeatability-check  -- <a.config.json> <b.config.json>
+npm run customer:repeatability-report -- <a.config.json> <b.config.json>
+```
+`customer-one.config.example.json` is a second worked example using the **same
+schema** as `customer-zero.config.example.json`.

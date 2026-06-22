@@ -58,6 +58,8 @@
     "db:verify-restore": "tsx scripts/backup-restore.ts verify-restore",
     "ci": "tsx scripts/ci.ts",
     "ci:live": "tsx scripts/ci.ts --live",
+    "customer:repeatability-check": "tsx scripts/repeatability.ts check",
+    "customer:repeatability-report": "tsx scripts/repeatability.ts report",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

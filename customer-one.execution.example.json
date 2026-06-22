@@ -1,0 +1,26 @@
+{
+  "customerName": "Noor Cosmetics — Customer One",
+  "workspaceName": "Noor Cosmetics",
+  "ownerEmail": "owner@noor.example",
+  "business": { "name": "Noor Cosmetics", "market": "ae", "language": "masry" },
+  "whatsappNumber": "+971500000000",
+  "whatsappProviderStatus": "manual_link_only",
+  "payment": {
+    "method": "bank_transfer",
+    "accountDetails": "Noor — Emirates NBD",
+    "instructions": "حوّل وابعت إيصال التحويل على الواتساب"
+  },
+  "paymentKind": "bank_transfer",
+  "firstFunnelName": "Noor — أوردر واتساب",
+  "offer": { "promise": "توصيل خلال 48 ساعة", "price": "199 درهم", "package": "المنتج + عينة" },
+  "pageSlug": "noor-launch",
+  "trafficSource": "instagram_ads",
+  "publicAppUrl": "https://noor.fnnlr.app",
+  "apiUrl": "https://api.fnnlr.app",
+  "launchWindow": "2026-07-01 19:00 GST",
+  "supportOwner": "care@noor.example",
+  "rollbackOwner": "ops@fnnlr.app",
+  "allowedIntegrations": ["whatsapp_cloud_api", "bank_transfer"],
+  "createFunnel": true,
+  "_note": "Customer One execution manifest — same schema as Customer Zero, different values. No secrets."
+}
