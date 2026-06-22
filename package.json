@@ -41,6 +41,7 @@
     "customer:ledger": "tsx scripts/live-execution.ts ledger",
     "customer:issues": "tsx scripts/live-execution.ts issues",
     "customer:support-pack": "tsx scripts/live-execution.ts support-pack",
+    "commercial:check": "tsx scripts/commercial-check.ts",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
