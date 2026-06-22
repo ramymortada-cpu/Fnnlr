@@ -48,6 +48,16 @@
     "sales:proposal-draft": "tsx scripts/sales-ops.ts proposal-draft",
     "support:intake": "tsx scripts/sales-ops.ts support-intake",
     "support:review": "tsx scripts/sales-ops.ts support-review",
+    "deploy:env-template": "tsx scripts/deploy.ts env-template",
+    "deploy:health-gate": "tsx scripts/deploy.ts health-gate",
+    "deploy:smoke": "tsx scripts/deploy.ts smoke",
+    "deploy:rollback-plan": "tsx scripts/deploy.ts rollback-plan",
+    "deploy:verify-restore": "tsx scripts/deploy.ts verify-restore",
+    "db:backup": "tsx scripts/backup-restore.ts backup",
+    "db:restore-test": "tsx scripts/backup-restore.ts restore-test",
+    "db:verify-restore": "tsx scripts/backup-restore.ts verify-restore",
+    "ci": "tsx scripts/ci.ts",
+    "ci:live": "tsx scripts/ci.ts --live",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
