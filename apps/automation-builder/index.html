@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>fnnlr · باني الأتمتة</title>
+<style>
+  /* ----- Design tokens -----
+     Direction: an "operations console" feel — calm, technical, trustworthy.
+     Not the cream-serif default. Deep slate canvas, one signal accent (amber =
+     money/revenue), a teal for "safe/free", a rose for "needs care/paid".
+     Display: a grotesk for headers; body: system Arabic stack for legibility. */
+  :root{
+    --bg:#0f1419; --panel:#171e26; --panel-2:#1d2530; --line:#2a3441;
+    --ink:#e8edf2; --ink-dim:#94a3b4; --ink-faint:#5d6b7a;
+    --amber:#f5a524; --amber-dim:#7a5418;
+    --teal:#2dd4bf; --teal-dim:#134e4a;
+    --rose:#fb7185; --rose-dim:#5c1f2b;
+    --violet:#a78bfa;
+    --radius:10px; --radius-sm:7px;
+    --font: "Segoe UI", "Noto Sans Arabic", "Tahoma", system-ui, sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);
+    font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1180px;margin:0 auto;padding:24px 20px 80px}
+
+  header{display:flex;align-items:baseline;justify-content:space-between;
+    gap:16px;flex-wrap:wrap;margin-bottom:6px}
+  .brand{display:flex;align-items:baseline;gap:12px}
+  .brand h1{font-size:21px;font-weight:700;letter-spacing:-.01em;margin:0}
+  .brand .mk{color:var(--amber);font-weight:800}
+  .tag{color:var(--ink-dim);font-size:13.5px}
+  .sub{color:var(--ink-faint);font-size:13px;margin:2px 0 26px;max-width:62ch}
+
+  /* The flow: WHEN -> IF -> THEN as three stacked rails */
+  .flow{display:grid;gap:14px}
+  .rail{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+    overflow:hidden}
+  .rail-head{display:flex;align-items:center;gap:11px;padding:13px 16px;
+    border-bottom:1px solid var(--line);background:var(--panel-2)}
+  .chip{font-size:11px;font-weight:700;letter-spacing:.08em;padding:4px 9px;
+    border-radius:999px;text-transform:uppercase}
+  .chip.when{background:var(--amber-dim);color:var(--amber)}
+  .chip.iff{background:#1e3a5f;color:#7cc4ff}
+  .chip.then{background:var(--teal-dim);color:var(--teal)}
+  .rail-head h2{font-size:14.5px;margin:0;font-weight:600}
+  .rail-head .hint{color:var(--ink-faint);font-size:12.5px;margin-inline-start:auto}
+  .rail-body{padding:15px 16px;display:grid;gap:11px}
+
+  label{display:block;font-size:12.5px;color:var(--ink-dim);margin-bottom:5px}
+  select,input,textarea{width:100%;background:var(--bg);color:var(--ink);
+    border:1px solid var(--line);border-radius:var(--radius-sm);padding:9px 11px;
+    font-family:inherit;font-size:14px;outline:none}
+  select:focus,input:focus,textarea:focus{border-color:var(--amber)}
+  .row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+  .row.two{grid-template-columns:1fr 1fr}
+
+  .cond,.act{background:var(--panel-2);border:1px solid var(--line);
+    border-radius:var(--radius-sm);padding:12px}
+  .cond{display:grid;grid-template-columns:1fr 130px 1fr 34px;gap:9px;align-items:end}
+  .act-head{display:flex;align-items:center;gap:9px;margin-bottom:10px}
+  .act-head .n{width:22px;height:22px;border-radius:6px;background:var(--teal-dim);
+    color:var(--teal);font-size:12px;font-weight:700;display:grid;place-items:center}
+  .act-head select{width:auto;flex:1}
+  .x{background:transparent;border:1px solid var(--line);color:var(--ink-faint);
+    border-radius:6px;height:38px;cursor:pointer;font-size:16px}
+  .x:hover{border-color:var(--rose);color:var(--rose)}
+
+  .add{background:transparent;border:1px dashed var(--line);color:var(--ink-dim);
+    border-radius:var(--radius-sm);padding:10px;cursor:pointer;font-family:inherit;
+    font-size:13.5px;width:100%}
+  .add:hover{border-color:var(--amber);color:var(--amber)}
+
+  /* WhatsApp economics callout — the differentiator, surfaced in the UI */
+  .wa-note{display:flex;gap:9px;align-items:flex-start;font-size:12.5px;
+    color:var(--ink-dim);background:#0c1f1c;border:1px solid var(--teal-dim);
+    border-radius:var(--radius-sm);padding:9px 11px;margin-top:2px}
+  .wa-note b{color:var(--teal)}
+  .paid-warn{color:var(--rose);font-size:12px;margin-top:6px;display:none}
+
+  .safety{display:grid;grid-template-columns:1fr 1fr 1fr;gap:11px;margin-top:4px}
+  .toggle{display:flex;align-items:center;gap:8px;background:var(--panel-2);
+    border:1px solid var(--line);border-radius:var(--radius-sm);padding:10px 12px}
+  .toggle input{width:auto}
+  .toggle span{font-size:13px}
+
+  /* Output: the honest connective tissue — live engine JSON */
+  .out{margin-top:22px;background:#0a0e13;border:1px solid var(--line);
+    border-radius:var(--radius)}
+  .out-head{display:flex;align-items:center;justify-content:space-between;
+    padding:12px 16px;border-bottom:1px solid var(--line)}
+  .out-head h3{margin:0;font-size:13.5px;color:var(--ink-dim);font-weight:600}
+  .out-head .valid{font-size:12px;color:var(--teal)}
+  pre{margin:0;padding:16px;overflow:auto;font-size:12.5px;line-height:1.7;
+    font-family:"SF Mono","Cascadia Code",Consolas,monospace;color:#c5d1de;max-height:320px}
+  .k{color:var(--violet)} .s{color:var(--teal)} .n{color:var(--amber)} .b{color:#7cc4ff}
+
+  .actions-bar{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
+  .btn{border-radius:var(--radius-sm);padding:10px 18px;font-family:inherit;
+    font-size:14px;font-weight:600;cursor:pointer;border:1px solid var(--line)}
+  .btn.primary{background:var(--amber);color:#1a1206;border-color:var(--amber)}
+  .btn.primary:hover{filter:brightness(1.08)}
+  .btn.ghost{background:transparent;color:var(--ink-dim)}
+  .btn.ghost:hover{border-color:var(--ink-dim);color:var(--ink)}
+  .recipe-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:22px}
+  .recipe{background:var(--panel);border:1px solid var(--line);color:var(--ink-dim);
+    border-radius:999px;padding:6px 14px;font-size:13px;cursor:pointer}
+  .recipe:hover{border-color:var(--amber);color:var(--ink)}
+  @media(max-width:720px){.row,.row.two,.safety{grid-template-columns:1fr}
+    .cond{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <h1><span class="mk">fnnlr</span> · باني الأتمتة</h1>
+      <span class="tag">automation builder</span>
+    </div>
+    <span class="tag" id="tenantTag">tenant: —</span>
+  </header>
+  <p class="sub">ابنِ أتمتة إيراد بصيغة: <b>لما</b> يحصل حدث ← <b>لو</b> الشروط اتحققت ← <b>اعمل</b> الخطوات.
+    كل أتمتة بتطلّع JSON جاهز يشتغل على المحرك مباشرة، وبيحترم تكلفة واتساب والموافقة البشرية.</p>
+
+  <div class="recipe-bar" id="recipes"></div>
+
+  <div class="flow">
+    <!-- WHEN -->
+    <div class="rail">
+      <div class="rail-head"><span class="chip when">لمّا</span><h2>الحدث المُشغِّل</h2>
+        <span class="hint">trigger</span></div>
+      <div class="rail-body">
+        <div class="row two">
+          <div><label>اسم الأتمتة</label><input id="name" value="نُدهة بعد إرسال السعر" /></div>
+          <div><label>الحدث</label>
+            <select id="trigger">
+              <option value="lead.captured">عميل جديد دخل (lead.captured)</option>
+              <option value="lead.price_sent" selected>السعر اتبعت (lead.price_sent)</option>
+              <option value="lead.stage_changed">المرحلة اتغيّرت (lead.stage_changed)</option>
+              <option value="message.received">رسالة وصلت (message.received)</option>
+              <option value="message.no_reply">محدش ردّ (message.no_reply)</option>
+              <option value="payment.stalled">الدفع وقف (payment.stalled)</option>
+              <option value="payment.recovered">الدفع اتعمل (payment.recovered)</option>
+              <option value="conversation.stalled">المحادثة سكتت (conversation.stalled)</option>
+              <option value="page.cta_click">ضغط زر الصفحة (page.cta_click)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- IF -->
+    <div class="rail">
+      <div class="rail-head"><span class="chip iff">لو</span><h2>الشروط</h2>
+        <span class="hint">كلها لازم تتحقق · AND</span></div>
+      <div class="rail-body">
+        <div id="conds"></div>
+        <button class="add" id="addCond">+ أضف شرط</button>
+      </div>
+    </div>
+
+    <!-- THEN -->
+    <div class="rail">
+      <div class="rail-head"><span class="chip then">اعمل</span><h2>الخطوات</h2>
+        <span class="hint">بالترتيب · actions</span></div>
+      <div class="rail-body">
+        <div id="acts"></div>
+        <button class="add" id="addAct">+ أضف خطوة</button>
+      </div>
+    </div>
+
+    <!-- SAFETY -->
+    <div class="rail">
+      <div class="rail-head"><span class="chip then" style="background:var(--rose-dim);color:var(--rose)">أمان</span>
+        <h2>حدود الأمان والثقة</h2><span class="hint">no-zann</span></div>
+      <div class="rail-body">
+        <div class="safety">
+          <div><label>أقصى تكرار للعميل الواحد</label><input id="maxRuns" type="number" min="1" value="1" /></div>
+          <div><label>فترة تهدئة (ثواني)</label><input id="cooldown" type="number" min="0" placeholder="مثلاً 86400" /></div>
+          <div class="toggle"><input type="checkbox" id="requiresApproval" />
+            <span>محتاج موافقة بشرية قبل أي خطوة</span></div>
+        </div>
+        <div class="wa-note">💬 <span><b>اقتصاديات واتساب:</b> أي خطوة إرسال واتساب بتقرّر تلقائيًا:
+          تبعت <b>مجاني</b> جوه نافذة الـ 24/72 ساعة، تستنّى النافذة المجانية، تتخطّى، أو تطلب موافقة لو paid.
+          مفيش رسائل مدفوعة بتتبعت من غير ما تكون إنت موافق.</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="actions-bar">
+    <button class="btn primary" id="saveBtn">💾 احفظ على الحساب</button>
+    <button class="btn ghost" id="copyBtn">انسخ الـ JSON</button>
+    <button class="btn ghost" id="dlBtn">نزّل ملف</button>
+    <button class="btn ghost" id="resetBtn">ابدأ من جديد</button>
+  </div>
+  <div style="display:flex;gap:10px;margin-top:10px;flex-wrap:wrap;align-items:end">
+    <div style="flex:1;min-width:200px"><label>عنوان الـ API (اختياري)</label>
+      <input id="apiBase" placeholder="http://localhost:8787" /></div>
+    <div style="flex:1;min-width:200px"><label>معرّف الحساب (x-tenant-id)</label>
+      <input id="tenantId" placeholder="UUID بتاع الـ tenant" /></div>
+    <span id="saveMsg" class="tag"></span>
+  </div>
+
+  <div class="out">
+    <div class="out-head"><h3>الناتج · JSON جاهز للمحرك</h3><span class="valid" id="valid">✓ صالح</span></div>
+    <pre id="json"></pre>
+  </div>
+</div>
+
+<script>
+/* The builder mirrors the engine's AutomationDef shape exactly, so its output
+   drops straight into makeTenantRunStore().createRun / the automations table. */
+
+const FIELDS = [
+  ['lead.stage','مرحلة العميل'],['lead.intent','نية العميل'],
+  ['lead.trust_level','مستوى الثقة'],['lead.risk_score','درجة الخطورة'],
+  ['payment.state','حالة الدفع'],['conversation.first_reply_latency','زمن أول رد (ث)'],
+  ['whatsapp.windowState','حالة نافذة واتساب'],
+];
+const OPS = [['eq','='],['neq','≠'],['gt','>'],['gte','≥'],['lt','<'],['lte','≤'],
+  ['in','ضمن'],['contains','يحتوي'],['exists','موجود']];
+const ACTIONS = [
+  ['send_whatsapp','📱 ابعت واتساب'],['send_email','✉️ ابعت إيميل'],
+  ['wait','⏳ استنى (ثواني)'],['wait_until_business_hours','🕘 استنى لساعات العمل'],
+  ['create_task','✅ أنشئ مهمة لموظف'],['update_lead','✏️ حدّث العميل'],
+  ['notify_owner','🔔 نبّه صاحب البيزنس'],['request_approval','🛡️ اطلب موافقة'],
+  ['emit_event','⚡ أطلق حدث آخر'],['stop','⛔ إنهاء']];
+
+let conds = [], acts = [];
+
+function el(tag, cls, html){const e=document.createElement(tag); if(cls)e.className=cls;
+  if(html!=null)e.innerHTML=html; return e;}
+function opts(list, sel){return list.map(([v,l])=>
+  `<option value="${v}" ${v===sel?'selected':''}>${l}</option>`).join('');}
+
+function renderConds(){
+  const box=document.getElementById('conds'); box.innerHTML='';
+  conds.forEach((c,i)=>{
+    const d=el('div','cond');
+    d.innerHTML=`
+      <div><label>الحقل</label><select data-i="${i}" data-k="field">${opts(FIELDS,c.field)}</select></div>
+      <div><label>المقارنة</label><select data-i="${i}" data-k="op">${opts(OPS,c.op)}</select></div>
+      <div><label>القيمة</label><input data-i="${i}" data-k="value" value="${c.value??''}" ${c.op==='exists'?'disabled placeholder="—"':''} /></div>
+      <button class="x" data-del="${i}">✕</button>`;
+    box.appendChild(d);
+  });
+  bind(); sync();
+}
+function renderActs(){
+  const box=document.getElementById('acts'); box.innerHTML='';
+  acts.forEach((a,i)=>{
+    const d=el('div','act');
+    let extra='';
+    if(a.type==='send_whatsapp'){
+      extra=`<div class="row"><div><label>القالب</label><input data-i="${i}" data-k="template" value="${a.template??''}" placeholder="price_followup_soft"/></div>
+        <div><label>لو برّه النافذة المجانية</label><select data-i="${i}" data-k="paidFallback">
+          ${opts([['wait_for_window','استنى نافذة مجانية'],['skip','تخطَّ'],['allow','اسمح بمدفوع (يطلب موافقة)']],a.paidFallback||'wait_for_window')}</select></div>
+        <div><label>مراعاة اللهجة</label><select data-i="${i}" data-k="dialectAware">${opts([['true','نعم'],['false','لا']],String(a.dialectAware??true))}</select></div></div>
+        <div class="paid-warn" ${a.paidFallback==='allow'?'style="display:block"':''}>⚠️ الإرسال المدفوع هيطلب موافقة بشرية تلقائيًا.</div>`;
+    } else if(a.type==='send_email'){
+      extra=`<div><label>القالب</label><input data-i="${i}" data-k="template" value="${a.template??''}"/></div>`;
+    } else if(a.type==='wait'){
+      extra=`<div><label>المدة بالثواني</label><input type="number" data-i="${i}" data-k="seconds" value="${a.seconds??3600}"/></div>`;
+    } else if(a.type==='create_task'){
+      extra=`<div class="row two"><div><label>عنوان المهمة</label><input data-i="${i}" data-k="title" value="${a.title??''}"/></div>
+        <div><label>توكيل لـ (اختياري)</label><input data-i="${i}" data-k="assignTo" value="${a.assignTo??''}"/></div></div>`;
+    } else if(a.type==='update_lead'){
+      extra=`<div class="row two"><div><label>الحقل</label><input data-i="${i}" data-k="ul_field" value="${a.ul_field??'stage'}"/></div>
+        <div><label>القيمة الجديدة</label><input data-i="${i}" data-k="ul_value" value="${a.ul_value??''}"/></div></div>`;
+    } else if(a.type==='notify_owner'){
+      extra=`<div><label>الرسالة</label><input data-i="${i}" data-k="message" value="${a.message??''}"/></div>`;
+    } else if(a.type==='emit_event'){
+      extra=`<div><label>اسم الحدث</label><input data-i="${i}" data-k="event" value="${a.event??''}"/></div>`;
+    }
+    d.innerHTML=`<div class="act-head"><span class="n">${i+1}</span>
+      <select data-i="${i}" data-k="type">${opts(ACTIONS,a.type)}</select>
+      <button class="x" data-dela="${i}">✕</button></div>${extra}`;
+    box.appendChild(d);
+  });
+  bind(); sync();
+}
+function bind(){
+  document.querySelectorAll('#conds [data-k]').forEach(inp=>inp.oninput=e=>{
+    const i=+e.target.dataset.i,k=e.target.dataset.k; conds[i][k]=e.target.value;
+    if(k==='op')renderConds(); else sync();});
+  document.querySelectorAll('#conds [data-del]').forEach(b=>b.onclick=e=>{
+    conds.splice(+e.target.dataset.del,1);renderConds();});
+  document.querySelectorAll('#acts [data-k]').forEach(inp=>inp.oninput=e=>{
+    const i=+e.target.dataset.i,k=e.target.dataset.k;
+    acts[i][k]=e.target.type==='number'?+e.target.value:e.target.value;
+    if(k==='type'||k==='paidFallback')renderActs(); else sync();});
+  document.querySelectorAll('#acts [data-dela]').forEach(b=>b.onclick=e=>{
+    acts.splice(+e.target.dataset.dela,1);renderActs();});
+}
+
+/* Build the engine-shaped object from the UI state. */
+function build(){
+  const conditions=conds.map(c=>{
+    const leaf={field:c.field,op:c.op};
+    if(c.op!=='exists'){
+      let v=c.value;
+      if(c.op==='in') v=String(v).split(',').map(s=>s.trim());
+      else if(!isNaN(Number(v)) && v!=='') v=Number(v);
+      leaf.value=v;
+    }
+    return leaf;
+  });
+  const actions=acts.map(a=>{
+    if(a.type==='send_whatsapp')return{type:'send_whatsapp',template:a.template||'',
+      paidFallback:a.paidFallback||'wait_for_window',dialectAware:(a.dialectAware??'true')==='true'||a.dialectAware===true};
+    if(a.type==='send_email')return{type:'send_email',template:a.template||''};
+    if(a.type==='wait')return{type:'wait',seconds:+a.seconds||0};
+    if(a.type==='wait_until_business_hours')return{type:'wait_until_business_hours'};
+    if(a.type==='create_task')return{type:'create_task',title:a.title||'',...(a.assignTo?{assignTo:a.assignTo}:{})};
+    if(a.type==='update_lead')return{type:'update_lead',set:{[a.ul_field||'stage']:a.ul_value||''}};
+    if(a.type==='notify_owner')return{type:'notify_owner',message:a.message||''};
+    if(a.type==='emit_event')return{type:'emit_event',event:a.event||''};
+    if(a.type==='request_approval')return{type:'request_approval'};
+    if(a.type==='stop')return{type:'stop'};
+    return{type:a.type};
+  });
+  const cd=document.getElementById('cooldown').value;
+  return{
+    name:document.getElementById('name').value,
+    enabled:true,
+    triggerEvent:document.getElementById('trigger').value,
+    conditions, actions,
+    requiresApproval:document.getElementById('requiresApproval').checked,
+    maxRunsPerEntity:+document.getElementById('maxRuns').value||null,
+    cooldownSeconds:cd?+cd:null,
+  };
+}
+function highlight(json){
+  return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*")(\s*:)?|\b(true|false|null)\b|-?\d+(\.\d+)?/g,
+    m=>{ if(/^"/.test(m)) return /:$/.test(m)?`<span class="k">${m}</span>`:`<span class="s">${m}</span>`;
+      if(/true|false|null/.test(m)) return `<span class="b">${m}</span>`;
+      return `<span class="n">${m}</span>`;});
+}
+function sync(){
+  const obj=build();
+  document.getElementById('json').innerHTML=highlight(JSON.stringify(obj,null,2));
+  // light validity check
+  const ok=obj.name && obj.triggerEvent && obj.actions.length>0;
+  const v=document.getElementById('valid');
+  v.textContent= ok?'✓ صالح':'✕ محتاج اسم + خطوة واحدة على الأقل';
+  v.style.color= ok?'var(--teal)':'var(--rose)';
+}
+
+['name','trigger','maxRuns','cooldown','requiresApproval'].forEach(id=>{
+  const e=document.getElementById(id); e.addEventListener('input',sync); e.addEventListener('change',sync);});
+document.getElementById('addCond').onclick=()=>{conds.push({field:'lead.stage',op:'eq',value:''});renderConds();};
+document.getElementById('addAct').onclick=()=>{acts.push({type:'wait',seconds:3600});renderActs();};
+document.getElementById('copyBtn').onclick=()=>{navigator.clipboard.writeText(JSON.stringify(build(),null,2));
+  const b=document.getElementById('copyBtn');b.textContent='✓ اتنسخ';setTimeout(()=>b.textContent='انسخ الـ JSON',1200);};
+document.getElementById('dlBtn').onclick=()=>{const blob=new Blob([JSON.stringify(build(),null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=(build().name||'automation')+'.json';a.click();};
+document.getElementById('resetBtn').onclick=()=>{conds=[];acts=[];renderConds();renderActs();};
+document.getElementById('saveBtn').onclick=async()=>{
+  const base=document.getElementById('apiBase').value.trim()||'http://localhost:8787';
+  const tenant=document.getElementById('tenantId').value.trim();
+  const msg=document.getElementById('saveMsg');
+  if(!tenant){msg.textContent='⚠️ محتاج معرّف الحساب';msg.style.color='var(--rose)';return;}
+  msg.textContent='... بيحفظ';msg.style.color='var(--ink-dim)';
+  try{
+    const r=await fetch(base+'/automations',{method:'POST',
+      headers:{'Content-Type':'application/json','x-tenant-id':tenant},
+      body:JSON.stringify(build())});
+    const data=await r.json();
+    if(r.ok){msg.textContent='✓ اتحفظت (id: '+data.id+')';msg.style.color='var(--teal)';}
+    else{msg.textContent='✕ '+(data.error||'فشل');msg.style.color='var(--rose)';}
+  }catch(e){msg.textContent='✕ مش قادر يوصل للـ API';msg.style.color='var(--rose)';}
+};
+
+/* Recipe presets — mirror modules/automation/src/recipes.ts */
+const RECIPES={
+  'نُدهة بعد السعر':{name:'نُدهة بعد إرسال السعر',trigger:'lead.price_sent',
+    conds:[{field:'lead.stage',op:'eq',value:'price_sent'}],
+    acts:[{type:'wait',seconds:3600},{type:'send_whatsapp',template:'price_followup_soft',paidFallback:'wait_for_window',dialectAware:true}],
+    maxRuns:1,cooldown:'',approval:false},
+  'استرداد الدفع':{name:'الدفع وقف — استرداد',trigger:'payment.stalled',
+    conds:[{field:'payment.state',op:'eq',value:'transfer_requested'}],
+    acts:[{type:'wait',seconds:7200},{type:'send_whatsapp',template:'payment_proof_reminder',paidFallback:'wait_for_window'},{type:'create_task',title:'كلّم العميل — الدفع واقف +ساعتين'}],
+    maxRuns:2,cooldown:'86400',approval:false},
+  'تصعيد عميل قيّم':{name:'عميل قيّم سكت — تصعيد',trigger:'conversation.stalled',
+    conds:[{field:'lead.trust_level',op:'eq',value:'high'},{field:'lead.risk_score',op:'gte',value:'0.5'}],
+    acts:[{type:'notify_owner',message:'عميل قيّم سكت — محتاج لمستك الشخصية'},{type:'create_task',title:'صاحب البيزنس: رجّع العميل القيّم'}],
+    maxRuns:1,cooldown:'',approval:false},
+  'استرداد محادثة متروكة':{name:'محادثة متروكة — استرداد (بموافقة)',trigger:'conversation.stalled',
+    conds:[{field:'lead.stage',op:'in',value:'contacted, qualified'}],
+    acts:[{type:'send_whatsapp',template:'abandoned_recovery',paidFallback:'allow'}],
+    maxRuns:1,cooldown:'',approval:true},
+};
+const rbar=document.getElementById('recipes');
+Object.keys(RECIPES).forEach(name=>{
+  const b=el('button','recipe','⚡ '+name); b.onclick=()=>loadRecipe(RECIPES[name]); rbar.appendChild(b);});
+function loadRecipe(r){
+  document.getElementById('name').value=r.name;
+  document.getElementById('trigger').value=r.trigger;
+  document.getElementById('maxRuns').value=r.maxRuns;
+  document.getElementById('cooldown').value=r.cooldown;
+  document.getElementById('requiresApproval').checked=r.approval;
+  conds=r.conds.map(c=>({...c})); acts=r.acts.map(a=>({...a}));
+  renderConds(); renderActs();
+}
+
+// boot with the first recipe so the canvas is never empty
+loadRecipe(RECIPES['نُدهة بعد السعر']);
+</script>
+</body>
+</html>

@@ -1,0 +1,34 @@
+{
+  "customerName": "Acme Store — Customer Zero",
+  "workspaceName": "Acme Store",
+  "ownerEmail": "owner@acme.example",
+  "business": {
+    "name": "Acme Store",
+    "market": "eg",
+    "language": "masry"
+  },
+  "whatsappNumber": "+201000000000",
+  "whatsappProviderStatus": "manual_link_only",
+  "payment": {
+    "method": "instapay",
+    "accountDetails": "acme@instapay",
+    "instructions": "حوّل المبلغ وابعت سكرين شوت على الواتساب عشان نأكّد الأوردر"
+  },
+  "paymentKind": "wallet",
+  "firstFunnelName": "Acme — أوردر واتساب",
+  "offer": {
+    "promise": "توصيل في يومين",
+    "price": "499 جنيه",
+    "package": "المنتج + ضمان أسبوع"
+  },
+  "pageSlug": "acme-launch",
+  "trafficSource": "instagram_bio_link",
+  "publicAppUrl": "https://acme.fnnlr.app",
+  "apiUrl": "https://api.fnnlr.app",
+  "launchWindow": "2026-06-25 18:00 EET",
+  "supportOwner": "support@fnnlr.app",
+  "rollbackOwner": "ops@fnnlr.app",
+  "allowedIntegrations": ["whatsapp_cloud_api", "instapay"],
+  "createFunnel": true,
+  "_note": "Contains NO secrets. Keys/tokens are environment-only. The owner password is passed to the setup runner separately, never stored here."
+}

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>fnnlr</title>
+<style>
+  :root{
+    --paper:#fbfaf7; --ink:#1a1f26; --ink-2:#54607010; --muted:#5b6675;
+    --amber:#e08a1e; --teal:#0f9b8e; --line:#ece9e2; --card:#fff;
+    --font:"Segoe UI","Noto Sans Arabic",Tahoma,system-ui,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--font);font-size:16px;line-height:1.7}
+  .page{max-width:680px;margin:0 auto;padding:0 18px 110px}
+  section{padding:34px 0;border-bottom:1px solid var(--line)}
+  section:last-of-type{border-bottom:none}
+  .hero{padding-top:48px;text-align:center}
+  .hero h1{font-size:30px;font-weight:800;letter-spacing:-.02em;line-height:1.3;margin:0 0 12px}
+  .hero p{font-size:17px;color:var(--muted);margin:0 auto;max-width:30ch}
+  h2{font-size:21px;font-weight:800;margin:0 0 12px}
+  p.body{color:var(--muted);margin:0 0 14px}
+  ul{margin:0;padding:0;list-style:none}
+  li{display:flex;gap:10px;padding:8px 0;font-size:15.5px}
+  li::before{content:'✓';color:var(--teal);font-weight:800}
+  .pricing{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:24px;text-align:center}
+  .pricing .amt{font-size:30px;font-weight:800;color:var(--amber)}
+  .faq-q{font-weight:700;margin-top:14px}
+  .cta-wrap{text-align:center;padding:30px 0}
+  .cta{display:inline-block;background:var(--amber);color:#fff;font-weight:800;font-size:17px;
+    padding:16px 34px;border-radius:14px;text-decoration:none;border:none;cursor:pointer}
+  .cta.wa{background:#25d366}
+  .cta:hover{filter:brightness(1.05)}
+  /* sticky mobile CTA */
+  .sticky{position:fixed;inset-inline:0;inset-block-end:0;background:#fff;border-top:1px solid var(--line);
+    padding:12px 16px;display:flex;justify-content:center;box-shadow:0 -4px 20px rgba(0,0,0,.06)}
+  .sticky .cta{width:100%;max-width:520px}
+  .foot{text-align:center;color:#aeb6c0;font-size:12px;padding:26px 0}
+  .foot b{color:var(--amber)}
+  .loading,.notfound{text-align:center;padding:90px 20px;color:var(--muted)}
+</style>
+</head>
+<body>
+<div id="root"><div class="loading">… بنحمّل الصفحة</div></div>
+
+<script>
+const API = localStorage.getItem('fnnlr_api') || 'http://localhost:8787';
+const params = new URLSearchParams(location.search);
+const slug = params.get('slug');
+// public pages resolve tenant server-side in prod; in this build pass it for dev/demo if present
+const devTenant = params.get('t');
+
+const SECTION_ORDER_HINT = ['hero','problem','promise','offer','benefits','proof','pricing','guarantee','faq','cta_whatsapp','cta_payment','final_cta'];
+let waDest = null, trackedCode = null;
+
+async function load(){
+  if(!slug){ root('<div class="notfound">رابط غير صحيح.</div>'); return; }
+  const headers={};
+  if(devTenant) headers['x-tenant-id']=devTenant;
+  const res=await fetch(`${API}/p/${slug}`,{headers});
+  if(!res.ok){ root('<div class="notfound">الصفحة دي مش متاحة.</div>'); return; }
+  const data=await res.json();
+  waDest=data.whatsappDestination;
+  trackedCode=data.trackedCode;
+  render(data);
+  track('page_view');
+  initScrollTracking();
+}
+
+// If a tracked link exists, WhatsApp CTAs go through /r/:code so the click is
+// recorded as a lead + conversation server-side, then redirected to WhatsApp.
+function whatsappHref(){
+  if(trackedCode) return `${API}/r/${trackedCode}`;
+  return waDest || '#';
+}
+
+function render(data){
+  const secs=data.sections||[];
+  let h='<div class="page">';
+  for(const s of secs){
+    const ct=s; // already merged {type, title, body, bullets, ctaLabel, ctaTarget}
+    if(s.type==='hero'){
+      h+=`<section class="hero"><h1>${esc(ct.title)}</h1>${ct.body?`<p>${esc(ct.body)}</p>`:''}
+        ${ct.ctaLabel?cta(ct):''}</section>`;
+    } else if(s.type==='pricing'){
+      h+=`<section><h2>${esc(ct.title)}</h2><div class="pricing"><div class="amt">${esc(ct.body)}</div></div></section>`;
+    } else if(s.type==='faq'){
+      h+=`<section><h2>${esc(ct.title)}</h2>${(ct.bullets||[]).map(b=>{
+        const [q,...a]=String(b).split('—'); return `<div class="faq-q">${esc(q)}</div><p class="body">${esc(a.join('—'))}</p>`;}).join('')}</section>`;
+    } else if(['cta_whatsapp','cta_payment','final_cta'].includes(s.type)){
+      h+=`<section class="cta-wrap">${ct.title?`<h2>${esc(ct.title)}</h2>`:''}${ct.body?`<p class="body">${esc(ct.body)}</p>`:''}${cta(ct)}</section>`;
+    } else {
+      h+=`<section><h2>${esc(ct.title)}</h2>${ct.body?`<p class="body">${esc(ct.body)}</p>`:''}
+        ${(ct.bullets&&ct.bullets.length)?`<ul>${ct.bullets.map(b=>`<li>${esc(b)}</li>`).join('')}</ul>`:''}</section>`;
+    }
+  }
+  h+=`<div class="foot">مبني بـ <b>fnnlr</b></div></div>`;
+  // sticky CTA (whatsapp-first if a destination exists)
+  if(waDest||trackedCode){ h+=`<div class="sticky"><a class="cta wa" href="${esc(whatsappHref())}" onclick="track('whatsapp_clicked');track('cta_clicked')">كلمنا على واتساب</a></div>`; }
+  root(h);
+}
+
+function cta(ct){
+  const wa = ct.ctaTarget==='whatsapp';
+  const href = wa ? esc(whatsappHref()) : '#';
+  const ev = wa ? 'whatsapp_clicked' : (ct.ctaTarget==='payment'?'payment_clicked':'cta_clicked');
+  return `<div class="cta-wrap"><a class="cta ${wa?'wa':''}" href="${href}" onclick="track('${ev}');track('cta_clicked')">${esc(ct.ctaLabel)}</a></div>`;
+}
+
+let priceTracked=false, depthMarks={};
+function initScrollTracking(){
+  window.addEventListener('scroll',()=>{
+    const sd=Math.round((window.scrollY+window.innerHeight)/document.body.scrollHeight*100);
+    [25,50,75,100].forEach(m=>{ if(sd>=m && !depthMarks[m]){ depthMarks[m]=true; track('scroll_depth',{depth:m}); }});
+    const pricing=document.querySelector('.pricing');
+    if(pricing && !priceTracked && pricing.getBoundingClientRect().top<window.innerHeight){ priceTracked=true; track('price_reached'); }
+  },{passive:true});
+}
+
+function track(type,extra){
+  const headers={'Content-Type':'application/json'};
+  if(devTenant) headers['x-tenant-id']=devTenant;
+  fetch(`${API}/track/page-event`,{method:'POST',headers,
+    body:JSON.stringify({type,visitor:visitorId(),slug,...(extra||{})})}).catch(()=>{});
+}
+function visitorId(){ let v=localStorage.getItem('fnnlr_vid'); if(!v){v=Math.random().toString(36).slice(2);localStorage.setItem('fnnlr_vid',v);} return v; }
+function root(h){ document.getElementById('root').innerHTML=h; }
+function esc(s){return (s||'').toString().replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+load();
+</script>
+</body>
+</html>

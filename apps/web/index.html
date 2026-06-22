@@ -1,0 +1,1162 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>fnnlr — لوحة الإيراد</title>
+<style>
+  /* ── Design tokens ──────────────────────────────────────────────────────
+     Direction: a calm "revenue operations console" for Arab sellers who are
+     trusting fnnlr with their money data. Premium-light, not the cream-serif
+     default. One warm signal accent (amber = money), a teal for "healthy",
+     a rose for "needs attention". Ink on warm-white paper.                    */
+  :root{
+    --paper:#f7f6f3; --card:#ffffff; --ink:#1a1f26; --ink-2:#5b6675; --ink-3:#9aa4b2;
+    --line:#e7e4dd; --line-2:#eeece6;
+    --amber:#e08a1e; --amber-soft:#fbf2e2; --amber-ink:#7a4a08;
+    --teal:#0f9b8e; --teal-soft:#e3f5f2;
+    --rose:#d8556b; --rose-soft:#fbe9ec;
+    --violet:#6d5ae0;
+    --r:14px; --r-sm:10px;
+    --shadow:0 1px 2px rgba(20,25,35,.04), 0 8px 24px rgba(20,25,35,.05);
+    --font:"Segoe UI","Noto Sans Arabic",Tahoma,system-ui,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--font);
+    font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased}
+  button{font-family:inherit;cursor:pointer}
+  .hidden{display:none!important}
+
+  /* ── Auth screen ── */
+  .auth-wrap{min-height:100vh;display:grid;place-items:center;padding:24px;
+    background:radial-gradient(1200px 600px at 80% -10%, #fdf4e6 0%, var(--paper) 55%)}
+  .auth-card{width:100%;max-width:400px;background:var(--card);border:1px solid var(--line);
+    border-radius:var(--r);box-shadow:var(--shadow);padding:32px}
+  .brand{display:flex;align-items:baseline;gap:10px;margin-bottom:4px}
+  .brand .logo{font-size:26px;font-weight:800;letter-spacing:-.02em}
+  .brand .logo b{color:var(--amber)}
+  .brand .dot{width:7px;height:7px;border-radius:50%;background:var(--teal);margin-bottom:6px}
+  .auth-sub{color:var(--ink-2);font-size:13.5px;margin:0 0 24px}
+  label{display:block;font-size:12.5px;color:var(--ink-2);margin:14px 0 6px;font-weight:600}
+  input,select{width:100%;background:var(--paper);border:1px solid var(--line);
+    border-radius:var(--r-sm);padding:11px 13px;font-family:inherit;font-size:14.5px;color:var(--ink);outline:none}
+  input:focus,select:focus{border-color:var(--amber);background:#fff}
+  .btn{border:1px solid transparent;border-radius:var(--r-sm);padding:12px 18px;font-size:14.5px;font-weight:700}
+  .btn-primary{background:var(--amber);color:#fff;width:100%;margin-top:22px}
+  .btn-primary:hover{filter:brightness(1.05)}
+  .btn-ghost{background:transparent;border-color:var(--line);color:var(--ink-2)}
+  .btn-ghost:hover{border-color:var(--ink-3);color:var(--ink)}
+  .auth-switch{text-align:center;margin-top:18px;font-size:13px;color:var(--ink-2)}
+  .auth-switch a{color:var(--amber);font-weight:700;text-decoration:none;cursor:pointer}
+  .msg{margin-top:14px;font-size:13px;padding:10px 12px;border-radius:var(--r-sm);display:none}
+  .msg.err{display:block;background:var(--rose-soft);color:#9c2a3d}
+  .msg.ok{display:block;background:var(--teal-soft);color:#0a6a60}
+
+  /* ── App shell ── */
+  .app{display:none;min-height:100vh;grid-template-columns:248px 1fr}
+  @media(max-width:860px){.app{grid-template-columns:1fr}.sidebar{display:none}}
+  .sidebar{background:#fff;border-inline-start:1px solid var(--line);padding:22px 16px;
+    display:flex;flex-direction:column;gap:4px;position:sticky;top:0;height:100vh}
+  .side-brand{display:flex;align-items:baseline;gap:8px;padding:6px 10px 20px}
+  .side-brand .logo{font-size:20px;font-weight:800}.side-brand .logo b{color:var(--amber)}
+  .nav-item{display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:var(--r-sm);
+    color:var(--ink-2);font-size:14px;font-weight:600;border:none;background:none;width:100%;text-align:start}
+  .nav-item:hover{background:var(--paper);color:var(--ink)}
+  .nav-item.active{background:var(--amber-soft);color:var(--amber-ink)}
+  .nav-item .ic{width:18px;text-align:center}
+  .side-foot{margin-top:auto;border-top:1px solid var(--line);padding-top:14px}
+  .ws-pick{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:var(--r-sm);background:var(--paper)}
+  .ws-pick .av{width:30px;height:30px;border-radius:8px;background:var(--violet);color:#fff;
+    display:grid;place-items:center;font-weight:800;font-size:13px}
+  .ws-pick .who{font-size:12.5px;line-height:1.3;overflow:hidden}
+  .ws-pick .who b{display:block;color:var(--ink);font-size:13px}
+  .ws-pick .who span{color:var(--ink-3)}
+
+  .main{padding:30px 34px;max-width:1080px}
+  @media(max-width:860px){.main{padding:20px 16px}}
+  .topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:26px;gap:16px}
+  .topbar h1{font-size:23px;font-weight:800;letter-spacing:-.01em;margin:0}
+  .topbar .greet{color:var(--ink-2);font-size:13.5px;margin-top:3px}
+  .cmd{flex:1;max-width:380px;display:flex;align-items:center;gap:8px;background:#fff;
+    border:1px solid var(--line);border-radius:var(--r-sm);padding:9px 13px;color:var(--ink-3);font-size:13.5px}
+
+  /* ── 4-card revenue command row (the signature) ── */
+  .cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:30px}
+  @media(max-width:860px){.cards{grid-template-columns:1fr 1fr}}
+  @media(max-width:520px){.cards{grid-template-columns:1fr}}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:18px;
+    box-shadow:var(--shadow);position:relative;overflow:hidden;min-height:118px}
+  .card .k{font-size:12.5px;color:var(--ink-2);font-weight:600;display:flex;align-items:center;gap:7px}
+  .card .v{font-size:27px;font-weight:800;margin-top:10px;letter-spacing:-.02em}
+  .card .sub{font-size:12px;color:var(--ink-3);margin-top:3px}
+  .card .rail{position:absolute;inset-inline-start:0;top:0;bottom:0;width:4px}
+  .card.revenue .rail{background:var(--teal)} .card.revenue .v{color:var(--teal)}
+  .card.leads .rail{background:var(--amber)} .card.leads .v{color:var(--amber)}
+  .card.leak .rail{background:var(--rose)} .card.leak .v{color:var(--rose);font-size:18px;line-height:1.35}
+  .card.fix .rail{background:var(--violet)} .card.fix .v{color:var(--violet);font-size:18px;line-height:1.35}
+  .pill{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;
+    background:var(--line-2);color:var(--ink-3);margin-top:8px}
+
+  /* ── Section + funnel list ── */
+  .sec-head{display:flex;align-items:center;justify-content:space-between;margin:0 0 14px}
+  .sec-head h2{font-size:16px;font-weight:700;margin:0}
+  .funnels{display:grid;gap:12px}
+  .funnel{display:flex;align-items:center;gap:14px;background:#fff;border:1px solid var(--line);
+    border-radius:var(--r);padding:15px 17px;box-shadow:var(--shadow)}
+  .funnel .ic{width:38px;height:38px;border-radius:10px;background:var(--amber-soft);color:var(--amber);
+    display:grid;place-items:center;font-size:17px}
+  .funnel .body{flex:1}
+  .funnel .body b{font-size:14.5px}
+  .funnel .body .meta{font-size:12.5px;color:var(--ink-3);margin-top:2px}
+  .funnel .stat{font-size:12px;color:var(--ink-2);text-align:center}
+  .funnel .stat b{display:block;font-size:16px;color:var(--ink)}
+  .tag{font-size:11px;font-weight:700;padding:3px 9px;border-radius:999px;background:var(--teal-soft);color:#0a6a60}
+  .tag.draft{background:var(--amber-soft);color:var(--amber-ink)}
+
+  /* ── Empty state (respectful Arabic) ── */
+  .empty{background:#fff;border:1px dashed var(--line);border-radius:var(--r);padding:46px 28px;text-align:center}
+  .empty .big{font-size:40px;margin-bottom:8px}
+  .empty h3{margin:0 0 6px;font-size:17px}
+  .empty p{margin:0 auto 20px;color:var(--ink-2);font-size:14px;max-width:42ch}
+
+  .btn-create{background:var(--ink);color:#fff;border-radius:var(--r-sm);padding:11px 20px;font-weight:700;font-size:14px;border:none}
+  .btn-create:hover{background:#000}
+  .toast{position:fixed;inset-block-end:22px;inset-inline-start:50%;transform:translateX(50%);
+    background:var(--ink);color:#fff;padding:12px 20px;border-radius:var(--r-sm);font-size:13.5px;
+    box-shadow:var(--shadow);opacity:0;transition:opacity .25s, transform .25s;pointer-events:none}
+  .toast.show{opacity:1;transform:translateX(50%) translateY(-4px)}
+</style>
+</head>
+<body>
+
+<!-- ═══ AUTH ═══ -->
+<div class="auth-wrap" id="authScreen">
+  <div class="auth-card">
+    <div class="brand"><span class="logo"><b>fnnlr</b></span><span class="dot"></span></div>
+    <p class="auth-sub" id="authSub">ابنِ رحلة إيرادك العربية — وشوف فلوسك بتروح فين.</p>
+
+    <div id="loginForm">
+      <label>البريد الإلكتروني</label>
+      <input id="loginEmail" type="email" placeholder="you@business.com" autocomplete="email" />
+      <label>كلمة السر</label>
+      <input id="loginPass" type="password" placeholder="••••••••" autocomplete="current-password" />
+      <button class="btn btn-primary" id="loginBtn">تسجيل الدخول</button>
+      <div class="msg" id="loginMsg"></div>
+      <button class="btn" id="demoBtn" style="width:100%;margin-top:8px;background:#f5f3fe;color:#6b4ee6;border:1px solid #e3dcfb">🎬 جرّب مساحة ديمو جاهزة</button>
+      <p class="auth-switch">لسه ماعندكش حساب؟ <a id="toSignup">ابدأ مجانًا</a></p>
+    </div>
+
+    <div id="signupForm" class="hidden">
+      <label>اسم البيزنس</label>
+      <input id="suName" placeholder="مثلاً: أكاديمية نور" />
+      <label>البريد الإلكتروني</label>
+      <input id="suEmail" type="email" placeholder="you@business.com" />
+      <label>كلمة السر</label>
+      <input id="suPass" type="password" placeholder="٨ أحرف على الأقل" />
+      <button class="btn btn-primary" id="signupBtn">إنشاء الحساب وبناء أول قمع</button>
+      <div class="msg" id="signupMsg"></div>
+      <p class="auth-switch">عندك حساب؟ <a id="toLogin">سجّل دخول</a></p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ APP ═══ -->
+<div class="app" id="appScreen">
+  <aside class="sidebar">
+    <div class="side-brand"><span class="logo"><b>fnnlr</b></span></div>
+    <button class="nav-item active"><span class="ic">▦</span> اللوحة</button>
+    <button class="nav-item" id="navActivation" style="background:#f0fbf4;border:1px solid #b9e6cb"><span class="ic">🚀</span> تفعيل البيزنس</button>
+    <button class="nav-item" id="navDesk" style="background:#faf8ff;border:1px solid #cdbff5"><span class="ic">🗂️</span> مكتب الإيراد</button>
+    <button class="nav-item"><span class="ic">⟁</span> القمعات</button>
+    <button class="nav-item"><span class="ic">◎</span> العملاء</button>
+    <button class="nav-item"><span class="ic">↯</span> التسريبات</button>
+    <button class="nav-item" id="navIntegrations"><span class="ic">⇄</span> التكاملات</button>
+    <button class="nav-item" id="navPortfolio"><span class="ic">⊞</span> محفظة القمعات</button>
+    <button class="nav-item" id="navRhythm"><span class="ic">◷</span> نبض التشغيل</button>
+    <button class="nav-item" id="navOpps"><span class="ic">💰</span> فرص الإيراد</button>
+    <button class="nav-item" id="navPlaybooks"><span class="ic">📚</span> أدلة الإيراد</button>
+    <button class="nav-item"><span class="ic">⚙</span> الإعدادات</button>
+    <div class="side-foot">
+      <div class="ws-pick">
+        <span class="av" id="wsAv">ن</span>
+        <span class="who"><b id="wsName">—</b><span id="wsEmail">—</span></span>
+      </div>
+      <button class="nav-item" id="logoutBtn" style="margin-top:8px"><span class="ic">⏻</span> خروج</button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div id="demoBanner" style="display:none;background:linear-gradient(135deg,#f5f3fe,#eafaf0);border:1px solid #e3dcfb;border-radius:14px;padding:14px 18px;margin-bottom:16px;align-items:center;gap:12px">
+      <span style="font-size:22px">🎬</span>
+      <div style="flex:1">
+        <b style="font-size:14px">أنت داخل مساحة ديمو جاهزة</b>
+        <div style="font-size:12.5px;color:#5b6472">جرّب: شغّل التشخيص، افتح Action Center، واسأل شريط الأوامر «اشرح أكبر تسريب».</div>
+      </div>
+      <button class="btn-create" style="background:#fff;color:#6b4ee6;border:1px solid #e3dcfb" id="resetDemoBtn">إعادة ضبط الديمو</button>
+    </div>
+    <div class="topbar">
+      <div>
+        <h1>لوحة الإيراد</h1>
+        <div class="greet" id="greet">أهلًا بيك 👋</div>
+      </div>
+      <div class="cmd">⌘ اسأل fnnlr… «ليه العملاء بيختفوا بعد السعر؟»</div>
+    </div>
+
+    <div id="actStrip" style="display:none;align-items:center;gap:12px;flex-wrap:wrap;padding:12px 16px;margin-bottom:14px;border:2px solid #b9e6cb;border-radius:14px;background:#f0fbf4">
+      <span style="font-size:20px">🚀</span>
+      <div style="flex:1;min-width:200px">
+        <div style="font-size:11px;color:#0a7d43;font-weight:700">تفعيل البيزنس — <span id="asStage">…</span> · <span id="asScore">0%</span></div>
+        <div id="asNext" style="font-size:13.5px;font-weight:700;color:#2c3340">—</div>
+        <div id="asWhy" style="font-size:11.5px;color:#5b6472"></div>
+      </div>
+      <button class="btn-create" style="padding:7px 16px;font-size:12.5px;background:#0a7d43" onclick="openActivation()">كمّل التفعيل →</button>
+    </div>
+
+    <div id="deskStrip" style="display:none;align-items:center;gap:12px;flex-wrap:wrap;padding:12px 16px;margin-bottom:14px;border:2px solid #cdbff5;border-radius:14px;background:#faf8ff">
+      <span style="font-size:20px">🗂️</span>
+      <div style="flex:1;min-width:200px">
+        <div style="font-size:11px;color:#5b4ba8;font-weight:700">مكتب الإيراد — أهم حاجة دلوقتي</div>
+        <div id="dsTop" style="font-size:13.5px;font-weight:700;color:#2c3340">—</div>
+        <div id="dsWhy" style="font-size:11.5px;color:#5b6472"></div>
+      </div>
+      <div id="dsCounts" style="font-size:11px;color:#5b6472;text-align:center"></div>
+      <button class="btn-create" style="padding:7px 16px;font-size:12.5px" onclick="openRevenueDesk()">افتح المكتب →</button>
+    </div>
+
+    <div id="rhythmStrip" style="display:none;align-items:center;gap:12px;flex-wrap:wrap;padding:10px 14px;margin-bottom:14px;border:1px solid #e8e9ef;border-radius:12px;background:#fbfbfd;font-size:12.5px;color:#5b6472">
+      <span style="font-weight:700;color:#2c3340">◷ نبض التشغيل</span>
+      <span id="rsLast">—</span>
+      <span id="rsAttn"></span>
+      <button class="btn-create" style="margin-inline-start:auto;padding:5px 12px;font-size:12px" onclick="openRhythm()">افتح</button>
+      <button class="ai-btn" style="padding:5px 12px;font-size:12px" onclick="rhRun('daily')">حدّث دلوقتي</button>
+    </div>
+
+    <div id="oppStrip" style="display:none;align-items:center;gap:12px;flex-wrap:wrap;padding:10px 14px;margin-bottom:14px;border:1px solid #e3dcfb;border-radius:12px;background:#faf8ff;font-size:12.5px;color:#5b4ba8">
+      <span style="font-weight:700">💰 فرص الإيراد</span>
+      <span id="osTop">—</span>
+      <span id="osVal" style="color:#8a93a3"></span>
+      <button class="btn-create" style="margin-inline-start:auto;padding:5px 12px;font-size:12px" onclick="openOpportunities()">افتح الفرص</button>
+    </div>
+
+    <!-- 4-card signature row -->
+    <div class="cards">
+      <div class="card revenue"><div class="rail"></div>
+        <div class="k">💰 إيراد الشهر</div><div class="v">— ج.م</div>
+        <div class="sub">هيظهر بعد أول عملية دفع</div></div>
+      <div class="card leads"><div class="rail"></div>
+        <div class="k">◎ عملاء محتاجين تحرّك</div><div class="v">0</div>
+        <div class="sub">مفيش عملاء لسه</div></div>
+      <div class="card leak"><div class="rail"></div>
+        <div class="k">↯ أكبر تسريب</div><div class="v">مفيش بيانات كفاية</div>
+        <div class="pill">فعّل التتبّع أولًا</div></div>
+      <div class="card fix"><div class="rail"></div>
+        <div class="k">✦ أسرع إصلاح النهاردة</div><div class="v">ابنِ أول قمع</div>
+        <div class="pill">ابدأ من هنا</div></div>
+    </div>
+
+    <!-- Action Center -->
+    <div class="sec-head">
+      <h2>مركز الإجراءات — اعمل إيه النهاردة؟</h2>
+      <div style="display:flex;gap:6px;flex-wrap:wrap" id="acFilters"></div>
+    </div>
+    <div id="actionCenter"><div style="color:var(--ink-3,#8a93a3);font-size:13px">… بنحمّل الإجراءات</div></div>
+
+    <!-- Funnels -->
+    <div class="sec-head">
+      <h2>القمعات بتاعتك</h2>
+      <button class="btn-create" id="createBtn">+ قمع جديد</button>
+    </div>
+    <div id="funnelsArea"></div>
+  </main>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- AI Command Bar -->
+<!-- Integrations overlay -->
+<div id="intOverlay" style="display:none;position:fixed;inset:0;background:rgba(20,22,30,.45);z-index:80;backdrop-filter:blur(3px)">
+  <div style="max-width:760px;margin:4vh auto;background:#fbfbfd;border-radius:18px;max-height:90vh;overflow:auto;padding:24px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+      <h2 style="margin:0">التكاملات</h2>
+      <button class="nav-item" onclick="$('intOverlay').style.display='none'" style="width:auto">✕ إغلاق</button>
+    </div>
+    <p style="color:#5b6472;font-size:13px;margin:0 0 18px">اربط fnnlr بالعالم الحقيقي — استقبال رسائل واتساب، تحديث حالات الدفع، التتبّع، وإرسال الأحداث لأدوات خارجية. الربط الفعلي اختياري؛ كله بدون إرسال تلقائي.</p>
+    <div id="intCards"></div>
+  </div>
+</div>
+
+<!-- Revenue Playbooks overlay -->
+<div id="pbOverlay" style="display:none;position:fixed;inset:0;background:rgba(20,22,30,.45);z-index:80;backdrop-filter:blur(3px)">
+  <div style="max-width:760px;margin:4vh auto;background:#fbfbfd;border-radius:18px;max-height:90vh;overflow:auto;padding:24px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+      <h2 style="margin:0">أدلة الإيراد الذكية</h2>
+      <button class="nav-item" onclick="$('pbOverlay').style.display='none'" style="width:auto">✕ إغلاق</button>
+    </div>
+    <p style="color:#5b6472;font-size:13px;margin:0 0 14px">fnnlr بيتعلّم من نتائج الإصلاحات ويبني playbooks تشكّل القمعات الجديدة من البداية. الثقة بتطلع من البيانات المرصودة فقط — مفيش «أفضل ممارسة» مفبركة. مفيش تطبيق تلقائي.</p>
+    <div style="display:flex;gap:8px;margin-bottom:14px">
+      <button class="btn-create" onclick="pbRegenerate()">حدّث من التعلّم</button>
+    </div>
+    <div id="pbCards"><p style="color:#8a93a3;font-size:13px">… بنحمّل</p></div>
+  </div>
+</div>
+
+<!-- Portfolio Intelligence overlay -->
+<div id="poOverlay" style="display:none;position:fixed;inset:0;background:rgba(20,22,30,.45);z-index:80;backdrop-filter:blur(3px)">
+  <div style="max-width:820px;margin:4vh auto;background:#fbfbfd;border-radius:18px;max-height:90vh;overflow:auto;padding:24px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+      <h2 style="margin:0">محفظة القمعات</h2>
+      <button class="nav-item" onclick="$('poOverlay').style.display='none'" style="width:auto">✕ إغلاق</button>
+    </div>
+    <p style="color:#5b6472;font-size:13px;margin:0 0 14px">fnnlr بيقارن القمعات بتاعتك ويستخرج تعلّم قابل للنقل بينها — بدليل وبموافقة. مفيش ترتيب مفبرك؛ لو البيانات قليلة، بيقولها.</p>
+    <div style="display:flex;gap:8px;margin-bottom:14px">
+      <button class="btn-create" onclick="poAnalyze()">حلّل المحفظة</button>
+    </div>
+    <div id="poCards"><p style="color:#8a93a3;font-size:13px">… بنحمّل</p></div>
+    <div id="poInsights" style="margin-top:14px"></div>
+  </div>
+</div>
+
+<!-- Operating Rhythm overlay -->
+<div id="rhOverlay" style="display:none;position:fixed;inset:0;background:rgba(20,22,30,.45);z-index:80;backdrop-filter:blur(3px)">
+  <div style="max-width:760px;margin:4vh auto;background:#fbfbfd;border-radius:18px;max-height:90vh;overflow:auto;padding:24px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+      <h2 style="margin:0">نبض التشغيل</h2>
+      <button class="nav-item" onclick="$('rhOverlay').style.display='none'" style="width:auto">✕ إغلاق</button>
+    </div>
+    <p style="color:#5b6472;font-size:13px;margin:0 0 14px">fnnlr بيرصد ويحدّث ويقيس على إيقاع يومي وأسبوعي — كل تشغيل آمن وبيتسجّل، من غير إرسال خارجي ومن غير تنفيذ تلقائي.</p>
+    <div id="rhStatus" style="margin-bottom:14px"></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px">
+      <button class="btn-create" onclick="rhRun('daily')">شغّل التحديث اليومي</button>
+      <button class="ai-btn" onclick="rhRun('weekly')">تقرير أسبوعي للبيزنس</button>
+      <button class="ai-btn" onclick="rhRun('portfolio')">حدّث المحفظة</button>
+      <button class="ai-btn" onclick="rhRun('outcomes')">افحص المستحق للقياس</button>
+    </div>
+    <div id="rhResult" style="margin-bottom:14px"></div>
+    <h3 style="font-size:14px;margin:0 0 8px">آخر التشغيلات</h3>
+    <div id="rhRuns"><p style="color:#8a93a3;font-size:13px">… بنحمّل</p></div>
+  </div>
+</div>
+
+<!-- Revenue Opportunities overlay -->
+<div id="actOverlay" style="display:none;position:fixed;inset:0;background:rgba(20,22,30,.45);z-index:80;backdrop-filter:blur(3px)">
+  <div style="max-width:820px;margin:4vh auto;background:#fbfbfd;border-radius:18px;max-height:90vh;overflow:auto;padding:24px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+      <h2 style="margin:0">🚀 تفعيل البيزنس · Go Live</h2>
+      <button class="nav-item" onclick="$('actOverlay').style.display='none'" style="width:auto">✕ إغلاق</button>
+    </div>
+    <p style="color:#5b6472;font-size:13px;margin:0 0 14px">المسار من الإعداد لأول إشارة إيراد حقيقية. كل خطوة بتتحسب «تمّت» بس لما يبقى فيه دليل فعلي في النظام — مفيش تقدّم وهمي.</p>
+    <div id="actTop" style="margin-bottom:16px"></div>
+    <div id="actSections"><p style="color:#8a93a3;font-size:13px">… بنحمّل</p></div>
+  </div>
+</div>
+
+<div id="deskOverlay" style="display:none;position:fixed;inset:0;background:rgba(20,22,30,.45);z-index:80;backdrop-filter:blur(3px)">
+  <div style="max-width:840px;margin:4vh auto;background:#fbfbfd;border-radius:18px;max-height:90vh;overflow:auto;padding:24px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+      <h2 style="margin:0">🗂️ مكتب الإيراد</h2>
+      <button class="nav-item" onclick="$('deskOverlay').style.display='none'" style="width:auto">✕ إغلاق</button>
+    </div>
+    <p style="color:#5b6472;font-size:13px;margin:0 0 14px">كل اللي محتاج انتباهك في مكان واحد: ده أهم حاجة دلوقتي، وده السبب، وده الإجراء. مفيش تكرار، ومفيش تنفيذ تلقائي.</p>
+    <div id="deskTop" style="margin-bottom:14px"></div>
+    <div id="deskSections"><p style="color:#8a93a3;font-size:13px">… بنحمّل</p></div>
+  </div>
+</div>
+
+<div id="opOverlay" style="display:none;position:fixed;inset:0;background:rgba(20,22,30,.45);z-index:80;backdrop-filter:blur(3px)">
+  <div style="max-width:800px;margin:4vh auto;background:#fbfbfd;border-radius:18px;max-height:90vh;overflow:auto;padding:24px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+      <h2 style="margin:0">فرص الإيراد</h2>
+      <button class="nav-item" onclick="$('opOverlay').style.display='none'" style="width:auto">✕ إغلاق</button>
+    </div>
+    <p style="color:#5b6472;font-size:13px;margin:0 0 12px">دي مش لوحة تحليلات — دي قائمة فرص قابلة للتنفيذ، مرتّبة بالأولوية وبالدليل. القيمة بتظهر بس لو فيه قيمة صفقة مرصودة.</p>
+    <div id="opSummary" style="margin-bottom:12px"></div>
+    <div id="opBestActions" style="margin-bottom:12px"></div>
+    <div id="opAttrInsights" style="margin-bottom:12px"></div>
+    <div id="opFilters" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px"></div>
+    <div id="opCards"><p style="color:#8a93a3;font-size:13px">… بنحمّل</p></div>
+  </div>
+</div>
+
+<div id="cmdBar" style="position:fixed;bottom:0;inset-inline:0;background:rgba(255,255,255,.92);backdrop-filter:blur(10px);border-top:1px solid #eef0f4;padding:12px 18px;z-index:60">
+  <div style="max-width:880px;margin:0 auto;display:flex;gap:10px;align-items:center">
+    <span style="font-size:16px">⌘</span>
+    <input id="cmdInput" placeholder="اسأل fnnlr… مثلاً: صلّح أكبر تسريب · هات العملاء المنتظرين الدفع · اعمل تقرير للفريق" style="flex:1;border:1px solid #e3e7ee;border-radius:12px;padding:11px 14px;font-family:inherit;font-size:14px"/>
+    <button class="btn-create" id="cmdRun">نفّذ</button>
+  </div>
+</div>
+
+<script>
+/* fnnlr product shell. Talks to the fnnlr API (auth + funnels). Tenant is NEVER
+   sent from here — it's resolved server-side from the session token. We only
+   ever send `Authorization: Bearer <token>`. */
+
+const API = localStorage.getItem('fnnlr_api') || 'http://localhost:8787';
+let token = localStorage.getItem('fnnlr_token') || null;
+let ctx = null;
+
+const $ = (id) => document.getElementById(id);
+function toast(t){ const el=$('toast'); el.textContent=t; el.classList.add('show'); setTimeout(()=>el.classList.remove('show'),2200); }
+
+async function api(path, { method='GET', body, auth=true } = {}){
+  const headers = { 'Content-Type':'application/json' };
+  if (auth && token) headers['Authorization'] = `Bearer ${token}`;  // tenant derived from this, server-side
+  const res = await fetch(API+path, { method, headers, body: body?JSON.stringify(body):undefined });
+  let data=null; try{ data=await res.json(); }catch{}
+  return { ok:res.ok, status:res.status, data };
+}
+
+// ── Auth UI ──
+$('toSignup').onclick = ()=>{ $('loginForm').classList.add('hidden'); $('signupForm').classList.remove('hidden');
+  $('authSub').textContent='ابدأ مجانًا — هنبنيلك أول قمع بعد التسجيل على طول.'; };
+$('toLogin').onclick = ()=>{ $('signupForm').classList.add('hidden'); $('loginForm').classList.remove('hidden');
+  $('authSub').textContent='ابنِ رحلة إيرادك العربية — وشوف فلوسك بتروح فين.'; };
+
+$('loginBtn').onclick = async ()=>{
+  const email=$('loginEmail').value.trim(), password=$('loginPass').value;
+  const m=$('loginMsg'); m.className='msg';
+  if(!email||!password){ m.className='msg err'; m.textContent='اكتب البريد وكلمة السر.'; return; }
+  m.className='msg'; m.textContent='';
+  const r = await api('/auth/login', { method:'POST', auth:false, body:{ email, password } });
+  if(r.ok){ token=r.data.token; ctx=r.data.ctx; localStorage.setItem('fnnlr_token',token); enterApp(); }
+  else { m.className='msg err'; m.textContent = r.status===401 ? 'البريد أو كلمة السر غلط.' : (r.data?.error||'تعذّر الدخول.'); }
+};
+
+$('demoBtn').onclick = async ()=>{
+  const m=$('loginMsg'); m.className='msg'; m.textContent='… بنجهّز مساحة الديمو (ثواني)';
+  $('demoBtn').disabled=true;
+  // create-or-confirm the demo, then log in with its credentials
+  const seed = await api('/demo/seed', { method:'POST', auth:false, body:{} });
+  if(!seed.ok){ m.className='msg err'; m.textContent='تعذّر تجهيز الديمو — محتاج قاعدة بيانات شغّالة.'; $('demoBtn').disabled=false; return; }
+  const r = await api('/auth/login', { method:'POST', auth:false, body:{ email:seed.data.email, password:seed.data.password } });
+  if(r.ok){ token=r.data.token; ctx=r.data.ctx; localStorage.setItem('fnnlr_token',token); enterApp(); toast('أهلًا بيك في مساحة الديمو 🎬'); }
+  else { m.className='msg err'; m.textContent='اتجهّز الديمو بس تعذّر الدخول.'; }
+  $('demoBtn').disabled=false;
+};
+
+$('signupBtn').onclick = async ()=>{
+  const businessName=$('suName').value.trim(), email=$('suEmail').value.trim(), password=$('suPass').value;
+  const m=$('signupMsg'); m.className='msg';
+  if(!businessName||!email||!password){ m.className='msg err'; m.textContent='كمّل كل الخانات.'; return; }
+  if(password.length<8){ m.className='msg err'; m.textContent='كلمة السر لازم ٨ أحرف على الأقل.'; return; }
+  m.className='msg'; m.textContent='';
+  const r = await api('/auth/signup', { method:'POST', auth:false, body:{ email, password, businessName } });
+  if(r.ok){ token=r.data.token; ctx=r.data.ctx; localStorage.setItem('fnnlr_token',token); enterApp(); toast('أهلًا بيك في fnnlr 🎉'); }
+  else { m.className='msg err'; m.textContent = r.status===409 ? 'البريد ده متسجّل قبل كده.' : (r.data?.error||'تعذّر إنشاء الحساب.'); }
+};
+
+$('logoutBtn').onclick = async ()=>{ await api('/auth/logout',{method:'POST'}); token=null; ctx=null;
+  localStorage.removeItem('fnnlr_token'); location.reload(); };
+
+// ── App ──
+function enterApp(){
+  $('authScreen').style.display='none';
+  $('appScreen').style.display='grid';
+  const name = ctx?.email ? ctx.email.split('@')[0] : 'صاحب البيزنس';
+  $('greet').textContent = `أهلًا ${name} 👋 — يلا نبني رحلة إيراد تبان نتيجتها.`;
+  $('wsName').textContent = ctx?.email ? ctx.email.split('@')[0] : 'الحساب';
+  $('wsEmail').textContent = ctx?.email || '';
+  $('wsAv').textContent = (ctx?.email||'ن').slice(0,1).toUpperCase();
+  loadFunnels();
+  checkDemoBanner();
+  loadActStrip();
+  loadDeskStrip();
+}
+const ACT_STAGE_LABEL={setup:'إعداد',publish_ready:'جاهز للنشر',traffic_ready:'جاهز للترافيك',lead_ready:'وصلوا leads',revenue_ops_ready:'تشغيل إيراد',learning_ready:'بيتعلّم'};
+const ACT_ST_COLOR={done:'#0a7d43',ready:'#a35200',not_started:'#8a93a3',blocked:'#b3253c'};
+const ACT_ST_ICON={done:'✓',ready:'•',not_started:'○',blocked:'⛔'};
+let actFunnelId=null;
+async function loadActStrip(){
+  const fr=await api('/funnels'); const fid=(fr.ok&&fr.data[0])?fr.data[0].id:null;
+  if(!fid) return;
+  const r=await api(`/activation/summary?funnelId=${fid}`);
+  if(!r.ok||!r.data) return;
+  const strip=$('actStrip'); if(!strip) return;
+  // once fully live (learning stage) the activation strip steps back; desk strip leads
+  if(r.data.stage==='learning_ready'){ strip.style.display='none'; return; }
+  $('asStage').textContent=ACT_STAGE_LABEL[r.data.stage]||r.data.stage;
+  $('asScore').textContent=(r.data.readinessScore||0)+'%';
+  if(r.data.nextAction){ $('asNext').textContent=r.data.nextAction.label; $('asWhy').textContent=r.data.nextAction.nextAction||r.data.nextAction.evidence||''; }
+  else { $('asNext').textContent='البيزنس مفعّل بالكامل ✓'; $('asWhy').textContent=''; }
+  strip.style.display='flex';
+}
+async function openActivation(){
+  $('actOverlay').style.display='block';
+  const fr=await api('/funnels'); actFunnelId=(fr.ok&&fr.data[0])?fr.data[0].id:null;
+  if(!actFunnelId){ $('actSections').innerHTML='<p style="color:#8a93a3;font-size:13px">اعمل قمع الأول.</p>'; $('actTop').innerHTML=''; return; }
+  const r=await api(`/activation?funnelId=${actFunnelId}`);
+  if(!r.ok){ $('actSections').innerHTML='<p style="color:#8a93a3;font-size:13px">تعذّر التحميل.</p>'; return; }
+  const d=r.data;
+  const launch=d.launchReady?'<span style="color:#0a7d43;font-weight:700">جاهز يستقبل أول signal ✓</span>':`<span style="color:#a35200;font-weight:700">${esc(d.blockingReason||'لسه فيه خطوات')}</span>`;
+  $('actTop').innerHTML=`<div style="border:2px solid #b9e6cb;border-radius:14px;padding:14px 16px;background:#f0fbf4">
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+      <div style="flex:1;min-width:180px"><div style="font-size:11px;color:#0a7d43;font-weight:700">المرحلة: ${esc(ACT_STAGE_LABEL[d.stage]||d.stage)}</div>
+      <div style="font-size:15px;font-weight:800;color:#2c3340">جاهزية ${d.readinessScore}%</div>${launch}</div>
+      <div style="flex:1;min-width:140px;height:10px;background:#dcefe3;border-radius:6px;overflow:hidden"><div style="width:${d.readinessScore}%;height:100%;background:#0a7d43"></div></div>
+    </div>
+    ${d.nextAction?`<div style="margin-top:8px;font-size:13px"><b>الخطوة الجاية:</b> ${esc(d.nextAction.label)} — ${esc(d.nextAction.nextAction)}
+    <button class="btn-create" style="margin-inline-start:8px;padding:4px 12px;font-size:12px;background:#0a7d43" onclick="$('actOverlay').style.display='none';goDeskRoute('${d.nextAction.route}')">${esc(d.nextAction.nextAction)} →</button></div>`:'<div style="margin-top:8px;color:#0a7d43;font-weight:700">كل الخطوات تمّت ✓</div>'}
+  </div>`;
+  const SECTS=[['setup','الإعداد'],['publish','النشر'],['first_signals','أول الإشارات'],['revenue_operations','تشغيل الإيراد']];
+  $('actSections').innerHTML=SECTS.map(([key,label])=>{
+    const steps=d.steps.filter(s=>s.section===key);
+    if(!steps.length) return '';
+    return `<div style="margin-bottom:14px"><div style="font-size:13px;font-weight:700;color:#2c3340;margin-bottom:6px">${esc(label)}</div>
+    ${steps.map(s=>`<div style="border:1px solid #e8e9ef;border-radius:11px;padding:9px 12px;margin-bottom:6px;background:#fff;display:flex;align-items:flex-start;gap:9px">
+      <span style="font-size:15px;color:${ACT_ST_COLOR[s.status]||'#8a93a3'};font-weight:800">${ACT_ST_ICON[s.status]||'○'}</span>
+      <div style="flex:1"><div style="font-size:13px;font-weight:700">${esc(s.label)}</div>
+        <div style="font-size:11px;color:#5b6472;margin-top:2px">${esc(s.evidence)}</div>
+        ${s.status!=='done'?`<button class="ai-btn" style="margin-top:6px;padding:3px 10px;font-size:11px" onclick="$('actOverlay').style.display='none';goDeskRoute('${s.route}')">${esc(s.nextAction)}</button>`:''}
+      </div>
+      <span style="font-size:9.5px;color:${ACT_ST_COLOR[s.status]||'#8a93a3'};font-weight:700;white-space:nowrap">${s.status==='done'?'تمّت':s.status==='blocked'?'محظورة':s.status==='ready'?'جاهزة':'لسه'}</span>
+    </div>`).join('')}</div>`;
+  }).join('');
+}
+const navActBtn=$('navActivation'); if(navActBtn) navActBtn.onclick=openActivation;
+async function loadDeskStrip(){
+  const fr=await api('/funnels'); const fid=(fr.ok&&fr.data[0])?fr.data[0].id:null;
+  if(!fid) return;
+  const r=await api(`/revenue-desk/summary?funnelId=${fid}`);
+  if(!r.ok||!r.data) return;
+  const strip=$('deskStrip'); if(!strip) return;
+  if(r.data.top){ $('dsTop').textContent=`${r.data.top.icon} ${r.data.top.title}`; $('dsWhy').textContent=r.data.top.whyRankedHere||''; }
+  else { $('dsTop').textContent='مفيش حاجة مستعجلة دلوقتي ✓'; $('dsWhy').textContent=''; }
+  const c=r.data.counts||{};
+  $('dsCounts').innerHTML=`<b style="font-size:15px;color:#2c3340">${c.total||0}</b> عنصر<br><span style="font-size:10px">${c.waitingApproval||0} موافقة · ${c.needsMeasurement||0} قياس</span>`;
+  strip.style.display='flex';
+}
+
+async function loadFunnels(){
+  const area = $('funnelsArea');
+  const r = await api('/funnels');
+  if(!r.ok){ area.innerHTML = emptyState(); return; }
+  const list = r.data || [];
+  if(list.length===0){ area.innerHTML = emptyState(); bindCreate(); return; }
+  // enrich with portfolio health metrics (best-effort)
+  let pm={};
+  try{ const p=await api('/portfolio'); if(p.ok)(p.data.funnels||[]).forEach(f=>pm[f.funnelId]=f); }catch{}
+  const hc=(h)=>h>=70?'#0a6a60':h>=40?'#a35200':'#b3253c';
+  area.innerHTML = '<div class="funnels">' + list.map(f=>{
+    const m=pm[f.id];
+    return `<div class="funnel" style="cursor:pointer" onclick="openFunnel('${f.id}')">
+      <div class="ic" ${m?`style="background:${hc(m.health)};color:#fff"`:''}>${m?m.health:'⟁'}</div>
+      <div class="body"><b>${escapeHtml(f.name)}</b>
+        <div class="meta">${f.channel||'whatsapp'} · ${fmtDate(f.created_at)}${m&&m.openLeaks?` · ${m.openLeaks} تسريب`:''}${m&&!m.published?' · مش منشورة':''}${m&&!m.hasTracking?' · بدون تتبّع':''}</div></div>
+      <div class="stat"><b>${m?m.leads:'—'}</b>عملاء</div>
+      <span class="tag ${f.status==='draft'?'draft':''}">${f.status==='draft'?'مسودة':'نشط'}</span>
+    </div>`;
+  }).join('') + '</div>';
+  refreshDashboard(list);
+  loadRhythmStrip();
+}
+async function loadRhythmStrip(){
+  const strip=$('rhythmStrip'); if(!strip)return;
+  const r=await api('/scheduled/status'); if(!r.ok)return;
+  const d=r.data; strip.style.display='flex';
+  $('rsLast').textContent='آخر تحديث: '+fmtAgo(d.lastDaily&&d.lastDaily.finished_at);
+  const attn=(d.staleInsights||0);
+  $('rsAttn').innerHTML=attn?`<span style="color:#a35200">· ${attn} ملاحظة محتاجة تحديث</span>`:(d.openInsights?`<span style="color:#0a6a60">· ${d.openInsights} ملاحظة محفظة مفتوحة</span>`:'');
+  // top revenue opportunity strip
+  const os=await api('/opportunities/summary');
+  const obox=$('oppStrip');
+  if(os.ok && os.data.open && obox){
+    obox.style.display='flex';
+    const t=os.data.top, v=os.data.value||{};
+    const valTxt=v.knownTotal!=null?`${Math.round(v.knownTotal)} ${v.currency} قيمة معروفة`:`${os.data.open} فرصة قابلة للتنفيذ`;
+    $('osTop').textContent=t?`أقرب فرصة: ${t.title}`:'';
+    $('osVal').textContent=valTxt;
+  } else if(obox){ obox.style.display='none'; }
+}
+function openFunnel(id){ localStorage.setItem('fnnlr_last_funnel', id); window.location.href='./funnel.html'; }
+
+async function refreshDashboard(list){
+  if(!list || !list.length) return;
+  let total=0, firstId=list[0].id;
+  for(const f of list.slice(0,5)){
+    const r=await api(`/funnels/${f.id}/leads/needing-action`);
+    if(r.ok) total+=r.data.count||0;
+  }
+  const leadsCard=document.querySelector('.card.leads');
+  if(leadsCard){
+    leadsCard.querySelector('.v').textContent=total;
+    leadsCard.querySelector('.sub').textContent= total>0 ? 'افتح القمع وتابعهم' : 'مفيش عملاء محتاجين تحرّك';
+    if(total>0){ leadsCard.style.cursor='pointer'; leadsCard.onclick=()=>openFunnel(firstId); }
+  }
+  const big=await api(`/funnels/${firstId}/leaks/biggest`);
+  if(big.ok && big.data.biggest){
+    const b=big.data.biggest;
+    const leakCard=document.querySelector('.card.leak');
+    if(leakCard){ leakCard.querySelector('.v').textContent=b.title;
+      leakCard.querySelector('.pill').textContent=b.lane; leakCard.style.cursor='pointer'; leakCard.onclick=()=>openFunnel(firstId); }
+  }
+  // Action Center + fastest-fix card from the top action
+  acFunnelId=firstId;
+  renderAcFilters();
+  loadActionCenter();
+  const top=await api(`/funnels/${firstId}/actions/top`);
+  if(top.ok && top.data.top){
+    const fixCard=document.querySelector('.card.fix');
+    if(fixCard){ fixCard.querySelector('.v').textContent=top.data.top.title;
+      fixCard.querySelector('.pill').textContent=top.data.top.recommended_action||'افتح الإجراء';
+      fixCard.style.cursor='pointer'; fixCard.onclick=()=>openFunnel(firstId); }
+  }
+}
+
+// ── Integrations ──
+const INT_CATS=[['whatsapp','واتساب','💬'],['payment','بوابات الدفع','▦'],['tracking','التتبّع','◎'],['webhook','Webhooks الخارجية','⇄']];
+let intData={providers:[],connections:[]};
+const navInt=$('navIntegrations'); if(navInt) navInt.onclick=openIntegrations;
+async function openIntegrations(){
+  $('intOverlay').style.display='block';
+  $('intCards').innerHTML='<div style="color:#8a93a3">… بنحمّل</div>';
+  const r=await api('/integrations'); if(!r.ok){ $('intCards').innerHTML='<div>تعذّر التحميل</div>'; return; }
+  intData=r.data; renderIntCards();
+}
+function connFor(provId){ return intData.connections.find(c=>c.provider===provId); }
+function renderIntCards(){
+  let h='';
+  for(const [cat,label,icon] of INT_CATS){
+    const provs=intData.providers.filter(p=>p.category===cat);
+    h+=`<div style="margin-bottom:18px"><div style="font-size:13px;font-weight:800;color:#5b6472;margin-bottom:8px">${icon} ${label}</div><div style="display:grid;gap:10px">`;
+    for(const p of provs){
+      const c=connFor(p.id);
+      const st=c?c.status:'not_connected';
+      const stColor=st==='connected'?'#0a6a60':st==='error'?'#b3253c':'#8a93a3';
+      const stLabel=st==='connected'?'متصل':st==='error'?'خطأ':st==='disabled'?'موقوف':'غير متصل';
+      h+=`<div style="background:#fff;border:1px solid #eef0f4;border-radius:14px;padding:14px">
+        <div style="display:flex;align-items:center;gap:10px">
+          <b style="font-size:14px;flex:1">${esc(p.label)}</b>
+          <span style="font-size:11px;font-weight:700;color:${stColor}">● ${stLabel}</span>
+        </div>
+        <div style="font-size:12.5px;color:#5b6472;margin:6px 0">${esc(p.unlocks)}</div>
+        ${c&&c.last_health_status?`<div style="font-size:11px;color:#8a93a3">آخر فحص: ${esc(c.last_health_status)}</div>`:''}
+        ${c&&c.last_error?`<div style="font-size:11px;color:#b3253c">آخر خطأ: ${esc(c.last_error)}</div>`:''}
+        <div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap">
+          ${c?`<button class="btn-create" style="padding:5px 11px;font-size:12px" onclick="intTest('${c.id}')">اختبار</button>
+              <button class="btn-create" style="padding:5px 11px;font-size:12px;background:#fff;color:#5b6472;border:1px solid #e3e7ee" onclick="intEvents('${c.id}')">الأحداث</button>
+              <button class="btn-create" style="padding:5px 11px;font-size:12px;background:#fff;color:#5b6472;border:1px solid #e3e7ee" onclick="intConfigure('${p.id}')">إعداد</button>
+              <button class="btn-create" style="padding:5px 11px;font-size:12px;background:#fff;color:#b3253c;border:1px solid #f0d9de" onclick="intDisconnect('${c.id}')">فصل</button>`
+            :`<button class="btn-create" style="padding:5px 11px;font-size:12px" onclick="intConfigure('${p.id}')">ربط</button>`}
+        </div>
+      </div>`;
+    }
+    h+='</div></div>';
+  }
+  $('intCards').innerHTML=h;
+}
+window.intConfigure=async(provId)=>{
+  const p=intData.providers.find(x=>x.id===provId); if(!p)return;
+  const fields=[...p.settingFields.map(f=>['setting',f]),...p.secretFields.map(f=>['secret',f])];
+  const vals={};
+  for(const [kind,f] of fields){
+    const v=prompt(`${p.label} — ${f}${kind==='secret'?' (سري، هيتشفّر)':''}`); 
+    if(v===null) return; if(v) vals[f]={kind,v};
+  }
+  const settings={},credentials={};
+  for(const [f,o] of Object.entries(vals)){ if(o.kind==='secret')credentials[f]=o.v; else settings[f]=o.v; }
+  const existing=connFor(provId);
+  let r;
+  if(existing) r=await api(`/integrations/${existing.id}`,{method:'PATCH',body:{credentials,settings}});
+  else r=await api('/integrations',{method:'POST',body:{provider:provId,credentials,settings}});
+  if(r.ok){ toast('اتحفظ ✓ (السر متشفّر)'); openIntegrations(); } else toast('تعذّر الحفظ');
+};
+window.intTest=async(id)=>{ const r=await api(`/integrations/${id}/test`,{method:'POST'}); 
+  if(r.ok){ toast('الحالة: '+(r.data.status||(r.data.signature?'التوقيع جاهز':'تم'))); openIntegrations(); } else toast('تعذّر الاختبار'); };
+window.intDisconnect=async(id)=>{ await api(`/integrations/${id}`,{method:'DELETE'}); toast('اتفصل'); openIntegrations(); };
+window.intEvents=async(id)=>{
+  const r=await api(`/integrations/${id}/events`); if(!r.ok)return;
+  const ev=r.data;
+  const ST={received:'وصل',mapped:'متفهّم',applied:'اتطبّق',unmatched:'غير مطابق',error:'خطأ'};
+  const STC={applied:'#0a6a60',unmatched:'#a35200',error:'#b3253c'};
+  alert(ev.length? ev.slice(0,12).map(e=>`• ${e.provider} — ${e.mapped_event_type||e.event_type||'حدث'} [${ST[e.processed_status]||e.processed_status}]`).join('\n') : 'مفيش أحداث لسه');
+};
+
+// ── Revenue Playbooks (Sprint 20) ──
+const navPb=$('navPlaybooks'); if(navPb) navPb.onclick=openPlaybooks;
+const PB_AR={funnel:'القمع',offer:'العرض',page:'الصفحة',whatsapp:'واتساب',payment:'الدفع',followup:'المتابعة'};
+const PB_CONF={low:['#a35200','منخفضة'],medium:['#0a6a60','متوسطة'],high:['#6b4ee6','عالية']};
+async function openPlaybooks(){ $('pbOverlay').style.display='block'; loadPlaybooks(); }
+async function loadPlaybooks(){
+  const box=$('pbCards'); if(!box)return;
+  // application outcomes summary line (Sprint 22)
+  const sum=await api('/playbook-application-summary');
+  let sumHtml='';
+  if(sum.ok && sum.data.applications){
+    const s=sum.data.summary||{};
+    sumHtml=`<div style="border:1px solid #e3dcfb;border-radius:12px;padding:11px 13px;margin-bottom:12px;background:#faf8ff;font-size:12.5px;color:#5b4ba8">
+      تطبيقات playbook: <b>${sum.data.applications}</b> · نتائج مقاسة: <b>${sum.data.outcomes}</b>
+      ${s.improved?` · تحسّن: ${s.improved}`:''}${s.no_change?` · مفيش تغيّر: ${s.no_change}`:''}${(s.awaiting_data||s.early_signal)?` · مستني بيانات: ${(s.awaiting_data||0)+(s.early_signal||0)}`:''}
+      <div style="font-size:11px;color:#8a93a3;margin-top:3px">النتايج بتتقاس من البيانات المرصودة فقط.</div>
+    </div>`;
+  }
+  const r=await api('/playbooks');
+  if(!r.ok){ box.innerHTML=sumHtml+'<p style="font-size:13px">تعذّر التحميل</p>'; return; }
+  if(!r.data.length){ box.innerHTML=sumHtml+'<p style="color:#8a93a3;font-size:13px">لسه مفيش playbooks — اضغط «حدّث من التعلّم» بعد ما تتقاس إصلاحات.</p>'; return; }
+  const byKey={}; r.data.forEach(p=>{ const k=p.playbook_type; if(!byKey[k]||p.scope==='market') byKey[k]=p; });
+  box.innerHTML=sumHtml+Object.values(byKey).map(p=>{
+    const rec=p.recommendation||{}; const ev=p.evidence_summary||{};
+    const cc=PB_CONF[p.confidence]||PB_CONF.low;
+    const limited=(ev.decidedCount==null||ev.decidedCount<3);
+    return `<div style="border:1px solid #e8e9ef;border-radius:14px;padding:14px;margin-bottom:10px;background:#fff">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+        <b style="font-size:14px;flex:1">دليل ${PB_AR[p.playbook_type]||p.playbook_type}</b>
+        ${p.scope==='market'&&p.market?`<span style="font-size:10.5px;color:#8a93a3">سوق: ${esc(p.market)}</span>`:''}
+        <span style="font-size:11px;font-weight:700;color:${cc[0]}">ثقة ${cc[1]}</span>
+      </div>
+      <div style="font-size:12.5px;color:#5b6472;margin-bottom:6px">${esc(rec.summary||'')}</div>
+      <div style="font-size:11.5px;color:#8a93a3;margin-bottom:6px">عينة: ${ev.sampleSize??0} · محسوم: ${ev.decidedCount??0}${ev.successRate!=null?` · نجاح: ${Math.round(ev.successRate*100)}%`:''}</div>
+      ${(rec.adjustments||[]).slice(0,4).map(a=>`<div style="font-size:12.5px;color:#2c3340">• ${esc(a)}</div>`).join('')}
+      <div style="font-size:11.5px;color:${limited?'#a35200':'#0a6a60'};margin-top:7px;border-top:1px solid #f0f1f5;padding-top:6px">${esc(rec.note||'')}</div>
+    </div>`;
+  }).join('');
+}
+window.pbRegenerate=async()=>{
+  const box=$('pbCards'); if(box)box.innerHTML='<p style="color:#8a93a3;font-size:13px">… بنحدّث من التعلّم</p>';
+  await api('/playbooks/regenerate',{method:'POST',body:{}});
+  toast('اتحدّثت الأدلة من التعلّم ✓');
+  loadPlaybooks();
+};
+
+// ── Portfolio Intelligence (Sprint 23) ──
+const navPo=$('navPortfolio'); if(navPo) navPo.onclick=openPortfolio;
+const PO_INS_AR={strongest_funnel:'الأقوى',weakest_funnel:'الأضعف',transferable_playbook:'playbook قابل للنقل',underperforming_page:'صفحة ضعيفة',payment_friction:'احتكاك دفع',missing_tracking:'تتبّع ناقص',offer_angle:'زاوية عرض',pending_measurement:'نتيجة مستنية',insufficient_data:'بيانات غير كافية'};
+const PO_CONF={low:['#a35200','منخفضة'],medium:['#0a6a60','متوسطة'],high:['#6b4ee6','عالية']};
+async function openPortfolio(){ $('poOverlay').style.display='block'; loadPortfolio(); }
+if(new URLSearchParams(location.search).get('portfolio')==='1'){ setTimeout(openPortfolio, 300); }
+function healthColor(h){ return h>=70?'#0a6a60':h>=40?'#a35200':'#b3253c'; }
+async function loadPortfolio(){
+  const box=$('poCards'); if(!box)return;
+  const r=await api('/portfolio');
+  if(!r.ok){ box.innerHTML='<p style="font-size:13px">تعذّر التحميل</p>'; return; }
+  const funnels=r.data.funnels||[];
+  if(!funnels.length){ box.innerHTML='<p style="color:#8a93a3;font-size:13px">مفيش قمعات لسه.</p>'; return; }
+  box.innerHTML='<div style="display:grid;gap:10px">'+funnels.map(f=>`
+    <div style="border:1px solid #e8e9ef;border-radius:12px;padding:12px;background:#fff;display:flex;align-items:center;gap:12px">
+      <div style="width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;color:#fff;background:${healthColor(f.health)}">${f.health}</div>
+      <div style="flex:1">
+        <div style="font-weight:700;font-size:13.5px">${esc(f.name)}</div>
+        <div style="font-size:11.5px;color:#8a93a3;margin-top:2px">${f.leads} عميل · ${f.openLeaks} تسريب · ${f.pageViews} زيارة · ${f.paid} دفعوا</div>
+      </div>
+      <div style="display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end">
+        ${f.published?'':'<span style="font-size:10px;color:#b3253c;background:#f7dde1;border-radius:6px;padding:1px 6px">مش منشورة</span>'}
+        ${f.hasTracking?'':'<span style="font-size:10px;color:#a35200;background:#ffe9cc;border-radius:6px;padding:1px 6px">بدون تتبّع</span>'}
+        ${f.improvedOutcomes?`<span style="font-size:10px;color:#0a6a60;background:#d6f5ee;border-radius:6px;padding:1px 6px">${f.improvedOutcomes} تحسّن</span>`:''}
+      </div>
+    </div>`).join('')+'</div>';
+  loadInsights();
+}
+async function loadInsights(){
+  const el=$('poInsights'); if(!el)return;
+  const r=await api('/portfolio/insights'); if(!r.ok)return;
+  if(!r.data.length){ el.innerHTML='<p style="color:#8a93a3;font-size:12.5px">اضغط «حلّل المحفظة» لاستخراج الملاحظات.</p>'; return; }
+  el.innerHTML='<h3 style="font-size:14px;margin:0 0 8px">ملاحظات عبر القمعات</h3>'+r.data.map(i=>{
+    const cc=PO_CONF[i.confidence]||PO_CONF.low; const ev=i.evidence||{};
+    const transfer=i.insight_type==='transferable_playbook'&&ev.target&&ev.playbookType;
+    return `<div style="border:1px solid #e8e9ef;border-radius:12px;padding:12px;margin-bottom:9px;background:#fff">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:3px">
+        <span style="font-size:10.5px;background:var(--paper,#f0f1f5);border-radius:6px;padding:1px 7px;color:#5b6472">${PO_INS_AR[i.insight_type]||i.insight_type}</span>
+        <b style="font-size:13px;flex:1">${esc(i.title)}</b>
+        <span style="font-size:10.5px;font-weight:700;color:${cc[0]}">ثقة ${cc[1]}</span>
+      </div>
+      <div style="font-size:12px;color:#5b6472">${esc(i.explanation||'')}</div>
+      <div style="display:flex;gap:6px;margin-top:8px">
+        ${transfer?`<button class="btn-create" style="padding:4px 11px;font-size:12px" onclick="poTransfer('${ev.target}','${ev.playbookType}')">اعمل خطة نقل</button>`:''}
+        <button class="btn-create" style="padding:4px 11px;font-size:12px;background:#fff;color:#5b6472;border:1px solid #e3e7ee" onclick="poIgnore('${i.id}')">تجاهل</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+window.poAnalyze=async()=>{
+  const el=$('poInsights'); if(el)el.innerHTML='<p style="color:#8a93a3;font-size:12.5px">… بنحلّل</p>';
+  await api('/portfolio/analyze',{method:'POST',body:{}});
+  toast('اتحلّلت المحفظة ✓');
+  loadInsights();
+};
+window.poIgnore=async(id)=>{ await api(`/portfolio/insights/${id}`,{method:'PATCH',body:{status:'ignored'}}); toast('اتجاهلت'); loadInsights(); };
+window.poTransfer=async(targetFunnelId,playbookType)=>{
+  const r=await api('/portfolio/transfer-playbook-plan',{method:'POST',body:{targetFunnelId,playbookType}});
+  if(r.ok && r.data.applicationPlanId){ toast('اتعملت خطة نقل — افتح القمع المستهدف لمراجعتها ✓'); }
+  else if(r.ok && r.data.noChanges){ toast('القمع المستهدف متوافق بالفعل'); }
+  else toast('تعذّر إنشاء خطة النقل');
+};
+
+// ── Operating Rhythm (Sprint 24) ──
+const navRh=$('navRhythm'); if(navRh) navRh.onclick=openRhythm;
+const JOB_AR={daily_business_refresh:'تحديث يومي',weekly_business_report:'تقرير أسبوعي',portfolio_analysis_refresh:'تحليل المحفظة',repair_outcome_due_check:'فحص إصلاحات مستحقة',playbook_application_outcome_due_check:'فحص تطبيقات مستحقة',action_center_refresh:'تحديث الإجراءات',stale_data_check:'فحص البيانات القديمة'};
+const RUN_STC={completed:'#0a6a60',running:'#a35200',failed:'#b3253c',skipped:'#8a93a3',pending:'#8a93a3'};
+const RUN_ST={completed:'تمّ',running:'بيشتغل',failed:'فشل',skipped:'اتجاهل',pending:'منتظر'};
+async function openRhythm(){ $('rhOverlay').style.display='block'; loadRhythmStatus(); loadRuns(); }
+function fmtAgo(ts){ if(!ts)return 'لسه ماتعملش'; const h=Math.round((Date.now()-new Date(ts).getTime())/3600000); return h<1?'من شوية':h<24?`من ${h} ساعة`:`من ${Math.round(h/24)} يوم`; }
+async function loadRhythmStatus(){
+  const el=$('rhStatus'); if(!el)return;
+  const r=await api('/scheduled/status'); if(!r.ok){ el.innerHTML=''; return; }
+  const d=r.data;
+  el.innerHTML=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+    ${stTile('آخر تحديث يومي',fmtAgo(d.lastDaily&&d.lastDaily.finished_at))}
+    ${stTile('آخر تقرير أسبوعي',fmtAgo(d.lastWeekly&&d.lastWeekly.finished_at))}
+    ${stTile('ملاحظات محفظة مفتوحة',String(d.openInsights||0))}
+    ${stTile('ملاحظات قديمة',String(d.staleInsights||0),d.staleInsights?'#a35200':null)}
+  </div>`;
+}
+function stTile(label,val,color){ return `<div style="border:1px solid #e8e9ef;border-radius:11px;padding:10px 12px;background:#fff">
+  <div style="font-size:11px;color:#8a93a3">${label}</div><div style="font-size:14px;font-weight:700;margin-top:2px;color:${color||'#2c3340'}">${val}</div></div>`; }
+window.rhRun=async(job)=>{
+  const el=$('rhResult'); if(el)el.innerHTML='<div style="color:#8a93a3;font-size:13px">… بنشغّل (آمن وidempotent)</div>';
+  const map={daily:'daily-refresh',weekly:'weekly-report',portfolio:'portfolio-refresh',outcomes:'outcomes-due-check'};
+  const r=await api(`/scheduled/${map[job]}`,{method:'POST',body:{}});
+  if(!r.ok){ if(el)el.innerHTML='<div style="font-size:13px">تعذّر التشغيل</div>'; return; }
+  const d=r.data;
+  if(job==='daily'){ const s=d.summary||{};
+    el.innerHTML=`<div style="border:1px solid #cdbff5;border-radius:12px;padding:13px;background:#faf8ff;font-size:12.5px">
+      ${d.alreadyDone?'<b>التحديث اتعمل قبل كده النهاردة (idempotent).</b><br>':''}
+      قمعات: <b>${s.funnelsChecked||0}</b> · تسريبات جديدة: <b>${s.newLeaks||0}</b> · إجراءات: <b>${s.actionsCreated||0}</b><br>
+      محتاج قياس: <b>${(s.repairsDue||0)+(s.applicationsDue||0)}</b> · ملاحظات محفظة: <b>${s.portfolioInsights||0}</b> · اتجاهل لقلة بيانات: <b>${s.skipped||0}</b>
+    </div>`;
+  } else if(job==='weekly'){ const s=d.summary||{};
+    const top=(s.topFunnels||[]).map(f=>`• ${esc(f.name)} (${f.health})`).join('<br>');
+    el.innerHTML=`<div style="border:1px solid #cdbff5;border-radius:12px;padding:13px;background:#faf8ff;font-size:12.5px">
+      ${d.alreadyDone?'<b>التقرير اتعمل قبل كده الأسبوع ده.</b><br>':''}
+      قمعات: <b>${s.funnels||0}</b><br>الأقوى:<br>${top||'—'}
+      ${(s.needingAttention||[]).length?`<br>محتاجة انتباه: ${s.needingAttention.map(esc).join('، ')}`:''}
+    </div>`;
+  } else if(job==='outcomes'){
+    el.innerHTML=`<div style="border:1px solid #e8e9ef;border-radius:12px;padding:13px;background:#fff;font-size:12.5px">
+      إصلاحات مستحقة القياس: <b>${(d.repairs&&d.repairs.due)||0}</b> · تطبيقات playbook مستحقة: <b>${(d.applications&&d.applications.due)||0}</b>
+      <div style="color:#8a93a3;font-size:11px;margin-top:4px">بنقيس بس لما الوقت/البيانات تكفي.</div></div>`;
+  } else {
+    el.innerHTML=`<div style="border:1px solid #e8e9ef;border-radius:12px;padding:13px;background:#fff;font-size:12.5px">ملاحظات: <b>${d.insights||0}</b> · نقل ممكن: <b>${d.transfers||0}</b></div>`;
+  }
+  toast('اتنفّذ ✓'); loadRhythmStatus(); loadRuns();
+};
+async function loadRuns(){
+  const el=$('rhRuns'); if(!el)return;
+  const r=await api('/scheduled/runs'); if(!r.ok){ el.innerHTML=''; return; }
+  if(!r.data.length){ el.innerHTML='<p style="color:#8a93a3;font-size:12.5px">لسه مفيش تشغيلات.</p>'; return; }
+  el.innerHTML=r.data.slice(0,12).map(run=>`<div style="display:flex;align-items:center;gap:8px;padding:8px 10px;border:1px solid #eef0f4;border-radius:9px;margin-bottom:6px">
+    <span style="font-size:12.5px;flex:1">${JOB_AR[run.job_type]||run.job_type}</span>
+    <span style="font-size:10.5px;color:#8a93a3">${fmtAgo(run.finished_at||run.created_at)}</span>
+    <span style="font-size:10.5px;font-weight:700;color:${RUN_STC[run.status]||'#8a93a3'}">${RUN_ST[run.status]||run.status}</span>
+  </div>`).join('');
+}
+if(new URLSearchParams(location.search).get('rhythm')==='1'){ setTimeout(openRhythm, 300); }
+
+// ── Revenue Opportunities (Sprint 25) ──
+const navOp=$('navOpps'); if(navOp) navOp.onclick=openOpportunities;
+const navDeskBtn=$('navDesk'); if(navDeskBtn) navDeskBtn.onclick=openRevenueDesk;
+const SEV_COLOR={critical:'#b3253c',high:'#a35200',medium:'#5b4ba8',low:'#5b6472',info:'#8a93a3'};
+let deskFunnelId=null;
+async function openRevenueDesk(){
+  $('deskOverlay').style.display='block';
+  const fr=await api('/funnels'); deskFunnelId=(fr.ok&&fr.data[0])?fr.data[0].id:null;
+  if(!deskFunnelId){ $('deskSections').innerHTML='<p style="color:#8a93a3;font-size:13px">اعمل قمع الأول.</p>'; $('deskTop').innerHTML=''; return; }
+  const r=await api(`/revenue-desk?funnelId=${deskFunnelId}`);
+  if(!r.ok){ $('deskSections').innerHTML='<p style="color:#8a93a3;font-size:13px">تعذّر التحميل.</p>'; return; }
+  const d=r.data;
+  // activation mode banner: before any real signal, the desk shows setup steps, not opportunities
+  const actBanner=d.activationMode?`<div style="border:1px solid #b9e6cb;background:#f0fbf4;border-radius:12px;padding:11px 14px;margin-bottom:12px;font-size:12.5px;color:#0a7d43">
+    🚀 <b>وضع التفعيل (ده طبيعي):</b> مفيش فرص لسه لأن مفيش نشاط حقيقي مرصود — وده مظبوط، مش عطل. المكتب بيعرض خطوات التفعيل بدل فرص وهمية. أول ما توصل إشارة حقيقية هيتحوّل لوضع التشغيل تلقائيًا. <a href="#" onclick="$('deskOverlay').style.display='none';openActivation();return false;" style="color:#0a7d43;font-weight:700">كمّل التفعيل →</a>
+  </div>`:'';
+  $('deskTop').innerHTML=actBanner;
+  // top item
+  if(d.topItem){ const t=d.topItem; $('deskTop').innerHTML=actBanner+`<div style="border:2px solid #cdbff5;border-radius:14px;padding:14px 16px;background:#faf8ff">
+    <div style="font-size:11px;color:#5b4ba8;font-weight:700;margin-bottom:3px">${d.activationMode?'أول خطوة دلوقتي':'أهم حاجة دلوقتي'}</div>
+    <div style="display:flex;align-items:center;gap:8px"><span style="font-size:20px">${t.icon}</span><b style="font-size:15px;flex:1">${esc(t.title)}</b><span style="font-size:10.5px;color:${SEV_COLOR[t.severity]||'#5b6472'};font-weight:700">${esc(t.label)}</span></div>
+    <div style="font-size:12px;color:#5b6472;margin-top:4px">${esc(t.whyRankedHere)}</div>
+    <button class="btn-create" style="margin-top:8px;padding:6px 14px;font-size:12.5px" onclick="$('deskOverlay').style.display='none';goDeskRoute('${t.route}')">${esc(t.primaryAction)} →</button>
+  </div>`; } else $('deskTop').innerHTML=actBanner;
+  // sections
+  if(!d.sections.length){ $('deskSections').innerHTML='<p style="color:#0a6a60;font-size:13px">مكتب الإيراد فاضي — مفيش حاجة مستعجلة دلوقتي ✓</p>'; return; }
+  $('deskSections').innerHTML=d.sections.map(sec=>`<div style="margin-bottom:16px">
+    <div style="font-size:13px;font-weight:700;color:#2c3340;margin-bottom:6px">${esc(sec.label)} <span style="color:#8a93a3;font-weight:400">(${sec.items.length})</span></div>
+    ${sec.items.map(it=>`<div style="border:1px solid #e8e9ef;border-radius:11px;padding:10px 12px;margin-bottom:6px;background:#fff;display:flex;align-items:flex-start;gap:9px">
+      <span style="font-size:17px">${it.icon}</span>
+      <div style="flex:1">
+        <div style="display:flex;align-items:center;gap:7px"><b style="font-size:13px;flex:1">${esc(it.title)}</b>
+          <span style="font-size:9.5px;color:${SEV_COLOR[it.severity]||'#5b6472'};font-weight:700;white-space:nowrap">${esc(it.label)}</span>
+          ${it.value?`<span style="font-size:12px;font-weight:800">${Math.round(it.value)}</span>`:''}
+        </div>
+        ${it.explanation?`<div style="font-size:11.5px;color:#5b6472;margin-top:2px">${esc(it.explanation)}</div>`:''}
+        <div style="font-size:10.5px;color:#8a93a3;margin-top:2px">${esc(it.whyRankedHere)}${it.requiresApproval?' · يحتاج موافقتك':''}</div>
+        <button class="ai-btn" style="margin-top:6px;padding:3px 10px;font-size:11px" onclick="$('deskOverlay').style.display='none';goDeskRoute('${it.route}')">${esc(it.primaryAction)}</button>
+      </div>
+    </div>`).join('')}
+  </div>`).join('');
+}
+function goDeskRoute(route){
+  if(route==='activation'){ openActivation(); return; }
+  if(route==='dashboard'){ window.scrollTo(0,0); return; }
+  if(route==='revenue-desk'||route==='desk'){ openRevenueDesk(); return; }
+  if(route==='opportunities'||route==='recommendations') return openOpportunities();
+  if(route==='funnel'){ const fid=actFunnelId||deskFunnelId; if(fid){ localStorage.setItem('fnnlr_last_funnel',fid); window.location.href='./funnel.html'; } return; }
+  if(route==='leaks'){ const b=[...document.querySelectorAll('.nav-item')].find(x=>x.textContent.includes('التسريبات')); if(b) b.click(); return; }
+  if(route==='playbooks'){ if($('navPlaybooks')) $('navPlaybooks').click(); return; }
+  if(route==='portfolio'){ if($('navPortfolio')) $('navPortfolio').click(); return; }
+  if(route==='rhythm'){ if($('navRhythm')) $('navRhythm').click(); return; }
+  if(route==='pipeline'){ const b=[...document.querySelectorAll('.nav-item')].find(x=>x.textContent.includes('العملاء')); if(b) b.click(); return; }
+}
+let opFunnelId=null, opFilter='all';
+const OP_TYPE_AR={waiting_payment_recovery:'استرجاع دفع',proof_review:'مراجعة إثبات',access_delivery:'تسليم',whatsapp_first_reply:'أول ردّ واتساب',followup_reactivation:'إعادة تنشيط',leak_repair:'إصلاح تسريب',playbook_application:'تطبيق playbook',payment_method_fix:'إصلاح طريقة دفع',page_cta_fix:'إصلاح CTA',high_intent_lead:'عميل نيّته عالية'};
+const OP_URG={low:['#8a93a3','منخفضة'],medium:['#0a6a60','متوسطة'],high:['#a35200','عالية'],critical:['#b3253c','حرِجة']};
+const OP_FILTERS=[['all','الكل'],['payment','الدفع'],['whatsapp','واتساب'],['followup','متابعة'],['leaks','تسريبات'],['playbooks','playbooks'],['high_value','قيمة معروفة'],['urgent','عاجل']];
+async function openOpportunities(){
+  $('opOverlay').style.display='block';
+  // pick first funnel as context
+  const fr=await api('/funnels'); opFunnelId=(fr.ok&&fr.data[0])?fr.data[0].id:null;
+  if(!opFunnelId){ $('opCards').innerHTML='<p style="color:#8a93a3;font-size:13px">اعمل قمع الأول.</p>'; return; }
+  await api(`/funnels/${opFunnelId}/opportunities/refresh`,{method:'POST',body:{}});
+  renderOpFilters(); loadOpSummary(); loadOpps(); loadAttrInsights(); loadBestActions();
+}
+function renderOpFilters(){
+  $('opFilters').innerHTML=OP_FILTERS.map(([k,l])=>`<button class="ai-btn" style="padding:5px 12px;font-size:12px;${opFilter===k?'background:var(--violet,#6b4ee6);color:#fff;border-color:var(--violet,#6b4ee6)':''}" onclick="setOpFilter('${k}')">${l}</button>`).join('');
+}
+window.setOpFilter=(k)=>{ opFilter=k; renderOpFilters(); loadOpps(); };
+async function loadOpSummary(){
+  const el=$('opSummary'); if(!el)return;
+  const r=await api('/opportunities/summary'); if(!r.ok){ el.innerHTML=''; return; }
+  const d=r.data, v=d.value||{};
+  const oc=await api('/opportunities/outcomes/summary');
+  let ocLine='';
+  if(oc.ok && oc.data.summary){ const s=oc.data.summary; const cv=oc.data.knownValueCaptured;
+    ocLine=`<div style="font-size:12px;color:#5b6472;margin-top:6px;border-top:1px solid #e9e4fb;padding-top:6px">النتايج: اتحصّل <b>${s.captured||0}</b> · ضاع <b>${s.missed||0}</b> · انتهى <b>${s.expired||0}</b> · مستني دليل <b>${s.awaiting_evidence||0}</b>${cv!=null?` · قيمة معروفة اتحصّلت: <b>${Math.round(cv)}</b>`:''}</div>`;
+  }
+  const valTxt=v.knownTotal!=null?`قيمة معروفة: <b>${Math.round(v.knownTotal)} ${v.currency}</b> <span style="color:#8a93a3">(من ${v.withValue} فرصة · ${v.withoutValue} من غير قيمة)</span>`:`<b>${d.open}</b> فرصة قابلة للتنفيذ <span style="color:#8a93a3">(من غير قيمة صفقة معروفة)</span>`;
+  el.innerHTML=`<div style="border:1px solid #cdbff5;border-radius:12px;padding:12px 14px;background:#faf8ff;font-size:13px;color:#5b4ba8">
+    ${valTxt}${d.capturedThisWeek?` · اتحصّل الأسبوع ده: <b>${d.capturedThisWeek}</b>`:''}${ocLine}</div>`;
+}
+async function loadOpps(){
+  const box=$('opCards'); if(!box||!opFunnelId)return;
+  const r=await api(`/funnels/${opFunnelId}/opportunities?filter=${opFilter}`);
+  if(!r.ok){ box.innerHTML='<p style="font-size:13px">تعذّر التحميل</p>'; return; }
+  if(!r.data.length){ box.innerHTML='<p style="color:#8a93a3;font-size:13px">مفيش فرص في الفلتر ده دلوقتي.</p>'; return; }
+  box.innerHTML=r.data.map(o=>{
+    const u=OP_URG[o.urgency]||OP_URG.low;
+    const ev=o.evidence&&typeof o.evidence==='object'?o.evidence:{};
+    const reasons=(ev.scoreReasons||[]).join('، ');
+    const learnNote=ev.learningNote?`<div style="font-size:11px;color:#6b4ee6;margin-top:4px">📊 ${esc(ev.learningNote)}</div>`:'';
+    const attrNote=ev.attributionNote?`<div style="font-size:11px;color:#0a6a60;margin-top:3px">🎯 ${esc(ev.attributionNote)}</div>`:'';
+    const attrSlot=o.last_outcome_status==='captured'?`<div id="attr_${o.id}" style="font-size:11.5px;color:#5b6472;margin-top:6px;border-top:1px dashed #e8e9ef;padding-top:6px">… بنحمّل سبب التحصيل</div>`:'';
+    const OUT_AR={captured:['#0a6a60','اتحصّلت'],missed:['#b3253c','ضاعت'],expired:['#8a93a3','انتهت'],awaiting_evidence:['#a35200','مستنية دليل'],inconclusive:['#8a93a3','غير حاسمة']};
+    const outB=o.last_outcome_status&&OUT_AR[o.last_outcome_status];
+    const outLine=outB?`<span style="font-size:10.5px;font-weight:700;color:${outB[0]}">${outB[1]}</span>`:'';
+    const val=o.estimated_value!=null?`<div style="font-size:12px;color:#0a6a60;margin-top:3px">قيمة تقديرية: <b>${Math.round(Number(o.estimated_value))} ${o.value_currency}</b> <span style="color:#8a93a3">(estimated from observed deal value)</span></div>`:'';
+    return `<div style="border:1px solid #e8e9ef;border-radius:13px;padding:14px;margin-bottom:10px;background:#fff">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:3px">
+        <span style="font-size:10.5px;background:#f0f1f5;border-radius:6px;padding:1px 7px;color:#5b6472">${OP_TYPE_AR[o.opportunity_type]||o.opportunity_type}</span>
+        <b style="font-size:14px;flex:1">${esc(o.title)}</b>
+        ${outLine}
+        <span style="font-size:11px;font-weight:700;color:${u[0]}">${u[1]}</span>
+        <span style="font-size:13px;font-weight:800;color:#2c3340">${o.priority_score}</span>
+      </div>
+      <div style="font-size:12.5px;color:#5b6472">${esc(o.explanation||'')}</div>
+      ${val}
+      ${reasons?`<div style="font-size:11px;color:#8a93a3;margin-top:4px">ليه الأولوية دي: ${esc(reasons)}</div>`:''}
+      ${learnNote}
+      ${attrNote}
+      ${attrSlot}
+      <div style="display:flex;gap:6px;margin-top:9px;flex-wrap:wrap">
+        <button class="btn-create" style="padding:5px 12px;font-size:12px" onclick="opTask('${o.id}')">اعمل مهمة</button>
+        <button class="ai-btn" style="padding:5px 12px;font-size:12px" onclick="opCheck('${o.id}')">📊 قيس النتيجة</button>
+        <button class="ai-btn" style="padding:5px 12px;font-size:12px" onclick="opCapture('${o.id}')">اتحصّلت</button>
+        <button class="ai-btn" style="padding:5px 12px;font-size:12px" onclick="opMiss('${o.id}')">ضاعت</button>
+        <button class="ai-btn" style="padding:5px 12px;font-size:12px;color:#8a93a3" onclick="opMark('${o.id}','dismissed')">تجاهل</button>
+      </div>
+    </div>`;
+  }).join('');
+  for(const o of r.data){ if(o.last_outcome_status==='captured') loadAttribution(o.id); }
+}
+const ATTR_ACTION_AR={task_completed:'إكمال مهمة',whatsapp_reply_marked_sent:'إرسال ردّ واتساب',payment_reminder_drafted:'تذكير دفع',proof_review_task:'مراجعة إثبات',access_delivery_task:'مهمة تسليم',repair_plan_applied:'تطبيق إصلاح',playbook_application_applied:'تطبيق playbook',command_applied:'أمر Command Bar',scheduled_action:'إجراء مجدوَل',page_section_updated:'تعديل الصفحة',offer_updated:'تعديل العرض',unknown:'غير معروف'};
+const ATTR_STR={strong:['#0a6a60','قوي'],medium:['#a35200','متوسط'],weak:['#8a93a3','ضعيف'],none:['#8a93a3','مفيش']};
+async function loadAttribution(id){
+  const slot=$(`attr_${id}`); if(!slot)return;
+  const r=await api(`/opportunities/${id}/attribution`);
+  if(!r.ok||!r.data||!r.data.attributed_action_type){ slot.innerHTML='<span style="color:#8a93a3">مفيش نَسب محسوب — اضغط «قيس النتيجة» لتشغيله.</span>'; return; }
+  const a=r.data, st=ATTR_STR[a.attribution_strength]||ATTR_STR.none;
+  slot.innerHTML=`<b style="color:#2c3340">ما الذي ساعد في التحصيل؟</b> ${esc(a.explanation||'')}
+    <span style="display:inline-block;margin-top:2px">الإجراء: <b>${ATTR_ACTION_AR[a.attributed_action_type]||a.attributed_action_type}</b> · قوة النَسب: <b style="color:${st[0]}">${st[1]}</b></span>`;
+}
+const REC_TYPE_AR={create_task:'اعمل مهمة',draft_whatsapp_reply:'اكتب ردّ واتساب',draft_payment_reminder:'اكتب تذكير دفع',review_proof:'راجِع إثبات',deliver_access:'سلّم الوصول',build_repair_plan:'ابنِ خطة إصلاح',apply_playbook:'طبّق playbook',update_page_cta:'حسّن CTA',improve_payment_instructions:'حسّن تعليمات الدفع',mark_needs_followup:'علّم للمتابعة',open_filtered_view:'افتح القائمة'};
+const REC_CONF={high:['#0a6a60','عالية'],medium:['#a35200','متوسطة'],low:['#8a93a3','منخفضة']};
+const REC_SRC_AR={attribution:'تعلّم النَسب',heuristic:'المرحلة والإلحاح',mixed:'مختلط',opportunity_outcomes:'نتائج الفرص',repair_outcomes:'نتائج الإصلاح',playbook_outcomes:'نتائج التطبيق'};
+async function loadBestActions(){
+  const el=$('opBestActions'); if(!el||!opFunnelId)return;
+  await api('/recommendations/refresh',{method:'POST',body:{funnelId:opFunnelId}});
+  const r=await api(`/recommendations?funnelId=${opFunnelId}&filter=all_active`);
+  if(!r.ok||!r.data.length){ el.innerHTML=''; return; }
+  const rows=r.data.slice(0,5).map(rc=>{
+    const cf=REC_CONF[rc.confidence]||REC_CONF.low;
+    const ev=rc.evidence&&typeof rc.evidence==='object'?rc.evidence:{};
+    const recLearn=ev.recLearningNote?`<div style="font-size:10.5px;color:#6b4ee6;margin-top:2px">📊 ${esc(ev.recLearningNote)}</div>`:'';
+    const OUT_AR={worked:['#0a6a60','اشتغلت'],no_result:['#b3253c','مفيش نتيجة'],early_signal:['#a35200','إشارة مبكرة'],awaiting_evidence:['#a35200','مستنية دليل'],failed:['#b3253c','فشلت'],dismissed:['#8a93a3','اتجاهلت'],inconclusive:['#8a93a3','غير حاسمة']};
+    const ob=rc.last_outcome_status&&OUT_AR[rc.last_outcome_status];
+    const outBadge=ob?`<span style="font-size:10px;font-weight:700;color:${ob[0]}">${ob[1]}</span>`:'';
+    const applied=rc.status==='applied'||rc.applied_at;
+    const outBtns=applied?`
+        <button class="ai-btn" style="padding:4px 11px;font-size:11.5px" onclick="recCheck('${rc.id}')">📊 قيس النتيجة</button>
+        <button class="ai-btn" style="padding:4px 11px;font-size:11.5px" onclick="recWorked('${rc.id}')">اشتغلت</button>
+        <button class="ai-btn" style="padding:4px 11px;font-size:11.5px" onclick="recNoResult('${rc.id}')">مفيش نتيجة</button>`:'';
+    return `<div style="border:1px solid #e8e9ef;border-radius:11px;padding:10px 12px;margin-bottom:7px;background:#fff">
+      <div style="display:flex;align-items:center;gap:8px">
+        <b style="font-size:13px;flex:1">${REC_TYPE_AR[rc.recommendation_type]||rc.title}</b>
+        ${outBadge}
+        <span style="font-size:10.5px;font-weight:700;color:${cf[0]}">ثقة ${cf[1]}</span>
+        <span style="font-size:13px;font-weight:800">${rc.priority_score}</span>
+      </div>
+      <div style="font-size:11.5px;color:#5b6472;margin-top:2px">${esc(rc.explanation||'')}</div>
+      <div style="font-size:10.5px;color:#8a93a3;margin-top:2px">المصدر: ${REC_SRC_AR[rc.learning_source]||rc.learning_source}${rc.expected_effect?` · الأثر: ${esc(rc.expected_effect)}`:''}</div>
+      ${recLearn}
+      <div style="display:flex;gap:6px;margin-top:7px;flex-wrap:wrap">
+        ${applied?'':`<button class="btn-create" style="padding:4px 11px;font-size:11.5px" onclick="recApply('${rc.id}',${rc.requires_approval})">${rc.requires_approval?'طبّق (بموافقة)':'افتح'}</button>`}
+        ${outBtns}
+        <button class="ai-btn" style="padding:4px 11px;font-size:11.5px;color:#8a93a3" onclick="recDismiss('${rc.id}')">تجاهل</button>
+      </div>
+    </div>`;
+  }).join('');
+  el.innerHTML=`<div style="border:1px solid #cdbff5;border-radius:12px;padding:12px 14px;background:#faf8ff">
+    <div style="font-size:13px;font-weight:700;color:#5b4ba8;margin-bottom:8px">أفضل الإجراءات الآن</div>${rows}
+    <div style="font-size:10.5px;color:#8a93a3">كل إجراء بيغيّر بيانات بيتطبّق بموافقتك بس — مفيش إرسال تلقائي.</div></div>`;
+}
+window.recApply=async(id,needsApproval)=>{
+  if(needsApproval && !confirm('تطبيق التوصية دي هيعمل مهمة/مسودّة. تأكيد؟')) return;
+  const r=await api(`/recommendations/${id}/apply`,{method:'POST',body:{approved:true}});
+  if(r.ok&&r.data.ok){ toast(r.data.linkedObjectType==='whatsapp_draft'?'اتعملت مسودّة — راجِعها قبل الإرسال ✓':r.data.linkedObjectType==='task'?'اتعملت مهمة ✓':'اتطبّقت ✓'); }
+  else if(r.ok&&r.data.needsApproval){ toast('محتاجة موافقة'); }
+  else toast('تعذّر التطبيق');
+  loadBestActions();
+};
+window.recDismiss=async(id)=>{ await api(`/recommendations/${id}/dismiss`,{method:'POST',body:{}}); toast('اتجاهلت'); loadBestActions(); };
+window.recCheck=async(id)=>{
+  const r=await api(`/recommendations/${id}/outcome/check`,{method:'POST',body:{}});
+  if(r.ok&&r.data.status){ const m={worked:'اشتغلت ✓',no_result:'مفيش نتيجة',early_signal:'إشارة مبكرة',awaiting_evidence:'لسه مستنية دليل',failed:'فشلت',dismissed:'اتجاهلت'}; toast(m[r.data.status]||r.data.status); }
+  else toast('تعذّر القياس');
+  loadBestActions();
+};
+window.recWorked=async(id)=>{ const reason=prompt('سبب إنها اشتغلت (اختياري):')||'أكّد المستخدم'; await api(`/recommendations/${id}/mark-worked`,{method:'POST',body:{reason}}); toast('اتسجّلت كاشتغلت ✓'); loadBestActions(); };
+window.recNoResult=async(id)=>{ const reason=prompt('سبب إنها ماجابتش نتيجة (اختياري):')||'أكّد المستخدم'; await api(`/recommendations/${id}/mark-no-result`,{method:'POST',body:{reason}}); toast('اتسجّلت'); loadBestActions(); };
+async function loadAttrInsights(){
+  const el=$('opAttrInsights'); if(!el)return;
+  const r=await api('/attribution/summary'); if(!r.ok||!r.data.top||!r.data.top.length){ el.innerHTML=''; return; }
+  const rows=r.data.top.map(t=>`<div style="display:flex;align-items:center;gap:8px;font-size:12px;padding:4px 0">
+    <span style="flex:1">${ATTR_ACTION_AR[t.action]||t.action}</span>
+    <span style="color:#8a93a3">${t.count} تحصيل</span>
+    <span style="color:#0a6a60">${t.strong} نَسب قوي</span>
+    ${t.knownValue?`<span style="color:#2c3340;font-weight:700">${Math.round(t.knownValue)}</span>`:''}
+  </div>`).join('');
+  el.innerHTML=`<div style="border:1px solid #e8e9ef;border-radius:12px;padding:11px 14px;background:#fff">
+    <div style="font-size:13px;font-weight:700;margin-bottom:4px">أكثر الإجراءات تأثيرًا</div>
+    ${rows}
+    ${r.data.unknownAttribution?`<div style="font-size:11px;color:#8a93a3;margin-top:4px">بدون نَسب واضح: ${r.data.unknownAttribution}</div>`:''}
+    <div style="font-size:10.5px;color:#8a93a3;margin-top:3px">ارتباط بالدليل، مش إثبات سببية.</div>
+  </div>`;
+}
+window.opTask=async(id)=>{ const r=await api(`/opportunities/${id}/create-task`,{method:'POST',body:{}}); toast(r.ok&&r.data.ok?'اتعملت مهمة ✓':'تعذّر إنشاء المهمة'); loadOpps(); };
+window.opMark=async(id,status)=>{ await api(`/opportunities/${id}`,{method:'PATCH',body:{status}}); toast(status==='dismissed'?'اتجاهلت':'اتعلّمت كشغّالة'); loadOpSummary(); loadOpps(); };
+window.opCheck=async(id)=>{
+  const r=await api(`/opportunities/${id}/outcome/check`,{method:'POST',body:{}});
+  if(r.ok&&r.data.status){ const m={captured:'اتحصّلت ✓',missed:'ضاعت',expired:'انتهت',awaiting_evidence:'لسه مستنية دليل',inconclusive:'غير حاسمة'}; toast(m[r.data.status]||r.data.status); }
+  else toast('تعذّر القياس');
+  loadOpSummary(); loadOpps();
+};
+window.opCapture=async(id)=>{ const reason=prompt('سبب التحصيل (اختياري):')||'أكّد المستخدم التحصيل'; await api(`/opportunities/${id}/mark-captured`,{method:'POST',body:{reason}}); toast('اتسجّلت كمحصّلة ✓'); loadOpSummary(); loadOpps(); };
+window.opMiss=async(id)=>{ const reason=prompt('سبب الضياع (اختياري):')||'أكّد المستخدم الضياع'; await api(`/opportunities/${id}/mark-missed`,{method:'POST',body:{reason}}); toast('اتسجّلت كضايعة'); loadOpSummary(); loadOpps(); };
+if(new URLSearchParams(location.search).get('opportunities')==='1'){ setTimeout(openOpportunities, 300); }
+if(new URLSearchParams(location.search).get('desk')==='1'){ setTimeout(openRevenueDesk, 300); }
+if(new URLSearchParams(location.search).get('activation')==='1'){ setTimeout(openActivation, 300); }
+
+
+
+async function checkDemoBanner(){
+  const r=await api('/demo/status');
+  if(r.ok && r.data.demo){
+    const b=$('demoBanner'); if(b){ b.style.display='flex';
+      const rb=$('resetDemoBtn'); if(rb) rb.onclick=async()=>{ rb.disabled=true; rb.textContent='… بنعيد الضبط';
+        await api('/demo/reset',{method:'POST',auth:false,body:{}}); toast('اتعمل reset للديمو'); location.reload(); };
+    }
+  }
+}
+
+// ── Action Center ──
+const AC_FILTERS=[['today','النهاردة'],['overdue','متأخر'],['payment','الدفع'],['whatsapp','واتساب'],['leaks','تسريبات'],['followup','متابعة']];
+const AC_ICON={follow_up_lead:'↻',review_payment_proof:'▦',confirm_payment:'▦',deliver_access:'✓',contact_whatsapp_click:'💬',resolve_leak:'↯',add_next_action:'◎',mark_lost_reason:'✕'};
+let acFunnelId=null, acFilter='today';
+function renderAcFilters(){
+  const el=document.getElementById('acFilters'); if(!el)return;
+  el.innerHTML=AC_FILTERS.map(([f,l])=>`<button class="btn-create" style="padding:5px 12px;font-size:12.5px;${f===acFilter?'':'background:#fff;color:var(--ink-2,#5b6472);border:1px solid #e3e7ee'}" onclick="setAcFilter('${f}')">${l}</button>`).join('');
+}
+window.setAcFilter=(f)=>{acFilter=f;renderAcFilters();loadActionCenter();};
+async function loadActionCenter(){
+  const box=document.getElementById('actionCenter'); if(!box||!acFunnelId)return;
+  const r=await api(`/funnels/${acFunnelId}/actions?filter=${acFilter}`);
+  const items=r.ok? r.data:[];
+  if(!items.length){ box.innerHTML='<div style="background:#fff;border:1px solid #eef0f4;border-radius:14px;padding:24px;text-align:center;color:var(--ink-3,#8a93a3)">مفيش إجراءات مطلوبة في الفلتر ده ✓</div>'; return; }
+  box.innerHTML='<div style="display:grid;gap:10px">'+items.map(a=>`
+    <div style="background:#fff;border:1px solid #eef0f4;border-radius:14px;padding:14px;display:flex;gap:12px;align-items:flex-start">
+      <span style="width:34px;height:34px;border-radius:10px;background:#f0ecfb;color:#6b4ee6;display:grid;place-items:center;flex:none">${AC_ICON[a.type]||'•'}</span>
+      <div style="flex:1">
+        <b style="font-size:14px">${esc(a.title)}</b>
+        <div style="font-size:12.5px;color:var(--ink-2,#5b6472);margin-top:2px">${esc(a.explanation||'')}</div>
+        <div style="font-size:12px;color:var(--violet,#6b4ee6);margin-top:4px">${esc(a.recommended_action||'')}</div>
+      </div>
+      <div style="display:flex;gap:5px;flex-wrap:wrap;flex:none">
+        <button class="btn-create" style="padding:5px 10px;font-size:12px" onclick="openActionTarget('${esc(a.target_route||'')}')">افتح</button>
+        <button class="btn-create" style="padding:5px 10px;font-size:12px;background:#fff;color:var(--ink-2,#5b6472);border:1px solid #e3e7ee" onclick="acStatus('${a.id}','done')">تم</button>
+        <button class="btn-create" style="padding:5px 10px;font-size:12px;background:#fff;color:var(--ink-2,#5b6472);border:1px solid #e3e7ee" onclick="acStatus('${a.id}','snoozed')">أجّل</button>
+        <button class="btn-create" style="padding:5px 10px;font-size:12px;background:#fff;color:var(--ink-3,#8a93a3);border:1px solid #e3e7ee" onclick="acStatus('${a.id}','ignored')">تجاهل</button>
+      </div>
+    </div>`).join('')+'</div>';
+}
+window.acStatus=async(id,status)=>{await api(`/actions/${id}`,{method:'PATCH',body:{status,snoozeHours:status==='snoozed'?24:undefined}});toast(status==='done'?'تم ✓':status==='snoozed'?'اتأجّل':'اتجاهل');loadActionCenter();};
+// ── AI Command Bar (dashboard) ──
+async function runDashCmd(){
+  const text=$('cmdInput').value.trim(); if(!text||!acFunnelId) return;
+  const r=await api('/command',{method:'POST',body:{text,funnelId:acFunnelId}});
+  if(!r.ok){ toast('تعذّر'); return; }
+  const d=r.data;
+  // navigation → deep-link into the funnel workspace
+  if(d.navigate && d.navigate.tab==='activation'){ openActivation(); return; }
+  if(d.navigate && d.navigate.tab==='revenue-desk'){ openRevenueDesk(); return; }
+  if(d.navigate && (d.navigate.tab || d.navigate.leadFilter)){
+    localStorage.setItem('fnnlr_last_funnel',acFunnelId);
+    if(d.navigate.leadFilter){ localStorage.setItem('fnnlr_open_tab','leads'); }
+    else if(d.navigate.tab){ localStorage.setItem('fnnlr_open_tab',d.navigate.tab); }
+    window.location.href='./funnel.html';
+    return;
+  }
+  if(d.preview){ toast('شوف التفاصيل في القمع'); localStorage.setItem('fnnlr_last_funnel',acFunnelId);
+    if(d.affected&&d.affected.tab){localStorage.setItem('fnnlr_open_tab',d.affected.tab);}
+    window.location.href='./funnel.html'; return; }
+  toast(intentLabelDash(d.intent));
+}
+function intentLabelDash(i){return i==='clarify'?'محتاج توضيح أكتر':'اتفهم الأمر — افتح القمع';}
+const cmdRunBtn=$('cmdRun'); if(cmdRunBtn) cmdRunBtn.onclick=runDashCmd;
+const cmdInputEl=$('cmdInput'); if(cmdInputEl) cmdInputEl.addEventListener('keydown',e=>{if(e.key==='Enter')runDashCmd();});
+
+function emptyState(){
+  return `<div class="empty">
+    <div class="big">⟁</div>
+    <h3>لسه مفيش قمعات</h3>
+    <p>ابدأ بقمع واحد: جاوب كام سؤال عن البيزنس، و fnnlr هيبنيلك رحلة إيراد كاملة بالعربي — تقدر تعدّلها وتنشرها وتتبّعها.</p>
+    <button class="btn-create" id="emptyCreate">+ ابنِ أول قمع</button>
+  </div>`;
+}
+
+function bindCreate(){ const b=$('emptyCreate'); if(b) b.onclick=startCreate; }
+$('createBtn').onclick = startCreate;
+function startCreate(){
+  window.location.href = './onboarding.html';
+}
+
+// ── utils ──
+function escapeHtml(s){ return (s||'').replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+function esc(s){ return escapeHtml(s); }
+function fmtDate(d){ try{ return new Date(d).toLocaleDateString('ar-EG',{day:'numeric',month:'long'}); }catch{ return ''; } }
+
+// ── boot: restore session if a token exists ──
+(async function boot(){
+  if(token){
+    const r = await api('/auth/me');
+    if(r.ok){ ctx=r.data.ctx; enterApp(); return; }
+    token=null; localStorage.removeItem('fnnlr_token');
+  }
+})();
+</script>
+</body>
+</html>

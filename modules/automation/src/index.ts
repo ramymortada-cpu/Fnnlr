@@ -1,0 +1,11 @@
+export * from './types.js';
+export { AutomationEngine, type RunStore, type EngineDeps } from './engine.js';
+export { type ActionPorts, idempotencyKey } from './dispatcher.js';
+export { evaluate, evaluateAll } from './conditions.js';
+export { decideWhatsAppSend } from './guards/whatsapp.js';
+export { checkSafety, needsApproval } from './guards/safety.js';
+export { RECIPES } from './recipes.js';
+export { makeTenantRunStore, dueRuns, approve, reject } from './store.js';
+export { makeTenantActionPorts, type ChannelSenders } from './ports.js';
+export { AutomationScheduler, type SchedulerDeps } from './scheduler.js';
+export { detectSyntheticTriggers, type SyntheticEvent } from './synthetic.js';

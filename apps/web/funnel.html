@@ -1,0 +1,1511 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>fnnlr — مساحة القمع</title>
+<style>
+  :root{
+    --paper:#f7f6f3; --card:#fff; --ink:#1a1f26; --ink-2:#5b6675; --ink-3:#9aa4b2;
+    --line:#e7e4dd; --amber:#e08a1e; --amber-soft:#fbf2e2; --amber-ink:#7a4a08;
+    --teal:#0f9b8e; --teal-soft:#e3f5f2; --rose:#d8556b; --rose-soft:#fbe9ec; --violet:#6d5ae0;
+    --r:14px; --r-sm:10px; --shadow:0 1px 2px rgba(20,25,35,.04),0 8px 24px rgba(20,25,35,.05);
+    --font:"Segoe UI","Noto Sans Arabic",Tahoma,system-ui,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--font);font-size:15px;line-height:1.6}
+  button{font-family:inherit;cursor:pointer}
+  .hidden{display:none!important}
+  .wrap{max-width:920px;margin:0 auto;padding:24px 20px 90px}
+
+  .top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;gap:14px}
+  .back{background:none;border:none;color:var(--ink-2);font-size:13.5px;font-weight:600}
+  .logo{font-size:18px;font-weight:800}.logo b{color:var(--amber)}
+  h1.title{font-size:24px;font-weight:800;letter-spacing:-.01em;margin:4px 0 2px}
+  .subtitle{color:var(--ink-3);font-size:13px;margin-bottom:18px}
+
+  /* tabs */
+  .tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin-bottom:24px;overflow-x:auto}
+  .tab{padding:11px 15px;border:none;background:none;color:var(--ink-2);font-size:14px;font-weight:600;
+    border-bottom:2px solid transparent;white-space:nowrap}
+  .tab:hover{color:var(--ink)}
+  .tab.active{color:var(--amber-ink);border-bottom-color:var(--amber)}
+  .tab.soon{color:var(--ink-3)}
+  .tab .badge{font-size:10px;background:var(--line-2,#eee);color:var(--ink-3);padding:1px 6px;border-radius:99px;margin-inline-start:5px}
+
+  .pane{display:none}.pane.active{display:block}
+
+  /* offer builder */
+  .field{margin-bottom:16px}
+  label{display:block;font-size:12.5px;color:var(--ink-2);font-weight:600;margin-bottom:6px}
+  input,textarea{width:100%;background:var(--card);border:1px solid var(--line);border-radius:var(--r-sm);
+    padding:11px 13px;font-family:inherit;font-size:14.5px;color:var(--ink);outline:none;resize:vertical}
+  input:focus,textarea:focus{border-color:var(--amber)}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:620px){.two{grid-template-columns:1fr}}
+  .list-edit{display:flex;flex-direction:column;gap:8px}
+  .list-row{display:flex;gap:8px}
+  .list-row input{flex:1}
+  .list-row .del{width:38px;border:1px solid var(--line);background:none;border-radius:var(--r-sm);color:var(--ink-3)}
+  .list-row .del:hover{border-color:var(--rose);color:var(--rose)}
+  .add-row{background:none;border:1px dashed var(--line);border-radius:var(--r-sm);padding:8px;color:var(--ink-2);font-size:13px;font-weight:600}
+  .add-row:hover{border-color:var(--amber);color:var(--amber)}
+  .obj{background:var(--paper);border:1px solid var(--line);border-radius:var(--r-sm);padding:11px;margin-bottom:8px}
+  .obj input{margin-bottom:7px}
+
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:20px;box-shadow:var(--shadow);margin-bottom:18px}
+  .panel h3{margin:0 0 14px;font-size:15px}
+
+  /* AI actions */
+  .ai-bar{background:linear-gradient(135deg,#fff,#f3effc);border:1px solid #e6e0f5;border-radius:var(--r);
+    padding:16px;margin-bottom:18px}
+  .ai-bar .h{display:flex;align-items:center;gap:8px;font-weight:700;font-size:14px;color:var(--violet);margin-bottom:11px}
+  .ai-actions{display:flex;flex-wrap:wrap;gap:8px}
+  .ai-btn{background:#fff;border:1px solid #ddd4f0;border-radius:99px;padding:7px 14px;font-size:13px;
+    font-weight:600;color:var(--violet)}
+  .ai-btn:hover{background:var(--violet);color:#fff;border-color:var(--violet)}
+  .ai-btn:disabled{opacity:.5}
+
+  /* AI preview modal */
+  .overlay{position:fixed;inset:0;background:rgba(20,25,35,.45);display:none;place-items:center;padding:20px;z-index:50}
+  .overlay.show{display:grid}
+  .modal{background:#fff;border-radius:var(--r);max-width:560px;width:100%;max-height:85vh;overflow:auto;box-shadow:0 20px 60px rgba(0,0,0,.25)}
+  .modal-head{padding:18px 22px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between}
+  .modal-head b{font-size:16px}
+  .modal-body{padding:20px 22px}
+  .diff{font-size:13.5px;line-height:1.7}
+  .diff .row{padding:9px 0;border-bottom:1px solid var(--line)}
+  .diff .k{color:var(--ink-3);font-size:12px;font-weight:700;margin-bottom:2px}
+  .diff .new{color:var(--ink)}
+  .modal-foot{padding:16px 22px;border-top:1px solid var(--line);display:flex;gap:10px;justify-content:flex-start}
+  .btn{border-radius:var(--r-sm);padding:11px 20px;font-size:14px;font-weight:700;border:1px solid transparent}
+  .btn-apply{background:var(--teal);color:#fff}.btn-apply:hover{filter:brightness(1.05)}
+  .btn-discard{background:none;border-color:var(--line);color:var(--ink-2)}
+  .deg{font-size:12px;background:#fff7e6;border:1px solid #f0d9a8;color:#8a6312;padding:8px 11px;border-radius:var(--r-sm);margin-bottom:14px}
+
+  .save-bar{position:fixed;inset-inline:0;inset-block-end:0;background:#fff;border-top:1px solid var(--line);
+    padding:13px 24px;display:flex;justify-content:center;gap:12px;box-shadow:0 -4px 20px rgba(0,0,0,.05)}
+  .btn-save{background:var(--ink);color:#fff;border-radius:var(--r-sm);padding:11px 28px;font-weight:700;border:none;font-size:14px}
+  .btn-save:hover{background:#000}
+  .saved-tag{align-self:center;color:var(--teal);font-size:13px;font-weight:600}
+
+  /* funnel map */
+  .map{display:flex;flex-direction:column;gap:0}
+  .mstage{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px;box-shadow:var(--shadow);position:relative}
+  .mconn{height:22px;width:2px;background:var(--line);margin:0 auto}
+  .mstage.off{opacity:.55}
+  .mstage .mhead{display:flex;align-items:center;gap:11px}
+  .mstage .num{width:28px;height:28px;border-radius:8px;background:var(--violet);color:#fff;display:grid;place-items:center;font-weight:800;font-size:13px;flex-shrink:0}
+  .mstage .nm{font-weight:700;font-size:15px;flex:1;border:none;background:none;color:var(--ink);outline:none}
+  .mstage .nm:focus{border-bottom:1px solid var(--amber)}
+  .mstage .ctl{display:flex;gap:5px}
+  .mstage .ctl button{width:30px;height:30px;border:1px solid var(--line);background:#fff;border-radius:8px;color:var(--ink-3);font-size:13px}
+  .mstage .ctl button:hover{border-color:var(--amber);color:var(--amber)}
+  .mstage .mmeta{display:flex;flex-wrap:wrap;gap:7px;margin:11px 0 0 39px}
+  .mchip{font-size:12px;background:var(--paper);border:1px solid var(--line);border-radius:99px;padding:3px 10px;color:var(--ink-2)}
+  .mchip.leak{background:var(--rose-soft);border-color:#f0c9d1;color:#9c2a3d}
+  .mchip.track{background:var(--teal-soft);border-color:#bfe6e0;color:#0a6a60}
+  .mstage .mexp{margin:10px 0 0 39px;font-size:13px;color:var(--ink-2)}
+  .map-add{margin-top:18px;background:none;border:1px dashed var(--line);border-radius:var(--r);padding:13px;width:100%;color:var(--ink-2);font-weight:600}
+  .map-add:hover{border-color:var(--amber);color:var(--amber)}
+
+  .soon-pane{text-align:center;padding:60px 20px;color:var(--ink-3)}
+  .soon-pane .big{font-size:38px;margin-bottom:10px}
+  .toast{position:fixed;inset-block-end:80px;inset-inline-start:50%;transform:translateX(50%);background:var(--ink);
+    color:#fff;padding:11px 20px;border-radius:var(--r-sm);font-size:13.5px;opacity:0;transition:.25s;pointer-events:none}
+  .toast.show{opacity:1}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <button class="back" onclick="window.location.href='./index.html'">→ كل القمعات</button>
+    <span class="logo"><b>fnnlr</b></span>
+  </div>
+  <h1 class="title" id="funnelName">القمع</h1>
+  <div class="subtitle" id="funnelMeta">—</div>
+
+  <div class="tabs" id="tabs">
+    <button class="tab active" data-pane="overview">نظرة عامة</button>
+    <button class="tab" data-pane="offer">العرض</button>
+    <button class="tab" data-pane="map">خريطة القمع</button>
+    <button class="tab" data-pane="page">الصفحة</button>
+    <button class="tab" data-pane="whatsapp">واتساب</button>
+    <button class="tab" data-pane="payment">الدفع</button>
+    <button class="tab" data-pane="capture">التتبّع</button>
+    <button class="tab" data-pane="leads">العملاء</button>
+    <button class="tab" data-pane="leaks">التسريبات</button>
+    <button class="tab" data-pane="report">التقرير</button>
+  </div>
+
+  <!-- OVERVIEW -->
+  <div class="pane active" id="pane-overview">
+    <div class="panel" id="overviewBox"></div>
+  </div>
+
+  <!-- OFFER -->
+  <div class="pane" id="pane-offer">
+    <div class="ai-bar">
+      <div class="h">✦ تحسينات الذكاء الاصطناعي</div>
+      <div class="ai-actions" id="aiActions"></div>
+    </div>
+    <div class="panel" id="offerForm"></div>
+  </div>
+
+  <!-- MAP -->
+  <div class="pane" id="pane-map">
+    <div class="map" id="mapBox"></div>
+    <button class="map-add" id="addStageBtn">+ أضف مرحلة</button>
+  </div>
+
+  <!-- PAGE (Landing Page Intelligence) -->
+  <div class="pane" id="pane-page">
+    <div id="pageEmpty" class="panel" style="text-align:center;padding:40px">
+      <div style="font-size:36px">▤</div>
+      <h3>صفحة هبوط ذكية</h3>
+      <p style="color:var(--ink-2);font-size:14px;max-width:44ch;margin:0 auto 18px">
+        fnnlr هيبنيلك صفحة هبوط عربية كاملة من قمعك وعرضك — أقسام جاهزة تقدر تعدّلها، تخفيها، ترتّبها، وتنشرها بصفحة متتبَّعة.</p>
+      <button class="btn-save" id="genPageBtn">✦ ابنِ الصفحة</button>
+    </div>
+    <div id="pageEditor" class="hidden"></div>
+  </div>
+  <div class="pane" id="pane-whatsapp">
+    <div class="panel" style="background:linear-gradient(135deg,#fff,#eafaf0)">
+      <h3 style="margin:0 0 4px">WhatsApp Sales Flow</h3>
+      <p style="color:var(--ink-2);font-size:13.5px;margin:0">في مصر والخليج البيع بيتقفل على واتساب. fnnlr بيجهّزلك محادثة بيع كاملة — قوالب جاهزة تعدّلها وتنسخها. ده Copilot مش بوت: مفيش إرسال تلقائي.</p>
+      <button class="btn-save" id="genWaBtn" style="margin-top:12px">✦ ولّد WhatsApp flow</button>
+    </div>
+    <div style="background:#f5f3fe;border:1px solid #e3dcfb;border-radius:12px;padding:11px 14px;margin-top:10px;font-size:12.5px;color:#5b6472">⇄ اربط WhatsApp API لاحقًا لاستقبال الرسائل وتحديث المحادثات تلقائيًا — <b>بدون auto-send</b>. من شاشة «التكاملات».</div>
+    <div id="waSteps"></div>
+  </div>
+  <!-- CAPTURE / TRACKING -->
+  <div class="pane" id="pane-capture">
+    <div class="panel" id="captureStatus"></div>
+    <div class="panel">
+      <h3>أنشئ رابط واتساب متتبَّع</h3>
+      <p style="color:var(--ink-2);font-size:13px;margin-top:-6px">استخدم الرابط في الإعلان أو الصفحة أو البايو. أي ضغطة عليه تتسجّل كـ lead + conversation جوه fnnlr، مع حفظ المصدر.</p>
+      <div class="two">
+        <div class="field"><label>رقم واتساب (بالكود الدولي)</label><input id="lnkPhone" placeholder="2010xxxxxxx"/></div>
+        <div class="field"><label>نص الرسالة (اختياري)</label><input id="lnkMsg" placeholder="عايز أعرف تفاصيل العرض"/></div>
+      </div>
+      <div class="two">
+        <div class="field"><label>المصدر (source)</label><input id="lnkSource" placeholder="meta / tiktok / bio"/></div>
+        <div class="field"><label>الحملة (campaign)</label><input id="lnkCampaign" placeholder="launch-june"/></div>
+      </div>
+      <div class="two">
+        <div class="field"><label>الوسيط (medium)</label><input id="lnkMedium" placeholder="paid / organic"/></div>
+        <div class="field"><label>نص الزر (CTA)</label><input id="lnkCta" placeholder="كلمنا على واتساب"/></div>
+      </div>
+      <button class="btn-save" id="createLinkBtn">أنشئ الرابط</button>
+    </div>
+    <div class="panel"><h3>الروابط</h3><div id="linksList"></div></div>
+    <div class="panel"><h3>آخر الضغطات</h3><div id="clicksList"></div></div>
+  </div>
+
+  <div class="pane" id="pane-leads">
+    <div class="panel">
+      <div style="display:flex;gap:8px;flex-wrap:wrap" id="leadFilters"></div>
+    </div>
+    <div id="leadsList"></div>
+  </div>
+
+  <div class="pane" id="pane-payment">
+    <div class="panel" style="background:linear-gradient(135deg,#fff,#f0f7f5)">
+      <h3 style="margin:0 0 4px">رحلة الدفع المحلي</h3>
+      <p style="color:var(--ink-2);font-size:13.5px;margin:0">الدفع عندنا مش زرار — ده رحلة: تفاصيل → تحويل → إثبات → مراجعة → تأكيد → تسليم. ظبّط طرق الدفع ورسائلها هنا.</p>
+      <div style="background:#f0f7f5;border:1px solid #cfe7e2;border-radius:12px;padding:11px 14px;margin-top:10px;font-size:12.5px;color:#33706a">⇄ اربط Paymob/فوري لاحقًا لتحديث حالات الدفع تلقائيًا عبر webhook — من شاشة «التكاملات».</div>
+      <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap">
+        <button class="btn-save" id="genPayBtn">✦ ولّد تعليمات الدفع</button>
+        <select id="addMethodSel" style="width:auto;padding:10px"><option value="">+ أضف طريقة دفع</option>
+          <option value="instapay">إنستاباي</option><option value="vodafone_cash">فودافون كاش</option>
+          <option value="bank_transfer">تحويل بنكي</option><option value="paymob">Paymob</option>
+          <option value="fawry">فوري</option><option value="tap">Tap</option>
+          <option value="hyperpay">HyperPay</option><option value="moyasar">Moyasar</option>
+          <option value="manual_proof">إثبات يدوي</option><option value="payment_link">رابط دفع</option></select>
+      </div>
+    </div>
+    <div id="payMethods"></div>
+    <div class="panel"><h3>state machine للدفع</h3><div id="payStateMachine"></div></div>
+  </div>
+  <div class="pane" id="pane-leads"><div class="soon-pane"><div class="big">◎</div>خط أنابيب العملاء — قريبًا</div></div>
+  <div class="pane" id="pane-leaks">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <h3 style="margin:0">لوحة التسريبات</h3>
+      <div style="display:flex;gap:8px">
+        <button class="ai-btn" style="background:var(--violet);color:#fff;border-color:var(--violet)" onclick="planApplication('all')">⚙ اعمل Optimization Plan</button>
+        <button class="btn-save" id="runDiagBtn">شغّل التشخيص</button>
+      </div>
+    </div>
+    <div id="appPlanBox" style="margin-bottom:14px"></div>
+    <div id="leakBoard"></div>
+  </div>
+
+  <div class="pane" id="pane-report">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <h3 style="margin:0">تقرير التشخيص الأسبوعي</h3>
+      <div style="display:flex;gap:8px">
+        <button class="btn-save" id="genReportBtn">ولّد التقرير</button>
+        <button class="ai-btn" id="copyReportBtn" style="display:none">انسخ النص</button>
+      </div>
+    </div>
+    <div id="reportBox"><div class="panel" style="text-align:center;color:var(--ink-3)">اضغط «ولّد التقرير» عشان نجمّعلك تشخيص الأسبوع: أهم التسريبات، العملاء المحتاجين تحرّك، مشاكل الدفع وواتساب، وأهم ٥ إجراءات.</div></div>
+  </div>
+</div>
+
+<!-- save bar (offer) -->
+<div class="save-bar hidden" id="saveBar">
+  <button class="btn-save" id="saveOfferBtn">احفظ تعديلات العرض</button>
+  <span class="saved-tag hidden" id="savedTag">✓ اتحفظ</span>
+</div>
+
+<!-- AI preview modal -->
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <div class="modal-head"><b id="previewTitle">معاينة التحسين</b>
+      <button class="back" onclick="closePreview()">✕</button></div>
+    <div class="modal-body">
+      <div class="deg hidden" id="previewDeg">⚠️ مسودة بدون AI (مفيش مفتاح متوصّل) — تحويل محلي بسيط. تقدر تطبّقها أو ترفضها.</div>
+      <div class="diff" id="previewDiff"></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-apply" id="applyBtn">طبّق التغييرات</button>
+      <button class="btn btn-discard" onclick="closePreview()">تجاهل</button>
+    </div>
+  </div>
+</div>
+
+<!-- Lead detail panel -->
+<div class="overlay" id="leadOverlay">
+  <div class="modal" style="max-width:600px;max-height:90vh">
+    <div class="modal-head"><b id="leadTitle">العميل</b><button class="back" onclick="closeLead()">✕</button></div>
+    <div class="modal-body" id="leadBody"></div>
+  </div>
+</div>
+
+<!-- AI Command Bar -->
+<div id="cmdBar" style="position:fixed;bottom:0;inset-inline:0;background:rgba(255,255,255,.92);backdrop-filter:blur(10px);border-top:1px solid var(--line);padding:12px 18px;z-index:60">
+  <div style="max-width:880px;margin:0 auto">
+    <div style="display:flex;gap:10px;align-items:center">
+      <span style="font-size:16px">⌘</span>
+      <input id="cmdInput" placeholder="اكتب أمر… مثلاً: صلّح أكبر تسريب · هات العملاء المنتظرين الدفع · حسّن العرض" style="flex:1;border:1px solid var(--line);border-radius:12px;padding:11px 14px;font-family:inherit;font-size:14px"/>
+      <button class="btn-save" id="cmdRun">نفّذ</button>
+    </div>
+    <div id="cmdResult" style="display:none;margin-top:10px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const API = localStorage.getItem('fnnlr_api') || 'http://localhost:8787';
+const token = localStorage.getItem('fnnlr_token');
+const journeyId = localStorage.getItem('fnnlr_last_funnel');
+
+const $=(id)=>document.getElementById(id);
+function toast(t){const e=$('toast');e.textContent=t;e.classList.add('show');setTimeout(()=>e.classList.remove('show'),2000);}
+async function api(path,{method='GET',body}={}){
+  const h={'Content-Type':'application/json'}; if(token)h['Authorization']=`Bearer ${token}`;
+  const r=await fetch(API+path,{method,headers:h,body:body?JSON.stringify(body):undefined});
+  let d=null;try{d=await r.json()}catch{}; return {ok:r.ok,status:r.status,data:d};
+}
+
+if(!token || !journeyId){ window.location.href='./index.html'; }
+
+let funnel=null, offer=null, stages=[], previewOffer=null;
+
+const OFFER_FIELDS = [
+  ['name','اسم العرض','input'],['promise','الوعد في سطر','input'],
+  ['idealCustomer','العميل المثالي','input'],['mainPain','الألم الأساسي','input'],
+  ['desiredResult','النتيجة المرغوبة','input'],['transformation','التحوّل','input'],
+  ['guarantee','الضمان','textarea'],['pricing','التسعير','input'],
+  ['paymentPlan','خطة الدفع','input'],['urgency','الإلحاح/الندرة','input'],
+  ['cta','نداء الإجراء (CTA)','input'],['toneNotes','ملاحظات النبرة/اللهجة','input'],
+];
+const AI_ACTIONS = [
+  ['improve','حسّن العرض'],['premium','اجعله أرقى'],['direct_response','تسويق مباشر'],
+  ['egyptian','مصري'],['gulf','خليجي'],['strengthen_objections','قوِّ الاعتراضات'],
+  ['improve_cta','حسّن الـ CTA'],['soften','أنعم/أقل إلحاحًا'],['high_ticket','high-ticket'],
+];
+
+async function boot(){
+  const r=await api(`/funnels/${journeyId}`);
+  if(!r.ok){ toast('تعذّر تحميل القمع'); return; }
+  funnel=r.data.journey; offer=r.data.offer?.content || r.data.offer; stages=r.data.stages||[];
+  // offer may be stored as {content} row
+  if(offer && offer.content) offer=offer.content;
+  $('funnelName').textContent=funnel.name;
+  $('funnelMeta').textContent=`${funnel.channel||'whatsapp'} · ${funnel.status==='draft'?'مسودة':'نشط'}`;
+  renderOverview(); renderOffer(); renderMap(); renderAiActions();
+  // Deep-link from the dashboard Action Center
+  const openTab=localStorage.getItem('fnnlr_open_tab');
+  const openLead=localStorage.getItem('fnnlr_open_lead');
+  if(openLead){ localStorage.removeItem('fnnlr_open_lead'); goTab('leads'); setTimeout(()=>openLead&&window.openLead(openLead),200); }
+  else if(openTab){ localStorage.removeItem('fnnlr_open_tab'); goTab(openTab); }
+}
+
+function renderOverview(){
+  $('overviewBox').innerHTML=`
+    <h3>ملخص القمع</h3>
+    <p style="color:var(--ink-2);font-size:14px">القمع ده اتبنى من إجاباتك وبيتحفظ كسجلات قابلة للتعديل.
+    ابدأ من تبويب <b>العرض</b> لتعديل عرضك وتحسينه بالـ AI، وتبويب <b>خريطة القمع</b> لإدارة المراحل.</p>
+    <div style="display:flex;gap:10px;margin-top:16px;flex-wrap:wrap">
+      <button class="btn-save" onclick="goTab('offer')">تعديل العرض</button>
+      <button class="btn" style="background:#fff;border:1px solid var(--line);color:var(--ink-2)" onclick="goTab('map')">خريطة القمع</button>
+    </div>
+    <div id="pilotChecklist" style="margin-top:18px"></div>
+    <div id="activityFeed" style="margin-top:18px"></div>`;
+  loadChecklist();
+  loadActivity();
+}
+async function loadActivity(){
+  const el=$('activityFeed'); if(!el) return;
+  const r=await api(`/funnels/${journeyId}/activity`);
+  if(!r.ok || !r.data.length){ el.innerHTML=''; return; }
+  const ICON={whatsapp_message_received:'💬',payment_confirmed:'✓',payment_failed:'✕',payment_state_changed:'▦',
+    lead_created:'◎',deal_won:'🏆',action_created:'✦',conversation_updated:'💬',payment_event_unmatched:'⚠',
+    whatsapp_reply_marked_sent:'➤',leak_updated:'↯'};
+  const LBL={whatsapp_message_received:'رسالة واتساب جديدة',payment_confirmed:'دفع مؤكَّد',payment_failed:'دفع فشل',
+    payment_state_changed:'تغيّر حالة الدفع',lead_created:'عميل جديد',deal_won:'صفقة ناجحة',action_created:'إجراء جديد',
+    conversation_updated:'تحديث محادثة',payment_event_unmatched:'حدث دفع غير مطابق',whatsapp_reply_marked_sent:'رد اتبعت',leak_updated:'تحديث تسريب'};
+  el.innerHTML=`<div class="panel" style="margin:0"><div style="display:flex;align-items:center;gap:8px;margin-bottom:10px"><b>الإيراد الحي</b><span style="width:7px;height:7px;border-radius:50%;background:#2ecc71;box-shadow:0 0 0 3px #2ecc7133"></span></div>
+    <div style="display:grid;gap:7px;max-height:280px;overflow:auto">
+    ${r.data.map(e=>`<div style="display:flex;align-items:center;gap:9px;font-size:12.5px;padding:6px 8px;background:var(--paper);border-radius:9px">
+      <span>${ICON[e.type]||'•'}</span><span style="flex:1">${esc(LBL[e.type]||e.type)}</span>
+      ${e.leadId?`<button class="add-row" style="width:auto;padding:2px 9px;font-size:11px" onclick="openLead('${e.leadId}')">افتح</button>`:''}
+      <span style="font-size:10.5px;color:var(--ink-3)">${timeAgo(e.at)}</span>
+    </div>`).join('')}</div></div>`;
+}
+function timeAgo(ts){ const d=(Date.now()-new Date(ts).getTime())/60000; if(d<1)return'الآن'; if(d<60)return Math.floor(d)+' د'; if(d<1440)return Math.floor(d/60)+' س'; return Math.floor(d/1440)+' ي'; }
+async function loadChecklist(){
+  const el=$('pilotChecklist'); if(!el) return;
+  const r=await api(`/funnels/${journeyId}/pilot/checklist`);
+  if(!r.ok) return;
+  const d=r.data;
+  el.innerHTML=`<div class="panel" style="margin:0">
+    <div style="display:flex;align-items:center;gap:10px"><b>جاهزية الإطلاق</b>
+      <div style="flex:1;height:8px;background:var(--paper);border-radius:99px;overflow:hidden"><div style="width:${d.progress}%;height:100%;background:linear-gradient(90deg,var(--teal),var(--violet))"></div></div>
+      <span style="font-weight:800;color:var(--violet)">${d.progress}%</span></div>
+    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:6px;margin-top:12px">
+      ${d.items.map(i=>`<div style="display:flex;align-items:center;gap:7px;font-size:12.5px;${i.done?'':'color:var(--ink-3)'}">
+        <span style="color:${i.done?'var(--teal)':'var(--ink-3)'}">${i.done?'✓':'○'}</span>
+        <span style="flex:1">${esc(i.label)}</span>
+        ${i.done?'':`<button class="add-row" style="width:auto;padding:2px 9px;font-size:11px" onclick="goTab('${i.targetTab}')">${esc(i.cta)}</button>`}
+      </div>`).join('')}
+    </div>
+  </div>`;
+}
+
+function renderOffer(){
+  if(!offer){ $('offerForm').innerHTML='<p>مفيش عرض محفوظ.</p>'; return; }
+  let h='<h3>العرض</h3>';
+  for(const [k,lbl,type] of OFFER_FIELDS){
+    const v=(offer[k]||'').toString().replace(/"/g,'&quot;');
+    h+=`<div class="field"><label>${lbl}</label>`;
+    h+= type==='textarea' ? `<textarea data-k="${k}" rows="2">${offer[k]||''}</textarea>` : `<input data-k="${k}" value="${v}" />`;
+    h+=`</div>`;
+  }
+  // deliverables + bonuses
+  h+=listEditor('deliverables','المنتجات/المخرجات');
+  h+=listEditor('bonuses','البونصات');
+  // objections
+  h+=`<div class="field"><label>الاعتراضات وردودها</label><div id="objBox"></div>
+      <button class="add-row" onclick="addObj()">+ أضف اعتراض</button></div>`;
+  $('offerForm').innerHTML=h;
+  // bind inputs
+  $('offerForm').querySelectorAll('[data-k]').forEach(el=>el.oninput=()=>{offer[el.dataset.k]=el.value;showSave();});
+  renderObjections();
+  bindLists();
+}
+function listEditor(key,label){
+  return `<div class="field"><label>${label}</label><div class="list-edit" data-list="${key}"></div>
+    <button class="add-row" onclick="addItem('${key}')">+ أضف</button></div>`;
+}
+function bindLists(){
+  ['deliverables','bonuses'].forEach(key=>{
+    const box=$('offerForm').querySelector(`[data-list="${key}"]`);
+    box.innerHTML=(offer[key]||[]).map((v,idx)=>
+      `<div class="list-row"><input value="${(v||'').replace(/"/g,'&quot;')}" data-li="${key}:${idx}"/>
+       <button class="del" onclick="delItem('${key}',${idx})">✕</button></div>`).join('');
+    box.querySelectorAll('[data-li]').forEach(el=>el.oninput=()=>{
+      const [k,i]=el.dataset.li.split(':'); offer[k][+i]=el.value; showSave();});
+  });
+}
+window.addItem=(key)=>{offer[key]=offer[key]||[];offer[key].push('');renderOffer();showSave();};
+window.delItem=(key,idx)=>{offer[key].splice(idx,1);renderOffer();showSave();};
+function renderObjections(){
+  const box=$('objBox');
+  box.innerHTML=(offer.objections||[]).map((o,idx)=>`
+    <div class="obj">
+      <input placeholder="الاعتراض" value="${(o.objection||'').replace(/"/g,'&quot;')}" data-ob="o:${idx}"/>
+      <input placeholder="الرد" value="${(o.reply||'').replace(/"/g,'&quot;')}" data-ob="r:${idx}"/>
+      <button class="del" onclick="delObj(${idx})" style="width:auto;padding:4px 12px">حذف</button>
+    </div>`).join('');
+  box.querySelectorAll('[data-ob]').forEach(el=>el.oninput=()=>{
+    const [t,i]=el.dataset.ob.split(':'); if(t==='o')offer.objections[+i].objection=el.value; else offer.objections[+i].reply=el.value; showSave();});
+}
+window.addObj=()=>{offer.objections=offer.objections||[];offer.objections.push({objection:'',reply:''});renderObjections();showSave();};
+window.delObj=(idx)=>{offer.objections.splice(idx,1);renderObjections();showSave();};
+
+function showSave(){ $('saveBar').classList.remove('hidden'); $('savedTag').classList.add('hidden'); }
+$('saveOfferBtn').onclick=async()=>{
+  const r=await api(`/funnels/${journeyId}/offer`,{method:'PATCH',body:{offer}});
+  if(r.ok){ $('savedTag').classList.remove('hidden'); toast('تعديلات العرض اتحفظت ✓'); }
+  else toast('تعذّر الحفظ');
+};
+
+// ── AI actions ──
+function renderAiActions(){
+  $('aiActions').innerHTML=AI_ACTIONS.map(([a,l])=>`<button class="ai-btn" data-a="${a}">${l}</button>`).join('');
+  $('aiActions').querySelectorAll('[data-a]').forEach(b=>b.onclick=()=>runAi(b.dataset.a));
+}
+async function runAi(action){
+  toast('fnnlr بيشتغل على العرض…');
+  const r=await api(`/funnels/${journeyId}/offer/action`,{method:'POST',body:{action}});
+  if(!r.ok){ toast('تعذّر تشغيل التحسين'); return; }
+  previewOffer=r.data.preview;
+  showPreview(r.data.degraded);
+}
+function showPreview(degraded){
+  $('previewDeg').classList.toggle('hidden',!degraded);
+  // show changed fields
+  const rows=[];
+  const fields={name:'الاسم',promise:'الوعد',cta:'CTA',guarantee:'الضمان',urgency:'الإلحاح',pricing:'التسعير',
+    paymentPlan:'خطة الدفع',toneNotes:'النبرة',transformation:'التحوّل'};
+  for(const [k,lbl] of Object.entries(fields)){
+    if(JSON.stringify(previewOffer[k])!==JSON.stringify(offer[k])){
+      rows.push(`<div class="row"><div class="k">${lbl}</div><div class="new">${esc(previewOffer[k]||'—')}</div></div>`);
+    }
+  }
+  if((previewOffer.objections||[]).length!==(offer.objections||[]).length){
+    rows.push(`<div class="row"><div class="k">الاعتراضات</div><div class="new">${(previewOffer.objections||[]).length} اعتراض (كانت ${(offer.objections||[]).length})</div></div>`);
+  }
+  $('previewDiff').innerHTML = rows.length? rows.join('') : '<p style="color:var(--ink-3)">تغييرات طفيفة في الصياغة.</p>';
+  $('overlay').classList.add('show');
+}
+window.closePreview=()=>{ $('overlay').classList.remove('show'); previewOffer=null; };
+$('applyBtn').onclick=async()=>{
+  if($('applyBtn').dataset.mode==='section'){
+    if(!secPreview)return;
+    const s=pageSections.find(x=>x.id===secPreviewId);
+    s.content={...(s.content||{}),title:secPreview.title,body:secPreview.body};
+    if(secPreview.ctaLabel!==undefined)s.content.ctaLabel=secPreview.ctaLabel;
+    if(secPreview.ctaTarget!==undefined)s.content.ctaTarget=secPreview.ctaTarget;
+    await api(`/sections/${secPreviewId}`,{method:'PATCH',body:{content:s.content}});
+    $('applyBtn').dataset.mode='';secPreview=null;closePreview();renderPageEditor();toast('اتطبّق واتحفظ ✓');
+    return;
+  }
+  if(!previewOffer)return;
+  offer=previewOffer;
+  const r=await api(`/funnels/${journeyId}/offer`,{method:'PATCH',body:{offer}});
+  closePreview(); renderOffer();
+  if(r.ok) toast('اتطبّق واتحفظ ✓'); else { showSave(); toast('اتطبّق — احفظ يدويًا'); }
+};
+
+// ── Funnel Map ──
+function renderMap(){
+  const box=$('mapBox');
+  box.innerHTML=stages.map((s,idx)=>`
+    ${idx>0?'<div class="mconn"></div>':''}
+    <div class="mstage ${s.active===false?'off':''}" data-id="${s.id}">
+      <div class="mhead">
+        <span class="num">${idx+1}</span>
+        <input class="nm" value="${(s.name||'').replace(/"/g,'&quot;')}" data-nm="${s.id}"/>
+        <div class="ctl">
+          <button title="لأعلى" onclick="moveStage(${idx},-1)">↑</button>
+          <button title="لأسفل" onclick="moveStage(${idx},1)">↓</button>
+          <button title="${s.active===false?'تفعيل':'إيقاف'}" onclick="toggleStage('${s.id}',${s.active===false})">${s.active===false?'◌':'●'}</button>
+          <button title="حذف" onclick="deleteStage('${s.id}')">✕</button>
+        </div>
+      </div>
+      ${s.purpose?`<div class="mexp">${esc(s.purpose)}</div>`:''}
+      <div class="mmeta">
+        ${s.channel?`<span class="mchip">${esc(s.channel)}</span>`:''}
+        ${s.conversion_event?`<span class="mchip track">${esc(s.conversion_event)}</span>`:''}
+        ${s.expected_leak?`<span class="mchip leak">↯ ${esc(s.expected_leak)}</span>`:''}
+      </div>
+    </div>`).join('');
+  box.querySelectorAll('[data-nm]').forEach(el=>{
+    el.onchange=async()=>{ await api(`/stages/${el.dataset.nm}`,{method:'PATCH',body:{name:el.value}});
+      const st=stages.find(x=>x.id===el.dataset.nm); if(st)st.name=el.value; toast('اتحفظ اسم المرحلة'); };
+  });
+}
+window.moveStage=async(idx,dir)=>{
+  const j=idx+dir; if(j<0||j>=stages.length)return;
+  [stages[idx],stages[j]]=[stages[j],stages[idx]];
+  renderMap();
+  await api(`/funnels/${journeyId}/stages/reorder`,{method:'POST',body:{orderedIds:stages.map(s=>s.id)}});
+  toast('اتعاد الترتيب ✓');
+};
+window.toggleStage=async(id,activate)=>{
+  await api(`/stages/${id}`,{method:'PATCH',body:{active:activate}});
+  const st=stages.find(x=>x.id===id); if(st)st.active=activate; renderMap();
+  toast(activate?'اتفعّلت':'اتوقفت');
+};
+window.deleteStage=async(id)=>{
+  await api(`/stages/${id}`,{method:'DELETE'});
+  stages=stages.filter(s=>s.id!==id); renderMap(); toast('اتحذفت المرحلة');
+};
+$('addStageBtn').onclick=async()=>{
+  const r=await api(`/funnels/${journeyId}/stages`,{method:'POST',body:{name:'مرحلة جديدة'}});
+  if(r.ok){ stages.push({id:r.data.id,name:'مرحلة جديدة',active:true,position:stages.length}); renderMap(); toast('اتضافت مرحلة'); }
+};
+
+// ── tabs ──
+function goTab(p){ if(p==='portfolio'){ window.location.href='./index.html?portfolio=1'; return; }
+  if(p==='rhythm'){ window.location.href='./index.html?rhythm=1'; return; }
+  if(p==='activation'||p==='go-live'){ window.location.href='./index.html?activation=1'; return; }
+  if(p==='revenue-desk'||p==='desk'){ window.location.href='./index.html?desk=1'; return; }
+  if(p==='opportunities'||p==='recommendations'){ window.location.href='./index.html?opportunities=1'; return; }
+  document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t.dataset.pane===p));
+  document.querySelectorAll('.pane').forEach(pn=>pn.classList.toggle('active',pn.id==='pane-'+p));
+  if(p!=='offer') $('saveBar').classList.add('hidden');
+  if(p==='page' && !page) loadPage();
+  if(p==='capture') loadCapture();
+  if(p==='leads') loadLeads();
+  if(p==='leaks') loadLeaks();
+  if(p==='payment') loadPayment();
+  if(p==='whatsapp') loadWhatsapp();
+  if(p==='report'){/* generated on demand */}
+}
+document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>goTab(t.dataset.pane));
+
+// ── AI Command Bar (Sprint 12) ──
+let curLeadId=null;  // set when a lead panel is open
+function cmdContext(){
+  const activeTab=document.querySelector('.tab.active')?.dataset.pane;
+  return { funnelId: journeyId, tab: activeTab, leadId: curLeadId };
+}
+async function runCmd(){
+  const text=$('cmdInput').value.trim(); if(!text) return;
+  const box=$('cmdResult'); box.style.display='block';
+  box.innerHTML='<span style="color:var(--ink-3)">… بنفهم الأمر</span>';
+  const r=await api('/command',{method:'POST',body:{text,...cmdContext()}});
+  if(!r.ok){ box.innerHTML='<span style="color:var(--ink-3)">تعذّر تنفيذ الأمر</span>'; return; }
+  renderCmd(r.data);
+}
+function renderCmd(d){
+  const box=$('cmdResult');
+  // playbook application plan built → open leaks and render it
+  if(d.applicationPlanId){
+    box.style.display='none'; $('cmdInput').value='';
+    goTab('leaks');
+    setTimeout(async()=>{ await loadLeaks(); renderApplication(d.applicationPlanId);
+      const el=$('appPlanBox'); if(el) el.scrollIntoView({behavior:'smooth',block:'center'}); }, 400);
+    toast('اتبنت خطة تحسين ✓');
+    return;
+  }
+  // repair plan built → open leaks and render the plan inline
+  if(d.repairPlanId && d.leakId){
+    box.style.display='none'; $('cmdInput').value='';
+    goTab('leaks');
+    setTimeout(async()=>{ await loadLeaks(); renderRepair(d.leakId, d.repairPlanId); 
+      const el=$('repair-'+d.leakId); if(el) el.scrollIntoView({behavior:'smooth',block:'center'}); }, 400);
+    toast('اتبنت خطة إصلاح ✓');
+    return;
+  }
+  // navigation: execute directly
+  if(d.actionKind==='navigation' && d.navigate){
+    box.style.display='none'; $('cmdInput').value='';
+    if(d.navigate.tab) goTab(d.navigate.tab);
+    if(d.navigate.leadFilter && typeof setLeadFilter==='function'){ goTab('leads'); setTimeout(()=>setLeadFilter(d.navigate.leadFilter),150); }
+    toast('اتنفّذ ✓');
+    return;
+  }
+  let h=`<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+    <span style="font-size:11px;font-weight:800;padding:2px 9px;border-radius:99px;background:#f0ecfb;color:var(--violet)">${esc(kindLabel(d.actionKind))}</span>
+    <b style="font-size:13.5px">${esc(intentLabel(d.intent))}</b>
+    <span style="font-size:11px;color:var(--ink-3)">ثقة: ${d.confidence}</span>
+    ${d.degraded?'<span style="font-size:10.5px;color:var(--amber-ink);background:var(--amber-soft);padding:1px 7px;border-radius:99px">بدون AI</span>':''}</div>`;
+  if(d.summary) h+=`<p style="font-size:13px;color:var(--ink-2);margin:6px 0">${esc(d.summary)}</p>`;
+  // affected count + sample (bulk)
+  if(d.affectedCount){ h+=`<div style="font-size:12.5px;color:var(--violet);font-weight:700;margin:4px 0">${d.affectedCount} عميل متأثر</div>`;
+    if(d.sample&&d.sample.length) h+=`<div style="font-size:11.5px;color:var(--ink-3)">مثال: ${d.sample.map(s=>esc(s.label)).join('، ')}${d.affectedCount>d.sample.length?' …':''}</div>`; }
+  // diff (offer/section update)
+  if(d.diff&&d.diff.length){
+    h+='<div style="margin-top:8px;border:1px solid var(--line);border-radius:10px;overflow:hidden">';
+    for(const f of d.diff.slice(0,6)){
+      h+=`<div style="padding:8px 10px;border-bottom:1px solid var(--line)">
+        <div style="font-size:11px;color:var(--ink-3);margin-bottom:3px">${esc(f.field)}</div>
+        <div style="font-size:12.5px;color:#b3253c;text-decoration:line-through;opacity:.7">${esc(f.before)||'—'}</div>
+        <div style="font-size:12.5px;color:#0a6a60">${esc(f.after)||'—'}</div>
+      </div>`;
+    }
+    h+='</div>';
+  }
+  // preview text / message
+  if(d.preview) h+=`<div style="background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:10px;font-size:13.5px;white-space:pre-wrap;margin-top:8px">${esc(d.preview)}</div>`;
+  // evidence (leak)
+  if(d.evidence&&Object.keys(d.evidence).length){ const ev=Object.entries(d.evidence).map(([k,v])=>`${k}: ${v}`).join('، ');
+    h+=`<div style="font-size:11.5px;color:var(--ink-3);margin-top:6px">دليل: ${esc(ev)}</div>`; }
+  if(d.safetyNotes) h+=`<div style="font-size:11px;color:var(--ink-3);margin-top:6px">🔒 ${esc(d.safetyNotes)}</div>`;
+  // buttons
+  h+='<div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">';
+  if(d.preview && (d.actionKind==='draft_message'||d.actionKind==='report_generation'||d.actionKind==='leak_repair_plan'))
+    h+=`<button class="ai-btn" onclick="copyCmdPreview()">انسخ</button>`;
+  if(d.navigate && d.navigate.tab) h+=`<button class="ai-btn" onclick="goTab('${d.navigate.tab}');$('cmdResult').style.display='none'">افتح المكان</button>`;
+  if(d.requiresConfirmation){
+    const isUpdate=d.actionKind==='offer_update'||d.actionKind==='section_update'||d.actionKind==='template_update';
+    h+=`<button class="ai-btn" style="background:var(--violet);color:#fff;border-color:var(--violet)" onclick="applyCmd('${d.commandId}','${d.navigate?.tab||''}')">${isUpdate?'طبّق التعديل':'أكّد'}</button>`;
+    h+=`<button class="ai-btn" onclick="discardCmd('${d.commandId}')">تجاهل</button>`;
+  } else {
+    h+=`<button class="ai-btn" onclick="$('cmdResult').style.display='none';$('cmdInput').value=''">تمام</button>`;
+  }
+  h+='</div>';
+  box.innerHTML=h;
+  window._cmdPreview=d.preview||'';
+}
+function kindLabel(k){
+  const m={offer_update:'تعديل العرض',section_update:'تعديل قسم',template_update:'تعديل قالب',bulk_action:'إجراء جماعي',
+    task_creation:'إنشاء مهمة',mark_status:'تغيير حالة',draft_message:'مسودة رسالة',leak_repair_plan:'خطة إصلاح',
+    report_generation:'تقرير',navigation:'تنقّل',informational:'معلومة',create_tracked_link:'رابط متتبَّع',payment_instruction_update:'تعليمات دفع'};
+  return m[k]||k;
+}
+window.copyCmdPreview=()=>{if(window._cmdPreview){navigator.clipboard.writeText(window._cmdPreview);toast('اتنسخ ✓');}};
+function intentLabel(i){
+  const m={explain_biggest_leak:'أكبر تسريب',suggest_fastest_fix:'أسرع إصلاح',improve_offer:'تحسين العرض',
+    make_offer_premium:'عرض premium',create_followup_message:'رسالة متابعة',respond_to_objection:'رد على اعتراض',
+    summarize_week:'تقرير الأسبوع',create_team_report:'تقرير للفريق',shorten_page:'اختصار الصفحة',
+    draft_whatsapp_reply:'رد واتساب',clarify:'محتاج توضيح'};
+  return m[i]||i;
+}
+window.applyCmd=async(id,tab)=>{
+  const r=await api(`/command/${id}/apply`,{method:'POST'});
+  if(r.ok){ toast(r.data.summary||'اتطبّق ✓'); }
+  else toast('تعذّر التطبيق');
+  $('cmdResult').style.display='none'; $('cmdInput').value='';
+  // refresh the affected tab so the change shows immediately
+  if(tab==='offer'){ const rr=await api(`/funnels/${journeyId}`); if(rr.ok){ offer=rr.data.offer?.content||rr.data.offer; if(offer&&offer.content)offer=offer.content; renderOffer(); } goTab('offer'); }
+  else if(tab==='page'){ page=null; goTab('page'); loadPage(); }
+  else if(tab==='leads' && typeof loadLeads==='function') loadLeads();
+  else if(tab==='leaks' && typeof loadLeaks==='function') loadLeaks();
+  else if(tab) goTab(tab);
+};
+window.discardCmd=async(id)=>{await api(`/command/${id}/discard`,{method:'POST'});$('cmdResult').style.display='none';$('cmdInput').value='';toast('اتجاهل');};
+$('cmdRun').onclick=runCmd;
+$('cmdInput').addEventListener('keydown',e=>{if(e.key==='Enter')runCmd();});
+
+
+let lastReportText='';
+$('genReportBtn').onclick=async()=>{
+  $('reportBox').innerHTML='<div class="panel" style="text-align:center;color:var(--ink-3)">… بنجمّع التقرير</div>';
+  const r=await api(`/funnels/${journeyId}/report/generate`,{method:'POST'});
+  if(!r.ok){ $('reportBox').innerHTML='<div class="panel">تعذّر توليد التقرير</div>'; return; }
+  renderReport(r.data.report, r.data.degraded);
+  toast(r.data.degraded?'اتولّد (rule-based بدون AI)':'اتولّد التقرير ✓');
+};
+function renderReport(rep, degraded){
+  const inp=rep.input||{};
+  const lines=[];
+  lines.push(`# تقرير ${esc(funnel.name)} — ${esc(inp.periodLabel||'')}`,'',rep.executiveSummary,'');
+  if((inp.topLeaks||[]).length){ lines.push('## أهم التسريبات'); inp.topLeaks.forEach(l=>lines.push(`- ${l.title} (${l.severity}) — ${l.fastestFix}`)); lines.push(''); }
+  if((rep.topPriorities||[]).length){ lines.push('## أهم الإجراءات'); rep.topPriorities.forEach(p=>lines.push(`- ${p}`)); lines.push(''); }
+  lines.push(`## الأسبوع الجاي`, rep.nextWeekFocus||'—','', `> ${rep.ownerMessage||''}`);
+  lastReportText=lines.join('\n');
+
+  $('reportBox').innerHTML=`
+    ${degraded?'<div style="background:var(--amber-soft);color:var(--amber-ink);padding:8px 12px;border-radius:10px;font-size:12.5px;margin-bottom:12px">تقرير rule-based (من غير AI). شغّال بالكامل من البيانات المرصودة.</div>':''}
+    <div class="panel" style="background:linear-gradient(135deg,#fff,#f5f3fe)">
+      <div style="font-size:12px;color:var(--violet);font-weight:800">الملخص التنفيذي</div>
+      <p style="font-size:15px;line-height:1.8;margin:8px 0 0">${esc(rep.executiveSummary)}</p>
+    </div>
+    ${(inp.topLeaks||[]).length?`<div class="panel"><h3>أهم التسريبات</h3>${inp.topLeaks.map(l=>`<div style="padding:8px 0;border-bottom:1px solid var(--line)"><b>${esc(l.title)}</b> <span style="font-size:11.5px;color:var(--ink-3)">(${esc(l.severity)})</span><div style="font-size:13px;color:var(--ink-2)">أسرع إصلاح: ${esc(l.fastestFix)}</div></div>`).join('')}</div>`:''}
+    <div class="panel"><h3>أهم الإجراءات</h3>${(rep.topPriorities||[]).map(p=>`<div style="padding:6px 0;font-size:13.5px">• ${esc(p)}</div>`).join('')||'<p style="color:var(--ink-3)">مفيش إجراءات.</p>'}</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px">
+      ${repStat('عملاء محتاجين تحرّك',inp.leadsNeedingAction)}
+      ${repStat('الدفع متوقف',inp.paymentStuck)}
+      ${repStat('ضغطوا واتساب من غير رد',inp.whatsappClickedNoContact)}
+    </div>
+    <div class="panel"><h3>الأسبوع الجاي</h3><p style="font-size:14px">${esc(rep.nextWeekFocus)}</p>
+      <div style="background:var(--teal-soft);border-radius:10px;padding:12px;margin-top:10px;font-size:14px">${esc(rep.ownerMessage)}</div></div>
+    ${rep.repairs&&rep.repairs.applied?`<div class="panel"><h3>الإصلاحات</h3>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px">
+        ${repStat('اتطبّقت',rep.repairs.applied)}${repStat('ظهر تحسّنها',rep.repairs.improved)}
+        ${repStat('مستنية بيانات',rep.repairs.awaiting)}${repStat('مفيش تغيّر',rep.repairs.noChange)}
+      </div>
+      <p style="font-size:12px;color:var(--ink-3);margin-top:8px">الأثر بيتقاس من البيانات المرصودة فقط — مفيش أرقام مفبركة.</p>
+      ${rep.learning?`<div style="margin-top:10px;border-top:1px solid var(--line);padding-top:8px">
+        <div style="font-size:12.5px;font-weight:700;color:var(--violet);margin-bottom:4px">أنماط التعلّم</div>
+        ${rep.learning.hasData&&rep.learning.patterns&&rep.learning.patterns.length?rep.learning.patterns.map(p=>`<div style="font-size:12px;color:var(--ink-2)">• ${esc(p.note)} <span style="color:var(--ink-3)">(ثقة: ${esc(p.confidence)})</span></div>`).join(''):`<div style="font-size:12px;color:var(--ink-3)">${esc(rep.learning.note||'لسه مفيش بيانات تعلّم كفاية.')}</div>`}
+        ${rep.playbooks&&(rep.playbooks.used&&rep.playbooks.used.length||rep.playbooks.insufficient&&rep.playbooks.insufficient.length)?`<div style="margin-top:6px;font-size:12px;color:var(--ink-3)">أدلة مفعّلة: ${(rep.playbooks.used||[]).map(u=>esc(u.type)).join('، ')||'—'}${rep.playbooks.insufficient&&rep.playbooks.insufficient.length?` · بيانات غير كافية: ${rep.playbooks.insufficient.length} نوع`:''}</div>`:''}
+        ${rep.applications&&(rep.applications.applied||rep.applications.pending)?`<div style="margin-top:4px;font-size:12px;color:var(--ink-3)">تطبيقات playbook: ${rep.applications.applied||0} اتطبّقت · ${rep.applications.pending||0} مستنية موافقة${rep.applications.improved?` · ${rep.applications.improved} ظهر تحسّنها`:''}${rep.applications.awaiting?` · ${rep.applications.awaiting} مستنية بيانات`:''}${rep.applications.noChange?` · ${rep.applications.noChange} مفيش تغيّر`:''}</div>`:''}
+        ${rep.portfolio&&rep.portfolio.funnels>1?`<div style="margin-top:4px;font-size:12px;color:var(--ink-3)">المحفظة: ${rep.portfolio.funnels} قمع${rep.portfolio.strongest?` · ${esc(rep.portfolio.strongest)}`:''}${rep.portfolio.needsAttention?` · ${rep.portfolio.needsAttention} محتاجة انتباه`:''}${rep.portfolio.transferable?` · ${rep.portfolio.transferable} نقل ممكن`:''}${rep.portfolio.insufficient?' · بعض المقارنات بيانتها غير كافية':''}</div>`:''}
+      </div>`:''}</div>`:''}`;
+  $('copyReportBtn').style.display='inline-block';
+}
+function repStat(k,v){return `<div class="panel" style="margin:0;text-align:center"><div style="font-size:24px;font-weight:800;color:var(--violet)">${v??0}</div><div style="font-size:12px;color:var(--ink-3)">${k}</div></div>`;}
+$('copyReportBtn').onclick=()=>{if(lastReportText){navigator.clipboard.writeText(lastReportText);toast('اتنسخ التقرير ✓');}};
+
+
+const STEP_AR={first_reply:'أول رد',qualification:'تأهيل',need_discovery:'اكتشاف الاحتياج',price_reveal:'كشف السعر',
+  objection:'اعتراض',payment_details:'تفاصيل الدفع',payment_reminder:'تذكير الدفع',proof_reminder:'تذكير الإثبات',
+  confirmation:'تأكيد',delivery:'تسليم',no_response:'متابعة بعد صمت',recovery:'استرداد',upsell:'عرض إضافي'};
+let waFlow=null, waSteps=[];
+
+async function loadWhatsapp(){
+  const r=await api(`/funnels/${journeyId}/whatsapp-flow`);
+  if(!r.ok){ waFlow=null; waSteps=[]; renderWaSteps(); return; }
+  waFlow=r.data.flow; waSteps=r.data.steps||[]; renderWaSteps();
+}
+$('genWaBtn').onclick=async()=>{
+  toast('fnnlr بيكتب محادثة البيع…');
+  const r=await api(`/funnels/${journeyId}/whatsapp-flow/generate`,{method:'POST'});
+  if(r.ok){toast(r.data.degraded?`اتولّد flow (${r.data.templates} قالب، مسودة)`:`اتولّد ${r.data.templates} قالب ✓`);loadWhatsapp();}
+  else toast('محتاج عرض الأول');
+};
+function renderWaSteps(){
+  if(!waSteps.length){ $('waSteps').innerHTML=''; return; }
+  let h=`<div class="panel"><h3>استراتيجية المحادثة</h3><p style="color:var(--ink-2);font-size:13.5px">${esc(waFlow.strategy)}</p>
+    ${waFlow.handoff_notes?`<div style="font-size:12.5px;color:var(--ink-3);margin-top:6px">🤝 ${esc(waFlow.handoff_notes)}</div>`:''}</div>`;
+  // conversation stage map
+  h+='<div class="panel"><h3>خريطة المحادثة</h3><div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">'+
+    waSteps.filter(s=>s.step_type!=='objection').map((s,i,arr)=>`<span style="font-size:12px;background:var(--paper);border:1px solid var(--line);border-radius:99px;padding:4px 11px">${STEP_AR[s.step_type]||s.step_type}</span>${i<arr.length-1?'<span style="color:var(--ink-3)">←</span>':''}`).join('')+'</div></div>';
+  // template cards
+  h+=waSteps.map(s=>`
+    <div class="panel" style="${s.active===false?'opacity:.55':''}">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+        <span style="font-size:12px;font-weight:700;color:var(--teal);background:var(--teal-soft);padding:3px 10px;border-radius:99px">${STEP_AR[s.step_type]||s.step_type}</span>
+        <b style="font-size:14px">${esc(s.title)}</b>
+        ${s.requires_approval?'<span style="font-size:10.5px;color:var(--amber-ink);background:var(--amber-soft);padding:2px 7px;border-radius:99px">يحتاج موافقة</span>':''}
+        <div style="margin-inline-start:auto;display:flex;gap:5px">
+          <button class="add-row" style="width:auto;padding:5px 9px" onclick="copyWa('${s.id}')">نسخ</button>
+          <button class="add-row" style="width:auto;padding:5px 9px" onclick="delWa('${s.id}')">حذف</button>
+        </div>
+      </div>
+      <textarea rows="3" data-wa="${s.id}">${esc(s.body)}</textarea>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:8px;font-size:12px;color:var(--ink-3)">
+        ${s.delay_suggestion?`<span>⏱ ${esc(s.delay_suggestion)}</span>`:''}
+        ${s.no_zann_cooldown_hours?`<span>🚫 مفيش إلحاح قبل ${s.no_zann_cooldown_hours} ساعة</span>`:''}
+        ${s.when_to_use?`<span>📌 ${esc(s.when_to_use)}</span>`:''}
+      </div>
+    </div>`).join('');
+  $('waSteps').innerHTML=h;
+  $('waSteps').querySelectorAll('[data-wa]').forEach(el=>el.onchange=async()=>{
+    await api(`/whatsapp-flow-steps/${el.dataset.wa}`,{method:'PATCH',body:{body:el.value}}); toast('اتحفظ القالب');
+  });
+}
+window.copyWa=(id)=>{const s=waSteps.find(x=>x.id===id);if(s){navigator.clipboard.writeText(s.body);toast('اتنسخ ✓');
+  api(`/whatsapp-flow-steps/${id}`,{method:'PATCH',body:{}});}};
+window.delWa=async(id)=>{await api(`/whatsapp-flow-steps/${id}`,{method:'DELETE'});waSteps=waSteps.filter(s=>s.id!==id);renderWaSteps();toast('اتحذف');};
+
+
+const PM_AR={instapay:'إنستاباي',vodafone_cash:'فودافون كاش',bank_transfer:'تحويل بنكي',paymob:'Paymob',
+  fawry:'فوري',tap:'Tap',hyperpay:'HyperPay',moyasar:'Moyasar',stripe:'Stripe',manual_proof:'إثبات يدوي',payment_link:'رابط دفع'};
+const PSTATE_MACHINE=[['not_started','لم يبدأ'],['payment_details_sent','اتبعت التفاصيل'],['waiting_payment','بانتظار الدفع'],
+  ['proof_uploaded','رفع إثبات'],['needs_review','محتاج مراجعة'],['confirmed','مؤكَّد'],['access_delivered','تم التسليم'],
+  ['stuck','متوقف'],['failed','فشل'],['cancelled','ملغي']];
+let payMethods=[];
+
+async function loadPayment(){
+  const r=await api(`/funnels/${journeyId}/payment-flow`);
+  payMethods=r.ok? r.data:[];
+  renderPayMethods();
+  renderStateMachine();
+}
+$('genPayBtn').onclick=async()=>{
+  toast('fnnlr بيكتب تعليمات الدفع…');
+  const r=await api(`/funnels/${journeyId}/payment-flow/generate`,{method:'POST'});
+  if(r.ok){toast(r.data.degraded?'اتولّدت (مسودة بدون AI)':'اتولّدت ✓');loadPayment();}
+  else toast('محتاج عرض الأول');
+};
+$('addMethodSel').onchange=async(e)=>{
+  const m=e.target.value; if(!m)return; e.target.value='';
+  await api(`/funnels/${journeyId}/payment-flow/methods`,{method:'POST',body:{method:m}});
+  toast('اتضافت طريقة دفع');loadPayment();
+};
+function renderPayMethods(){
+  if(!payMethods.length){ $('payMethods').innerHTML='<div class="panel" style="text-align:center;color:var(--ink-3)">مفيش طرق دفع لسه. أضف طريقة أو اضغط «ولّد تعليمات الدفع» عشان نبدأ بطرق السوق المقترحة.</div>'; return; }
+  $('payMethods').innerHTML=payMethods.map(m=>`
+    <div class="panel" style="${m.active?'':'opacity:.55'}">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+        <span style="font-size:14px;font-weight:800;color:var(--violet);background:#f0ecfb;padding:3px 11px;border-radius:99px">${PM_AR[m.method]||m.method}</span>
+        <div style="margin-inline-start:auto;display:flex;gap:5px">
+          <button class="add-row" style="width:auto;padding:5px 10px" onclick="togglePay('${m.id}',${!m.active})">${m.active?'إيقاف':'تفعيل'}</button>
+          <button class="add-row" style="width:auto;padding:5px 10px" onclick="delPay('${m.id}')">حذف</button>
+        </div>
+      </div>
+      <div class="field"><label>تفاصيل الحساب/الرقم/الرابط</label><input value="${esc(m.account_details)}" data-pm="${m.id}:account_details" placeholder="مثلاً: 010xxxxxxxx"/></div>
+      <div class="field"><label>تعليمات العميل</label><textarea rows="3" data-pm="${m.id}:customer_instructions" placeholder="هتتولّد تلقائيًا">${esc(m.customer_instructions)}</textarea></div>
+      <div class="field"><label>رسالة واتساب</label><textarea rows="2" data-pm="${m.id}:whatsapp_message">${esc(m.whatsapp_message)}</textarea></div>
+      <div class="two">
+        <div class="field"><label>رسالة التأكيد</label><input value="${esc(m.confirmation_message)}" data-pm="${m.id}:confirmation_message"/></div>
+        <div class="field"><label>رسالة التذكير</label><input value="${esc(m.reminder_message)}" data-pm="${m.id}:reminder_message"/></div>
+      </div>
+      <div class="two">
+        <div class="field"><label>متابعة لو الدفع وقف</label><input value="${esc(m.stuck_followup_message)}" data-pm="${m.id}:stuck_followup_message"/></div>
+        <div class="field"><label>رسالة التسليم</label><input value="${esc(m.delivery_message)}" data-pm="${m.id}:delivery_message"/></div>
+      </div>
+    </div>`).join('');
+  $('payMethods').querySelectorAll('[data-pm]').forEach(el=>el.onchange=async()=>{
+    const [id,key]=el.dataset.pm.split(':'); await api(`/payment-methods/${id}`,{method:'PATCH',body:{[key]:el.value}}); toast('اتحفظ');
+  });
+}
+window.togglePay=async(id,active)=>{await api(`/payment-methods/${id}`,{method:'PATCH',body:{active}});loadPayment();};
+window.delPay=async(id)=>{await api(`/payment-methods/${id}`,{method:'DELETE'});loadPayment();toast('اتحذفت');};
+function renderStateMachine(){
+  $('payStateMachine').innerHTML='<div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center">'+
+    PSTATE_MACHINE.map(([k,v],i)=>`<span style="font-size:12.5px;background:var(--paper);border:1px solid var(--line);border-radius:99px;padding:5px 12px">${v}</span>${i<PSTATE_MACHINE.length-1?'<span style="color:var(--ink-3)">←</span>':''}`).join('')+
+    '</div><p style="color:var(--ink-3);font-size:12.5px;margin-top:10px">العميل بيتنقّل في الرحلة دي من شاشة العميل. كل انتقال بيتسجّل ويطلّع event عشان لوحة التسريبات تشوف الوقفات.</p>';
+}
+
+
+const LANE_AR={traffic:'الزيارات',page:'الصفحة',whatsapp:'واتساب',payment:'الدفع',followup:'المتابعة',tracking:'التتبّع'};
+const LANE_IC={traffic:'⇥',page:'▤',whatsapp:'💬',payment:'▦',followup:'↻',tracking:'⊹'};
+const SEV_AR={low:'منخفض',medium:'متوسط',high:'عالٍ',critical:'حرِج'};
+const SEV_COLOR={low:'#9aa4b2',medium:'#e08a1e',high:'#d8556b',critical:'#b3253c'};
+
+$('runDiagBtn').onclick=loadLeaks;
+async function loadLeaks(){
+  $('leakBoard').innerHTML='<div class="panel" style="text-align:center;color:var(--ink-3)">… بنشخّص</div>';
+  const run=await api(`/funnels/${journeyId}/leaks/run`,{method:'POST'});
+  if(!run.ok){ $('leakBoard').innerHTML='<div class="panel">تعذّر التشخيص</div>'; return; }
+  if(!run.data.enoughData){
+    $('leakBoard').innerHTML=`<div class="panel" style="text-align:center;padding:40px">
+      <div style="font-size:34px">⊹</div>
+      <h3>لسه مفيش بيانات كفاية</h3>
+      <p style="color:var(--ink-2);max-width:46ch;margin:8px auto 0">${esc(run.data.message)}</p>
+      <div style="display:flex;gap:10px;justify-content:center;margin-top:18px">
+        <button class="btn-save" onclick="goTab('capture')">فعّل التتبّع</button>
+        <button class="btn" style="background:#fff;border:1px solid var(--line);color:var(--ink-2)" onclick="goTab('page')">انشر الصفحة</button>
+      </div></div>`;
+    return;
+  }
+  const leaks=run.data.findings||[];
+  const list=await api(`/funnels/${journeyId}/leaks`);
+  renderBoard(list.ok? list.data : leaks);
+}
+
+function renderBoard(rows){
+  const open=rows.filter(r=>r.status==='open'||r.status==='fixing');
+  const biggest=open[0]||null;
+  let h='';
+  if(biggest){
+    h+=`<div class="panel" style="border-inline-start:4px solid ${SEV_COLOR[biggest.severity]};background:linear-gradient(135deg,#fff,#fdf3f4)">
+      <div style="font-size:12px;font-weight:800;color:${SEV_COLOR[biggest.severity]}">أكبر تسريب · ${SEV_AR[biggest.severity]||biggest.severity}</div>
+      <h3 style="margin:8px 0 4px">${esc(biggest.title)}</h3>
+      <p style="color:var(--ink-2);font-size:14px;margin:0 0 8px">${esc(biggest.explanation)}</p>
+      ${biggest.money_impact?`<div style="font-weight:800;color:${SEV_COLOR.high}">≈ ${Number(biggest.money_impact).toLocaleString('ar-EG')} ج.م معرّضة للضياع</div>`:'<div style="font-size:12px;color:var(--ink-3)">القيمة المالية مش متاحة (بيانات إيراد غير كافية)</div>'}
+      <div style="margin-top:10px;font-size:13.5px"><b>أسرع إصلاح:</b> ${esc(biggest.fastest_fix)}</div>
+      <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">${actionBtn(biggest)}</div>
+    </div>`;
+  }
+  // 6 lanes
+  const lanes=['traffic','page','whatsapp','payment','followup','tracking'];
+  h+='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:14px 0">';
+  for(const lane of lanes){
+    const inLane=rows.filter(r=>r.lane===lane && (r.status==='open'||r.status==='fixing'));
+    const worst=inLane.sort((a,b)=>sevRank(b.severity)-sevRank(a.severity))[0];
+    h+=`<div class="panel" style="margin:0;${worst?'border-top:3px solid '+SEV_COLOR[worst.severity]:''}">
+      <div style="font-size:20px">${LANE_IC[lane]}</div>
+      <div style="font-weight:700;margin-top:4px">${LANE_AR[lane]}</div>
+      <div style="font-size:12.5px;color:var(--ink-3);margin-top:2px">${inLane.length? inLane.length+' تسريب':'سليم ✓'}</div>
+      ${worst?`<div style="font-size:12px;color:${SEV_COLOR[worst.severity]};margin-top:6px">${esc(worst.title)}</div>`:''}
+    </div>`;
+  }
+  h+='</div>';
+  // detailed leak cards
+  h+=rows.map(r=>leakCard(r)).join('');
+  $('leakBoard').innerHTML=h;
+}
+function sevRank(s){return {low:1,medium:2,high:3,critical:4}[s]||0;}
+function leakCard(r){
+  const dim=(r.status==='fixed'||r.status==='ignored')?'opacity:.5':'';
+  const ev=r.evidence&&typeof r.evidence==='object'?Object.entries(r.evidence).map(([k,v])=>`${k}: ${v}`).join(' · '):'';
+  return `<div class="panel" style="${dim};border-inline-start:3px solid ${SEV_COLOR[r.severity]}">
+    <div style="display:flex;align-items:center;gap:8px">
+      <span style="font-size:11px;font-weight:800;padding:2px 9px;border-radius:99px;background:${SEV_COLOR[r.severity]}22;color:${SEV_COLOR[r.severity]}">${SEV_AR[r.severity]||r.severity}</span>
+      <b style="font-size:14.5px">${esc(r.title)}</b>
+      <span style="margin-inline-start:auto;font-size:11.5px;color:var(--ink-3)">${LANE_AR[r.lane]}</span>
+    </div>
+    <p style="color:var(--ink-2);font-size:13.5px;margin:8px 0 6px">${esc(r.explanation)}</p>
+    ${ev?`<div style="font-size:12px;color:var(--ink-3);background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:7px 10px">دليل: ${esc(ev)}</div>`:''}
+    <div style="margin-top:8px;font-size:13px"><b>أسرع إصلاح:</b> ${esc(r.fastest_fix)}</div>
+    <div style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap">
+      <button class="ai-btn" style="background:var(--violet);color:#fff;border-color:var(--violet)" onclick="buildRepair('${r.id}')">🛠 ابنِ خطة إصلاح</button>
+      ${actionBtn(r)}
+      <button class="add-row" style="width:auto;padding:6px 12px" onclick="setLeak('${r.id}','fixing')">قيد الإصلاح</button>
+      <button class="add-row" style="width:auto;padding:6px 12px" onclick="setLeak('${r.id}','ignored')">تجاهل</button>
+    </div>
+    <div id="repair-${r.id}" style="margin-top:10px"></div>
+  </div>`;
+}
+function actionBtn(r){
+  const a=r.recommended_action||'';
+  if(a.startsWith('open_leads:')){ const f=a.split(':')[1]; return `<button class="ai-btn" onclick="goTab('leads');setLeadFilter('${f}')">افتح العملاء المتأثرين</button>`; }
+  if(a==='open_page') return `<button class="ai-btn" onclick="goTab('page')">افتح الصفحة</button>`;
+  if(a==='open_payment') return `<button class="ai-btn" onclick="goTab('payment')">افتح الدفع</button>`;
+  if(a==='open_whatsapp') return `<button class="ai-btn" onclick="goTab('whatsapp')">افتح واتساب</button>`;
+  if(a==='open_capture'||a==='create_tracked_link') return `<button class="ai-btn" onclick="goTab('capture')">افتح التتبّع</button>`;
+  return '';
+}
+window.setLeak=async(id,status)=>{await api(`/leaks/${id}`,{method:'PATCH',body:{status}});toast('اتحدّثت الحالة');loadLeaks();};
+
+// ── Repair Plans (Sprint 17) ──
+const STEP_AR={create_task:'إنشاء مهام',draft_whatsapp:'تجهيز مسودة واتساب',update_page_section:'تحديث قسم الصفحة',
+  update_offer:'تحديث العرض',update_payment_instruction:'تحديث تعليمات الدفع',create_tracked_link:'إنشاء رابط متتبَّع',
+  mark_leak_fixing:'تعليم التسريب قيد الإصلاح',open_filtered_view:'فتح عملاء مفلترين',generate_report_note:'ملاحظة تقرير'};
+const RSTEP_STC={applied:'#0a6a60',pending:'#8a93a3',skipped:'#a35200',failed:'#b3253c',approved:'#6b4ee6'};
+const RSTEP_ST={applied:'اتطبّق',pending:'بانتظار',skipped:'اتجاهلت',failed:'فشلت',approved:'موافَق'};
+window.buildRepair=async(leakId)=>{
+  const box=$('repair-'+leakId); if(box) box.innerHTML='<div style="color:var(--ink-3);font-size:13px">… بنبني الخطة</div>';
+  const r=await api(`/funnels/${journeyId}/repairs/from-leak/${leakId}`,{method:'POST',body:{}});
+  if(!r.ok){ if(box)box.innerHTML='<div style="font-size:13px">تعذّر بناء الخطة</div>'; return; }
+  if(r.data.noEvidence){ if(box)box.innerHTML='<div style="font-size:13px;color:var(--ink-3)">الدليل مش كافٍ لبناء خطة إصلاح آمنة.</div>'; return; }
+  renderRepair(leakId, r.data.planId);
+};
+function renderLearningNotes(plan){
+  const ln=plan.learning_notes&&typeof plan.learning_notes==='object'?plan.learning_notes:{};
+  const conf=plan.learning_confidence; const src=plan.strategy_source;
+  const alt=plan.alternative_strategy&&typeof plan.alternative_strategy==='object'?plan.alternative_strategy:{};
+  const confAr={low:'منخفضة',medium:'متوسطة',high:'عالية'}[conf]||conf||'—';
+  const srcAr={heuristic:'افتراضية',learned:'متعلّمة',mixed:'مختلطة'}[src]||src;
+  let h='';
+  // Learning Notes
+  h+=`<div style="border:1px dashed #cdbff5;border-radius:10px;padding:9px 11px;margin-bottom:8px;background:#faf8ff">
+    <div style="font-size:11.5px;font-weight:800;color:var(--violet);margin-bottom:3px">📚 ملاحظات التعلّم</div>
+    <div style="font-size:12px;color:var(--ink-2)">${esc(ln.note||'مفيش بيانات تعلّم لسه.')}</div>
+    <div style="font-size:11px;color:var(--ink-3);margin-top:4px">ثقة: ${confAr} · المصدر: ${srcAr}${ln.sampleSize!=null?` · عينة: ${ln.sampleSize}`:''}${ln.decidedCount!=null?` · محسوم: ${ln.decidedCount}`:''}</div>
+    ${ln.fallbackReason?`<div style="font-size:11px;color:#a35200;margin-top:3px">⚠ ${esc(ln.fallbackReason)} — الترتيب افتراضي.</div>`:''}
+    ${ln.historicallyWeak?`<div style="font-size:11px;color:#b3253c;margin-top:3px">النوع ده تاريخيًا ضعيف — فكّر في الاستراتيجية البديلة.</div>`:''}
+  </div>`;
+  // Alternative Strategy
+  if(alt&&alt.title){
+    h+=`<div style="border:1px solid var(--line);border-radius:10px;padding:9px 11px;margin-bottom:8px;background:#fff">
+      <div style="font-size:11.5px;font-weight:800;color:var(--ink-2);margin-bottom:3px">استراتيجية بديلة: ${esc(alt.title)}</div>
+      <div style="font-size:11.5px;color:var(--ink-3);margin-bottom:5px">${esc(alt.whenToUse||'')}</div>
+      ${(alt.steps||[]).map(s=>`<div style="font-size:11.5px;color:var(--ink-2)">• ${esc(s.title)}</div>`).join('')}
+      ${plan.status==='proposed'&&plan.selected_strategy!=='alternative'?`<button class="ai-btn" style="margin-top:7px;font-size:12px;padding:5px 11px" onclick="switchStrategy('${plan.leak_id}','${plan.id}')">بدّل للاستراتيجية البديلة</button>`:''}
+      ${plan.selected_strategy==='alternative'?`<div style="font-size:11px;color:var(--teal);margin-top:5px">✓ الخطة دلوقتي على الاستراتيجية البديلة</div>`:''}
+    </div>`;
+  }
+  return h;
+}
+window.switchStrategy=async(leakId,planId)=>{
+  const r=await api(`/repairs/${planId}/switch-strategy`,{method:'POST',body:{}});
+  if(r.ok&&r.data.ok){ toast('اتبدّلت للاستراتيجية البديلة ✓'); renderRepair(leakId,planId); }
+  else { toast(r.data&&r.data.error?r.data.error:'تعذّر التبديل'); }
+};
+
+// ── Playbook Application (Sprint 21) ──
+const APP_OBJ_AR={offer:'العرض',page:'الصفحة',whatsapp:'واتساب',payment:'الدفع',followup:'المتابعة',funnel:'القمع'};
+const APP_STEP_STC={applied:'#0a6a60',pending:'#8a93a3',skipped:'#a35200',failed:'#b3253c'};
+const APP_STEP_ST={applied:'اتطبّق',pending:'بانتظار',skipped:'اتجاهلت',failed:'فشلت'};
+window.planApplication=async(scope)=>{
+  const box=$('appPlanBox'); if(box)box.innerHTML='<div class="panel" style="margin:0;color:var(--ink-3)">… بنبني خطة التحسين</div>';
+  const r=await api(`/funnels/${journeyId}/playbook-application/${scope}`,{method:'POST',body:{}});
+  if(!r.ok){ if(box)box.innerHTML='<div class="panel" style="margin:0">تعذّر بناء الخطة</div>'; return; }
+  if(r.data.noChanges){ if(box)box.innerHTML='<div class="panel" style="margin:0;color:var(--ink-3)">القمع متوافق مع الـ playbook — مفيش تغييرات مقترحة.</div>'; return; }
+  renderApplication(r.data.planId);
+};
+async function renderApplication(planId){
+  const box=$('appPlanBox'); if(!box)return;
+  const r=await api(`/playbook-applications/${planId}`); if(!r.ok)return;
+  const {plan,steps}=r.data;
+  const ln=plan.learning_notes&&typeof plan.learning_notes==='object'?plan.learning_notes:{};
+  const conf={low:['#a35200','منخفضة'],medium:['#0a6a60','متوسطة'],high:['#6b4ee6','عالية']}[plan.confidence]||['#8a93a3',plan.confidence];
+  const stBadge={proposed:['#6b4ee6','مقترحة'],approved:['#0a6a60','موافَق عليها'],applied:['#0a6a60','اتطبّقت'],partially_applied:['#a35200','جزئية'],rejected:['#b3253c','مرفوضة'],failed:['#b3253c','فشلت']}[plan.status]||['#8a93a3',plan.status];
+  box.innerHTML=`<div class="panel" style="margin:0;border:1px solid #e3dcfb;background:linear-gradient(135deg,#fff,#f7f5fe)">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+      <b style="font-size:15px;flex:1">خطة تحسين القمع من التعلّم</b>
+      <span style="font-size:11px;font-weight:700;color:${stBadge[0]}">${stBadge[1]}</span>
+      <span style="font-size:11px;font-weight:700;color:${conf[0]}">ثقة ${conf[1]}</span>
+      <span style="font-size:10.5px;color:var(--ink-3)">خطورة: ${plan.risk_level}</span>
+    </div>
+    ${plan.confidence==='low'?`<div style="font-size:12px;color:#a35200;margin-bottom:8px">⚠ بيانات التعلّم محدودة — دي تحسينات افتراضية، راجِعها كويس.</div>`:''}
+    <div style="display:grid;gap:7px;margin-bottom:10px">
+      ${steps.map(s=>{const bf=fmtSt(s.before_state),af=fmtSt(s.after_state);return `<div style="padding:9px 11px;background:#fff;border:1px solid var(--line);border-radius:10px">
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font-size:10.5px;background:var(--paper);border-radius:6px;padding:1px 7px;color:var(--ink-2)">${APP_OBJ_AR[s.object_type]||s.object_type}</span>
+          <b style="font-size:12.5px;flex:1">${esc(s.title)}</b>
+          ${s.low_confidence?`<span style="font-size:10px;color:#a35200">ثقة منخفضة</span>`:''}
+          <span style="font-size:10.5px;color:${APP_STEP_STC[s.status]}">${APP_STEP_ST[s.status]||s.status}</span>
+        </div>
+        <div style="font-size:11.5px;color:var(--ink-3);margin-top:3px">${esc(s.explanation||'')}</div>
+        ${(bf||af)?`<div style="font-size:11px;color:var(--ink-2);margin-top:4px">قبل: <span style="color:var(--ink-3)">${esc(bf||'—')}</span> ← بعد: <b>${esc(af||'—')}</b></div>`:''}
+        ${s.error?`<div style="font-size:10.5px;color:#b3253c;margin-top:3px">${esc(s.error)}</div>`:''}
+      </div>`}).join('')}
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      ${plan.status==='proposed'?`<button class="ai-btn" style="background:var(--violet);color:#fff;border-color:var(--violet)" onclick="approveApplication('${planId}')">وافِق</button>
+        <button class="ai-btn" onclick="rejectApplication('${planId}')">ارفض</button>`:''}
+      ${(plan.status==='approved'||plan.status==='partially_applied')?`<button class="ai-btn" style="background:var(--teal);color:#fff;border-color:var(--teal)" onclick="applyApplication('${planId}')">طبّق التغييرات الآمنة</button>`:''}
+      ${(plan.status==='applied'||plan.status==='partially_applied')?`<button class="ai-btn" onclick="measureApplication('${planId}')">📊 قِس النتيجة</button>`:''}
+      <button class="add-row" style="width:auto;padding:6px 12px" onclick="$('appPlanBox').innerHTML=''">إغلاق</button>
+    </div>
+    <div id="appOutcome-${planId}" style="margin-top:10px"></div>
+  </div>`;
+  if(plan.status==='applied'||plan.status==='partially_applied') loadAppOutcome(planId);
+}
+const APPOUT_BADGE={improved:['#0a6a60','تحسّن ✓'],early_signal:['#a35200','إشارة مبكرة'],awaiting_data:['#8a93a3','مستني بيانات'],no_change:['#b3253c','مفيش تغيّر'],worsened:['#b3253c','اتراجع'],inconclusive:['#8a93a3','غير حاسم']};
+async function loadAppOutcome(planId){
+  const r=await api(`/playbook-applications/${planId}/outcomes`); if(!r.ok||!r.data.length)return;
+  renderAppOutcome(planId, r.data[0]);
+}
+window.measureApplication=async(planId)=>{
+  const el=$('appOutcome-'+planId); if(el)el.innerHTML='<div style="color:var(--ink-3);font-size:12.5px">… بنقيس</div>';
+  const r=await api(`/playbook-applications/${planId}/measure`,{method:'POST',body:{}});
+  if(!r.ok){ if(el)el.innerHTML='<div style="font-size:12.5px">تعذّر القياس</div>'; return; }
+  if(r.data.state==='not_applied'){ if(el)el.innerHTML='<div style="font-size:12.5px;color:var(--ink-3)">لسه ماتطبّقش.</div>'; return; }
+  renderAppOutcome(planId, r.data, true);
+};
+function renderAppOutcome(planId, o){
+  const el=$('appOutcome-'+planId); if(!el)return;
+  const b=APPOUT_BADGE[o.status]||['#8a93a3',o.status];
+  const conf={low:'منخفضة',medium:'متوسطة',high:'عالية'}[o.confidence]||o.confidence;
+  const baseM=o.baselineMetrics||o.baseline_metrics||{}; const curM=o.current||o.current_metrics||{};
+  const keys=['ctaRate','clickedNotContacted','waitingPayment','overdueTasks','paid','activeLeaks'];
+  const k=keys.find(x=>x in baseM||x in curM);
+  let ba='';
+  if(k){ const f=(v)=>k==='ctaRate'?((v||0)*100).toFixed(1)+'%':(v??'—'); ba=`<div style="font-size:12px;color:var(--ink-2);margin-top:4px">قبل: <b>${f(baseM[k])}</b> · بعد: <b>${f(curM[k])}</b></div>`; }
+  const oid=o.outcomeId||o.id;
+  el.innerHTML=`<div style="border:1px solid var(--line);border-radius:11px;padding:11px;background:#fff">
+    <div style="display:flex;align-items:center;gap:8px"><b style="font-size:12.5px;flex:1">نتيجة تطبيق الـ Playbook</b>
+      <span style="font-size:11px;font-weight:700;color:${b[0]}">${b[1]}</span>
+      <span style="font-size:10.5px;color:var(--ink-3)">ثقة: ${conf}</span></div>
+    ${ba}
+    <p style="font-size:12.5px;color:var(--ink-2);margin:6px 0 0">${esc(o.interpretation||'')}</p>
+    <div style="display:flex;gap:6px;margin-top:8px">
+      ${o.status==='improved'&&oid?`<button class="ai-btn" style="background:var(--teal);color:#fff;border-color:var(--teal)" onclick="confirmAppOutcome('${oid}')">أكّد النجاح</button>`:''}
+      <button class="ai-btn" onclick="measureApplication('${planId}')">أعِد القياس</button>
+    </div>
+  </div>`;
+}
+window.confirmAppOutcome=async(oid)=>{ await api(`/playbook-application-outcomes/${oid}/confirm`,{method:'POST',body:{}}); toast('اتأكّد ✓'); };
+function fmtSt(v){ if(v==null)return''; const o=typeof v==='string'?(()=>{try{return JSON.parse(v)}catch{return v}})():v;
+  if(typeof o!=='object')return String(o);
+  if(o.guarantee!=null)return o.guarantee||'(فاضي)'; if(o.paymentPlan!=null)return o.paymentPlan||'(فاضي)';
+  if(o.addSection)return 'إضافة قسم '+o.addSection; if(o.addTemplate)return 'إضافة قالب '+o.addTemplate;
+  if(o.addStage)return 'إضافة مرحلة: '+o.addStage; if(o.priorityFirst)return 'أولوية: '+o.priorityFirst;
+  if(o.orderedIds)return 'إعادة ترتيب'; if(o.order)return (o.order||[]).join(' → ');
+  if(o.tracking)return o.tracking; if(o.addDefault)return o.addDefault; if(o.addProofStep)return 'إضافة طلب إثبات';
+  if(o.hasProof===false||o.hasFaq===false||o.hasTemplate===false||o.hasDefault===false)return 'غير موجود'; return ''; }
+window.approveApplication=async(id)=>{ await api(`/playbook-applications/${id}/approve`,{method:'POST',body:{}}); toast('اتوافق ✓'); renderApplication(id); };
+window.rejectApplication=async(id)=>{ await api(`/playbook-applications/${id}/reject`,{method:'POST',body:{}}); toast('اترفضت'); renderApplication(id); };
+window.applyApplication=async(id)=>{
+  toast('… بننفّذ التغييرات الآمنة');
+  const r=await api(`/playbook-applications/${id}/apply`,{method:'POST',body:{}});
+  if(r.ok){ toast(`اتطبّق: ${r.data.applied} · فشل: ${r.data.failed} · اتجاهل: ${r.data.skipped}`); }
+  renderApplication(id);
+  boot();
+};
+async function renderRepair(leakId, planId){
+  const box=$('repair-'+leakId); if(!box) return;
+  const r=await api(`/repairs/${planId}`); if(!r.ok) return;
+  const {plan,steps}=r.data;
+  const aff=plan.affected_objects||{};
+  const statusBadge={proposed:['#6b4ee6','مقترحة'],approved:['#0a6a60','موافَق عليها'],in_progress:['#a35200','جارية'],
+    applied:['#0a6a60','اتطبّقت'],partially_applied:['#a35200','اتطبّقت جزئيًا'],rejected:['#b3253c','مرفوضة'],failed:['#b3253c','فشلت']}[plan.status]||['#8a93a3',plan.status];
+  box.innerHTML=`<div style="border:1px solid #e3dcfb;border-radius:14px;padding:14px;background:linear-gradient(135deg,#fff,#f7f5fe)">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+      <b style="font-size:14px;flex:1">${esc(plan.title)}</b>
+      <span style="font-size:11px;font-weight:700;color:${statusBadge[0]}">${statusBadge[1]}</span>
+      <span style="font-size:10.5px;color:var(--ink-3)">خطورة: ${plan.risk_level}</span>
+    </div>
+    <p style="font-size:13px;color:var(--ink-2);margin:0 0 8px">${esc(plan.explanation)}</p>
+    ${aff.affectedCount?`<div style="font-size:12.5px;color:var(--violet);font-weight:700;margin-bottom:8px">${aff.affectedCount} عميل متأثر</div>`:''}
+    ${renderLearningNotes(plan)}
+    <div style="display:grid;gap:6px;margin-bottom:10px">
+      ${steps.map(s=>`<div style="display:flex;align-items:center;gap:8px;font-size:12.5px;padding:7px 9px;background:#fff;border:1px solid var(--line);border-radius:9px">
+        <span style="color:${RSTEP_STC[s.status]}">●</span>
+        <span style="flex:1"><b>${esc(STEP_AR[s.step_type]||s.step_type)}</b> — ${esc(s.title)}</span>
+        ${s.result_summary?`<span style="font-size:11px;color:var(--ink-3)">${esc(s.result_summary)}</span>`:''}
+        <span style="font-size:10.5px;color:${RSTEP_STC[s.status]}">${RSTEP_ST[s.status]||s.status}</span>
+      </div>`).join('')}
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      ${plan.status==='proposed'?`<button class="ai-btn" style="background:var(--violet);color:#fff;border-color:var(--violet)" onclick="approveRepair('${leakId}','${planId}')">وافِق على الخطة</button>
+        <button class="ai-btn" onclick="rejectRepair('${leakId}','${planId}')">ارفض</button>`:''}
+      ${(plan.status==='approved'||plan.status==='partially_applied'||plan.status==='in_progress')?`<button class="ai-btn" style="background:var(--teal);color:#fff;border-color:var(--teal)" onclick="applyRepair('${leakId}','${planId}')">طبّق الخطوات الآمنة</button>`:''}
+      ${plan.status==='applied'||plan.status==='partially_applied'?`<button class="ai-btn" onclick="measureRepair('${leakId}','${planId}')">📊 قِس النتيجة</button>`:''}
+    </div>
+    <div id="rstat-${planId}" style="margin-top:8px"></div>
+    <div id="routcome-${planId}" style="margin-top:8px"></div>
+  </div>`;
+  // auto-load latest outcome if applied
+  if(plan.status==='applied'||plan.status==='partially_applied') loadOutcome(planId);
+}
+const OUT_BADGE={improved:['#0a6a60','تحسّن ✓'],early_signal:['#a35200','إشارة مبكرة'],awaiting_data:['#8a93a3','مستني بيانات'],
+  no_change:['#b3253c','مفيش تغيّر'],worsened:['#b3253c','اتراجع'],inconclusive:['#8a93a3','غير حاسم']};
+async function loadOutcome(planId){
+  const r=await api(`/repairs/${planId}/outcomes`); if(!r.ok||!r.data.length) return;
+  renderOutcome(planId, r.data[0]);
+}
+window.measureRepair=async(leakId,planId)=>{
+  const el=$('routcome-'+planId); if(el)el.innerHTML='<div style="color:var(--ink-3);font-size:12.5px">… بنقيس</div>';
+  const r=await api(`/repairs/${planId}/outcomes/measure`,{method:'POST',body:{}});
+  if(!r.ok){ if(el)el.innerHTML='<div style="font-size:12.5px">تعذّر القياس</div>'; return; }
+  if(r.data.state==='not_applied'){ if(el)el.innerHTML='<div style="font-size:12.5px;color:var(--ink-3)">الخطة لسه ماتطبّقتش.</div>'; return; }
+  renderOutcome(planId, r.data, true);
+};
+function renderOutcome(planId, o, fresh){
+  const el=$('routcome-'+planId); if(!el) return;
+  const b=OUT_BADGE[o.status]||['#8a93a3',o.status];
+  const interp=o.interpretation||'';
+  const conf={low:'منخفضة',medium:'متوسطة',high:'عالية'}[o.confidence]||o.confidence;
+  const baseM=o.baselineMetrics||o.baseline_metrics||{}; const curM=o.current||o.current_metrics||{};
+  // pick a primary metric to show before/after if present
+  const keys=['waitingPayment','clickedNotContacted','overdueTasks','ctaRate','attributedLeads','confirmedNotDelivered','needsFollowup'];
+  const k=keys.find(x=>x in baseM||x in curM);
+  let ba='';
+  if(k){ const bv=baseM[k], cv=curM[k]; const f=(v)=>k==='ctaRate'?((v||0)*100).toFixed(1)+'%':(v??'—'); ba=`<div style="font-size:12px;color:var(--ink-2);margin-top:4px">قبل: <b>${f(bv)}</b> · بعد: <b>${f(cv)}</b></div>`; }
+  const oid=o.outcomeId||o.id;
+  el.innerHTML=`<div style="border:1px solid var(--line);border-radius:11px;padding:11px;background:#fff">
+    <div style="display:flex;align-items:center;gap:8px"><b style="font-size:12.5px;flex:1">نتيجة الإصلاح</b>
+      <span style="font-size:11px;font-weight:700;color:${b[0]}">${b[1]}</span>
+      <span style="font-size:10.5px;color:var(--ink-3)">ثقة: ${conf}</span></div>
+    ${ba}
+    <p style="font-size:12.5px;color:var(--ink-2);margin:6px 0 0">${esc(interp)}</p>
+    <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap">
+      ${o.status==='improved'&&oid?`<button class="ai-btn" style="background:var(--teal);color:#fff;border-color:var(--teal)" onclick="confirmOutcome('${planId}','${oid}')">أكّد النجاح واقفل التسريب</button>`:''}
+      <button class="ai-btn" onclick="measureRepair('','${planId}')">أعِد القياس</button>
+    </div>
+  </div>`;
+}
+window.confirmOutcome=async(planId,outcomeId)=>{ await api(`/repair-outcomes/${outcomeId}/confirm`,{method:'POST',body:{}}); toast('اتأكّد النجاح ✓'); loadLeaks(); };
+window.approveRepair=async(leakId,planId)=>{await api(`/repairs/${planId}/approve`,{method:'POST',body:{}});toast('اتوافق ✓');renderRepair(leakId,planId);};
+window.rejectRepair=async(leakId,planId)=>{await api(`/repairs/${planId}/reject`,{method:'POST',body:{}});toast('اترفضت');renderRepair(leakId,planId);};
+window.applyRepair=async(leakId,planId)=>{
+  toast('… بننفّذ الخطوات الآمنة');
+  const r=await api(`/repairs/${planId}/apply`,{method:'POST',body:{}});
+  if(r.ok){ toast(`اتطبّق: ${r.data.applied} · فشل: ${r.data.failed} · اتجاهل: ${r.data.skipped}`); }
+  renderRepair(leakId,planId);
+};
+window.repairStatus=async(leakId,planId)=>{
+  const r=await api(`/repairs/${planId}/status`); if(!r.ok)return;
+  const el=$('rstat-'+planId); if(el) el.innerHTML=`<div style="font-size:12.5px;color:var(--ink-2);background:var(--teal-soft);border-radius:9px;padding:8px 10px">${esc(r.data.note||r.data.state)}</div>`;
+};
+
+
+
+
+const STAGE_AR={new:'جديد',whatsapp_clicked:'ضغط واتساب',contacted:'تم التواصل',qualified:'مؤهَّل',
+  price_sent:'اتبعت السعر',payment_details_sent:'تفاصيل الدفع',waiting_payment:'بانتظار الدفع',
+  proof_uploaded:'رفع إثبات',paid:'دفع',access_delivered:'تم التسليم',lost:'خسران',needs_followup:'محتاج متابعة'};
+const PSTATE_AR={not_started:'لم يبدأ',payment_details_sent:'اتبعت التفاصيل',waiting_payment:'بانتظار الدفع',
+  proof_uploaded:'رفع إثبات',needs_review:'مراجعة',confirmed:'مؤكَّد',access_delivered:'تم التسليم',
+  stuck:'متوقف',failed:'فشل',cancelled:'ملغي'};
+const FILTERS=[['all','الكل'],['needs_followup','محتاج متابعة'],['waiting_payment','منتظر الدفع'],
+  ['clicked_not_contacted','ضغط ولم يتواصل'],['high_intent','عالي النية'],['payment_stuck','الدفع متوقف'],
+  ['paid','مدفوع'],['lost','خسران']];
+let leadFilter='all', leadList=[];
+
+function renderLeadFilters(){
+  $('leadFilters').innerHTML=FILTERS.map(([f,l])=>
+    `<button class="ai-btn" style="${f===leadFilter?'background:var(--violet);color:#fff':''}" onclick="setLeadFilter('${f}')">${l}</button>`).join('');
+}
+window.setLeadFilter=(f)=>{leadFilter=f;renderLeadFilters();loadLeads();};
+
+async function loadLeads(){
+  renderLeadFilters();
+  const r=await api(`/funnels/${journeyId}/leads?filter=${leadFilter}`);
+  leadList=r.ok? r.data:[];
+  if(!leadList.length){ $('leadsList').innerHTML='<div class="panel" style="text-align:center;color:var(--ink-3)">مفيش عملاء في الفلتر ده. العملاء بييجوا من ضغطات روابط واتساب المتتبَّعة.</div>'; return; }
+  $('leadsList').innerHTML='<div class="funnels">'+leadList.map(l=>`
+    <div class="funnel" style="cursor:pointer" onclick="openLead('${l.id}')">
+      <div class="ic">◎</div>
+      <div class="body"><b>${esc(l.name||'عميل جديد')}</b>
+        <div class="meta">${esc(l.source||'—')}${l.campaign?' · '+esc(l.campaign):''} · ${l.next_action?esc(l.next_action):'مفيش إجراء'}</div></div>
+      <span class="tag ${['paid','access_delivered'].includes(l.stage)?'':'draft'}">${STAGE_AR[l.stage]||l.stage}</span>
+    </div>`).join('')+'</div>';
+}
+
+window.openLead=async(id)=>{
+  curLeadId=id;
+  const r=await api(`/leads/${id}`);
+  if(!r.ok){toast('تعذّر تحميل العميل');return;}
+  renderLeadDetail(r.data);
+  $('leadOverlay').classList.add('show');
+  loadConversation(id);
+};
+window.closeLead=()=>{curLeadId=null;$('leadOverlay').classList.remove('show');};
+
+function renderLeadDetail(d){
+  const l=d.lead, attr=l.attribution||{};
+  $('leadTitle').textContent=l.name||'عميل جديد';
+  const stageOpts=Object.entries(STAGE_AR).map(([k,v])=>`<option value="${k}" ${l.stage===k?'selected':''}>${v}</option>`).join('');
+  const payOpts=Object.entries(PSTATE_AR).map(([k,v])=>`<option value="${k}" ${d.payment?.state===k?'selected':''}>${v}</option>`).join('');
+  const timeline=(d.stageHistory||[]).map(h=>`<div class="row"><div class="k">${fmtT(h.changed_at)}</div><div class="new">${STAGE_AR[h.from_stage]||h.from_stage||'—'} ← ${STAGE_AR[h.to_stage]||h.to_stage}</div></div>`).join('');
+  $('leadBody').innerHTML=`
+    <div class="field"><label>المرحلة</label>
+      <select id="ldStage" onchange="setStage('${l.id}',this.value)">${stageOpts}</select></div>
+    <div class="field"><label>حالة الدفع</label>
+      <select id="ldPay" onchange="setPay('${l.id}',this.value)">${payOpts}</select></div>
+    <div class="field"><label>إثبات الدفع (مرجع/ملاحظة)</label>
+      <div class="list-row"><input id="ldProof" placeholder="رقم العملية أو ملاحظة" value="${esc(d.payment?.proof_reference)}"/>
+        <button class="add-row" style="width:auto;padding:8px 14px" onclick="addProof('${l.id}')">حفظ الإثبات</button></div>
+      ${d.payment?.proof_received?'<div style="font-size:12px;color:var(--teal);margin-top:4px">✓ الإثبات مستلم</div>':''}</div>
+
+    <div class="panel" style="background:var(--paper);box-shadow:none;margin:6px 0">
+      <h4 style="margin:0 0 8px;font-size:12px;color:var(--ink-3)">المصدر (Attribution)</h4>
+      <div class="diff" style="font-size:13px">
+        <div class="row"><div class="k">source</div><div class="new">${esc(attr.source||l.source||'—')}</div></div>
+        <div class="row"><div class="k">campaign</div><div class="new">${esc(attr.campaign||l.campaign||'—')}</div></div>
+        <div class="row"><div class="k">medium</div><div class="new">${esc(attr.medium||l.medium||'—')}</div></div>
+        <div class="row"><div class="k">رابط</div><div class="new" dir="ltr">${esc(l.link_code||'—')}</div></div>
+      </div>
+    </div>
+
+    <div class="field"><label>المحادثة</label>
+      <div style="font-size:13px;color:var(--ink-2)">${d.conversation?`واتساب · من رابط ${esc(d.conversation.source_link_code||'—')} · ${fmtT(d.conversation.first_event_at||d.conversation.created_at)}`:'مفيش محادثة'}</div></div>
+
+    <div class="field"><label>الإجراء التالي</label>
+      <input id="ldNext" value="${esc(l.next_action)}" onchange="setNext('${l.id}',this.value)" placeholder="مثلاً: ابعت تفاصيل الدفع"/></div>
+
+    <div class="field"><label>أضف مهمة</label>
+      <div class="list-row"><input id="ldTask" placeholder="مثلاً: اتصل بالعميل"/>
+        <button class="add-row" style="width:auto;padding:8px 14px" onclick="addTask('${l.id}')">إضافة</button></div>
+      <div id="ldTasks" style="margin-top:8px">${(d.tasks||[]).map(t=>`<div style="font-size:13px;padding:5px 0;color:${t.done?'var(--ink-3)':'var(--ink)'}">${t.done?'✓':'○'} ${esc(t.title)}</div>`).join('')}</div></div>
+
+    <div class="field"><label>ملاحظة</label>
+      <div class="list-row"><input id="ldNote" placeholder="اكتب ملاحظة"/>
+        <button class="add-row" style="width:auto;padding:8px 14px" onclick="addLeadNote('${l.id}')">حفظ</button></div>
+      <div id="ldNotes" style="margin-top:8px">${(d.notes||[]).map(n=>`<div style="font-size:13px;padding:6px 0;border-bottom:1px solid var(--line)">${esc(n.body)} <span style="color:var(--ink-3);font-size:11px">${fmtT(n.created_at)}</span></div>`).join('')}</div></div>
+
+    <div class="panel" id="convPanel" style="box-shadow:none;border:1px solid var(--line);display:none">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+        <h4 style="margin:0;font-size:12px;color:var(--ink-3)">المحادثة (واتساب)</h4>
+        <span id="swBadge" style="font-size:10.5px;padding:1px 8px;border-radius:99px"></span>
+      </div>
+      <div id="convMessages" style="display:grid;gap:6px;max-height:200px;overflow:auto"></div>
+    </div>
+
+    <div class="panel" style="background:var(--teal-soft);box-shadow:none;border:1px solid #bfe6e0">
+      <h4 style="margin:0 0 8px;font-size:12px;color:#0a6a60">رد واتساب مقترح (Copilot)</h4>
+      <div id="copilotBox">
+        <button class="ai-btn" onclick="draftCopilot('${l.id}')">اقترح رد</button>
+        <button class="ai-btn" onclick="suggestFromInbound('${l.id}')" style="margin-inline-start:6px">اقترح رد على آخر رسالة</button>
+      </div>
+    </div>
+
+    <div class="panel" style="background:var(--paper);box-shadow:none">
+      <h4 style="margin:0 0 8px;font-size:12px;color:var(--ink-3)">الخط الزمني</h4>
+      <div class="diff">${timeline||'<p style="color:var(--ink-3);font-size:12px">مفيش تغييرات مراحل لسه.</p>'}</div>
+    </div>`;
+}
+window.setStage=async(id,stage)=>{await api(`/leads/${id}/stage`,{method:'POST',body:{stage}});toast('اتغيّرت المرحلة');loadLeads();};
+window.setPay=async(id,state)=>{
+  const r=await api(`/leads/${id}/payment-state`,{method:'POST',body:{state}});
+  if(r.ok){ toast('اتغيّرت حالة الدفع'); openLead(id); }
+  else { toast('الانتقال ده مش مسموح من الحالة الحالية'); openLead(id); }
+};
+window.addProof=async(id)=>{
+  const ref=$('ldProof')?.value.trim();
+  await api(`/leads/${id}/payment-proof`,{method:'POST',body:{proofReference:ref||undefined}});
+  toast('اتسجّل الإثبات');openLead(id);
+};
+window.setNext=async(id,v)=>{await api(`/leads/${id}`,{method:'PATCH',body:{next_action:v}});toast('اتحفظ');};
+window.addTask=async(id)=>{const t=$('ldTask').value.trim();if(!t)return;await api(`/leads/${id}/tasks`,{method:'POST',body:{title:t}});$('ldTask').value='';openLead(id);toast('اتضافت مهمة');};
+window.addLeadNote=async(id)=>{const n=$('ldNote').value.trim();if(!n)return;await api(`/leads/${id}/notes`,{method:'POST',body:{body:n}});$('ldNote').value='';openLead(id);toast('اتحفظت الملاحظة');};
+
+async function loadConversation(id){
+  const r=await api(`/leads/${id}/conversation`); if(!r.ok) return;
+  const d=r.data;
+  if(!d.messages || !d.messages.length){ const p=$('convPanel'); if(p)p.style.display='none'; return; }
+  const p=$('convPanel'); if(!p) return; p.style.display='block';
+  const sw=d.serviceWindow||{};
+  const colors={open:['#0a6a60','#d6f5ee'],expiring_soon:['#a35200','#ffe9cc'],closed:['#b3253c','#f7dde1'],unknown:['#8a93a3','#eef0f4']};
+  const cc=colors[sw.status]||colors.unknown;
+  const badge=$('swBadge'); if(badge){ badge.textContent=sw.hint||sw.status; badge.style.color=cc[0]; badge.style.background=cc[1]; }
+  $('convMessages').innerHTML=d.messages.map(m=>`
+    <div style="display:flex;${m.direction==='inbound'?'':'flex-direction:row-reverse'}">
+      <div style="max-width:75%;font-size:13px;padding:7px 10px;border-radius:11px;${m.direction==='inbound'?'background:var(--paper)':'background:#d6f5ee'}">
+        ${esc(m.body||'')}<div style="font-size:9.5px;color:var(--ink-3);margin-top:2px">${fmtT(m.created_at)}</div>
+      </div></div>`).join('');
+}
+window.suggestFromInbound=async(id)=>{
+  const r=await api(`/leads/${id}/copilot/suggest-from-inbound`,{method:'POST',body:{}});
+  if(!r.ok){toast('تعذّر');return;}
+  if(r.data.needsConversation){ toast('مفيش رسائل واردة لسه'); return; }
+  const sw=r.data.serviceWindow||{};
+  $('copilotBox').innerHTML=`
+    ${r.data.detectedObjection?`<div style="font-size:11px;color:#a35200;margin-bottom:4px">اعتراض متوقّع: ${esc(r.data.detectedObjection)}</div>`:''}
+    <div style="font-size:11px;color:#0a6a60;margin-bottom:6px">${esc(sw.hint||'')}</div>
+    <textarea id="copilotDraft" rows="4" style="background:#fff">${esc(r.data.suggestion)}</textarea>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px">
+      <button class="ai-btn" onclick="copyCopilot()">نسخ</button>
+      <button class="ai-btn" style="background:var(--teal);color:#fff;border-color:var(--teal)" onclick="markSentCopilot('${id}','${r.data.stepType||''}','')">علّمها كمتبعتة</button>
+    </div>`;
+};
+window.draftCopilot=async(id)=>{
+  const r=await api(`/leads/${id}/copilot/draft`,{method:'POST',body:{}});
+  if(!r.ok){toast('تعذّر');return;}
+  if(r.data.needsFlow){ $('copilotBox').innerHTML='<p style="font-size:13px;color:#0a6a60">محتاج تولّد WhatsApp flow الأول من تبويب واتساب.</p>'; return; }
+  if(!r.data.template){ $('copilotBox').innerHTML='<p style="font-size:13px;color:#0a6a60">مفيش قالب مناسب للمرحلة دي.</p>'; return; }
+  const t=r.data.template;
+  $('copilotBox').innerHTML=`
+    <div style="font-size:11.5px;color:#0a6a60;margin-bottom:6px">${STEP_AR[r.data.stepType]||r.data.stepType}${t.cooldownHours?` · 🚫 مفيش إلحاح قبل ${t.cooldownHours} ساعة`:''}</div>
+    <textarea id="copilotDraft" rows="4" style="background:#fff">${esc(t.body)}</textarea>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px">
+      <button class="ai-btn" onclick="copyCopilot()">نسخ</button>
+      <button class="ai-btn" style="background:var(--teal);color:#fff;border-color:var(--teal)" onclick="markSentCopilot('${id}','${r.data.stepType}','${r.data.draftId||''}')">علّمها كمتبعتة</button>
+      <button class="ai-btn" onclick="draftCopilot('${id}')">اقتراح تاني</button>
+    </div>
+    <p style="font-size:11px;color:var(--ink-3);margin-top:6px">مفيش إرسال تلقائي — إنت بتبعتها بنفسك على واتساب وتعلّمها هنا.</p>`;
+};
+window.copyCopilot=()=>{const t=$('copilotDraft');if(t){navigator.clipboard.writeText(t.value);toast('اتنسخ ✓');}};
+window.markSentCopilot=async(id,stepType,draftId)=>{
+  const body=$('copilotDraft')?.value;
+  const r=await api(`/leads/${id}/copilot/mark-sent`,{method:'POST',body:{draftId:draftId||undefined,stepType,body}});
+  toast(r.ok&&r.data.advancedTo?'اتعلّمت ومرحلة العميل اتحدّثت ✓':'اتعلّمت كمتبعتة ✓');
+  openLead(id);
+};
+
+
+let links=[];
+async function loadCapture(){
+  const [st,lk,cl]=await Promise.all([
+    api(`/funnels/${journeyId}/capture/status`),
+    api(`/funnels/${journeyId}/links`),
+    api(`/funnels/${journeyId}/capture/clicks`),
+  ]);
+  if(st.ok) renderCaptureStatus(st.data);
+  links = lk.ok? lk.data : [];
+  renderLinks();
+  renderClicks(cl.ok? cl.data : []);
+}
+function renderCaptureStatus(s){
+  $('captureStatus').innerHTML=`<h3>حالة التتبّع</h3>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:8px">
+      ${statCard('تتبّع الصفحة', s.pageTrackingActive?'شغّال':'غير منشور', s.pageTrackingActive)}
+      ${statCard('رابط واتساب', s.linkActive?'نشط':'مفيش', s.linkActive)}
+      ${statCard('إجمالي الضغطات', s.totalClicks ?? 0, (s.totalClicks||0)>0)}
+      ${statCard('عملاء اتسجّلوا', s.leadsCreated ?? 0, (s.leadsCreated||0)>0)}
+    </div>`;
+}
+function statCard(k,v,ok){return `<div style="background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:12px">
+  <div style="font-size:12px;color:var(--ink-3)">${k}</div>
+  <div style="font-size:18px;font-weight:800;margin-top:4px;color:${ok?'var(--teal)':'var(--ink-3)'}">${v}</div></div>`;}
+
+$('createLinkBtn').onclick=async()=>{
+  const phone=$('lnkPhone').value.trim();
+  if(!phone){ toast('اكتب رقم واتساب'); return; }
+  const body={destinationPhone:phone, messageTemplate:$('lnkMsg').value.trim()||undefined,
+    source:$('lnkSource').value.trim()||undefined, campaign:$('lnkCampaign').value.trim()||undefined,
+    medium:$('lnkMedium').value.trim()||undefined, ctaLabel:$('lnkCta').value.trim()||undefined};
+  const r=await api(`/funnels/${journeyId}/links`,{method:'POST',body});
+  if(r.ok){ toast('اتعمل الرابط ✓'); ['lnkPhone','lnkMsg','lnkSource','lnkCampaign','lnkMedium','lnkCta'].forEach(i=>$(i).value=''); loadCapture(); }
+  else toast('تعذّر');
+};
+function renderLinks(){
+  if(!links.length){ $('linksList').innerHTML='<p style="color:var(--ink-3);font-size:13px">مفيش روابط لسه.</p>'; return; }
+  $('linksList').innerHTML=links.map(l=>{
+    const url=`${API}/r/${l.code}`;
+    return `<div style="border:1px solid var(--line);border-radius:10px;padding:12px;margin-bottom:8px;${l.active?'':'opacity:.55'}">
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+        <span dir="ltr" style="font-family:monospace;font-size:12.5px;background:var(--paper);padding:3px 8px;border-radius:6px">${esc(url)}</span>
+        <span style="font-size:11.5px;color:var(--ink-3)">${l.source||'—'}${l.campaign?' · '+esc(l.campaign):''}</span>
+        <span style="font-size:11.5px;font-weight:700;color:var(--violet)">${l.clicks||0} ضغطة</span>
+        <div style="margin-inline-start:auto;display:flex;gap:5px">
+          <button class="add-row" style="width:auto;padding:5px 10px" onclick="copyLink('${esc(url)}')">نسخ</button>
+          <button class="add-row" style="width:auto;padding:5px 10px" onclick="window.open('${esc(url)}','_blank')">تجربة</button>
+          <button class="add-row" style="width:auto;padding:5px 10px" onclick="toggleLink('${l.id}',${!l.active})">${l.active?'إيقاف':'تفعيل'}</button>
+        </div>
+      </div></div>`;
+  }).join('');
+}
+window.toggleLink=async(id,active)=>{await api(`/funnels/${journeyId}/links/${id}`,{method:'PATCH',body:{active}});
+  const l=links.find(x=>x.id===id);if(l)l.active=active;renderLinks();toast(active?'اتفعّل':'اتوقف');};
+function renderClicks(rows){
+  if(!rows||!rows.length){ $('clicksList').innerHTML='<p style="color:var(--ink-3);font-size:13px">مفيش ضغطات لسه. انشر الرابط وجرّبه.</p>'; return; }
+  $('clicksList').innerHTML=rows.map(c=>`
+    <div style="display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--line)">
+      <span style="width:30px;height:30px;border-radius:8px;background:var(--teal-soft);color:#0a6a60;display:grid;place-items:center">◎</span>
+      <div style="flex:1"><b style="font-size:13.5px">عميل جديد</b>
+        <div style="font-size:12px;color:var(--ink-3)">${c.source||'—'}${c.campaign?' · '+esc(c.campaign):''} · ${fmtT(c.created_at)}</div></div>
+      <span style="font-size:11.5px;color:var(--teal)">${c.conversation_id?'محادثة واتساب':'—'}</span>
+    </div>`).join('');
+}
+function fmtT(d){try{return new Date(d).toLocaleString('ar-EG',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});}catch{return '';}}
+
+
+let page=null, pageSections=[], secPreview=null, secPreviewId=null;
+const SECTION_AR={hero:'الواجهة',problem:'المشكلة',promise:'الوعد',offer:'العرض',benefits:'الفوائد',
+  proof:'الإثبات',pricing:'التسعير',guarantee:'الضمان',faq:'أسئلة شائعة',cta_whatsapp:'CTA واتساب',
+  cta_payment:'CTA دفع',final_cta:'CTA نهائي'};
+const SEC_ACTIONS=[['rewrite_hero','أعد كتابة الواجهة'],['cta_whatsapp_first','CTA واتساب أولًا'],
+  ['premium','اجعله أرقى'],['shorter','اختصر'],['add_faq_objections','أضف اعتراضات للأسئلة'],
+  ['strengthen_proof','قوِّ الإثبات'],['egyptian','مصري'],['gulf','خليجي']];
+
+$('genPageBtn').onclick=async()=>{
+  toast('fnnlr بيبني الصفحة…');
+  const r=await api(`/funnels/${journeyId}/page/generate`,{method:'POST'});
+  if(!r.ok){ toast('محتاج عرض الأول'); return; }
+  await loadPage();
+};
+async function loadPage(){
+  const r=await api(`/funnels/${journeyId}/page`);
+  if(!r.ok){ $('pageEmpty').classList.remove('hidden'); $('pageEditor').classList.add('hidden'); return; }
+  page=r.data.page; pageSections=r.data.sections||[];
+  $('pageEmpty').classList.add('hidden'); $('pageEditor').classList.remove('hidden');
+  renderPageEditor();
+}
+function renderPageEditor(){
+  const published=page.published;
+  const pubUrl=`${API}/p/${page.slug||''}`;
+  let h=`<div class="panel">
+    <h3>الصفحة · ${esc(page.goal||'')}</h3>
+    <p style="color:var(--ink-2);font-size:13.5px">${esc(page.angle||'')}</p>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px">
+      <button class="btn-save" onclick="previewPage()">معاينة</button>
+      ${published
+        ? `<button class="btn" style="background:#fff;border:1px solid var(--line);color:var(--rose)" onclick="unpublish()">إلغاء النشر</button>
+           <button class="btn" style="background:var(--teal-soft);border:1px solid #bfe6e0;color:#0a6a60" onclick="copyLink('${esc(pubUrl)}')">نسخ الرابط العام</button>`
+        : `<button class="btn" style="background:var(--teal);color:#fff" onclick="publish()">نشر الصفحة</button>`}
+    </div>
+    ${published?`<div style="margin-top:10px;font-size:12.5px;color:var(--teal)">✓ منشورة · التتبّع شغّال · <span dir="ltr">${esc(pubUrl)}</span></div>`
+      :`<div style="margin-top:10px;font-size:12.5px;color:var(--ink-3)">مسودة — انشرها عشان تبقى متاحة وتتتبّع.</div>`}
+  </div>`;
+
+  h+=pageSections.map((s,idx)=>{
+    const ct=s.content||{};
+    return `<div class="panel" style="${s.visible?'':'opacity:.55'}">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+        <span style="font-size:12px;font-weight:700;color:var(--violet);background:#f0ecfb;padding:3px 10px;border-radius:99px">${SECTION_AR[s.type]||s.type}</span>
+        <div style="margin-inline-start:auto;display:flex;gap:5px">
+          <button class="add-row" style="width:auto;padding:5px 10px" onclick="moveSec(${idx},-1)">↑</button>
+          <button class="add-row" style="width:auto;padding:5px 10px" onclick="moveSec(${idx},1)">↓</button>
+          <button class="add-row" style="width:auto;padding:5px 10px" onclick="toggleSec('${s.id}',${!s.visible})">${s.visible?'إخفاء':'إظهار'}</button>
+          <button class="add-row" style="width:auto;padding:5px 10px" onclick="delSec('${s.id}')">حذف</button>
+        </div>
+      </div>
+      <div class="field"><label>العنوان</label><input value="${esc(ct.title)}" data-sec="${s.id}:title"/></div>
+      <div class="field"><label>النص</label><textarea rows="2" data-sec="${s.id}:body">${esc(ct.body)}</textarea></div>
+      ${ct.ctaLabel!==undefined?`<div class="field"><label>زر CTA</label><input value="${esc(ct.ctaLabel)}" data-sec="${s.id}:ctaLabel"/></div>`:''}
+      <div class="ai-actions" style="margin-top:6px">${SEC_ACTIONS.map(([a,l])=>`<button class="ai-btn" onclick="secAi('${s.id}','${a}')">${l}</button>`).join('')}</div>
+    </div>`;
+  }).join('');
+  $('pageEditor').innerHTML=h;
+  $('pageEditor').querySelectorAll('[data-sec]').forEach(el=>el.onchange=async()=>{
+    const [id,key]=el.dataset.sec.split(':');
+    const s=pageSections.find(x=>x.id===id); s.content=s.content||{}; s.content[key]=el.value;
+    await api(`/sections/${id}`,{method:'PATCH',body:{content:s.content}}); toast('اتحفظ');
+  });
+}
+window.moveSec=async(idx,dir)=>{const j=idx+dir;if(j<0||j>=pageSections.length)return;
+  [pageSections[idx],pageSections[j]]=[pageSections[j],pageSections[idx]];renderPageEditor();
+  await api(`/funnels/${journeyId}/page/sections/reorder`,{method:'POST',body:{pageId:page.id,orderedIds:pageSections.map(s=>s.id)}});toast('اتعاد الترتيب');};
+window.toggleSec=async(id,vis)=>{await api(`/sections/${id}`,{method:'PATCH',body:{visible:vis}});
+  const s=pageSections.find(x=>x.id===id);if(s)s.visible=vis;renderPageEditor();};
+window.delSec=async(id)=>{await api(`/sections/${id}`,{method:'DELETE'});pageSections=pageSections.filter(s=>s.id!==id);renderPageEditor();toast('اتحذف');};
+window.secAi=async(id,action)=>{toast('fnnlr بيشتغل…');
+  const r=await api(`/sections/${id}/action`,{method:'POST',body:{action}});
+  if(!r.ok){toast('تعذّر');return;} secPreview=r.data.preview;secPreviewId=id;
+  $('previewDeg').classList.toggle('hidden',!r.data.degraded);
+  $('previewTitle').textContent='معاينة تعديل القسم';
+  $('previewDiff').innerHTML=`<div class="row"><div class="k">العنوان</div><div class="new">${esc(secPreview.title)}</div></div>
+    <div class="row"><div class="k">النص</div><div class="new">${esc(secPreview.body)}</div></div>
+    ${secPreview.ctaLabel?`<div class="row"><div class="k">CTA</div><div class="new">${esc(secPreview.ctaLabel)}</div></div>`:''}`;
+  $('applyBtn').dataset.mode='section'; $('overlay').classList.add('show');
+};
+window.publish=async()=>{const dest=prompt('رابط واتساب للصفحة (اختياري):','https://wa.me/2010xxxxxxx')||undefined;
+  const r=await api(`/funnels/${journeyId}/page/publish`,{method:'POST',body:{whatsappDestination:dest}});
+  if(r.ok){page.published=true;page.slug=r.data.slug;renderPageEditor();toast('اتنشرت ✓');}};
+window.unpublish=async()=>{await api(`/funnels/${journeyId}/page/unpublish`,{method:'POST'});page.published=false;renderPageEditor();toast('اتوقف النشر');};
+window.copyLink=(u)=>{navigator.clipboard.writeText(u);toast('اتنسخ الرابط ✓');};
+window.previewPage=()=>{ if(page.slug) window.open(`./p.html?slug=${page.slug}`,'_blank');
+  else toast('انشر الصفحة الأول للمعاينة العامة'); };
+
+
+boot();
+</script>
+</body>
+</html>

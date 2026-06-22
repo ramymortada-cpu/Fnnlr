@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>fnnlr — ابنِ قمعك</title>
+<style>
+  :root{
+    --paper:#f7f6f3; --card:#fff; --ink:#1a1f26; --ink-2:#5b6675; --ink-3:#9aa4b2;
+    --line:#e7e4dd; --amber:#e08a1e; --amber-soft:#fbf2e2; --amber-ink:#7a4a08;
+    --teal:#0f9b8e; --teal-soft:#e3f5f2; --rose:#d8556b; --violet:#6d5ae0;
+    --r:14px; --r-sm:10px; --shadow:0 1px 2px rgba(20,25,35,.04),0 8px 24px rgba(20,25,35,.05);
+    --font:"Segoe UI","Noto Sans Arabic",Tahoma,system-ui,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--font);font-size:15px;line-height:1.6}
+  button{font-family:inherit;cursor:pointer}
+  .hidden{display:none!important}
+  .wrap{max-width:680px;margin:0 auto;padding:28px 20px 80px}
+
+  .top{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px}
+  .logo{font-size:20px;font-weight:800}.logo b{color:var(--amber)}
+  .exit{color:var(--ink-3);font-size:13px;text-decoration:none;background:none;border:none}
+
+  /* progress */
+  .prog{height:6px;background:var(--line);border-radius:99px;overflow:hidden;margin-bottom:30px}
+  .prog .bar{height:100%;background:var(--amber);width:0;transition:width .35s ease}
+
+  /* wizard step */
+  .step{background:var(--card);border:1px solid var(--line);border-radius:var(--r);
+    box-shadow:var(--shadow);padding:32px}
+  .qnum{font-size:12.5px;color:var(--amber);font-weight:800;letter-spacing:.04em}
+  .q{font-size:22px;font-weight:800;letter-spacing:-.01em;margin:6px 0 4px}
+  .qhint{color:var(--ink-2);font-size:13.5px;margin-bottom:22px}
+  input,select,textarea{width:100%;background:var(--paper);border:1px solid var(--line);
+    border-radius:var(--r-sm);padding:13px 15px;font-family:inherit;font-size:15.5px;color:var(--ink);outline:none}
+  input:focus,select:focus,textarea:focus{border-color:var(--amber);background:#fff}
+  .opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  @media(max-width:520px){.opts{grid-template-columns:1fr}}
+  .opt{padding:13px 15px;border:1px solid var(--line);border-radius:var(--r-sm);background:var(--paper);
+    font-size:14.5px;font-weight:600;text-align:start;color:var(--ink)}
+  .opt:hover{border-color:var(--amber)}
+  .opt.sel{border-color:var(--amber);background:var(--amber-soft);color:var(--amber-ink)}
+  .multi-note{font-size:12px;color:var(--ink-3);margin-top:10px}
+
+  .nav{display:flex;justify-content:space-between;margin-top:26px;gap:12px}
+  .btn{border-radius:var(--r-sm);padding:12px 22px;font-size:14.5px;font-weight:700;border:1px solid transparent}
+  .btn-next{background:var(--amber);color:#fff}.btn-next:hover{filter:brightness(1.05)}
+  .btn-next:disabled{opacity:.45;cursor:not-allowed}
+  .btn-back{background:transparent;border-color:var(--line);color:var(--ink-2)}
+
+  /* building */
+  .building{text-align:center;padding:70px 20px}
+  .building .spin{width:46px;height:46px;border:4px solid var(--line);border-top-color:var(--amber);
+    border-radius:50%;animation:sp 1s linear infinite;margin:0 auto 22px}
+  @keyframes sp{to{transform:rotate(360deg)}}
+  .building h3{font-size:19px;margin:0 0 6px}.building p{color:var(--ink-2);font-size:14px}
+
+  /* result */
+  .result{display:none}
+  .res-hero{background:linear-gradient(135deg,#fff,#fdf6ea);border:1px solid var(--line);
+    border-radius:var(--r);padding:26px;box-shadow:var(--shadow);margin-bottom:18px}
+  .res-hero .type{display:inline-block;font-size:12px;font-weight:800;color:var(--amber-ink);
+    background:var(--amber-soft);padding:4px 11px;border-radius:99px}
+  .res-hero h2{font-size:23px;font-weight:800;margin:12px 0 6px;letter-spacing:-.01em}
+  .res-hero .promise{font-size:15px;color:var(--ink-2)}
+  .degraded{margin-top:14px;font-size:12.5px;background:#fff7e6;border:1px solid #f0d9a8;color:#8a6312;
+    padding:9px 12px;border-radius:var(--r-sm)}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px}
+  @media(max-width:560px){.grid2{grid-template-columns:1fr}}
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:18px;box-shadow:var(--shadow)}
+  .panel h4{margin:0 0 10px;font-size:13px;color:var(--ink-3);font-weight:700;text-transform:uppercase;letter-spacing:.04em}
+  .panel p{margin:0;font-size:14.5px}
+  .stages{display:flex;flex-direction:column;gap:0}
+  .stage{display:flex;gap:14px;align-items:flex-start;padding:14px 0;border-bottom:1px solid var(--line)}
+  .stage:last-child{border-bottom:none}
+  .stage .n{width:26px;height:26px;border-radius:8px;background:var(--violet);color:#fff;
+    display:grid;place-items:center;font-size:12.5px;font-weight:800;flex-shrink:0}
+  .stage .sb b{font-size:14.5px}.stage .sb .leak{font-size:12.5px;color:var(--rose);margin-top:3px}
+  .stage .sb .purpose{font-size:13px;color:var(--ink-2)}
+  .chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:6px}
+  .chip{font-size:12px;background:var(--paper);border:1px solid var(--line);border-radius:99px;padding:3px 10px;color:var(--ink-2)}
+  .checklist{list-style:none;padding:0;margin:0}
+  .checklist li{display:flex;gap:9px;padding:7px 0;font-size:14px;border-bottom:1px solid var(--line)}
+  .checklist li:last-child{border-bottom:none}.checklist li::before{content:'○';color:var(--amber)}
+  .res-actions{display:flex;gap:12px;margin-top:8px}
+  .btn-edit{background:var(--ink);color:#fff;border-radius:var(--r-sm);padding:13px 22px;font-weight:700;border:none;font-size:14.5px}
+  .btn-edit:hover{background:#000}
+  .msg{margin-top:14px;font-size:13px;padding:10px 12px;border-radius:var(--r-sm);display:none}
+  .msg.err{display:block;background:#fbe9ec;color:#9c2a3d}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <span class="logo"><b>fnnlr</b></span>
+    <button class="exit" onclick="history.back()">حفظ والخروج ✕</button>
+  </div>
+
+  <!-- WIZARD -->
+  <div id="wizard">
+    <div class="prog"><div class="bar" id="bar"></div></div>
+    <div class="step" id="stepBox"></div>
+    <div class="nav">
+      <button class="btn btn-back" id="backBtn">السابق</button>
+      <button class="btn btn-next" id="nextBtn">التالي ←</button>
+    </div>
+    <div class="msg" id="wizMsg"></div>
+  </div>
+
+  <!-- BUILDING -->
+  <div class="building hidden" id="building">
+    <div class="spin"></div>
+    <h3>fnnlr بيبني رحلة إيرادك…</h3>
+    <p>بنحدّد نوع القمع، المراحل، دور واتساب، خطة الدفع، والتسريبات المتوقعة.</p>
+  </div>
+
+  <!-- RESULT -->
+  <div class="result" id="result"></div>
+</div>
+
+<script>
+const API = localStorage.getItem('fnnlr_api') || 'http://localhost:8787';
+const token = localStorage.getItem('fnnlr_token');
+let ctx = null;
+
+const $ = (id)=>document.getElementById(id);
+async function api(path,{method='GET',body}={}){
+  const h={'Content-Type':'application/json'};
+  if(token) h['Authorization']=`Bearer ${token}`;     // tenant resolved server-side
+  const r=await fetch(API+path,{method,headers:h,body:body?JSON.stringify(body):undefined});
+  let d=null; try{d=await r.json()}catch{}; return {ok:r.ok,status:r.status,data:d};
+}
+
+/* ── Questions: one at a time, exactly the Sprint 3 inputs ── */
+const Q = [
+  { key:'businessName', type:'text', q:'إيه اسم البيزنس؟', hint:'الاسم اللي العميل بيعرفك بيه.', ph:'مثلاً: أكاديمية نور' },
+  { key:'market', type:'pick', q:'بتبيع في أنهي سوق؟', hint:'هنظبط اللهجة والدفع على السوق ده.',
+    opts:[['eg','مصر'],['sa','السعودية'],['ae','الإمارات'],['gulf','الخليج عمومًا'],['general','السوق العربي عمومًا']] },
+  { key:'sells', type:'text', q:'بتبيع إيه بالظبط؟', hint:'وصف قصير للمنتج أو الخدمة.', ph:'مثلاً: كورس تسويق رقمي' },
+  { key:'productType', type:'pick', q:'نوع المنتج؟', hint:'',
+    opts:[['course','كورس'],['coaching','برنامج تدريب/كوتشينج'],['consultation','استشارة'],['service','خدمة'],
+          ['digital_product','منتج رقمي'],['training','تدريب'],['booking','حجز موعد'],['high_ticket','عرض high-ticket']] },
+  { key:'priceRange', type:'text', q:'نطاق السعر؟', hint:'تقريبي — عشان نظبط خطة الدفع.', ph:'مثلاً: 3000–5000 ج.م' },
+  { key:'targetCustomer', type:'text', q:'مين العميل المثالي؟', hint:'مين اللي بيشتري منك أكتر؟', ph:'مثلاً: أصحاب مشاريع صغيرة' },
+  { key:'trafficSource', type:'pick', q:'الزيارات جاية منين؟', hint:'',
+    opts:[['Meta ads','إعلانات Meta'],['TikTok','تيك توك'],['LinkedIn','لينكدإن'],['organic','أورجانيك'],['influencer','مؤثرين'],['referral','ترشيحات']] },
+  { key:'salesChannel', type:'pick', q:'البيع بيخلص فين غالبًا؟', hint:'ده محور القمع.',
+    opts:[['whatsapp','واتساب'],['checkout','صفحة دفع'],['call','مكالمة'],['form','فورم'],['manual_transfer','تحويل يدوي']] },
+  { key:'paymentMethods', type:'multi', q:'طرق الدفع المتاحة؟', hint:'اختار كل اللي بتستخدمه.',
+    opts:[['instapay','إنستاباي'],['vodafone_cash','فودافون كاش'],['bank_transfer','تحويل بنكي'],['paymob','Paymob'],
+          ['fawry','فوري'],['tap','Tap'],['hyperpay','HyperPay'],['moyasar','Moyasar'],['manual_proof','إثبات يدوي']] },
+  { key:'tone', type:'pick', q:'نبرة الكلام المفضّلة؟', hint:'هنكتب بيها العرض وسكريبت واتساب.',
+    opts:[['egyptian_friendly','مصري ودود'],['egyptian_premium','مصري premium'],['gulf_professional','خليجي محترف'],
+          ['saudi_formal','سعودي رسمي'],['msa','فصحى'],['premium','راقٍ'],['friendly','ودود'],['direct_response','تسويق مباشر']] },
+  { key:'goal', type:'pick', q:'أهم هدف دلوقتي؟', hint:'هنرتّب القمع حواليه.',
+    opts:[['get more leads','عملاء أكتر'],['improve WhatsApp conversion','تحويل واتساب أحسن'],
+          ['reduce payment drop-off','تقليل تسريب الدفع'],['launch new offer','إطلاق عرض جديد'],
+          ['improve follow-up','متابعة أحسن'],['diagnose revenue leaks','تشخيص التسريبات']] },
+];
+
+const answers = { paymentMethods: [] };
+let i = 0;
+
+function render(){
+  const item = Q[i];
+  $('bar').style.width = ((i)/Q.length*100)+'%';
+  let inner = `<div class="qnum">سؤال ${i+1} من ${Q.length}</div><div class="q">${item.q}</div>`;
+  if(item.hint) inner += `<div class="qhint">${item.hint}</div>`; else inner+='<div style="height:8px"></div>';
+
+  if(item.type==='text'){
+    inner += `<input id="inp" placeholder="${item.ph||''}" value="${answers[item.key]||''}" />`;
+  } else if(item.type==='pick'){
+    inner += `<div class="opts">`+item.opts.map(([v,l])=>
+      `<button class="opt ${answers[item.key]===v?'sel':''}" data-v="${v}">${l}</button>`).join('')+`</div>`;
+  } else if(item.type==='multi'){
+    inner += `<div class="opts">`+item.opts.map(([v,l])=>
+      `<button class="opt ${answers[item.key].includes(v)?'sel':''}" data-v="${v}">${l}</button>`).join('')+`</div>`;
+    inner += `<div class="multi-note">تقدر تختار أكتر من واحدة.</div>`;
+  }
+  $('stepBox').innerHTML = inner;
+  $('backBtn').style.visibility = i===0 ? 'hidden':'visible';
+  $('nextBtn').textContent = i===Q.length-1 ? 'ابنِ القمع ✦' : 'التالي ←';
+
+  // bind
+  if(item.type==='text'){
+    const inp=$('inp'); inp.focus();
+    inp.oninput=()=>{ answers[item.key]=inp.value.trim(); validate(); };
+  } else {
+    $('stepBox').querySelectorAll('.opt').forEach(b=>b.onclick=()=>{
+      const v=b.dataset.v;
+      if(item.type==='multi'){
+        const arr=answers[item.key];
+        const idx=arr.indexOf(v); if(idx>=0)arr.splice(idx,1); else arr.push(v);
+        b.classList.toggle('sel');
+      } else { answers[item.key]=v; $('stepBox').querySelectorAll('.opt').forEach(x=>x.classList.remove('sel')); b.classList.add('sel'); }
+      validate();
+    });
+  }
+  validate();
+}
+function validate(){
+  const item=Q[i]; let ok;
+  if(item.type==='multi') ok = answers[item.key].length>0;
+  else ok = !!answers[item.key];
+  $('nextBtn').disabled = !ok;
+}
+$('nextBtn').onclick=()=>{ if(i<Q.length-1){ i++; render(); } else build(); };
+$('backBtn').onclick=()=>{ if(i>0){ i--; render(); } };
+
+async function build(){
+  $('wizard').classList.add('hidden');
+  $('building').classList.remove('hidden');
+  // need a businessId — fetch from /auth/me
+  const me = await api('/auth/me');
+  if(!me.ok){ showErr('محتاج تسجّل دخول الأول.'); return; }
+  ctx = me.data.ctx;
+  const r = await api('/funnels', { method:'POST', body:{ businessId: ctx.businessId, onboarding: answers } });
+  $('building').classList.add('hidden');
+  if(!r.ok){ showErr(r.data?.error || 'تعذّر بناء القمع.'); $('wizard').classList.remove('hidden'); return; }
+  showResult(r.data);
+}
+function showErr(t){ const m=$('wizMsg'); m.className='msg err'; m.textContent=t; }
+
+function showResult(data){
+  const bp = data.blueprint, offer = data.offer;
+  const typeAr = {click_to_whatsapp:'قمع كليك-تو-واتساب',course_sales:'قمع بيع كورس',high_ticket_consult:'قمع استشارة high-ticket',
+    hybrid:'قمع هجين',lead_magnet:'قمع lead magnet',vsl:'قمع فيديو بيعي',coaching_program:'قمع برنامج',
+    digital_product:'قمع منتج رقمي',paid_booking:'قمع حجز مدفوع',manual_transfer:'قمع تحويل يدوي'}[bp.funnelType]||bp.funnelType;
+
+  const el=$('result'); el.style.display='block';
+  el.innerHTML = `
+    <div class="res-hero">
+      <span class="type">${typeAr}</span>
+      <h2>${esc(bp.mainPromise||offer.promise||'رحلة إيرادك')}</h2>
+      <div class="promise">${esc(bp.objective||'')}</div>
+      ${data.degraded ? `<div class="degraded">⚠️ دي مسودة مبنية بدون الذكاء الاصطناعي (مفيش مفتاح AI متوصّل). كل حاجة قابلة للتعديل، وتقدر تحسّنها بالـ AI بعد ما توصّل المفتاح.</div>`:''}
+      ${bp.playbookNotes ? `<div style="margin-top:12px;font-size:12.5px;background:#faf8ff;border:1px solid #cdbff5;color:#5b4ba8;border-radius:10px;padding:10px 12px">📚 ملاحظة تعلّم: ${esc(bp.playbookNotes)}</div>`:''}
+    </div>
+
+    <div class="grid2">
+      <div class="panel"><h4>العميل المثالي</h4><p>${esc(bp.icpSummary||'')}</p></div>
+      <div class="panel"><h4>مستوى الوعي</h4><p>${esc(bp.awarenessLevel||'')}</p></div>
+      <div class="panel"><h4>دور واتساب</h4><p>${esc(bp.whatsappRole||'')}</p></div>
+      <div class="panel"><h4>دور الدفع</h4><p>${esc(bp.paymentRole||'')}</p></div>
+    </div>
+
+    <div class="panel" style="margin-bottom:18px">
+      <h4>مراحل القمع</h4>
+      <div class="stages">${(bp.stages||[]).map((s,idx)=>`
+        <div class="stage"><div class="n">${idx+1}</div>
+          <div class="sb"><b>${esc(s.name)}</b>
+            <div class="purpose">${esc(s.purpose||'')}</div>
+            <div class="chips"><span class="chip">${esc(s.channel||'')}</span><span class="chip">${esc(s.conversionEvent||'')}</span></div>
+            ${s.expectedLeak?`<div class="leak">↯ تسريب متوقع: ${esc(s.expectedLeak)}</div>`:''}
+          </div></div>`).join('')}</div>
+    </div>
+
+    <div class="grid2">
+      <div class="panel"><h4>التسريبات المتوقعة</h4>
+        <ul class="checklist">${(bp.expectedLeaks||[]).map(l=>`<li>${esc(l)}</li>`).join('')}</ul></div>
+      <div class="panel"><h4>checklist الإطلاق</h4>
+        <ul class="checklist">${(bp.launchChecklist||[]).map(l=>`<li>${esc(l)}</li>`).join('')}</ul></div>
+    </div>
+
+    <div class="res-actions">
+      <button class="btn-edit" onclick="goEdit('${data.journeyId}')">افتح القمع وعدّله ←</button>
+    </div>
+    <p style="color:var(--ink-3);font-size:12.5px;margin-top:14px">✓ القمع اتحفظ كسجلات قابلة للتعديل — مش ملف ثابت. تقدر تعدّل كل مرحلة والعرض في أي وقت.</p>
+  `;
+}
+function goEdit(id){ localStorage.setItem('fnnlr_last_funnel', id); window.location.href='./funnel.html'; }
+function esc(s){ return (s||'').toString().replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+if(!token){ window.location.href='./index.html'; } else { render(); }
+</script>
+</body>
+</html>

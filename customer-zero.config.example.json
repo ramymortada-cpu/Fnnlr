@@ -1,0 +1,26 @@
+{
+  "workspaceName": "Acme Store",
+  "ownerEmail": "owner@acme.example",
+  "business": {
+    "name": "Acme Store",
+    "market": "eg",
+    "language": "masry"
+  },
+  "whatsappNumber": "+201000000000",
+  "offer": {
+    "promise": "نوصّلك المنتج في يومين",
+    "price": "499 جنيه",
+    "package": "المنتج + ضمان أسبوع"
+  },
+  "payment": {
+    "method": "instapay",
+    "accountDetails": "acme@instapay",
+    "instructions": "حوّل وابعت سكرين شوت على الواتساب"
+  },
+  "publicAppUrl": "https://acme.fnnlr.app",
+  "apiUrl": "https://api.fnnlr.app",
+  "supportOwner": "support@fnnlr.app",
+  "allowedIntegrations": ["whatsapp_cloud_api", "paymob", "instapay"],
+  "createFunnel": true,
+  "_note": "This file contains NO secrets. Keys/tokens live only in environment variables. The owner password is passed separately to the setup runner, never stored here."
+}
