@@ -37,6 +37,8 @@ jobs:
         run: npm run gateforge:hosted-operator-drift-smoke
       - name: GateForge GitHub secrets audit smoke
         run: npm run gateforge:github-secrets-audit-smoke
+      - name: GateForge hosted strict trigger smoke
+        run: npm run gateforge:trigger-hosted-strict-smoke
       - name: GateForge GA unblock evidence
         run: npm run gateforge:ga-unblock
         continue-on-error: true

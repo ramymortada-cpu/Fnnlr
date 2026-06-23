@@ -21,13 +21,21 @@ This is the operator checklist for converting GateForge from \`CANNOT_APPROVE\` 
 gh workflow run "${workflow}"
 \`\`\`
 
+Preferred trigger command:
+
+\`\`\`bash
+npm run gateforge:trigger-hosted-strict
+\`\`\`
+
+The trigger runs the secret-name audit first and refuses to start the workflow if any required secret name is missing.
+
 Then monitor:
 
 \`\`\`bash
 gh run list --workflow "${workflow}" --limit 1
 \`\`\`
 
-Before triggering the strict workflow, audit repository secret names without reading values:
+To audit repository secret names without triggering:
 
 \`\`\`bash
 npm run gateforge:github-secrets-audit

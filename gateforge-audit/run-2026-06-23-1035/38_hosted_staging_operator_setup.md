@@ -1,6 +1,6 @@
 # Hosted Staging Operator Setup
 
-Generated: `2026-06-23T13:07:48.125Z`
+Generated: `2026-06-23T13:12:58.692Z`
 
 This is the operator checklist for converting GateForge from `CANNOT_APPROVE` to a defensible `CONDITIONAL_GO`. It does not contain secret values.
 
@@ -10,13 +10,21 @@ This is the operator checklist for converting GateForge from `CANNOT_APPROVE` to
 gh workflow run "GateForge Hosted Staging Strict"
 ```
 
+Preferred trigger command:
+
+```bash
+npm run gateforge:trigger-hosted-strict
+```
+
+The trigger runs the secret-name audit first and refuses to start the workflow if any required secret name is missing.
+
 Then monitor:
 
 ```bash
 gh run list --workflow "GateForge Hosted Staging Strict" --limit 1
 ```
 
-Before triggering the strict workflow, audit repository secret names without reading values:
+To audit repository secret names without triggering:
 
 ```bash
 npm run gateforge:github-secrets-audit
