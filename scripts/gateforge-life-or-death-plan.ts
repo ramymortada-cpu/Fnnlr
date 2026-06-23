@@ -277,11 +277,14 @@ This file is an execution helper for closing the current GateForge blocker. It c
 \`\`\`bash
 mkdir -p /tmp/fnnlr-gateforge-secrets
 chmod 700 /tmp/fnnlr-gateforge-secrets
+npm run gateforge:scaffold-local-secrets
 \`\`\`
 
 ## Generate Random Local Values
 
-These commands generate values for secrets that can be random staging-only credentials. They do not cover database URLs, provider keys, email addresses, or external monitor URLs.
+The scaffold command generates values for secrets that can be random staging-only credentials and writes placeholders for values that must come from staging providers. It does not overwrite existing files unless run with \`-- --force\`.
+
+Manual equivalent:
 
 \`\`\`bash
 openssl rand -base64 32 > /tmp/fnnlr-gateforge-secrets/TENANT_CREDENTIAL_ENCRYPTION_KEY
