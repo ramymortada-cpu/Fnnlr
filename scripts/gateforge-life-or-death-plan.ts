@@ -340,6 +340,13 @@ npm run gateforge:upload-local-secrets -- --apply
 ## Verify And Trigger
 
 \`\`\`bash
+npm run gateforge:hosted-unblock -- --dry-run
+npm run gateforge:hosted-unblock -- --apply
+\`\`\`
+
+Manual fallback:
+
+\`\`\`bash
 npm run gateforge:github-secrets-audit
 npm run gateforge:trigger-hosted-strict
 gh run list --workflow "${strictWorkflow}" --limit 1

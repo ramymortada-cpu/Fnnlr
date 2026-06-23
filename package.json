@@ -71,6 +71,8 @@
     "gateforge:local-secret-files-check-smoke": "tsx scripts/gateforge-local-secret-files-check-smoke.ts",
     "gateforge:upload-local-secrets": "tsx scripts/gateforge-upload-local-secrets.ts",
     "gateforge:upload-local-secrets-smoke": "tsx scripts/gateforge-upload-local-secrets-smoke.ts",
+    "gateforge:hosted-unblock": "tsx scripts/gateforge-hosted-unblock-runner.ts",
+    "gateforge:hosted-unblock-smoke": "tsx scripts/gateforge-hosted-unblock-runner-smoke.ts",
     "gateforge:hosted-secrets-manifest-smoke": "tsx scripts/gateforge-hosted-secrets-manifest-smoke.ts",
     "gateforge:hosted-secrets-preflight-smoke": "tsx scripts/gateforge-hosted-secrets-preflight-smoke.ts",
     "gateforge:hosted-operator-drift-smoke": "tsx scripts/gateforge-hosted-operator-drift-smoke.ts",
