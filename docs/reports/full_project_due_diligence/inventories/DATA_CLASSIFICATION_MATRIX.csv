@@ -1,0 +1,7 @@
+Data category,Example fields,Source,Storage location,Sensitivity,Legal/privacy concern,Retention recommendation,Access control recommendation,Evidence
+Auth/session,"email,password hash,session token hash",Signup/login,Control plane,High,Personal/authentication data,Define account/session retention,Session auth + hashing,packages/db/control-plane/migrations/0002_auth_workspace.sql; modules/auth/src/service.ts
+Tenant business data,"business, funnels, offers, pages",Onboarding/funnel APIs,Tenant DB,Medium,Business confidential,Retain by contract; support deletion,Tenant DB isolation,tenant migrations; modules/funnel/pages
+Lead/customer data,"leads, conversations, tasks, payment state",Tracking/CRM APIs,Tenant DB,High,Personal/contact/payment-status data,Minimize and export/delete on request,Tenant scoped,packages/db/tenant/migrations/0006_funnel_crm.sql
+Integration credentials,webhook/API secrets,Integrations APIs,Tenant DB encrypted/marked,High,Secret/credential data,Rotate and delete on disconnect,Mask all reads,modules/integrations/src/secrets.ts; production-safety tests
+AI outputs,drafts/reports/recommendations,AI brains/services,Tenant DB or transient,Medium,Potential generated personal/business data,Log provenance and allow deletion,Tenant scoped,packages/ai-core; modules/reports/recommendations
+Operational logs,"audit_events, scheduled_runs, webhook events",Services/jobs,Tenant/control DB,Medium,May contain identifiers/errors,Retention schedule needed,Ops/admin only,migrations and runbooks

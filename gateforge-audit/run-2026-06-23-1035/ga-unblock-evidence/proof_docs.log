@@ -1,0 +1,14 @@
+> fnnlr-db-per-tenant@0.1.0 proof:check
+> tsx scripts/proof-check.ts docs
+
+Scanned 8 proof docs in docs
+  · COMPETITIVE_POSITIONING.md
+  · CUSTOMER_PROOF_PACK.md
+  · EVIDENCE_INDEX.md
+  · INVESTOR_PARTNER_PROOF.md
+  · PRODUCT_PROOF.md
+  · PROOF_ASSETS_CHECKLIST.md
+  · SECURITY_TRUST_PROOF.md
+  · TECHNICAL_PROOF.md
+
+RESULT: PASS

@@ -1,6 +1,9 @@
 import { getControlPool } from '../../../packages/db/src/router.js';
 import { provisionTenant } from '../../provisioning/src/provision.js';
-import { hashPassword, verifyPassword, generateToken, hashToken } from './crypto.js';
+import {
+  hashPassword, verifyPassword, generateToken, hashToken,
+  generateTotpSecret, encryptMfaSecret, decryptMfaSecret, verifyTotp,
+} from './crypto.js';
 
 /**
  * Auth service (control-plane).
@@ -17,6 +20,8 @@ export interface SessionContext {
   tenantId: string;        // the isolated tenant DB this session may touch
   businessId: string | null;
   role: 'owner' | 'admin' | 'member';
+  mfaEnabled: boolean;
+  mfaVerified: boolean;
 }
 
 const SESSION_TTL_MS = 1000 * 60 * 60 * 24 * 14; // 14 days
@@ -76,7 +81,7 @@ export async function signup(input: { email: string; password: string; businessN
   } catch { /* business mirror is best-effort */ }
 
   const token = await createSession(userId);
-  return { token, ctx: { userId, email, workspaceId, tenantId: tenant.tenantId, businessId, role: 'owner' } };
+  return { token, ctx: { userId, email, workspaceId, tenantId: tenant.tenantId, businessId, role: 'owner', mfaEnabled: false, mfaVerified: false } };
 }
 
 export async function login(input: { email: string; password: string }): Promise<{ token: string; ctx: SessionContext }> {
@@ -114,18 +119,18 @@ export async function resolveSession(token: string | undefined): Promise<Session
   if (!token) return null;
   const control = getControlPool();
   const s = await control.query(
-    `SELECT user_id FROM sessions
+    `SELECT user_id, mfa_verified_at FROM sessions
       WHERE token_hash=$1 AND revoked_at IS NULL AND expires_at > now()`,
     [hashToken(token)],
   );
   if (!s.rowCount) return null;
-  return contextForUser(s.rows[0].user_id);
+  return contextForUser(s.rows[0].user_id, !!s.rows[0].mfa_verified_at);
 }
 
-async function contextForUser(userId: string): Promise<SessionContext> {
+async function contextForUser(userId: string, mfaVerified = false): Promise<SessionContext> {
   const control = getControlPool();
   const r = await control.query(
-    `SELECT u.email, m.role, w.id AS workspace_id, w.tenant_id
+    `SELECT u.email, u.mfa_enabled, m.role, w.id AS workspace_id, w.tenant_id
        FROM users u
        JOIN workspace_members m ON m.user_id = u.id
        JOIN workspaces w ON w.id = m.workspace_id
@@ -147,6 +152,8 @@ async function contextForUser(userId: string): Promise<SessionContext> {
     tenantId: row.tenant_id,
     businessId: biz.rowCount ? (biz.rows[0].id as string) : null,
     role: row.role,
+    mfaEnabled: row.mfa_enabled === true,
+    mfaVerified,
   };
 }
 
@@ -158,4 +165,44 @@ export async function logout(token: string): Promise<void> {
 /** Role gate helper. */
 export function requireRole(ctx: SessionContext, allowed: SessionContext['role'][]): boolean {
   return allowed.includes(ctx.role);
+}
+
+export function adminMfaRequired(ctx: SessionContext): boolean {
+  return (ctx.role === 'owner' || ctx.role === 'admin')
+    && (process.env.NODE_ENV === 'production' || process.env.FNNLR_REQUIRE_ADMIN_MFA === 'true');
+}
+
+export function adminMfaSatisfied(ctx: SessionContext): boolean {
+  if (!adminMfaRequired(ctx)) return true;
+  return ctx.mfaEnabled && ctx.mfaVerified;
+}
+
+export async function setupMfa(token: string | undefined): Promise<{ secret: string; otpauthUrl: string }> {
+  const ctx = await resolveSession(token);
+  if (!ctx) throw new Error('authentication required');
+  if (ctx.role !== 'owner' && ctx.role !== 'admin') throw new Error('admin only');
+  const secret = generateTotpSecret();
+  const issuer = 'fnnlr';
+  const label = encodeURIComponent(`${issuer}:${ctx.email}`);
+  const otpauthUrl = `otpauth://totp/${label}?secret=${secret}&issuer=${issuer}&algorithm=SHA1&digits=6&period=30`;
+  await getControlPool().query(
+    `UPDATE users SET mfa_secret_enc=$2, mfa_enabled=false WHERE id=$1`,
+    [ctx.userId, encryptMfaSecret(secret)],
+  );
+  return { secret, otpauthUrl };
+}
+
+export async function verifyMfa(token: string | undefined, code: string): Promise<{ ok: boolean }> {
+  if (!token) return { ok: false };
+  const ctx = await resolveSession(token);
+  if (!ctx) return { ok: false };
+  const control = getControlPool();
+  const r = await control.query(`SELECT mfa_secret_enc FROM users WHERE id=$1`, [ctx.userId]);
+  const stored = r.rows[0]?.mfa_secret_enc;
+  if (!stored) return { ok: false };
+  const ok = verifyTotp(decryptMfaSecret(stored), code);
+  if (!ok) return { ok: false };
+  await control.query(`UPDATE users SET mfa_enabled=true WHERE id=$1`, [ctx.userId]);
+  await control.query(`UPDATE sessions SET mfa_verified_at=now() WHERE token_hash=$1`, [hashToken(token)]);
+  return { ok: true };
 }

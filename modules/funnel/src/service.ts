@@ -1,5 +1,6 @@
 import { withTenant } from '../../../packages/db/src/router.js';
 import { AIGateway, type LLMClient } from '../../../packages/ai-core/src/gateway.js';
+import { logAiOutputWithUsage, logAiUsageEvent, type AiOutputLogRow } from '../../ai-ops/src/usage.js';
 import { FunnelArchitectBrain } from '../../../packages/ai-core/src/brains/funnel-architect.js';
 import { OfferBrain } from '../../../packages/ai-core/src/brains/offer.js';
 import type { OnboardingInput, FunnelBlueprint, Offer } from '../../../packages/ai-core/src/contracts.js';
@@ -24,15 +25,7 @@ export interface CreateFunnelResult {
 }
 
 async function logAiOutput(tenantId: string) {
-  return async (row: { brain: string; promptVersion: string; content: unknown; costUsd?: number }) => {
-    return withTenant(tenantId, async (c) => {
-      const r = await c.query(
-        `INSERT INTO ai_outputs (brain, prompt_version, content, cost_usd) VALUES ($1,$2,$3,$4) RETURNING id`,
-        [row.brain, row.promptVersion, JSON.stringify(row.content), row.costUsd ?? null],
-      );
-      return r.rows[0].id as string;
-    });
-  };
+  return async (row: AiOutputLogRow) => logAiOutputWithUsage(tenantId, row);
 }
 
 async function emit(tenantId: string, type: string, payload: unknown) {
@@ -49,7 +42,7 @@ export async function createFunnelFromOnboarding(
   llm: LLMClient,
 ): Promise<CreateFunnelResult> {
   const gateway = new AIGateway(llm);
-  const ctx = { tenantId, logOutput: await logAiOutput(tenantId) };
+  const ctx = { tenantId, logOutput: await logAiOutput(tenantId), logUsage: logAiUsageEvent };
 
   // Sprint 20: fold learning-derived playbook context into the inputs (honest;
   // may be absent / limited). Never auto-applied — it only informs generation.
@@ -190,14 +183,8 @@ export async function runOfferAction(
   const gateway = new AIGateway(llm);
   const ctx = {
     tenantId,
-    logOutput: async (row: { brain: string; promptVersion: string; content: unknown; costUsd?: number }) =>
-      withTenant(tenantId, async (c) => {
-        const r = await c.query(
-          `INSERT INTO ai_outputs (brain, prompt_version, content, cost_usd) VALUES ($1,$2,$3,$4) RETURNING id`,
-          [row.brain, row.promptVersion, JSON.stringify(row.content), row.costUsd ?? null],
-        );
-        return r.rows[0].id as string;
-      }),
+    logOutput: async (row: AiOutputLogRow) => logAiOutputWithUsage(tenantId, row),
+    logUsage: logAiUsageEvent,
   };
   const { output, degraded } = await gateway.run(OfferActionBrain, { offer: current.offer, action }, ctx);
   return { preview: output, degraded };

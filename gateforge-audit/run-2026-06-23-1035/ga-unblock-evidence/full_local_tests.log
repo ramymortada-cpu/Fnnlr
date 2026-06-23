@@ -1,0 +1,79 @@
+---
+  duration_ms: 3.645625
+  type: 'test'
+  ...
+# Subtest: cron: missing secret → 401
+ok 473 - cron: missing secret → 401
+  ---
+  duration_ms: 2.973083
+  type: 'test'
+  ...
+# Subtest: cron: wrong secret → 401
+ok 474 - cron: wrong secret → 401
+  ---
+  duration_ms: 2.308917
+  type: 'test'
+  ...
+# Subtest: cron: correct secret but no tenantId in body → 422 (never falls back to a header)
+ok 475 - cron: correct secret but no tenantId in body → 422 (never falls back to a header)
+  ---
+  duration_ms: 3.886709
+  type: 'test'
+  ...
+# Subtest: public redirect /r/:code with unknown code does not leak tenant data
+ok 476 - public redirect /r/:code with unknown code does not leak tenant data
+  ---
+  duration_ms: 7.140708
+  type: 'test'
+  ...
+# Subtest: WhatsAppSalesBrain parses valid LLM JSON
+ok 477 - WhatsAppSalesBrain parses valid LLM JSON
+  ---
+  duration_ms: 0.521875
+  type: 'test'
+  ...
+# Subtest: WhatsAppSalesBrain fallback produces at least 15 templates with anti-spam metadata
+ok 478 - WhatsAppSalesBrain fallback produces at least 15 templates with anti-spam metadata
+  ---
+  duration_ms: 0.255625
+  type: 'test'
+  ...
+# Subtest: copilot selects template by stage and payment state
+ok 479 - copilot selects template by stage and payment state
+  ---
+  duration_ms: 0.096417
+  type: 'test'
+  ...
+# Subtest: marking a first reply sent advances whatsapp_clicked → contacted
+ok 480 - marking a first reply sent advances whatsapp_clicked → contacted
+  ---
+  duration_ms: 0.028042
+  type: 'test'
+  ...
+# Subtest: leak engine flags missing whatsapp flow (evidence)
+ok 481 - leak engine flags missing whatsapp flow (evidence)
+  ---
+  duration_ms: 0.225834
+  type: 'test'
+  ...
+# Subtest: DEV: whatsapp step reorder requires flowId + orderedIds
+ok 482 - DEV: whatsapp step reorder requires flowId + orderedIds
+  ---
+  duration_ms: 17.095291
+  type: 'test'
+  ...
+# Subtest: SECURITY: whatsapp routes reject header-only tenant in production
+ok 483 - SECURITY: whatsapp routes reject header-only tenant in production
+  ---
+  duration_ms: 2.912625
+  type: 'test'
+  ...
+1..483
+# tests 483
+# suites 0
+# pass 483
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 15235.792667

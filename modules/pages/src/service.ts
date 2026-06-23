@@ -1,6 +1,7 @@
 import crypto from 'node:crypto';
 import { withTenant } from '../../../packages/db/src/router.js';
 import { AIGateway, type LLMClient } from '../../../packages/ai-core/src/gateway.js';
+import { logAiOutputWithUsage, logAiUsageEvent, type AiOutputLogRow } from '../../ai-ops/src/usage.js';
 import { PageBrain, type PageBrainInput, type PagePlan, type PageSectionSpec } from '../../../packages/ai-core/src/brains/page.js';
 import { PageSectionActionBrain, type SectionAction } from '../../../packages/ai-core/src/brains/page-section-action.js';
 import type { Offer, Market, ProductType, Tone, PaymentMethod } from '../../../packages/ai-core/src/contracts.js';
@@ -13,14 +14,7 @@ import type { Offer, Market, ProductType, Tone, PaymentMethod } from '../../../p
  */
 
 async function logAi(tenantId: string) {
-  return async (row: { brain: string; promptVersion: string; content: unknown; costUsd?: number }) =>
-    withTenant(tenantId, async (c) => {
-      const r = await c.query(
-        `INSERT INTO ai_outputs (brain, prompt_version, content, cost_usd) VALUES ($1,$2,$3,$4) RETURNING id`,
-        [row.brain, row.promptVersion, JSON.stringify(row.content), row.costUsd ?? null],
-      );
-      return r.rows[0].id as string;
-    });
+  return async (row: AiOutputLogRow) => logAiOutputWithUsage(tenantId, row);
 }
 
 async function emit(tenantId: string, type: string, payload: unknown) {
@@ -57,7 +51,7 @@ export async function generatePage(
 
   const gateway = new AIGateway(llm);
   try { const { getPlaybookContext } = await import('../../playbooks/src/service.js'); (input as any).playbookContext = (await getPlaybookContext(tenantId, 'page')).context; } catch {}
-  const { output: plan, degraded } = await gateway.run(PageBrain, input, { tenantId, logOutput: await logAi(tenantId) });
+  const { output: plan, degraded } = await gateway.run(PageBrain, input, { tenantId, logOutput: await logAi(tenantId), logUsage: logAiUsageEvent });
 
   // Persist page + sections (replace any existing page for this funnel).
   const pageId = await withTenant(tenantId, async (c) => {
@@ -142,7 +136,7 @@ export async function runSectionAction(
   });
   if (!section) return null;
   const gateway = new AIGateway(llm);
-  const { output, degraded } = await gateway.run(PageSectionActionBrain, { section, action }, { tenantId, logOutput: await logAi(tenantId) });
+  const { output, degraded } = await gateway.run(PageSectionActionBrain, { section, action }, { tenantId, logOutput: await logAi(tenantId), logUsage: logAiUsageEvent });
   return { preview: output, degraded };
 }
 

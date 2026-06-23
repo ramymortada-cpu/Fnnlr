@@ -1,0 +1,143 @@
+# Live Command Results
+
+Generated: `2026-06-23T08:56:17.678Z`
+
+| Command | Result | Evidence Meaning |
+| --- | --- | --- |
+| `npm run test:pg` | PASS | Runtime evidence accepted. |
+| `npm run ci:live` | PASS | Runtime evidence accepted. |
+| `npm run deploy:health-gate` | PASS | Runtime evidence accepted. |
+| `npm run deploy:verify-restore -- control gateforge-audit/run-2026-06-23-1035/ga-unblock-evidence/control-restore-manifest.json` | PASS | Runtime evidence accepted. |
+
+## Sanitized Excerpts
+
+### live_pg_tests
+
+```text
+---
+  duration_ms: 769.590084
+  type: 'test'
+  ...
+# Subtest: OPERATING ROOM: daily check is WARN/BLOCKED before setup, status leaks no secrets, week1 invents no revenue
+ok 18 - OPERATING ROOM: daily check is WARN/BLOCKED before setup, status leaks no secrets, week1 invents no revenue
+  ---
+  duration_ms: 482.603375
+  type: 'test'
+  ...
+# Subtest: CUSTOMER ZERO: config → setup → rerun (idempotent) → publish → smoke → lead → desk → safe snapshot
+ok 19 - CUSTOMER ZERO: config → setup → rerun (idempotent) → publish → smoke → lead → desk → safe snapshot
+  ---
+  duration_ms: 543.610167
+  type: 'test'
+  ...
+# Subtest: RELEASE SMOKE: empty DB → customer → funnel → published page → real signal → live desk
+ok 20 - RELEASE SMOKE: empty DB → customer → funnel → published page → real signal → live desk
+  ---
+  duration_ms: 443.377292
+  type: 'test'
+  ...
+# Subtest: ACTIVATION: a real funnel goes from setup mode to live mode on observed signals
+ok 21 - ACTIVATION: a real funnel goes from setup mode to live mode on observed signals
+  ---
+  duration_ms: 491.456458
+  type: 'test'
+  ...
+# Subtest: SCALE: two concurrent lease acquisitions for the same job produce ONE run
+ok 22 - SCALE: two concurrent lease acquisitions for the same job produce ONE run
+  ---
+  duration_ms: 563.678916
+  type: 'test'
+  ...
+# Subtest: SCALE: a stuck run (expired lease) can be reclaimed and retried
+ok 23 - SCALE: a stuck run (expired lease) can be reclaimed and retried
+  ---
+  duration_ms: 475.333208
+  type: 'test'
+  ...
+# Subtest: SCALE: fan-out continues after one business fails (failure isolation)
+ok 24 - SCALE: fan-out continues after one business fails (failure isolation)
+  ---
+  duration_ms: 645.431
+  type: 'test'
+  ...
+# Subtest: SCALE: a duplicate payment webhook (same external_id) is not processed twice
+ok 25 - SCALE: a duplicate payment webhook (same external_id) is not processed twice
+  ---
+  duration_ms: 526.748417
+  type: 'test'
+  ...
+# Subtest: SCALE: outbound retry schedules backoff then abandons after max attempts
+ok 26 - SCALE: outbound retry schedules backoff then abandons after max attempts
+  ---
+  duration_ms: 482.746708
+  type: 'test'
+  ...
+# Subtest: SCALE: ops status + retries return structured counts
+ok 27 - SCALE: ops status + retries return structured counts
+  ---
+  duration_ms: 439.320125
+  type: 'test'
+  ...
+# Subtest: SCHEDULER: running daily refresh twice does not inflate learning sample
+ok 28 - SCHEDULER: running daily refresh twice does not inflate learning sample
+  ---
+  duration_ms: 597.947667
+  type: 'test'
+  ...
+1..28
+# tests 28
+# suites 0
+# pass 28
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 14751.243208
+```
+
+### live_ci
+
+```text
+> fnnlr-db-per-tenant@0.1.0 ci:live
+> tsx scripts/ci.ts --live
+
+
+=== CI RESULT ===
+  ✓ typecheck
+  ✓ unit_tests
+  ✓ commercial_checker
+  ✓ release_safety
+  ✓ web_balance_and_no_tenant_trust
+  ✓ live_db_tests
+
+SAFE TO RELEASE
+```
+
+### health_gate
+
+```text
+> fnnlr-db-per-tenant@0.1.0 deploy:health-gate
+> tsx scripts/deploy.ts health-gate
+
+HEALTH GATE: READY_TO_SERVE
+  ✓ api: ok
+  ✓ control_db: ok
+  ✓ jobs: ok
+  ✓ integrations: ok
+  ✓ llm: ok
+  ✓ ai_budget: ok
+  ✓ email: ok
+  ✓ observability: ok
+  ✓ release checker passed
+  ✓ encryption key present
+  ✓ cron secret present
+```
+
+### restore_verify_probe
+
+```text
+> fnnlr-db-per-tenant@0.1.0 deploy:verify-restore
+> tsx scripts/deploy.ts verify-restore control gateforge-audit/run-2026-06-23-1035/ga-unblock-evidence/control-restore-manifest.json
+
+RESTORE VERIFY (control): PASS
+```

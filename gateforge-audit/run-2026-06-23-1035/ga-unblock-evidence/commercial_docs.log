@@ -1,0 +1,18 @@
+> fnnlr-db-per-tenant@0.1.0 commercial:check
+> tsx scripts/commercial-check.ts docs
+
+Scanned 12 commercial docs in docs
+  · COMMERCIAL_FAQ.md
+  · COMMERCIAL_PACKAGING.md
+  · CUSTOMER_AGREEMENT_DRAFT.md
+  · CUSTOMER_SUCCESS_CRITERIA.md
+  · INTERNAL_SALES_SCRIPT.md
+  · ONBOARDING_PROMISE.md
+  · PROPOSAL_TEMPLATE.md
+  · SALES_OPERATING_SYSTEM.md
+  · SALES_PAGE_COPY.md
+  · SALES_QUALIFICATION.md
+  · SALES_TO_ACTIVATION_HANDOFF.md
+  · SUPPORT_WORKFLOW.md
+
+RESULT: PASS

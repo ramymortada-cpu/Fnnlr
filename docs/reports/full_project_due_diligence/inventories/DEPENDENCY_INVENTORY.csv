@@ -1,0 +1,6 @@
+Package,Version,Direct/transitive if known,Purpose,Used by,Risk,License if discoverable,Upgrade recommendation
+pg,^8.13.1,Direct from package.json,PostgreSQL client,Runtime/scripts/tests,Low to medium; monitor advisories,Not audited locally,Run npm audit/license scan in CI before enterprise review
+tsx,^4.19.2,Direct from package.json,TypeScript execution,Runtime/scripts/tests,Low to medium; monitor advisories,Not audited locally,Run npm audit/license scan in CI before enterprise review
+typescript,^5.7.2,Direct from package.json,Type checking,Runtime/scripts/tests,Low to medium; monitor advisories,Not audited locally,Run npm audit/license scan in CI before enterprise review
+@types/node,^22.10.1,Direct from package.json,Type definitions/dev support,Runtime/scripts/tests,Low to medium; monitor advisories,Not audited locally,Run npm audit/license scan in CI before enterprise review
+@types/pg,^8.11.10,Direct from package.json,Type definitions/dev support,Runtime/scripts/tests,Low to medium; monitor advisories,Not audited locally,Run npm audit/license scan in CI before enterprise review

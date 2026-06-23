@@ -1,0 +1,12 @@
+sequenceDiagram
+  participant User
+  participant API
+  participant AuthService
+  participant ControlDB
+  User->>API: signup/login
+  API->>AuthService: validate/hash/verify
+  AuthService->>ControlDB: user/session/workspace
+  ControlDB-->>AuthService: session token hash
+  API-->>User: token-bearing response
+  User->>API: Authorization header
+  API->>AuthService: resolveSession

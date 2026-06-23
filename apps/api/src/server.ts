@@ -102,7 +102,7 @@ import {
 } from '../../../modules/pages/src/service.js';
 import { anthropicLLM, failingLLM } from '../../../packages/ai-core/src/llm.js';
 import type { LLMClient } from '../../../packages/ai-core/src/gateway.js';
-import { signup, login, logout, resolveSession } from '../../../modules/auth/src/service.js';
+import { signup, login, logout, resolveSession, setupMfa, verifyMfa, adminMfaSatisfied } from '../../../modules/auth/src/service.js';
 import { AutomationEngine } from '../../../modules/automation/src/engine.js';
 import { makeTenantRunStore } from '../../../modules/automation/src/store.js';
 import { makeTenantActionPorts, type ChannelSenders } from '../../../modules/automation/src/ports.js';
@@ -317,6 +317,15 @@ export function createApiServer(deps: ApiDeps = {}): http.Server {
           const ctx = await resolveSession(bearer(req));
           return ctx ? json(res, 200, { ctx }, NO_STORE) : json(res, 401, { error: 'not authenticated' }, NO_STORE);
         }
+        if (req.method === 'POST' && parts[1] === 'mfa' && parts[2] === 'setup') {
+          try { return json(res, 200, await setupMfa(bearer(req)), NO_STORE); }
+          catch (e) { return json(res, 403, { error: (e as Error).message }, NO_STORE); }
+        }
+        if (req.method === 'POST' && parts[1] === 'mfa' && parts[2] === 'verify') {
+          const { json: b } = await readBodyLimited(req, MAX_BODY.auth);
+          const r = await verifyMfa(bearer(req), String(b.code ?? ''));
+          return r.ok ? json(res, 200, { ok: true }, NO_STORE) : json(res, 401, { error: 'invalid mfa code' }, NO_STORE);
+        }
       }
 
       // ---- Resolve tenant SERVER-SIDE from the session (the hardening core) -
@@ -389,6 +398,7 @@ export function createApiServer(deps: ApiDeps = {}): http.Server {
       // ---- Ops observability (admin only) ----------------------------------
       if (parts[0] === 'ops' && req.method === 'GET') {
         if (session && session.role !== 'owner' && session.role !== 'admin') return json(res, 403, { error: 'admin only' });
+        if (session && !adminMfaSatisfied(session)) return json(res, 403, { error: 'admin mfa required' }, NO_STORE);
         const { opsStatus, opsRetries, opsIngestion, opsQueues } = await import('../../../modules/scheduler/src/ops.js');
         if (parts[1] === 'status') return json(res, 200, await opsStatus(tenantId), NO_STORE);
         if (parts[1] === 'retries') return json(res, 200, await opsRetries(tenantId), NO_STORE);
@@ -399,6 +409,7 @@ export function createApiServer(deps: ApiDeps = {}): http.Server {
       // ---- Admin / support (admin only) ------------------------------------
       if (parts[0] === 'admin' && req.method === 'GET') {
         if (session && session.role !== 'owner' && session.role !== 'admin') return json(res, 403, { error: 'admin only' });
+        if (session && !adminMfaSatisfied(session)) return json(res, 403, { error: 'admin mfa required' }, NO_STORE);
         const { listWorkspaces, listTenants, tenantDiagnostics, tenantActivationSnapshot } = await import('../../../modules/release/src/admin.js');
         if (parts[1] === 'workspaces') return json(res, 200, await listWorkspaces(), NO_STORE);
         if (parts[1] === 'tenants') return json(res, 200, await listTenants(), NO_STORE);

@@ -1,0 +1,7 @@
+flowchart TB
+  UI[HTML/CSS/JS apps/web] --> API[Node HTTP API TypeScript]
+  API --> Modules[Domain modules]
+  Modules --> DB[pg + control/tenant PostgreSQL]
+  Modules --> AI[AI core brains + optional Anthropic]
+  Scripts[Operational scripts] --> Modules
+  Tests[Node test runner] --> API

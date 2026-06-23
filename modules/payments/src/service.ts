@@ -1,5 +1,6 @@
 import { withTenant } from '../../../packages/db/src/router.js';
 import { AIGateway, type LLMClient } from '../../../packages/ai-core/src/gateway.js';
+import { logAiOutputWithUsage, logAiUsageEvent, type AiOutputLogRow } from '../../ai-ops/src/usage.js';
 import { PaymentFlowBrain, suggestedMethods, type PaymentFlowInput } from '../../../packages/ai-core/src/brains/payment-flow.js';
 import { canTransition, eventForState, type PaymentState } from './state-machine.js';
 import type { Offer, Market, PaymentMethod, Tone } from '../../../packages/ai-core/src/contracts.js';
@@ -11,13 +12,7 @@ import type { Offer, Market, PaymentMethod, Tone } from '../../../packages/ai-co
  */
 
 async function logAi(tenantId: string) {
-  return async (row: { brain: string; promptVersion: string; content: unknown; costUsd?: number }) =>
-    withTenant(tenantId, async (c) => {
-      const r = await c.query(
-        `INSERT INTO ai_outputs (brain, prompt_version, content, cost_usd) VALUES ($1,$2,$3,$4) RETURNING id`,
-        [row.brain, row.promptVersion, JSON.stringify(row.content), row.costUsd ?? null]);
-      return r.rows[0].id as string;
-    });
+  return async (row: AiOutputLogRow) => logAiOutputWithUsage(tenantId, row);
 }
 
 export async function getPaymentFlow(tenantId: string, journeyId: string) {
@@ -88,7 +83,7 @@ export async function generatePaymentFlow(tenantId: string, journeyId: string, l
       method: m.method as PaymentMethod, tone: 'egyptian_friendly' as Tone, accountDetails: m.account_details ?? undefined,
       playbookContext: payCtx,
     };
-    const { output, degraded: d } = await gateway.run(PaymentFlowBrain, input, { tenantId, logOutput: logger });
+    const { output, degraded: d } = await gateway.run(PaymentFlowBrain, input, { tenantId, logOutput: logger, logUsage: logAiUsageEvent });
     if (d) degraded = true;
     await withTenant(tenantId, async (c) => {
       await c.query(

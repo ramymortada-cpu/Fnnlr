@@ -1,6 +1,6 @@
 import { withTenant } from '../../../packages/db/src/router.js';
 import { encryptSecret, maskCredentials, encryptCredentials, decryptSecret, signPayload, verifySignature } from './secrets.js';
-import { providerMeta, paymentAdapter, PROVIDERS } from './providers.js';
+import { providerMeta, paymentAdapter, PROVIDERS, webhookTimestampFresh } from './providers.js';
 import { auditWith } from '../../security/src/audit.js';
 import { registerIntegrationRoute, unregisterIntegrationRoute } from './resolver.js';
 
@@ -145,6 +145,12 @@ export async function handleWhatsAppWebhook(tenantId: string, connectionId: stri
     const secretEnc = conn.rows[0].webhook_secret_enc;
     if (secretEnc) {
       const secret = decryptSecret(secretEnc);
+      const fresh = webhookTimestampFresh(headers);
+      if (!fresh.ok) {
+        await c.query(`INSERT INTO integration_events (connection_id, provider, raw_payload, processed_status, error) VALUES ($1,'whatsapp_cloud_api',$2,'error',$3)`, [connectionId, JSON.stringify(payload), fresh.reason]);
+        await auditWith(c, 'system', 'webhook_rejected', connectionId, { provider: 'whatsapp_cloud_api', reason: fresh.reason });
+        return { ok: false, reason: fresh.reason };
+      }
       const sig = headers['x-hub-signature-256']?.replace('sha256=', '') || headers['x-signature'] || '';
       if (!sig || !verifySignature(rawBody, secret, sig)) {
         await c.query(`INSERT INTO integration_events (connection_id, provider, raw_payload, processed_status, error) VALUES ($1,'whatsapp_cloud_api',$2,'error','invalid or missing signature')`, [connectionId, JSON.stringify(payload)]);

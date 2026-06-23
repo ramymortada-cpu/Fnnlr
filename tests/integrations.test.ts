@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import http from 'node:http';
 import { createApiServer } from '../apps/api/src/server.js';
 import { encryptSecret, decryptSecret, maskSecret, maskCredentials, signPayload, verifySignature } from '../modules/integrations/src/secrets.js';
-import { paymentAdapter, providerMeta, PROVIDERS } from '../modules/integrations/src/providers.js';
+import { paymentAdapter, providerMeta, PROVIDERS, webhookTimestampFresh } from '../modules/integrations/src/providers.js';
 
 /**
  * Sprint 15 — Integrations Foundation. Secrets, adapters, and webhook security
@@ -59,6 +59,14 @@ test('adapters: verify accepts when no secret (dev) and checks HMAC when set', (
   const sig = signPayload(body, 'whsec');
   assert.equal(a.verify(body, { 'x-signature': sig }, 'whsec'), true);
   assert.equal(a.verify(body, { 'x-signature': 'bad' }, 'whsec'), false);
+});
+
+test('webhook timestamp freshness rejects stale replay attempts', () => {
+  const now = Date.parse('2026-06-23T10:00:00Z');
+  assert.equal(webhookTimestampFresh({ 'x-fnnlr-timestamp': String(Math.floor(now / 1000)) }, now).ok, true);
+  const stale = webhookTimestampFresh({ 'x-fnnlr-timestamp': String(Math.floor((now - 10 * 60_000) / 1000)) }, now);
+  assert.equal(stale.ok, false);
+  assert.match(stale.reason ?? '', /stale/i);
 });
 
 test('providers: registry covers all required Sprint 15 providers', () => {

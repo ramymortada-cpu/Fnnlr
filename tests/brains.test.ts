@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { AIGateway } from '../packages/ai-core/src/gateway.js';
+import { AIGateway, evaluateBudget } from '../packages/ai-core/src/gateway.js';
 import { FunnelArchitectBrain } from '../packages/ai-core/src/brains/funnel-architect.js';
 import { OfferBrain } from '../packages/ai-core/src/brains/offer.js';
 import { mockLLM, failingLLM } from '../packages/ai-core/src/llm.js';
@@ -91,4 +91,30 @@ test('AI output is logged via the injected logger', async () => {
     logOutput: async (row) => { logged.push(row.brain); return 'id'; },
   });
   assert.deepEqual(logged, ['offer']);
+});
+
+test('AI budget guard blocks provider calls when kill switch is on', async () => {
+  const prev = process.env.FNNLR_AI_KILL_SWITCH;
+  process.env.FNNLR_AI_KILL_SWITCH = 'true';
+  let called = false;
+  const gw = new AIGateway({ async complete() { called = true; return { text: '{}' }; } });
+  const { degraded } = await gw.run(FunnelArchitectBrain, onboarding, { tenantId: 't' });
+  assert.equal(degraded, true);
+  assert.equal(called, false, 'provider call must not happen while kill switch is enabled');
+  process.env.FNNLR_AI_KILL_SWITCH = prev;
+});
+
+test('AI budget guard requires a cap in production', () => {
+  const prevEnv = process.env.NODE_ENV;
+  const prevTenant = process.env.FNNLR_AI_TENANT_DAILY_USD_CAP;
+  const prevGlobal = process.env.FNNLR_AI_GLOBAL_DAILY_USD_CAP;
+  process.env.NODE_ENV = 'production';
+  delete process.env.FNNLR_AI_TENANT_DAILY_USD_CAP;
+  delete process.env.FNNLR_AI_GLOBAL_DAILY_USD_CAP;
+  assert.equal(evaluateBudget('t', 0.01).allowed, false);
+  process.env.FNNLR_AI_TENANT_DAILY_USD_CAP = '1';
+  assert.equal(evaluateBudget('t', 0.01).allowed, true);
+  if (prevEnv === undefined) delete process.env.NODE_ENV; else process.env.NODE_ENV = prevEnv;
+  if (prevTenant === undefined) delete process.env.FNNLR_AI_TENANT_DAILY_USD_CAP; else process.env.FNNLR_AI_TENANT_DAILY_USD_CAP = prevTenant;
+  if (prevGlobal === undefined) delete process.env.FNNLR_AI_GLOBAL_DAILY_USD_CAP; else process.env.FNNLR_AI_GLOBAL_DAILY_USD_CAP = prevGlobal;
 });

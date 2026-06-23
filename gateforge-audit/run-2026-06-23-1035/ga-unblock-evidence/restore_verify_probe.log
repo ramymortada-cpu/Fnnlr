@@ -1,0 +1,4 @@
+> fnnlr-db-per-tenant@0.1.0 deploy:verify-restore
+> tsx scripts/deploy.ts verify-restore control gateforge-audit/run-2026-06-23-1035/ga-unblock-evidence/control-restore-manifest.json
+
+RESTORE VERIFY (control): PASS

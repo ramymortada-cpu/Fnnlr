@@ -1,5 +1,6 @@
 import { withTenant } from '../../../packages/db/src/router.js';
 import { AIGateway, type LLMClient } from '../../../packages/ai-core/src/gateway.js';
+import { logAiOutputWithUsage, logAiUsageEvent, type AiOutputLogRow } from '../../ai-ops/src/usage.js';
 import { WhatsAppSalesBrain, type WhatsAppSalesInput } from '../../../packages/ai-core/src/brains/whatsapp-sales.js';
 import { selectStepType, stageAfterReply, type DraftContext } from './copilot.js';
 import type { Offer, Market, Tone } from '../../../packages/ai-core/src/contracts.js';
@@ -12,12 +13,7 @@ import type { Offer, Market, Tone } from '../../../packages/ai-core/src/contract
  */
 
 async function logAi(tenantId: string) {
-  return async (row: { brain: string; promptVersion: string; content: unknown; costUsd?: number }) =>
-    withTenant(tenantId, async (c) => {
-      const r = await c.query(`INSERT INTO ai_outputs (brain, prompt_version, content, cost_usd) VALUES ($1,$2,$3,$4) RETURNING id`,
-        [row.brain, row.promptVersion, JSON.stringify(row.content), row.costUsd ?? null]);
-      return r.rows[0].id as string;
-    });
+  return async (row: AiOutputLogRow) => logAiOutputWithUsage(tenantId, row);
 }
 async function emit(c: any, type: string, payload: unknown) {
   await c.query(`INSERT INTO events (type, source, payload) VALUES ($1,'whatsapp',$2)`, [type, JSON.stringify(payload ?? {})]);
@@ -39,7 +35,7 @@ export async function generateWhatsAppFlow(tenantId: string, journeyId: string, 
   };
   const gateway = new AIGateway(llm);
   try { const { getPlaybookContext } = await import('../../playbooks/src/service.js'); (input as any).playbookContext = (await getPlaybookContext(tenantId, 'whatsapp')).context; } catch {}
-  const { output, degraded } = await gateway.run(WhatsAppSalesBrain, input, { tenantId, logOutput: await logAi(tenantId) });
+  const { output, degraded } = await gateway.run(WhatsAppSalesBrain, input, { tenantId, logOutput: await logAi(tenantId), logUsage: logAiUsageEvent });
 
   const count = await withTenant(tenantId, async (c) => {
     // one flow per funnel (replace)

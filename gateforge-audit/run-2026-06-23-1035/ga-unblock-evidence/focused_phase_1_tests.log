@@ -1,0 +1,79 @@
+---
+  duration_ms: 0.134416
+  type: 'test'
+  ...
+# Subtest: adapters: every payment provider has an adapter and normalizes statuses
+ok 21 - adapters: every payment provider has an adapter and normalizes statuses
+  ---
+  duration_ms: 0.131292
+  type: 'test'
+  ...
+# Subtest: adapters: Paymob boolean success maps to confirmed/failed; amount_cents → units
+ok 22 - adapters: Paymob boolean success maps to confirmed/failed; amount_cents → units
+  ---
+  duration_ms: 0.090333
+  type: 'test'
+  ...
+# Subtest: adapters: verify accepts when no secret (dev) and checks HMAC when set
+ok 23 - adapters: verify accepts when no secret (dev) and checks HMAC when set
+  ---
+  duration_ms: 0.075
+  type: 'test'
+  ...
+# Subtest: webhook timestamp freshness rejects stale replay attempts
+ok 24 - webhook timestamp freshness rejects stale replay attempts
+  ---
+  duration_ms: 0.126125
+  type: 'test'
+  ...
+# Subtest: providers: registry covers all required Sprint 15 providers
+ok 25 - providers: registry covers all required Sprint 15 providers
+  ---
+  duration_ms: 0.050416
+  type: 'test'
+  ...
+# Subtest: SECURITY: payment webhook does NOT trust tenant header — unknown connection → 404
+ok 26 - SECURITY: payment webhook does NOT trust tenant header — unknown connection → 404
+  ---
+  duration_ms: 61.348667
+  type: 'test'
+  ...
+# Subtest: SECURITY: WhatsApp webhook POST with unknown connection → 404 (header ignored)
+ok 27 - SECURITY: WhatsApp webhook POST with unknown connection → 404 (header ignored)
+  ---
+  duration_ms: 7.461917
+  type: 'test'
+  ...
+# Subtest: WhatsApp webhook GET handshake echoes hub.challenge
+ok 28 - WhatsApp webhook GET handshake echoes hub.challenge
+  ---
+  duration_ms: 8.027042
+  type: 'test'
+  ...
+# Subtest: SECURITY: integrations CRUD rejects header-only tenant in production
+ok 29 - SECURITY: integrations CRUD rejects header-only tenant in production
+  ---
+  duration_ms: 11.863709
+  type: 'test'
+  ...
+# Subtest: route authorization matrix has classifications and negative evidence for every row
+ok 30 - route authorization matrix has classifications and negative evidence for every row
+  ---
+  duration_ms: 1.180375
+  type: 'test'
+  ...
+# Subtest: route authorization matrix keeps privileged surfaces explicit
+ok 31 - route authorization matrix keeps privileged surfaces explicit
+  ---
+  duration_ms: 0.102958
+  type: 'test'
+  ...
+1..31
+# tests 31
+# suites 0
+# pass 31
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 10663.31625

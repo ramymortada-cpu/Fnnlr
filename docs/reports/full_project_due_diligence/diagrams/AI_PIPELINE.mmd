@@ -1,0 +1,8 @@
+flowchart LR
+  Inputs[Business/funnel/lead context] --> Brain[AI brain module]
+  Brain --> Gateway[LLM gateway]
+  Gateway -->|key present| Anthropic[Anthropic Messages API]
+  Gateway -->|missing/failure| Fallback[Deterministic fallback]
+  Anthropic --> Parser[JSON/schema parser]
+  Fallback --> Output[Draft/report/recommendation]
+  Parser --> Output

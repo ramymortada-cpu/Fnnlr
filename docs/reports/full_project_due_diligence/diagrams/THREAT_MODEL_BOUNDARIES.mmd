@@ -1,0 +1,18 @@
+flowchart TB
+  subgraph Public
+    Visitor
+    Webhooks
+  end
+  subgraph AppBoundary
+    API
+    RateLimit
+    Auth
+  end
+  subgraph DataBoundary
+    ControlDB
+    TenantDBs
+  end
+  Visitor --> RateLimit --> API
+  Webhooks --> RateLimit --> API
+  API --> Auth --> ControlDB
+  API --> TenantDBs
