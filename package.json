@@ -68,6 +68,7 @@
     "gateforge:prepare-hosted-attestation": "tsx scripts/gateforge-prepare-hosted-attestation.ts",
     "gateforge:hosted-secrets-preflight": "tsx scripts/gateforge-hosted-secrets-preflight.ts",
     "gateforge:hosted-secrets-preflight-smoke": "tsx scripts/gateforge-hosted-secrets-preflight-smoke.ts",
+    "gateforge:hosted-operator-drift-smoke": "tsx scripts/gateforge-hosted-operator-drift-smoke.ts",
     "gateforge:hosted-setup-guide": "tsx scripts/gateforge-hosted-setup-guide.ts",
     "gateforge:external-smoke": "tsx scripts/gateforge-external-smoke.ts",
     "gateforge:final-gate": "tsx scripts/gateforge-final-gate.ts",

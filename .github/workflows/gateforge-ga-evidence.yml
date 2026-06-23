@@ -31,6 +31,8 @@ jobs:
         run: npm run gateforge:final-gate-smoke
       - name: GateForge hosted secrets preflight smoke
         run: npm run gateforge:hosted-secrets-preflight-smoke
+      - name: GateForge hosted operator drift smoke
+        run: npm run gateforge:hosted-operator-drift-smoke
       - name: GateForge GA unblock evidence
         run: npm run gateforge:ga-unblock
         continue-on-error: true
