@@ -35,6 +35,8 @@ jobs:
         run: npm run gateforge:hosted-secrets-preflight-smoke
       - name: GateForge local secret files check smoke
         run: npm run gateforge:local-secret-files-check-smoke
+      - name: GateForge upload local secrets smoke
+        run: npm run gateforge:upload-local-secrets-smoke
       - name: GateForge hosted operator drift smoke
         run: npm run gateforge:hosted-operator-drift-smoke
       - name: GateForge GitHub secrets audit smoke

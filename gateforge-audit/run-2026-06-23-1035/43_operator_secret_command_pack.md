@@ -1,6 +1,6 @@
 # Operator Secret Command Pack
 
-Generated: `2026-06-23T21:17:54.933Z`
+Generated: `2026-06-23T21:29:22.429Z`
 
 This file is an execution helper for closing the current GateForge blocker. It contains commands and secret names only. Do not paste real secret values into this file or commit generated secret files.
 
@@ -72,24 +72,8 @@ npm run gateforge:local-secret-files-check
 ## Upload Secrets
 
 ```bash
-gh secret set GATEFORGE_HOSTED_STAGING_ATTESTATION_B64 --body-file /tmp/fnnlr-gateforge-secrets/GATEFORGE_HOSTED_STAGING_ATTESTATION_B64
-gh secret set CONTROL_PLANE_DATABASE_URL --body-file /tmp/fnnlr-gateforge-secrets/CONTROL_PLANE_DATABASE_URL
-gh secret set TENANT_DB_ADMIN_URL --body-file /tmp/fnnlr-gateforge-secrets/TENANT_DB_ADMIN_URL
-gh secret set TENANT_DB_HOST --body-file /tmp/fnnlr-gateforge-secrets/TENANT_DB_HOST
-gh secret set TENANT_CREDENTIAL_ENCRYPTION_KEY --body-file /tmp/fnnlr-gateforge-secrets/TENANT_CREDENTIAL_ENCRYPTION_KEY
-gh secret set INTEGRATION_ENCRYPTION_KEY --body-file /tmp/fnnlr-gateforge-secrets/INTEGRATION_ENCRYPTION_KEY
-gh secret set FNNLR_CRON_SECRET --body-file /tmp/fnnlr-gateforge-secrets/FNNLR_CRON_SECRET
-gh secret set AUTH_MFA_ENCRYPTION_KEY --body-file /tmp/fnnlr-gateforge-secrets/AUTH_MFA_ENCRYPTION_KEY
-gh secret set FNNLR_AI_TENANT_DAILY_USD_CAP --body-file /tmp/fnnlr-gateforge-secrets/FNNLR_AI_TENANT_DAILY_USD_CAP
-gh secret set FNNLR_AI_GLOBAL_DAILY_USD_CAP --body-file /tmp/fnnlr-gateforge-secrets/FNNLR_AI_GLOBAL_DAILY_USD_CAP
-gh secret set SENTRY_DSN --body-file /tmp/fnnlr-gateforge-secrets/SENTRY_DSN
-gh secret set UPTIME_HEALTHCHECK_URL --body-file /tmp/fnnlr-gateforge-secrets/UPTIME_HEALTHCHECK_URL
-gh secret set ALERT_EMAIL_TO --body-file /tmp/fnnlr-gateforge-secrets/ALERT_EMAIL_TO
-gh secret set ALERT_WEBHOOK_URL --body-file /tmp/fnnlr-gateforge-secrets/ALERT_WEBHOOK_URL
-gh secret set RESEND_API_KEY --body-file /tmp/fnnlr-gateforge-secrets/RESEND_API_KEY
-gh secret set EMAIL_FROM --body-file /tmp/fnnlr-gateforge-secrets/EMAIL_FROM
-gh secret set EMAIL_REPLY_TO --body-file /tmp/fnnlr-gateforge-secrets/EMAIL_REPLY_TO
-gh secret set ANTHROPIC_API_KEY --body-file /tmp/fnnlr-gateforge-secrets/ANTHROPIC_API_KEY
+npm run gateforge:upload-local-secrets -- --dry-run
+npm run gateforge:upload-local-secrets -- --apply
 ```
 
 ## Verify And Trigger

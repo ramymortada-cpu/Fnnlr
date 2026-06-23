@@ -333,8 +333,8 @@ npm run gateforge:local-secret-files-check
 ## Upload Secrets
 
 \`\`\`bash
-gh secret set GATEFORGE_HOSTED_STAGING_ATTESTATION_B64 --body-file /tmp/fnnlr-gateforge-secrets/GATEFORGE_HOSTED_STAGING_ATTESTATION_B64
-${runtimeSecrets.map((name) => `gh secret set ${name} --body-file /tmp/fnnlr-gateforge-secrets/${name}`).join('\n')}
+npm run gateforge:upload-local-secrets -- --dry-run
+npm run gateforge:upload-local-secrets -- --apply
 \`\`\`
 
 ## Verify And Trigger
