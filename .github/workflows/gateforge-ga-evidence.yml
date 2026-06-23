@@ -50,7 +50,15 @@ jobs:
             gateforge-audit/run-*/26_remaining_blockers.md
             gateforge-audit/run-*/27_recomputed_score.md
             gateforge-audit/run-*/28_conditional_go_request.md
+            gateforge-audit/run-*/29_disposable_staging_evidence.md
+            gateforge-audit/run-*/30_disposable_staging_repeatable_run.md
+            gateforge-audit/run-*/31_external_attestation_closeout.md
+            gateforge-audit/run-*/32_external_evidence_intake.md
+            gateforge-audit/run-*/33_final_gate_evaluator.md
             gateforge-audit/run-*/34_final_gate_current_decision.md
+            gateforge-audit/run-*/35_ci_artifact_index.md
+            gateforge-audit/external-attestations/*.md
+            gateforge-audit/external-attestations/*.json
             gateforge-audit/run-*/ga-unblock-evidence/*.log
             gateforge-audit/run-*/ga-unblock-evidence/summary.json
           if-no-files-found: ignore
