@@ -1,0 +1,80 @@
+name: GateForge Hosted Staging Strict
+
+on:
+  workflow_dispatch:
+
+jobs:
+  hosted-staging-strict:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      GATEFORGE_EVIDENCE_CONTEXT: HOSTED_STAGING
+      GATEFORGE_HOSTED_STAGING_ATTESTATION_JSON: ${{ secrets.GATEFORGE_HOSTED_STAGING_ATTESTATION_JSON }}
+      GATEFORGE_HOSTED_STAGING_ATTESTATION_B64: ${{ secrets.GATEFORGE_HOSTED_STAGING_ATTESTATION_B64 }}
+      CONTROL_PLANE_DATABASE_URL: ${{ secrets.CONTROL_PLANE_DATABASE_URL }}
+      TENANT_DB_ADMIN_URL: ${{ secrets.TENANT_DB_ADMIN_URL }}
+      TENANT_DB_HOST: ${{ secrets.TENANT_DB_HOST }}
+      TENANT_CREDENTIAL_ENCRYPTION_KEY: ${{ secrets.TENANT_CREDENTIAL_ENCRYPTION_KEY }}
+      INTEGRATION_ENCRYPTION_KEY: ${{ secrets.INTEGRATION_ENCRYPTION_KEY }}
+      FNNLR_CRON_SECRET: ${{ secrets.FNNLR_CRON_SECRET }}
+      AUTH_MFA_ENCRYPTION_KEY: ${{ secrets.AUTH_MFA_ENCRYPTION_KEY }}
+      FNNLR_AI_TENANT_DAILY_USD_CAP: ${{ secrets.FNNLR_AI_TENANT_DAILY_USD_CAP }}
+      FNNLR_AI_GLOBAL_DAILY_USD_CAP: ${{ secrets.FNNLR_AI_GLOBAL_DAILY_USD_CAP }}
+      SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+      UPTIME_HEALTHCHECK_URL: ${{ secrets.UPTIME_HEALTHCHECK_URL }}
+      ALERT_EMAIL_TO: ${{ secrets.ALERT_EMAIL_TO }}
+      ALERT_WEBHOOK_URL: ${{ secrets.ALERT_WEBHOOK_URL }}
+      RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+      EMAIL_FROM: ${{ secrets.EMAIL_FROM }}
+      EMAIL_REPLY_TO: ${{ secrets.EMAIL_REPLY_TO }}
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Prepare hosted attestation packet
+        run: npm run gateforge:prepare-hosted-attestation
+      - name: Validate external evidence packet
+        run: npm run gateforge:external-check
+      - name: Typecheck
+        run: npm run typecheck
+      - name: Hosted live CI
+        run: npm run ci:live
+      - name: Hosted Postgres tests
+        run: npm run test:pg
+      - name: Hosted health gate
+        run: npm run deploy:health-gate
+      - name: Hosted deploy smoke
+        run: npm run deploy:smoke
+      - name: GateForge GA unblock hosted evidence
+        run: npm run gateforge:ga-unblock
+      - name: GateForge war room refresh
+        run: npm run gateforge:war-room
+        if: always()
+      - name: GateForge final report
+        run: npm run gateforge:final-report
+        if: always()
+      - name: GateForge final gate
+        run: npm run gateforge:final-gate
+      - name: Upload hosted staging evidence
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: gateforge-hosted-staging-strict
+          path: |
+            gateforge-audit/run-*/24_ga_unblock_evidence_pack.md
+            gateforge-audit/run-*/25_live_command_results.md
+            gateforge-audit/run-*/26_remaining_blockers.md
+            gateforge-audit/run-*/27_recomputed_score.md
+            gateforge-audit/run-*/28_conditional_go_request.md
+            gateforge-audit/run-*/34_final_gate_current_decision.md
+            gateforge-audit/run-*/36_life_or_death_war_room.md
+            gateforge-audit/run-*/37_hosted_staging_strict_dispatch.md
+            gateforge-audit/external-attestations/HOSTED_STAGING_WAR_ROOM.md
+            gateforge-audit/external-attestations/hosted-staging-attestation.json
+            gateforge-audit/run-*/ga-unblock-evidence/*.log
+            gateforge-audit/run-*/ga-unblock-evidence/summary.json
+          if-no-files-found: ignore
