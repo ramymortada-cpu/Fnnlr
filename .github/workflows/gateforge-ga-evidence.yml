@@ -32,6 +32,9 @@ jobs:
       - name: GateForge GA unblock evidence
         run: npm run gateforge:ga-unblock
         continue-on-error: true
+      - name: GateForge final decision report
+        run: npm run gateforge:final-report
+        if: always()
       - name: Upload sanitized evidence
         uses: actions/upload-artifact@v4
         if: always()
@@ -47,6 +50,7 @@ jobs:
             gateforge-audit/run-*/26_remaining_blockers.md
             gateforge-audit/run-*/27_recomputed_score.md
             gateforge-audit/run-*/28_conditional_go_request.md
+            gateforge-audit/run-*/34_final_gate_current_decision.md
             gateforge-audit/run-*/ga-unblock-evidence/*.log
             gateforge-audit/run-*/ga-unblock-evidence/summary.json
           if-no-files-found: ignore
