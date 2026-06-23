@@ -66,6 +66,8 @@
     "gateforge:disposable-staging": "tsx scripts/gateforge-disposable-staging.ts",
     "gateforge:external-check": "tsx scripts/gateforge-external-check.ts",
     "gateforge:external-smoke": "tsx scripts/gateforge-external-smoke.ts",
+    "gateforge:final-gate": "tsx scripts/gateforge-final-gate.ts",
+    "gateforge:final-gate-smoke": "tsx scripts/gateforge-final-gate-smoke.ts",
     "customer:repeatability-check": "tsx scripts/repeatability.ts check",
     "customer:repeatability-report": "tsx scripts/repeatability.ts report",
     "typecheck": "tsc --noEmit"
