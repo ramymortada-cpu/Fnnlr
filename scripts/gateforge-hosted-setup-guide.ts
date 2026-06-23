@@ -33,6 +33,8 @@ Before triggering the strict workflow, audit repository secret names without rea
 npm run gateforge:github-secrets-audit
 \`\`\`
 
+If secrets are missing, follow \`gateforge-audit/run-2026-06-23-1035/40_missing_github_secrets_remediation.md\`.
+
 ## Attestation Packet
 
 Preferred secret:

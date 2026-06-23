@@ -7,6 +7,7 @@ import { loadHostedSecretsManifest } from './gateforge-hosted-secrets-manifest.j
 type GhSecret = { name: string };
 
 const defaultReportPath = 'gateforge-audit/run-2026-06-23-1035/39_github_secrets_presence_audit.md';
+const remediationPath = 'gateforge-audit/run-2026-06-23-1035/40_missing_github_secrets_remediation.md';
 const fromFileIndex = process.argv.indexOf('--from-file');
 const fromFile = fromFileIndex >= 0 ? process.argv[fromFileIndex + 1] : '';
 const outIndex = process.argv.indexOf('--out');
@@ -76,6 +77,7 @@ ${missing.length ? 'Set the missing GitHub Actions secrets, then rerun this audi
 
 fs.mkdirSync(path.dirname(reportPath), { recursive: true });
 fs.writeFileSync(reportPath, body);
+writeRemediation(missing, required.length, now);
 
 if (missing.length) {
   console.error('GateForge GitHub secrets audit: MISSING_SECRETS');
@@ -87,3 +89,37 @@ if (missing.length) {
 console.log('GateForge GitHub secrets audit: READY');
 console.log(`  required secrets present: ${required.length}/${required.length}`);
 console.log(`  wrote ${reportPath}`);
+
+function writeRemediation(missingSecrets: string[], requiredCount: number, generatedAt: string) {
+  const missingCommands = missingSecrets.map((name) => `gh secret set ${name}`).join('\n');
+  const status = missingSecrets.length ? 'ACTION_REQUIRED' : 'READY';
+  const remediation = `# Missing GitHub Secrets Remediation
+
+Generated: \`${generatedAt}\`
+
+Status: \`${status}\`
+
+This file contains secret names and setup commands only. It must not contain secret values.
+
+## Summary
+
+- Required secrets: \`${requiredCount}\`
+- Missing secrets: \`${missingSecrets.length}\`
+
+## Commands
+
+${missingSecrets.length ? `Run these commands locally and paste each staging value when prompted:
+
+\`\`\`bash
+${missingCommands}
+\`\`\`` : 'No missing GitHub Actions secrets were detected.'}
+
+## Verification
+
+\`\`\`bash
+npm run gateforge:github-secrets-audit
+gh workflow run "GateForge Hosted Staging Strict"
+\`\`\`
+`;
+  fs.writeFileSync(remediationPath, remediation);
+}

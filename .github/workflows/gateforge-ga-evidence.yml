@@ -74,6 +74,7 @@ jobs:
             gateforge-audit/run-*/36_life_or_death_war_room.md
             gateforge-audit/run-*/38_hosted_staging_operator_setup.md
             gateforge-audit/run-*/39_github_secrets_presence_audit.md
+            gateforge-audit/run-*/40_missing_github_secrets_remediation.md
             gateforge-audit/external-attestations/HOSTED_STAGING_WAR_ROOM.md
             gateforge-audit/external-attestations/*.md
             gateforge-audit/external-attestations/*.json

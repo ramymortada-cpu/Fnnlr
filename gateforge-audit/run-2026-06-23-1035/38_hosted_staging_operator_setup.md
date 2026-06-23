@@ -1,6 +1,6 @@
 # Hosted Staging Operator Setup
 
-Generated: `2026-06-23T12:50:04.082Z`
+Generated: `2026-06-23T13:07:48.125Z`
 
 This is the operator checklist for converting GateForge from `CANNOT_APPROVE` to a defensible `CONDITIONAL_GO`. It does not contain secret values.
 
@@ -21,6 +21,8 @@ Before triggering the strict workflow, audit repository secret names without rea
 ```bash
 npm run gateforge:github-secrets-audit
 ```
+
+If secrets are missing, follow `gateforge-audit/run-2026-06-23-1035/40_missing_github_secrets_remediation.md`.
 
 ## Attestation Packet
 
