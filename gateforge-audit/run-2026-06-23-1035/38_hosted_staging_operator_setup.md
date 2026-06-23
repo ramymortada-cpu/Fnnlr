@@ -1,6 +1,6 @@
 # Hosted Staging Operator Setup
 
-Generated: `2026-06-23T12:26:24.203Z`
+Generated: `2026-06-23T12:40:19.292Z`
 
 This is the operator checklist for converting GateForge from `CANNOT_APPROVE` to a defensible `CONDITIONAL_GO`. It does not contain secret values.
 
@@ -64,8 +64,8 @@ gh secret set ANTHROPIC_API_KEY
 
 ### Attestation
 
-- `GATEFORGE_HOSTED_STAGING_ATTESTATION_B64`
 - `GATEFORGE_HOSTED_STAGING_ATTESTATION_JSON`
+- `GATEFORGE_HOSTED_STAGING_ATTESTATION_B64`
 
 ### Runtime
 

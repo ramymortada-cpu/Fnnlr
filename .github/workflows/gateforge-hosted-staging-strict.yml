@@ -80,6 +80,7 @@ jobs:
             gateforge-audit/run-*/37_hosted_staging_strict_dispatch.md
             gateforge-audit/run-*/38_hosted_staging_operator_setup.md
             gateforge-audit/external-attestations/HOSTED_STAGING_WAR_ROOM.md
+            gateforge-audit/external-attestations/hosted-staging-secrets.manifest.json
             gateforge-audit/external-attestations/hosted-staging-attestation.json
             gateforge-audit/run-*/ga-unblock-evidence/*.log
             gateforge-audit/run-*/ga-unblock-evidence/summary.json
