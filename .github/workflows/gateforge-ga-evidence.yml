@@ -29,6 +29,8 @@ jobs:
         run: npm run gateforge:external-smoke
       - name: GateForge final gate evaluator smoke
         run: npm run gateforge:final-gate-smoke
+      - name: GateForge hosted secrets manifest smoke
+        run: npm run gateforge:hosted-secrets-manifest-smoke
       - name: GateForge hosted secrets preflight smoke
         run: npm run gateforge:hosted-secrets-preflight-smoke
       - name: GateForge hosted operator drift smoke
