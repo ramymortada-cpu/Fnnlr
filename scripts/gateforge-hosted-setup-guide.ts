@@ -27,6 +27,12 @@ Then monitor:
 gh run list --workflow "${workflow}" --limit 1
 \`\`\`
 
+Before triggering the strict workflow, audit repository secret names without reading values:
+
+\`\`\`bash
+npm run gateforge:github-secrets-audit
+\`\`\`
+
 ## Attestation Packet
 
 Preferred secret:
@@ -84,6 +90,7 @@ The strict workflow must complete these steps:
 ## Failure Interpretation
 
 - Missing attestation secret: upload the sanitized packet using one of the attestation commands above.
+- GitHub secrets audit failure: set every missing repository secret name, then rerun \`npm run gateforge:github-secrets-audit\`.
 - Hosted secrets preflight failure: set every listed GitHub Actions secret; the preflight prints names only, never values.
 - External evidence failure: a required packet item is not \`PASS\`, has no owner, has no evidence refs, or contains an unsafe ref.
 - Hosted live CI or Postgres failure: staging database/runtime evidence is still not accepted.

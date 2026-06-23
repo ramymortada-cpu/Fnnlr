@@ -1,6 +1,6 @@
 # Hosted Staging Operator Setup
 
-Generated: `2026-06-23T12:40:19.292Z`
+Generated: `2026-06-23T12:50:04.082Z`
 
 This is the operator checklist for converting GateForge from `CANNOT_APPROVE` to a defensible `CONDITIONAL_GO`. It does not contain secret values.
 
@@ -14,6 +14,12 @@ Then monitor:
 
 ```bash
 gh run list --workflow "GateForge Hosted Staging Strict" --limit 1
+```
+
+Before triggering the strict workflow, audit repository secret names without reading values:
+
+```bash
+npm run gateforge:github-secrets-audit
 ```
 
 ## Attestation Packet
@@ -106,6 +112,7 @@ The strict workflow must complete these steps:
 ## Failure Interpretation
 
 - Missing attestation secret: upload the sanitized packet using one of the attestation commands above.
+- GitHub secrets audit failure: set every missing repository secret name, then rerun `npm run gateforge:github-secrets-audit`.
 - Hosted secrets preflight failure: set every listed GitHub Actions secret; the preflight prints names only, never values.
 - External evidence failure: a required packet item is not `PASS`, has no owner, has no evidence refs, or contains an unsafe ref.
 - Hosted live CI or Postgres failure: staging database/runtime evidence is still not accepted.

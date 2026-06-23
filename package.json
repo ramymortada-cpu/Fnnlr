@@ -70,6 +70,8 @@
     "gateforge:hosted-secrets-manifest-smoke": "tsx scripts/gateforge-hosted-secrets-manifest-smoke.ts",
     "gateforge:hosted-secrets-preflight-smoke": "tsx scripts/gateforge-hosted-secrets-preflight-smoke.ts",
     "gateforge:hosted-operator-drift-smoke": "tsx scripts/gateforge-hosted-operator-drift-smoke.ts",
+    "gateforge:github-secrets-audit": "tsx scripts/gateforge-github-secrets-audit.ts",
+    "gateforge:github-secrets-audit-smoke": "tsx scripts/gateforge-github-secrets-audit.ts --from-file tests/fixtures/gateforge-gh-secrets-pass.json",
     "gateforge:hosted-setup-guide": "tsx scripts/gateforge-hosted-setup-guide.ts",
     "gateforge:external-smoke": "tsx scripts/gateforge-external-smoke.ts",
     "gateforge:final-gate": "tsx scripts/gateforge-final-gate.ts",
