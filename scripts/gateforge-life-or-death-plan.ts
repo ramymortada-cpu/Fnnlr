@@ -322,6 +322,14 @@ base64 -i gateforge-audit/external-attestations/hosted-staging-attestation.json 
 
 Only change attestation item statuses to \`PASS\` when the evidence references exist.
 
+## Validate Local Secret Files
+
+Run this before any upload. It checks file presence and placeholder replacement by secret name only; it never prints secret values.
+
+\`\`\`bash
+npm run gateforge:local-secret-files-check
+\`\`\`
+
 ## Upload Secrets
 
 \`\`\`bash

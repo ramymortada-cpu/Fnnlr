@@ -1,6 +1,6 @@
 # Operator Secret Command Pack
 
-Generated: `2026-06-23T21:13:44.377Z`
+Generated: `2026-06-23T21:17:54.933Z`
 
 This file is an execution helper for closing the current GateForge blocker. It contains commands and secret names only. Do not paste real secret values into this file or commit generated secret files.
 
@@ -60,6 +60,14 @@ base64 -i gateforge-audit/external-attestations/hosted-staging-attestation.json 
 ```
 
 Only change attestation item statuses to `PASS` when the evidence references exist.
+
+## Validate Local Secret Files
+
+Run this before any upload. It checks file presence and placeholder replacement by secret name only; it never prints secret values.
+
+```bash
+npm run gateforge:local-secret-files-check
+```
 
 ## Upload Secrets
 
