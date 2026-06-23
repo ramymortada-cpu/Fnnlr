@@ -69,6 +69,7 @@
     "gateforge:final-gate": "tsx scripts/gateforge-final-gate.ts",
     "gateforge:final-gate-smoke": "tsx scripts/gateforge-final-gate-smoke.ts",
     "gateforge:final-report": "tsx scripts/gateforge-final-report.ts",
+    "gateforge:war-room": "tsx scripts/gateforge-war-room.ts",
     "customer:repeatability-check": "tsx scripts/repeatability.ts check",
     "customer:repeatability-report": "tsx scripts/repeatability.ts report",
     "typecheck": "tsc --noEmit"
