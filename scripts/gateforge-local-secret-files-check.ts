@@ -6,6 +6,7 @@ import { loadHostedSecretsManifest } from './gateforge-hosted-secrets-manifest.j
 const defaultDir = '/tmp/fnnlr-gateforge-secrets';
 const dirArgIndex = process.argv.indexOf('--dir');
 const secretDir = dirArgIndex >= 0 ? process.argv[dirArgIndex + 1] : defaultDir;
+const json = process.argv.includes('--json');
 const { attestationSecrets, runtimeSecrets } = loadHostedSecretsManifest();
 
 type CheckResult = {
@@ -41,6 +42,21 @@ const runtimeResults = runtimeSecrets.map((name) => statusFor(name, 'runtime'));
 const readyAttestations = attestationResults.filter((result) => result.status === 'READY');
 const failedRuntime = runtimeResults.filter((result) => result.status !== 'READY');
 const ok = readyAttestations.length >= 1 && failedRuntime.length === 0;
+const summary = {
+  ok,
+  directory: secretDir,
+  attestationReady: readyAttestations.length,
+  attestationRequired: 1,
+  attestationOptions: attestationResults,
+  runtimeReady: runtimeResults.filter((result) => result.status === 'READY').length,
+  runtimeRequired: runtimeResults.length,
+  runtime: runtimeResults,
+};
+
+if (json) {
+  console.log(JSON.stringify(summary, null, 2));
+  process.exit(ok ? 0 : 1);
+}
 
 if (!ok) {
   console.error('GateForge local secret files check: FAIL');

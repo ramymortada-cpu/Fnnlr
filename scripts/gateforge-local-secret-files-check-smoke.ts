@@ -38,6 +38,17 @@ const placeholder = run(placeholderDir);
 if (placeholder.status === 0) fail('placeholder case unexpectedly passed');
 if (!placeholder.output.includes('SENTRY_DSN: PLACEHOLDER')) fail('placeholder case did not name placeholder file');
 
+const placeholderJson = spawnSync('npx', ['tsx', 'scripts/gateforge-local-secret-files-check.ts', '--dir', placeholderDir, '--json'], {
+  encoding: 'utf8',
+  maxBuffer: 1024 * 1024,
+});
+if (placeholderJson.status === 0) fail('placeholder JSON case unexpectedly passed');
+const parsedPlaceholder = JSON.parse(placeholderJson.stdout);
+if (parsedPlaceholder.ok !== false) fail('placeholder JSON did not mark ok=false');
+if (!parsedPlaceholder.runtime.some((entry: { name: string; status: string }) => entry.name === 'SENTRY_DSN' && entry.status === 'PLACEHOLDER')) {
+  fail('placeholder JSON did not include SENTRY_DSN placeholder status');
+}
+
 const passingDir = fs.mkdtempSync(path.join(os.tmpdir(), 'fnnlr-gateforge-secret-pass-'));
 fs.writeFileSync(path.join(passingDir, attestationSecrets[1]), 'base64-packet');
 for (const name of runtimeSecrets) fs.writeFileSync(path.join(passingDir, name), name.includes('CAP') ? '1' : `value-for-${name}`);

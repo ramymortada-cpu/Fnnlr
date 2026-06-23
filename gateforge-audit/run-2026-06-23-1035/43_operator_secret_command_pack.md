@@ -1,6 +1,6 @@
 # Operator Secret Command Pack
 
-Generated: `2026-06-23T21:50:29.531Z`
+Generated: `2026-06-23T22:08:37.033Z`
 
 This file is an execution helper for closing the current GateForge blocker. It contains commands and secret names only. Do not paste real secret values into this file or commit generated secret files.
 
@@ -53,6 +53,8 @@ printf 'REPLACE_WITH_ANTHROPIC_STAGING_KEY\n' > /tmp/fnnlr-gateforge-secrets/ANT
 ```
 
 Now edit each file and replace the placeholder with the real staging value before upload.
+
+After scaffold, the doctor should move from `SCAFFOLD_LOCAL_SECRET_FILES` to `REPLACE_LOCAL_SECRET_PLACEHOLDERS` until these placeholders are replaced.
 
 ## Prepare Attestation Secret
 

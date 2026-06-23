@@ -315,6 +315,8 @@ printf 'REPLACE_WITH_ANTHROPIC_STAGING_KEY\\n' > /tmp/fnnlr-gateforge-secrets/AN
 
 Now edit each file and replace the placeholder with the real staging value before upload.
 
+After scaffold, the doctor should move from \`SCAFFOLD_LOCAL_SECRET_FILES\` to \`REPLACE_LOCAL_SECRET_PLACEHOLDERS\` until these placeholders are replaced.
+
 ## Prepare Attestation Secret
 
 \`\`\`bash

@@ -16,6 +16,13 @@ type Probe = {
   status: 'PASS' | 'FAIL' | 'UNKNOWN';
   detail: string;
   output: string;
+  localState?: 'READY' | 'MISSING_FILES' | 'PLACEHOLDERS' | 'EMPTY_FILES';
+};
+
+type LocalSecretJson = {
+  ok: boolean;
+  attestationOptions: { name: string; status: 'READY' | 'MISSING' | 'EMPTY' | 'PLACEHOLDER' }[];
+  runtime: { name: string; status: 'READY' | 'MISSING' | 'EMPTY' | 'PLACEHOLDER' }[];
 };
 
 function run(command: string, args: string[]) {
@@ -31,11 +38,31 @@ function run(command: string, args: string[]) {
 }
 
 function probeLocalSecrets(): Probe {
-  const result = run('npx', ['tsx', 'scripts/gateforge-local-secret-files-check.ts', '--dir', secretDir]);
+  const result = run('npx', ['tsx', 'scripts/gateforge-local-secret-files-check.ts', '--dir', secretDir, '--json']);
+  let localState: Probe['localState'] = 'MISSING_FILES';
+  try {
+    const parsed = JSON.parse(result.output) as LocalSecretJson;
+    const statuses = [...parsed.attestationOptions, ...parsed.runtime].map((entry) => entry.status);
+    if (parsed.ok) localState = 'READY';
+    else if (statuses.includes('PLACEHOLDER')) localState = 'PLACEHOLDERS';
+    else if (statuses.includes('EMPTY')) localState = 'EMPTY_FILES';
+    else localState = 'MISSING_FILES';
+  } catch {
+    localState = 'MISSING_FILES';
+  }
+  const detail =
+    result.status === 0
+      ? 'local secret files are ready'
+      : localState === 'PLACEHOLDERS'
+        ? 'local secret files exist but placeholders remain'
+        : localState === 'EMPTY_FILES'
+          ? 'local secret files contain empty values'
+          : 'local secret files are missing';
   return {
     status: result.status === 0 ? 'PASS' : 'FAIL',
-    detail: result.status === 0 ? 'local secret files are ready' : 'local secret files are not ready',
+    detail,
     output: result.output,
+    localState,
   };
 }
 
@@ -96,15 +123,19 @@ const githubSecrets = probeGithubSecrets();
 const strictRun = probeLatestStrictRun();
 const decision =
   localSecrets.status !== 'PASS'
-    ? 'PREPARE_LOCAL_SECRET_FILES'
+    ? localSecrets.localState === 'PLACEHOLDERS' || localSecrets.localState === 'EMPTY_FILES'
+      ? 'REPLACE_LOCAL_SECRET_PLACEHOLDERS'
+      : 'SCAFFOLD_LOCAL_SECRET_FILES'
     : githubSecrets.status !== 'PASS'
       ? 'UPLOAD_GITHUB_SECRETS'
       : strictRun.status !== 'PASS'
         ? 'TRIGGER_HOSTED_STRICT'
         : 'REVIEW_HOSTED_STRICT_EVIDENCE';
 const nextCommand =
-  decision === 'PREPARE_LOCAL_SECRET_FILES'
-    ? 'Follow gateforge-audit/run-2026-06-23-1035/43_operator_secret_command_pack.md, then run npm run gateforge:hosted-readiness-doctor.'
+  decision === 'SCAFFOLD_LOCAL_SECRET_FILES'
+    ? 'npm run gateforge:scaffold-local-secrets'
+    : decision === 'REPLACE_LOCAL_SECRET_PLACEHOLDERS'
+      ? 'Replace placeholders in /tmp/fnnlr-gateforge-secrets, then run npm run gateforge:hosted-readiness-doctor.'
     : decision === 'UPLOAD_GITHUB_SECRETS'
       ? 'npm run gateforge:hosted-unblock -- --apply'
       : decision === 'TRIGGER_HOSTED_STRICT'

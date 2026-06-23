@@ -47,4 +47,35 @@ if (!report.includes('| Hosted strict workflow | `UNKNOWN` | skipped in fixture 
 }
 if (report.includes('value-for-') || report.includes('base64-packet')) fail('report leaked fixture secret values');
 
+const placeholderDir = fs.mkdtempSync(path.join(os.tmpdir(), 'fnnlr-gateforge-doctor-placeholder-'));
+fs.writeFileSync(path.join(placeholderDir, attestationSecrets[1]), 'REPLACE_WITH_BASE64_HOSTED_STAGING_ATTESTATION');
+for (const name of runtimeSecrets) fs.writeFileSync(path.join(placeholderDir, name), name.includes('CAP') ? '1' : `value-for-${name}`);
+const placeholderOut = path.join(os.tmpdir(), 'fnnlr-gateforge-doctor-placeholder-smoke.md');
+const placeholderResult = spawnSync(
+  'npx',
+  [
+    'tsx',
+    'scripts/gateforge-hosted-readiness-doctor.ts',
+    '--dir',
+    placeholderDir,
+    '--from-file',
+    'tests/fixtures/gateforge-gh-secrets-b64-only-pass.json',
+    '--out',
+    placeholderOut,
+  ],
+  {
+    encoding: 'utf8',
+    maxBuffer: 1024 * 1024,
+  },
+);
+const placeholderOutput = `${placeholderResult.stdout || ''}${placeholderResult.stderr || ''}`;
+const placeholderReport = fs.existsSync(placeholderOut) ? fs.readFileSync(placeholderOut, 'utf8') : '';
+if ((placeholderResult.status ?? 1) !== 1) fail('placeholder doctor should fail until placeholders are replaced');
+if (!placeholderOutput.includes('GateForge hosted readiness doctor: REPLACE_LOCAL_SECRET_PLACEHOLDERS')) {
+  fail('placeholder doctor did not pick placeholder replacement decision');
+}
+if (!placeholderReport.includes('| Local secret files | `FAIL` | local secret files exist but placeholders remain |')) {
+  fail('placeholder doctor report did not explain placeholder state');
+}
+
 console.log('GateForge hosted readiness doctor smoke: PASS');

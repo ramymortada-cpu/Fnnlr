@@ -1,19 +1,19 @@
 # Hosted Readiness Doctor
 
-Generated: `2026-06-23T21:44:01.176Z`
+Generated: `2026-06-23T22:10:45.573Z`
 
 This doctor checks readiness without printing secret values.
 
 ## Decision
 
-- Status: `PREPARE_LOCAL_SECRET_FILES`
-- Next command: `Follow gateforge-audit/run-2026-06-23-1035/43_operator_secret_command_pack.md, then run npm run gateforge:hosted-readiness-doctor.`
+- Status: `REPLACE_LOCAL_SECRET_PLACEHOLDERS`
+- Next command: `Replace placeholders in /tmp/fnnlr-gateforge-secrets, then run npm run gateforge:hosted-readiness-doctor.`
 
 ## Probes
 
 | Probe | Status | Detail |
 | --- | --- | --- |
-| Local secret files | `FAIL` | local secret files are not ready |
+| Local secret files | `FAIL` | local secret files exist but placeholders remain |
 | GitHub secret names | `FAIL` | GitHub secret names are missing |
 | Hosted strict workflow | `UNKNOWN` | no hosted strict workflow run found |
 
@@ -28,29 +28,113 @@ This doctor checks readiness without printing secret values.
 ### Local Secret Files
 
 ```text
-GateForge local secret files check: FAIL
-  directory: /tmp/fnnlr-gateforge-secrets
-  - missing one ready attestation file: GATEFORGE_HOSTED_STAGING_ATTESTATION_JSON or GATEFORGE_HOSTED_STAGING_ATTESTATION_B64
-  - GATEFORGE_HOSTED_STAGING_ATTESTATION_JSON: MISSING
-  - GATEFORGE_HOSTED_STAGING_ATTESTATION_B64: MISSING
-  - CONTROL_PLANE_DATABASE_URL: MISSING
-  - TENANT_DB_ADMIN_URL: MISSING
-  - TENANT_DB_HOST: MISSING
-  - TENANT_CREDENTIAL_ENCRYPTION_KEY: MISSING
-  - INTEGRATION_ENCRYPTION_KEY: MISSING
-  - FNNLR_CRON_SECRET: MISSING
-  - AUTH_MFA_ENCRYPTION_KEY: MISSING
-  - FNNLR_AI_TENANT_DAILY_USD_CAP: MISSING
-  - FNNLR_AI_GLOBAL_DAILY_USD_CAP: MISSING
-  - SENTRY_DSN: MISSING
-  - UPTIME_HEALTHCHECK_URL: MISSING
-  - ALERT_EMAIL_TO: MISSING
-  - ALERT_WEBHOOK_URL: MISSING
-  - RESEND_API_KEY: MISSING
-  - EMAIL_FROM: MISSING
-  - EMAIL_REPLY_TO: MISSING
-  - ANTHROPIC_API_KEY: MISSING
-No secret values were printed.
+{
+  "ok": false,
+  "directory": "/tmp/fnnlr-gateforge-secrets",
+  "attestationReady": 0,
+  "attestationRequired": 1,
+  "attestationOptions": [
+    {
+      "name": "GATEFORGE_HOSTED_STAGING_ATTESTATION_JSON",
+      "kind": "attestation",
+      "status": "MISSING"
+    },
+    {
+      "name": "GATEFORGE_HOSTED_STAGING_ATTESTATION_B64",
+      "kind": "attestation",
+      "status": "PLACEHOLDER"
+    }
+  ],
+  "runtimeReady": 6,
+  "runtimeRequired": 17,
+  "runtime": [
+    {
+      "name": "CONTROL_PLANE_DATABASE_URL",
+      "kind": "runtime",
+      "status": "PLACEHOLDER"
+    },
+    {
+      "name": "TENANT_DB_ADMIN_URL",
+      "kind": "runtime",
+      "status": "PLACEHOLDER"
+    },
+    {
+      "name": "TENANT_DB_HOST",
+      "kind": "runtime",
+      "status": "PLACEHOLDER"
+    },
+    {
+      "name": "TENANT_CREDENTIAL_ENCRYPTION_KEY",
+      "kind": "runtime",
+      "status": "READY"
+    },
+    {
+      "name": "INTEGRATION_ENCRYPTION_KEY",
+      "kind": "runtime",
+      "status": "READY"
+    },
+    {
+      "name": "FNNLR_CRON_SECRET",
+      "kind": "runtime",
+      "status": "READY"
+    },
+    {
+      "name": "AUTH_MFA_ENCRYPTION_KEY",
+      "kind": "runtime",
+      "status": "READY"
+    },
+    {
+      "name": "FNNLR_AI_TENANT_DAILY_USD_CAP",
+      "kind": "runtime",
+      "status": "READY"
+    },
+    {
+      "name": "FNNLR_AI_GLOBAL_DAILY_USD_CAP",
+      "kind": "runtime",
+      "status": "READY"
+    },
+    {
+      "name": "SENTRY_DSN",
+      "kind": "runtime",
+      "status": "PLACEHOLDER"
+    },
+    {
+      "name": "UPTIME_HEALTHCHECK_URL",
+      "kind": "runtime",
+      "status": "PLACEHOLDER"
+    },
+    {
+      "name": "ALERT_EMAIL_TO",
+      "kind": "runtime",
+      "status": "PLACEHOLDER"
+    },
+    {
+      "name": "ALERT_WEBHOOK_URL",
+      "kind": "runtime",
+      "status": "PLACEHOLDER"
+    },
+    {
+      "name": "RESEND_API_KEY",
+      "kind": "runtime",
+      "status": "PLACEHOLDER"
+    },
+    {
+      "name": "EMAIL_FROM",
+      "kind": "runtime",
+      "status": "PLACEHOLDER"
+    },
+    {
+      "name": "EMAIL_REPLY_TO",
+      "kind": "runtime",
+      "status": "PLACEHOLDER"
+    },
+    {
+      "name": "ANTHROPIC_API_KEY",
+      "kind": "runtime",
+      "status": "PLACEHOLDER"
+    }
+  ]
+}
 ```
 
 ### GitHub Secret Names
