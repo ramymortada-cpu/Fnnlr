@@ -54,6 +54,9 @@ jobs:
       - name: GateForge war room refresh
         run: npm run gateforge:war-room
         if: always()
+      - name: GateForge hosted setup guide
+        run: npm run gateforge:hosted-setup-guide
+        if: always()
       - name: GateForge final report
         run: npm run gateforge:final-report
         if: always()
@@ -73,6 +76,7 @@ jobs:
             gateforge-audit/run-*/34_final_gate_current_decision.md
             gateforge-audit/run-*/36_life_or_death_war_room.md
             gateforge-audit/run-*/37_hosted_staging_strict_dispatch.md
+            gateforge-audit/run-*/38_hosted_staging_operator_setup.md
             gateforge-audit/external-attestations/HOSTED_STAGING_WAR_ROOM.md
             gateforge-audit/external-attestations/hosted-staging-attestation.json
             gateforge-audit/run-*/ga-unblock-evidence/*.log

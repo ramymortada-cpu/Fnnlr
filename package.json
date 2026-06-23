@@ -66,6 +66,7 @@
     "gateforge:disposable-staging": "tsx scripts/gateforge-disposable-staging.ts",
     "gateforge:external-check": "tsx scripts/gateforge-external-check.ts",
     "gateforge:prepare-hosted-attestation": "tsx scripts/gateforge-prepare-hosted-attestation.ts",
+    "gateforge:hosted-setup-guide": "tsx scripts/gateforge-hosted-setup-guide.ts",
     "gateforge:external-smoke": "tsx scripts/gateforge-external-smoke.ts",
     "gateforge:final-gate": "tsx scripts/gateforge-final-gate.ts",
     "gateforge:final-gate-smoke": "tsx scripts/gateforge-final-gate-smoke.ts",
