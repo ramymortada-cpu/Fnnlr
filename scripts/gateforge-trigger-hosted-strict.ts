@@ -4,10 +4,16 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 const workflow = 'GateForge Hosted Staging Strict';
-const reportPath = 'gateforge-audit/run-2026-06-23-1035/41_hosted_strict_trigger_attempt.md';
 const dryRun = process.argv.includes('--dry-run');
 const fromFileIndex = process.argv.indexOf('--from-file');
 const fromFile = fromFileIndex >= 0 ? process.argv[fromFileIndex + 1] : '';
+const reportOutIndex = process.argv.indexOf('--report-out');
+const reportPath =
+  reportOutIndex >= 0
+    ? process.argv[reportOutIndex + 1]
+    : dryRun || fromFile
+      ? '/tmp/fnnlr-gateforge-hosted-strict-trigger-smoke.md'
+      : 'gateforge-audit/run-2026-06-23-1035/41_hosted_strict_trigger_attempt.md';
 
 function run(command: string, args: string[]) {
   const result = spawnSync(command, args, {

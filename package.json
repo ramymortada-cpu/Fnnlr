@@ -75,6 +75,7 @@
     "gateforge:trigger-hosted-strict": "tsx scripts/gateforge-trigger-hosted-strict.ts",
     "gateforge:trigger-hosted-strict-smoke": "tsx scripts/gateforge-trigger-hosted-strict.ts --dry-run --from-file tests/fixtures/gateforge-gh-secrets-pass.json",
     "gateforge:hosted-setup-guide": "tsx scripts/gateforge-hosted-setup-guide.ts",
+    "gateforge:life-or-death-plan": "tsx scripts/gateforge-life-or-death-plan.ts",
     "gateforge:external-smoke": "tsx scripts/gateforge-external-smoke.ts",
     "gateforge:final-gate": "tsx scripts/gateforge-final-gate.ts",
     "gateforge:final-gate-smoke": "tsx scripts/gateforge-final-gate-smoke.ts",
