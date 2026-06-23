@@ -35,6 +35,8 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+      - name: Hosted secrets preflight
+        run: npm run gateforge:hosted-secrets-preflight
       - name: Prepare hosted attestation packet
         run: npm run gateforge:prepare-hosted-attestation
       - name: Validate external evidence packet

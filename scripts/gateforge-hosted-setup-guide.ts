@@ -90,20 +90,22 @@ ${runtimeSecrets.map((name) => `- \`${name}\``).join('\n')}
 
 The strict workflow must complete these steps:
 
-1. Prepare hosted attestation packet.
-2. Validate external evidence packet.
-3. Typecheck.
-4. Hosted live CI.
-5. Hosted Postgres tests.
-6. Hosted health gate.
-7. Hosted deploy smoke.
-8. GateForge GA unblock hosted evidence.
-9. GateForge final report.
-10. GateForge final gate.
+1. Hosted secrets preflight.
+2. Prepare hosted attestation packet.
+3. Validate external evidence packet.
+4. Typecheck.
+5. Hosted live CI.
+6. Hosted Postgres tests.
+7. Hosted health gate.
+8. Hosted deploy smoke.
+9. GateForge GA unblock hosted evidence.
+10. GateForge final report.
+11. GateForge final gate.
 
 ## Failure Interpretation
 
 - Missing attestation secret: upload the sanitized packet using one of the attestation commands above.
+- Hosted secrets preflight failure: set every listed GitHub Actions secret; the preflight prints names only, never values.
 - External evidence failure: a required packet item is not \`PASS\`, has no owner, has no evidence refs, or contains an unsafe ref.
 - Hosted live CI or Postgres failure: staging database/runtime evidence is still not accepted.
 - Final gate failure: at least one applicable P0 is still missing runtime or external evidence.
