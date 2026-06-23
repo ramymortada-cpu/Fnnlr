@@ -27,6 +27,8 @@ jobs:
         run: npm run sbom:generate
       - name: GateForge external evidence validator smoke
         run: npm run gateforge:external-smoke
+      - name: GateForge final gate evaluator smoke
+        run: npm run gateforge:final-gate-smoke
       - name: GateForge GA unblock evidence
         run: npm run gateforge:ga-unblock
         continue-on-error: true
