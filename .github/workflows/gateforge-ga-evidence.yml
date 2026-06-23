@@ -25,6 +25,8 @@ jobs:
         run: npm audit --audit-level=high
       - name: Generate SBOM
         run: npm run sbom:generate
+      - name: GateForge external evidence validator smoke
+        run: npm run gateforge:external-smoke
       - name: GateForge GA unblock evidence
         run: npm run gateforge:ga-unblock
         continue-on-error: true
