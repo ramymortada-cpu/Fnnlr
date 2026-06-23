@@ -20,6 +20,17 @@ By default it validates:
 
 `gateforge-audit/external-attestations/hosted-staging-attestation.json`
 
+CI smoke coverage:
+
+```bash
+npm run gateforge:external-smoke
+```
+
+The smoke check proves both sides of the gate:
+
+- a fully populated fixture passes
+- the template with `MISSING` / `HUMAN_ATTESTATION_REQUIRED` fails closed
+
 ## Required PASS Items
 
 - hosted staging GateForge run
