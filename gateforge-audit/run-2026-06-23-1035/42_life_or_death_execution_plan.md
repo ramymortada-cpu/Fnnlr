@@ -1,6 +1,6 @@
 # Life Or Death GA Execution Plan
 
-Generated: `2026-06-23T21:34:12.358Z`
+Generated: `2026-06-23T21:40:06.006Z`
 
 This is the no-drama path from the current GateForge block to a defensible `CONDITIONAL_GO`. It contains secret names, owners, sources, and validation commands only. It must never contain secret values.
 

@@ -340,6 +340,7 @@ npm run gateforge:upload-local-secrets -- --apply
 ## Verify And Trigger
 
 \`\`\`bash
+npm run gateforge:hosted-readiness-doctor
 npm run gateforge:hosted-unblock -- --dry-run
 npm run gateforge:hosted-unblock -- --apply
 \`\`\`

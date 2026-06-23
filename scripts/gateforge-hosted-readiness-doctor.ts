@@ -1,0 +1,168 @@
+#!/usr/bin/env tsx
+import { spawnSync } from 'node:child_process';
+import fs from 'node:fs';
+import path from 'node:path';
+
+const runDir = 'gateforge-audit/run-2026-06-23-1035';
+const outIndex = process.argv.indexOf('--out');
+const outPath = outIndex >= 0 ? process.argv[outIndex + 1] : `${runDir}/44_hosted_readiness_doctor.md`;
+const dirIndex = process.argv.indexOf('--dir');
+const secretDir = dirIndex >= 0 ? process.argv[dirIndex + 1] : '/tmp/fnnlr-gateforge-secrets';
+const fromFileIndex = process.argv.indexOf('--from-file');
+const fromFile = fromFileIndex >= 0 ? process.argv[fromFileIndex + 1] : '';
+const workflow = 'GateForge Hosted Staging Strict';
+
+type Probe = {
+  status: 'PASS' | 'FAIL' | 'UNKNOWN';
+  detail: string;
+  output: string;
+};
+
+function run(command: string, args: string[]) {
+  const result = spawnSync(command, args, {
+    encoding: 'utf8',
+    maxBuffer: 1024 * 1024,
+    stdio: ['ignore', 'pipe', 'pipe'],
+  });
+  return {
+    status: result.status ?? 1,
+    output: `${result.stdout || ''}${result.stderr || ''}`,
+  };
+}
+
+function probeLocalSecrets(): Probe {
+  const result = run('npx', ['tsx', 'scripts/gateforge-local-secret-files-check.ts', '--dir', secretDir]);
+  return {
+    status: result.status === 0 ? 'PASS' : 'FAIL',
+    detail: result.status === 0 ? 'local secret files are ready' : 'local secret files are not ready',
+    output: result.output,
+  };
+}
+
+function probeGithubSecrets(): Probe {
+  const args = ['tsx', 'scripts/gateforge-github-secrets-audit.ts'];
+  if (fromFile) {
+    args.push(
+      '--from-file',
+      fromFile,
+      '--out',
+      '/tmp/fnnlr-gateforge-doctor-gh-secrets.md',
+      '--remediation-out',
+      '/tmp/fnnlr-gateforge-doctor-remediation.md',
+    );
+  }
+  const result = run('npx', args);
+  return {
+    status: result.status === 0 ? 'PASS' : 'FAIL',
+    detail: result.status === 0 ? 'GitHub secret names are ready' : 'GitHub secret names are missing',
+    output: result.output,
+  };
+}
+
+function probeLatestStrictRun(): Probe {
+  if (fromFile) {
+    return {
+      status: 'UNKNOWN',
+      detail: 'skipped in fixture mode',
+      output: 'Fixture mode does not inspect GitHub workflow runs.',
+    };
+  }
+  const result = run('gh', ['run', 'list', '--workflow', workflow, '--limit', '1', '--json', 'databaseId,status,conclusion,headSha,url']);
+  if (result.status !== 0) {
+    return {
+      status: 'UNKNOWN',
+      detail: 'could not inspect hosted strict workflow runs',
+      output: result.output,
+    };
+  }
+  let parsed: { databaseId: number; status: string; conclusion: string; headSha: string; url: string }[] = [];
+  try {
+    parsed = JSON.parse(result.output);
+  } catch {
+    return { status: 'UNKNOWN', detail: 'could not parse workflow run list', output: result.output };
+  }
+  const latest = parsed[0];
+  if (!latest) return { status: 'UNKNOWN', detail: 'no hosted strict workflow run found', output: result.output };
+  const pass = latest.status === 'completed' && latest.conclusion === 'success';
+  return {
+    status: pass ? 'PASS' : 'FAIL',
+    detail: `latest strict run ${latest.databaseId}: ${latest.status}/${latest.conclusion || 'none'}`,
+    output: `${latest.url}\nheadSha=${latest.headSha}`,
+  };
+}
+
+const localSecrets = probeLocalSecrets();
+const githubSecrets = probeGithubSecrets();
+const strictRun = probeLatestStrictRun();
+const decision =
+  localSecrets.status !== 'PASS'
+    ? 'PREPARE_LOCAL_SECRET_FILES'
+    : githubSecrets.status !== 'PASS'
+      ? 'UPLOAD_GITHUB_SECRETS'
+      : strictRun.status !== 'PASS'
+        ? 'TRIGGER_HOSTED_STRICT'
+        : 'REVIEW_HOSTED_STRICT_EVIDENCE';
+const nextCommand =
+  decision === 'PREPARE_LOCAL_SECRET_FILES'
+    ? 'Follow gateforge-audit/run-2026-06-23-1035/43_operator_secret_command_pack.md, then run npm run gateforge:hosted-readiness-doctor.'
+    : decision === 'UPLOAD_GITHUB_SECRETS'
+      ? 'npm run gateforge:hosted-unblock -- --apply'
+      : decision === 'TRIGGER_HOSTED_STRICT'
+        ? 'npm run gateforge:trigger-hosted-strict'
+        : 'npm run gateforge:final-gate && npm run gateforge:final-report';
+
+const now = new Date().toISOString();
+const body = `# Hosted Readiness Doctor
+
+Generated: \`${now}\`
+
+This doctor checks readiness without printing secret values.
+
+## Decision
+
+- Status: \`${decision}\`
+- Next command: \`${nextCommand}\`
+
+## Probes
+
+| Probe | Status | Detail |
+| --- | --- | --- |
+| Local secret files | \`${localSecrets.status}\` | ${localSecrets.detail} |
+| GitHub secret names | \`${githubSecrets.status}\` | ${githubSecrets.detail} |
+| Hosted strict workflow | \`${strictRun.status}\` | ${strictRun.detail} |
+
+## Notes
+
+- Local secret directory: \`${secretDir}\`
+- GitHub secrets source: \`${fromFile ? fromFile : 'gh secret list --json name'}\`
+- Workflow: \`${workflow}\`
+
+## Sanitized Probe Output
+
+### Local Secret Files
+
+\`\`\`text
+${localSecrets.output.trim() || '(no output)'}
+\`\`\`
+
+### GitHub Secret Names
+
+\`\`\`text
+${githubSecrets.output.trim() || '(no output)'}
+\`\`\`
+
+### Hosted Strict Workflow
+
+\`\`\`text
+${strictRun.output.trim() || '(no output)'}
+\`\`\`
+`;
+
+fs.mkdirSync(path.dirname(outPath), { recursive: true });
+fs.writeFileSync(outPath, body);
+
+console.log(`GateForge hosted readiness doctor: ${decision}`);
+console.log(`  next: ${nextCommand}`);
+console.log(`  wrote ${outPath}`);
+
+if (decision !== 'REVIEW_HOSTED_STRICT_EVIDENCE') process.exit(1);
