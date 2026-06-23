@@ -1,0 +1,9 @@
+> fnnlr-db-per-tenant@0.1.0 deploy:smoke
+> tsx scripts/deploy.ts smoke
+
+  ✓ server_starts
+  ✓ health_ok
+  ✓ unsigned_cron_rejected
+  ✓ unknown_webhook_rejected
+  ✓ invalid_public_route_safe
+DEPLOY SMOKE: PASS

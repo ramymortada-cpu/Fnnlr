@@ -1,0 +1,7 @@
+flowchart LR
+  Internet --> APIHost[Node API host]
+  Internet --> StaticHost[Static web host]
+  APIHost --> ManagedPG[(Managed PostgreSQL control + tenant DBs)]
+  Scheduler[Platform scheduler] --> APIHost
+  APIHost --> Backups[pg_dump/restore-test runbooks]
+  APIHost --> Health[health gate/smoke]

@@ -1,0 +1,15 @@
+sequenceDiagram
+  participant Browser
+  participant API
+  participant Auth
+  participant TenantRouter
+  participant Service
+  participant DB
+  Browser->>API: HTTP request
+  API->>Auth: resolve session or public route
+  Auth->>TenantRouter: tenant id if authenticated
+  TenantRouter->>DB: tenant/control connection
+  API->>Service: validated operation
+  Service->>DB: query/update
+  Service-->>API: result
+  API-->>Browser: JSON/redirect/page

@@ -1,0 +1,7 @@
+flowchart TD
+  Start[Signup/Login] --> Answers[Onboarding answers]
+  Answers --> CreateFunnel[POST /funnels]
+  CreateFunnel --> FunnelEditor[Funnel editor]
+  FunnelEditor --> Publish[Publish page]
+  Publish --> FirstSignal[First signal]
+  FirstSignal --> RevenueDesk[Revenue desk/live mode]

@@ -1,0 +1,6 @@
+flowchart LR
+  PublicPage --> Tracking[/track/page-event/] --> API --> TenantDB[(Tenant DB)]
+  Login --> ControlDB[(Control DB)]
+  Webhook --> Resolver[Connection/Public-code resolver] --> TenantDB
+  TenantDB --> RevenueDesk[Revenue Desk]
+  TenantDB --> Reports[Reports/Recommendations]

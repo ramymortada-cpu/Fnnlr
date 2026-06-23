@@ -1,0 +1,4 @@
+> fnnlr-db-per-tenant@0.1.0 audit:high
+> npm audit --audit-level=high
+
+found 0 vulnerabilities

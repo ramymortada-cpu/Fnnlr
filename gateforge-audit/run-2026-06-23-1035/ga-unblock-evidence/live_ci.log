@@ -1,0 +1,13 @@
+> fnnlr-db-per-tenant@0.1.0 ci:live
+> tsx scripts/ci.ts --live
+
+
+=== CI RESULT ===
+  ✓ typecheck
+  ✓ unit_tests
+  ✓ commercial_checker
+  ✓ release_safety
+  ✓ web_balance_and_no_tenant_trust
+  ✓ live_db_tests
+
+SAFE TO RELEASE

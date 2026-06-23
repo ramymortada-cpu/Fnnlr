@@ -1,0 +1,6 @@
+Component,File path,Purpose,Props/state,Dependencies,Reusability,UX role,Accessibility notes,Risk,Recommendation
+Dashboard shell,apps/web/index.html,"Login, dashboard, portfolio, activation, revenue desk",localStorage token and inline JS state,API fetch,Low currently; monolithic HTML,Primary operator cockpit,Manual audit only; ARIA coverage not systematically verified,Medium,Extract shared JS/UI modules and add a11y tests
+Funnel editor,apps/web/funnel.html,Funnel/page/lead/repair/WhatsApp/payment editor,localStorage journey id and API state,API fetch,Low; large page,Main work surface,Keyboard/screen reader not fully verified,Medium,Componentize and test flows
+Onboarding,apps/web/onboarding.html,Guided setup from answers to funnel,inline answers/context,API fetch,Medium,Activation funnel,Form labels appear present but not automated,Medium,Add form validation/a11y checks
+Public page,apps/web/p.html,Published customer page,slug/page content,API fetch tracking,Medium,Customer-facing page,Needs Lighthouse/WCAG verification,Medium,Add SEO/a11y/performance checks
+Automation builder,apps/automation-builder/index.html,Standalone automation JSON builder,local JS state,Browser APIs,Medium,Internal builder,Unknown a11y,Low/Medium,Clarify production status

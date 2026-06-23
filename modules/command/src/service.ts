@@ -1,5 +1,6 @@
 import { withTenant } from '../../../packages/db/src/router.js';
 import { AIGateway, type LLMClient } from '../../../packages/ai-core/src/gateway.js';
+import { logAiUsageEvent } from '../../ai-ops/src/usage.js';
 import { CommandBrain, type CommandContext } from '../../../packages/ai-core/src/brains/command.js';
 import { type Intent } from './intents.js';
 import { planAction, applyPlanned, type ActionKind } from './executor.js';
@@ -63,7 +64,7 @@ export async function runCommand(
 ): Promise<CommandResult> {
   const context = await buildContext(tenantId, input.funnelId, input.tab);
   const gateway = new AIGateway(llm);
-  const { output: cls, degraded } = await gateway.run(CommandBrain, { text: input.text, context }, { tenantId });
+  const { output: cls, degraded } = await gateway.run(CommandBrain, { text: input.text, context }, { tenantId, logUsage: logAiUsageEvent });
   const intent = cls.intent;
 
   // Plan a typed, auditable action (read-only — no object writes here).

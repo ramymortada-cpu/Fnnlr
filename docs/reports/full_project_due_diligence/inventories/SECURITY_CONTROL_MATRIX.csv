@@ -1,0 +1,7 @@
+Control area,Current implementation,Evidence,Standard mapping,Gap,Severity,Recommendation
+Tenant isolation,DB-per-tenant router and production header distrust,packages/db/src/router.ts; tests/isolation.test.ts; tests/webhook-security.test.ts,OWASP ASVS V4 Access Control,Live DB CI not configured locally,High,Require live Postgres isolation tests in CI
+Auth/session,Signup/login/logout/me and hashed tokens/passwords,modules/auth/src/service.ts; tests/auth.test.ts,OWASP ASVS V2,No MFA/password reset found,Medium,Add MFA/reset/email verification before enterprise
+Secrets,Encryption keys fail closed in production,modules/integrations/src/secrets.ts; tests/production-safety.test.ts,SOC2 CC6/CC7,Key rotation not found,High,Add rotation and vault integration
+Rate limiting,Login/public redirect/tracking limits tested,modules/security/src/rate-limit.ts; tests/security-hardening.test.ts,OWASP API4,Distributed rate limits not found,Medium,Use external rate limit store in production
+Webhook security,Unknown connections safe 404; signatures where configured,tests/webhook-security.test.ts,OWASP API8,Provider-specific coverage varies,Medium,Document webhook verification per provider
+Claim safety,Commercial and proof checkers in CI,modules/commercial; modules/proof; scripts/ci.ts,Governance/control,Heuristic copy checks,Low/Medium,Human review for public claims

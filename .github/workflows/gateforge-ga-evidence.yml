@@ -1,0 +1,48 @@
+name: GateForge GA Evidence
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  ga-evidence:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Typecheck
+        run: npm run typecheck
+      - name: Unit and safety CI
+        run: npm run ci
+      - name: Dependency audit
+        run: npm audit --audit-level=high
+      - name: Generate SBOM
+        run: npm run sbom:generate
+      - name: GateForge GA unblock evidence
+        run: npm run gateforge:ga-unblock
+        continue-on-error: true
+      - name: Upload sanitized evidence
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: gateforge-ga-evidence
+          path: |
+            gateforge-audit/evidence/sbom.json
+            gateforge-audit/GA_UNBLOCK_WAR_ROOM.md
+            gateforge-audit/run-*/10_final_gate_report.md
+            gateforge-audit/run-*/11_implementation_plan.md
+            gateforge-audit/run-*/24_ga_unblock_evidence_pack.md
+            gateforge-audit/run-*/25_live_command_results.md
+            gateforge-audit/run-*/26_remaining_blockers.md
+            gateforge-audit/run-*/27_recomputed_score.md
+            gateforge-audit/run-*/28_conditional_go_request.md
+            gateforge-audit/run-*/ga-unblock-evidence/*.log
+            gateforge-audit/run-*/ga-unblock-evidence/summary.json
+          if-no-files-found: ignore

@@ -1,0 +1,7 @@
+Event name,Trigger,User type,Page/feature,Properties,Business purpose,Priority,Implementation status
+page_view,Published page loaded,Visitor,Public page,slug/pageId/visitor/eventKey,Traffic measurement,High,Implemented as page_events
+whatsapp_clicked,CTA click,Visitor,Public page,pageId/code/source,Lead intent tracking,High,Implemented/tracked
+cta_clicked,CTA click,Visitor,Public page,pageId/type,Conversion funnel,High,Implemented/tracked
+activation_completed,First real signal observed,Operator/system,Activation,funnelId/timestamps,Activation readiness,Medium,Inferred from activation/execution modules
+recommendation_applied,Operator applies recommendation,Operator,Revenue desk/recommendations,recommendationId/outcome,Learning loop,High,Implemented in recommendation services
+support_issue_logged,Issue intake,Support/operator,Support workflow,severity/owner/nextAction,Operational safety,Medium,Implemented via execution/support modules

@@ -1,0 +1,3 @@
+# Features, Modules, and Business Logic Report
+
+Confirmed modules: actions, activation, attribution, auth, automation, capture, channels, command, commercial, customer-zero, demo, deployment, execution, funnel, integrations, leaks, operating-room, opportunities, pages, payments, pipeline, playbooks, portfolio, proof, provisioning, realtime, recommendations, release, repairs, repeatability, reports, revenue-desk, sales-ops, scheduler, security, tenancy, whatsapp. Major groups: funnel/page builder, WhatsApp/payment flows, capture/attribution, leaks/repairs, recommendations, revenue desk, automation/scheduler, customer-zero/repeatability, deployment/proof/commercial checks. Risks: feature breadth is high; UX completeness and operational telemetry must keep pace.

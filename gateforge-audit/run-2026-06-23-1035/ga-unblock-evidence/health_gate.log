@@ -1,0 +1,15 @@
+> fnnlr-db-per-tenant@0.1.0 deploy:health-gate
+> tsx scripts/deploy.ts health-gate
+
+HEALTH GATE: READY_TO_SERVE
+  ✓ api: ok
+  ✓ control_db: ok
+  ✓ jobs: ok
+  ✓ integrations: ok
+  ✓ llm: ok
+  ✓ ai_budget: ok
+  ✓ email: ok
+  ✓ observability: ok
+  ✓ release checker passed
+  ✓ encryption key present
+  ✓ cron secret present

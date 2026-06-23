@@ -1,0 +1,8 @@
+flowchart LR
+  Visitor[Visitor] --> Web[Static Web UI]
+  Operator[Operator] --> Web
+  Web --> API[fnnlr API]
+  API --> Control[(Control Plane DB)]
+  API --> Tenant[(Per-Tenant DBs)]
+  API --> LLM[Optional Anthropic LLM]
+  Webhooks[WhatsApp/Payment Webhooks] --> API

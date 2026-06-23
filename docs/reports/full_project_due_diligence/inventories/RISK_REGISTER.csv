@@ -1,0 +1,7 @@
+Risk ID,Category,Risk,Evidence,Severity,Likelihood,Impact,Owner suggestion,Mitigation,Priority,Status
+R-001,Security,Live DB isolation tests are skipped without configured Postgres,npm run test:pg output; tests/live-db.test.ts,High,Medium,Cross-tenant bugs could escape local CI,Engineering/SRE,Configure managed Postgres CI job,P0,Open
+R-002,Compliance,"Legal/privacy documents are readiness drafts, not counsel-reviewed",docs/CUSTOMER_AGREEMENT_DRAFT.md; docs/PRODUCTION_ENVIRONMENT.md,High,Medium,Enterprise/client risk,Founder/legal,Legal review and DPA/privacy/terms,P0,Open
+R-003,UX,HTML monoliths lack automated accessibility evidence,apps/web/*.html,Medium,High,Conversion/support risk,Frontend/product,Run Lighthouse/axe and refactor components,P1,Open
+R-004,Ops,No hosted CI/CD workflow found,No .github/workflows discovered,Medium,Medium,Manual release risk,DevOps,Add GitHub Actions with ci and live DB matrix,P1,Open
+R-005,AI,No formal eval/red-team harness found,packages/ai-core; tests/brains.test.ts,Medium,Medium,Hallucination/data leakage risk,AI lead,Add evals and AI red-team plan,P1,Open
+R-006,Commercial,No real traction/revenue evidence in repo,Proof docs explicitly avoid fabricated traction,Medium,High,Investor/customer proof gap,Founder/GTM,Collect customer-approved case studies,P1,Open

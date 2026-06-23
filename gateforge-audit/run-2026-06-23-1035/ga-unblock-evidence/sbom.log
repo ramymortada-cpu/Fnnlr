@@ -1,0 +1,5 @@
+> fnnlr-db-per-tenant@0.1.0 sbom:generate
+> tsx scripts/generate-sbom.ts
+
+SBOM written: gateforge-audit/evidence/sbom.json
+sha256: ae40a9fe3a3182a30307dbff31bfae3e611c3e72c581f01b49e60e2ba6576aea

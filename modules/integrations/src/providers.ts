@@ -62,6 +62,16 @@ export interface PaymentProviderAdapter {
   normalize(payload: any): NormalizedPayment;
 }
 
+export function webhookTimestampFresh(headers: Record<string, string>, nowMs = Date.now(), maxAgeSeconds = 300): { ok: boolean; reason?: string } {
+  const raw = headers['x-fnnlr-timestamp'] || headers['x-webhook-timestamp'] || headers['x-timestamp'] || headers['webhook-timestamp'] || '';
+  if (!raw) return { ok: true };
+  const numeric = Number(raw);
+  const tsMs = Number.isFinite(numeric) ? (numeric > 10_000_000_000 ? numeric : numeric * 1000) : Date.parse(raw);
+  if (!Number.isFinite(tsMs)) return { ok: false, reason: 'invalid webhook timestamp' };
+  const ageSeconds = Math.abs(nowMs - tsMs) / 1000;
+  return ageSeconds <= maxAgeSeconds ? { ok: true } : { ok: false, reason: 'stale webhook timestamp' };
+}
+
 /** Map common provider status strings to fnnlr's normalized status. */
 function mapStatusWord(s: string | undefined): NormalizedPaymentStatus {
   const v = (s || '').toLowerCase();
@@ -88,6 +98,8 @@ function genericAdapter(provider: ProviderId, opts: { statusKeys?: string[]; ref
     provider,
     verify(rawBody, headers, secret) {
       if (!secret) return true; // dev: no secret configured → accept (event still stored)
+      const fresh = webhookTimestampFresh(headers);
+      if (!fresh.ok) return false;
       const sig = headers['x-signature'] || headers['x-fnnlr-signature'] || headers['hmac'] || '';
       return verifySignature(rawBody, secret, sig);
     },

@@ -1,0 +1,8 @@
+erDiagram
+  CONTROL_TENANTS ||--o{ CONTROL_SESSIONS : owns
+  TENANT_BUSINESSES ||--o{ JOURNEYS : owns
+  JOURNEYS ||--o{ PAGES : publishes
+  JOURNEYS ||--o{ LEADS : captures
+  LEADS ||--o{ TASKS : has
+  JOURNEYS ||--o{ RECOMMENDATIONS : receives
+  JOURNEYS ||--o{ AUDIT_EVENTS : records

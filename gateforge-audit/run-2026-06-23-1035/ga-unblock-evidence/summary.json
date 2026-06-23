@@ -1,0 +1,195 @@
+{
+  "generatedAt": "2026-06-23T08:56:17.678Z",
+  "evidenceContext": "DISPOSABLE_LOCAL_STAGING_POSTGRES",
+  "gate": "CANNOT_APPROVE",
+  "score": "78-84/100 pending legal/provider attestation",
+  "env": [
+    {
+      "name": "CONTROL_PLANE_DATABASE_URL",
+      "present": true
+    },
+    {
+      "name": "TENANT_DB_ADMIN_URL",
+      "present": true
+    },
+    {
+      "name": "TENANT_DB_HOST",
+      "present": true
+    },
+    {
+      "name": "TENANT_CREDENTIAL_ENCRYPTION_KEY",
+      "present": true
+    },
+    {
+      "name": "INTEGRATION_ENCRYPTION_KEY",
+      "present": true
+    },
+    {
+      "name": "FNNLR_CRON_SECRET",
+      "present": true
+    },
+    {
+      "name": "AUTH_MFA_ENCRYPTION_KEY",
+      "present": true
+    },
+    {
+      "name": "FNNLR_AI_TENANT_DAILY_USD_CAP",
+      "present": true
+    },
+    {
+      "name": "FNNLR_AI_GLOBAL_DAILY_USD_CAP",
+      "present": true
+    },
+    {
+      "name": "SENTRY_DSN",
+      "present": true
+    },
+    {
+      "name": "UPTIME_HEALTHCHECK_URL",
+      "present": true
+    },
+    {
+      "name": "ALERT_EMAIL_TO",
+      "present": true
+    },
+    {
+      "name": "ALERT_WEBHOOK_URL",
+      "present": true
+    },
+    {
+      "name": "RESEND_API_KEY",
+      "present": true
+    },
+    {
+      "name": "EMAIL_FROM",
+      "present": true
+    },
+    {
+      "name": "EMAIL_REPLY_TO",
+      "present": true
+    },
+    {
+      "name": "ANTHROPIC_API_KEY",
+      "present": true
+    }
+  ],
+  "results": [
+    {
+      "name": "typecheck",
+      "command": "npm run typecheck",
+      "status": "PASS",
+      "exitCode": 0,
+      "evidenceClass": "LOCAL",
+      "notes": "Static TypeScript verification.",
+      "log": "ga-unblock-evidence/typecheck.log"
+    },
+    {
+      "name": "focused_phase_1_tests",
+      "command": "npx tsx --test tests/auth.test.ts tests/brains.test.ts tests/integrations.test.ts tests/route-matrix.test.ts tests/gateforge-controls.test.ts tests/data-lifecycle.test.ts",
+      "status": "PASS",
+      "exitCode": 0,
+      "evidenceClass": "LOCAL",
+      "notes": "Focused GateForge Phase 1 controls.",
+      "log": "ga-unblock-evidence/focused_phase_1_tests.log"
+    },
+    {
+      "name": "full_local_tests",
+      "command": "npm test",
+      "status": "PASS",
+      "exitCode": 0,
+      "evidenceClass": "LOCAL",
+      "notes": "Full local test suite.",
+      "log": "ga-unblock-evidence/full_local_tests.log"
+    },
+    {
+      "name": "local_ci",
+      "command": "npm run ci",
+      "status": "PASS",
+      "exitCode": 0,
+      "evidenceClass": "LOCAL",
+      "notes": "Local aggregate release safety.",
+      "log": "ga-unblock-evidence/local_ci.log"
+    },
+    {
+      "name": "dependency_audit_high",
+      "command": "npm run audit:high",
+      "status": "PASS",
+      "exitCode": 0,
+      "evidenceClass": "LOCAL",
+      "notes": "High/critical dependency audit.",
+      "log": "ga-unblock-evidence/dependency_audit_high.log"
+    },
+    {
+      "name": "sbom",
+      "command": "npm run sbom:generate",
+      "status": "PASS",
+      "exitCode": 0,
+      "evidenceClass": "LOCAL",
+      "notes": "SBOM evidence generation.",
+      "log": "ga-unblock-evidence/sbom.log"
+    },
+    {
+      "name": "proof_docs",
+      "command": "npm run proof:check -- docs",
+      "status": "PASS",
+      "exitCode": 0,
+      "evidenceClass": "LOCAL",
+      "notes": "Proof pack consistency.",
+      "log": "ga-unblock-evidence/proof_docs.log"
+    },
+    {
+      "name": "commercial_docs",
+      "command": "npm run commercial:check -- docs",
+      "status": "PASS",
+      "exitCode": 0,
+      "evidenceClass": "LOCAL",
+      "notes": "Commercial packaging consistency.",
+      "log": "ga-unblock-evidence/commercial_docs.log"
+    },
+    {
+      "name": "deploy_smoke",
+      "command": "npm run deploy:smoke",
+      "status": "PASS",
+      "exitCode": 0,
+      "evidenceClass": "LOCAL",
+      "notes": "Local deployment smoke.",
+      "log": "ga-unblock-evidence/deploy_smoke.log"
+    },
+    {
+      "name": "live_pg_tests",
+      "command": "npm run test:pg",
+      "status": "PASS",
+      "exitCode": 0,
+      "evidenceClass": "STAGING_LIVE",
+      "notes": "Live Postgres tenant isolation proof.",
+      "log": "ga-unblock-evidence/live_pg_tests.log"
+    },
+    {
+      "name": "live_ci",
+      "command": "npm run ci:live",
+      "status": "PASS",
+      "exitCode": 0,
+      "evidenceClass": "STAGING_LIVE",
+      "notes": "Hosted/staging CI proof.",
+      "log": "ga-unblock-evidence/live_ci.log"
+    },
+    {
+      "name": "health_gate",
+      "command": "npm run deploy:health-gate",
+      "status": "PASS",
+      "exitCode": 0,
+      "evidenceClass": "STAGING_LIVE",
+      "notes": "Runtime production health gate.",
+      "log": "ga-unblock-evidence/health_gate.log"
+    },
+    {
+      "name": "restore_verify_probe",
+      "command": "npm run deploy:verify-restore -- control gateforge-audit/run-2026-06-23-1035/ga-unblock-evidence/control-restore-manifest.json",
+      "status": "PASS",
+      "exitCode": 0,
+      "evidenceClass": "STAGING_LIVE",
+      "notes": "Restore verification probe; requires restored DB/schema evidence to PASS.",
+      "log": "ga-unblock-evidence/restore_verify_probe.log"
+    }
+  ]
+}

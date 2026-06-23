@@ -1,0 +1,11 @@
+File path,Category,Purpose,Importance,Risk level,Evidence notes,Recommended action
+apps/api/src/server.ts,API,HTTP server and route dispatch,Critical,High,Central request/auth/routing surface,Split route groups or document OpenAPI
+packages/db/src/router.ts,Database/security,Control-plane and per-tenant routing plus credential encryption,Critical,High,Tenant isolation boundary,Keep live isolation tests required in CI
+packages/db/control-plane/migrations/0001_init_control_plane.sql,Database,Control plane schema,Critical,Medium,Tenant/auth/session foundation,Add ERD/OpenAPI generated docs
+packages/db/tenant/migrations/0001_init_tenant_schema.sql,Database,Tenant schema base,Critical,Medium,Per-tenant data model,Continue additive migrations
+modules/release/src/env-spec.ts,DevOps/security,Environment variable source of truth,High,Medium,Release checker uses it,Keep generated env template in sync
+modules/commercial/src/consistency.ts,Commercial safety,Commercial promise checker,High,Medium,Prevents forbidden claims,Expand phrase coverage as copy evolves
+modules/proof/src/checker.ts,Proof safety,Proof over-claim checker,High,Medium,Runs in CI,Human review still required
+scripts/ci.ts,QA/release,One-command release gate,Critical,Medium,"Runs typecheck, tests, commercial/proof/security checks",Add live DB job in hosted CI
+apps/web/index.html,Frontend,Dashboard/login/operator shell,High,Medium,Main UI surface,Consider componentization and accessibility audit
+packages/ai-core/src/llm.ts,AI,Anthropic adapter and fallback interface,High,Medium,Optional ANTHROPIC_API_KEY,Add eval harness and cost telemetry

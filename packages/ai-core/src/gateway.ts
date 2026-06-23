@@ -15,10 +15,24 @@ export interface LLMClient {
   complete(input: { system: string; user: string; maxTokens?: number }): Promise<{ text: string; costUsd?: number }>;
 }
 
+export interface AIUsageEvent {
+  tenantId: string;
+  brain: string;
+  provider?: string;
+  model?: string;
+  estimatedTokens?: number;
+  estimatedCostUsd?: number;
+  actualCostUsd?: number;
+  status: 'allowed' | 'blocked' | 'degraded';
+  degradationReason?: string;
+}
+
 export interface BrainContext {
   tenantId: string;
   /** persists a versioned AIOutput row; returns its id */
-  logOutput?: (row: { brain: string; promptVersion: string; content: unknown; costUsd?: number }) => Promise<string>;
+  logOutput?: (row: { brain: string; promptVersion: string; content: unknown; costUsd?: number; status?: AIUsageEvent['status']; degradationReason?: string }) => Promise<string>;
+  /** records provider spend/safety events without storing prompts or outputs */
+  logUsage?: (row: AIUsageEvent) => Promise<void>;
 }
 
 export interface Brain<I, O> {
@@ -40,19 +54,63 @@ export class AIGateway {
     let output: O;
     let degraded = false;
     let costUsd: number | undefined;
+    let degradationReason: string | undefined;
+    const estimatedTokens = estimateTokens(system, user, 2000);
+    const estimatedCostUsd = estimateCostUsd(estimatedTokens);
     try {
+      const budget = evaluateBudget(ctx.tenantId, estimatedCostUsd);
+      if (!budget.allowed) {
+        degradationReason = budget.reason;
+        throw new Error(budget.reason);
+      }
+      await ctx.logUsage?.({
+        tenantId: ctx.tenantId, brain: brain.name, estimatedTokens, estimatedCostUsd,
+        status: 'allowed',
+      });
       const res = await this.llm.complete({ system, user, maxTokens: 2000 });
       costUsd = res.costUsd;
       output = brain.parse(res.text);
-    } catch {
+    } catch (e) {
       output = brain.fallback(input);
       degraded = true;
+      degradationReason = degradationReason ?? ((e as Error).message || 'llm failed');
+      await ctx.logUsage?.({
+        tenantId: ctx.tenantId, brain: brain.name, estimatedTokens, estimatedCostUsd,
+        actualCostUsd: costUsd, status: 'degraded', degradationReason,
+      });
     }
     if (ctx.logOutput) {
-      await ctx.logOutput({ brain: brain.name, promptVersion: brain.promptVersion, content: output, costUsd });
+      await ctx.logOutput({ brain: brain.name, promptVersion: brain.promptVersion, content: output, costUsd, status: degraded ? 'degraded' : 'allowed', degradationReason });
     }
     return { output, degraded };
   }
+}
+
+export function estimateTokens(system: string, user: string, maxTokens: number): number {
+  return Math.ceil((system.length + user.length) / 4) + maxTokens;
+}
+
+export function estimateCostUsd(tokens: number): number {
+  const perMillion = Number(process.env.FNNLR_AI_ESTIMATED_USD_PER_1M_TOKENS || '15');
+  if (!Number.isFinite(perMillion) || perMillion < 0) return 0;
+  return (tokens / 1_000_000) * perMillion;
+}
+
+export function evaluateBudget(tenantId: string, estimatedCostUsd: number): { allowed: boolean; reason?: string } {
+  if (process.env.FNNLR_AI_KILL_SWITCH === 'true') return { allowed: false, reason: 'ai kill switch enabled' };
+  const requireBudget = process.env.NODE_ENV === 'production' || process.env.FNNLR_AI_REQUIRE_BUDGET === 'true';
+  const tenantCap = Number(process.env.FNNLR_AI_TENANT_DAILY_USD_CAP || '');
+  const globalCap = Number(process.env.FNNLR_AI_GLOBAL_DAILY_USD_CAP || '');
+  if (requireBudget && (!Number.isFinite(tenantCap) || tenantCap <= 0) && (!Number.isFinite(globalCap) || globalCap <= 0)) {
+    return { allowed: false, reason: 'ai budget cap required' };
+  }
+  if (Number.isFinite(tenantCap) && tenantCap > 0 && estimatedCostUsd > tenantCap) {
+    return { allowed: false, reason: `tenant ai cap would be exceeded for ${tenantId}` };
+  }
+  if (Number.isFinite(globalCap) && globalCap > 0 && estimatedCostUsd > globalCap) {
+    return { allowed: false, reason: 'global ai cap would be exceeded' };
+  }
+  return { allowed: true };
 }
 
 /** Helper: extract a JSON object from an LLM response that may wrap it in prose/fences. */

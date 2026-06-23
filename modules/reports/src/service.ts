@@ -1,6 +1,7 @@
 import { withTenant } from '../../../packages/db/src/router.js';
 import { learningRollup } from '../../repairs/src/learning.js';
 import { AIGateway, type LLMClient } from '../../../packages/ai-core/src/gateway.js';
+import { logAiOutputWithUsage, logAiUsageEvent, type AiOutputLogRow } from '../../ai-ops/src/usage.js';
 import { ReportBrain, type ReportInput } from '../../../packages/ai-core/src/brains/report.js';
 import { refreshActions, listActions } from '../../actions/src/service.js';
 import { hasEnoughData } from '../../leaks/src/engine.js';
@@ -12,12 +13,7 @@ import { hasEnoughData } from '../../leaks/src/engine.js';
  */
 
 async function logAi(tenantId: string) {
-  return async (row: { brain: string; promptVersion: string; content: unknown; costUsd?: number }) =>
-    withTenant(tenantId, async (c) => {
-      const r = await c.query(`INSERT INTO ai_outputs (brain, prompt_version, content, cost_usd) VALUES ($1,$2,$3,$4) RETURNING id`,
-        [row.brain, row.promptVersion, JSON.stringify(row.content), row.costUsd ?? null]);
-      return r.rows[0].id as string;
-    });
+  return async (row: AiOutputLogRow) => logAiOutputWithUsage(tenantId, row);
 }
 
 export async function generateReport(tenantId: string, journeyId: string, llm: LLMClient, days = 7) {
@@ -119,6 +115,7 @@ export async function generateReport(tenantId: string, journeyId: string, llm: L
   const { output, degraded } = await gateway.run(ReportBrain, input, {
     tenantId,
     logOutput: async (row) => { aiOutputId = await logger(row); return aiOutputId; },
+    logUsage: logAiUsageEvent,
   });
 
   const reportId = await withTenant(tenantId, async (c) => {

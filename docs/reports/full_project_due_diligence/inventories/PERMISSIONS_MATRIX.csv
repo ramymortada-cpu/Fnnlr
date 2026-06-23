@@ -1,0 +1,6 @@
+Role,Permission,Route/API,Data access,Evidence,Risk,Recommendation
+Public visitor,Read published pages and tracked redirects,"GET /p/:slug, GET /r/:code",Published page/redirect metadata,"apps/api/src/server.ts:334,348",Public abuse/rate limits,Keep server-side tenant resolution
+Anonymous auth user,Signup/login,"/auth/signup, /auth/login",Control-plane auth/session,apps/api/src/server.ts:287-295,Credential stuffing,Keep rate limits and add MFA/reset
+Authenticated tenant operator,Manage funnels/leads/pages/actions,"/funnels/:id/*, /leads/*",Own tenant DB only,apps/api/src/server.ts:532-1190,IDOR if tenant resolution fails,Keep production header distrust tests
+Internal scheduler,Run jobs,/internal/cron/:job,Tenant specified in secret-authenticated body,apps/api/src/server.ts:255,Secret leakage/replay,Use platform scheduler and secret rotation
+Admin/support,"Health, support pack, customer snapshot","/admin/*, /ops/*",Tenant-scoped ops data,apps/api/src/server.ts:390-400,Admin RBAC not granular,Add explicit roles/RBAC
