@@ -6,9 +6,11 @@ import { loadHostedSecretsManifest } from './gateforge-hosted-secrets-manifest.j
 
 type GhSecret = { name: string };
 
-const reportPath = 'gateforge-audit/run-2026-06-23-1035/39_github_secrets_presence_audit.md';
+const defaultReportPath = 'gateforge-audit/run-2026-06-23-1035/39_github_secrets_presence_audit.md';
 const fromFileIndex = process.argv.indexOf('--from-file');
 const fromFile = fromFileIndex >= 0 ? process.argv[fromFileIndex + 1] : '';
+const outIndex = process.argv.indexOf('--out');
+const reportPath = outIndex >= 0 ? process.argv[outIndex + 1] : defaultReportPath;
 const { attestationSecrets, runtimeSecrets } = loadHostedSecretsManifest();
 const required = [...attestationSecrets, ...runtimeSecrets];
 
