@@ -1,15 +1,15 @@
 # Life Or Death GA Execution Plan
 
-Generated: `2026-06-23T21:02:24.151Z`
+Generated: `2026-06-23T21:13:44.376Z`
 
 This is the no-drama path from the current GateForge block to a defensible `CONDITIONAL_GO`. It contains secret names, owners, sources, and validation commands only. It must never contain secret values.
 
 ## Current Truth
 
 - Latest pushed code: `main` contains the GateForge local rescue controls.
-- Latest hosted CI evidence: `GateForge GA Evidence` passed on commit `8983632`.
 - Current external blocker: GitHub Actions has not been given the required hosted staging secrets/evidence.
-- Required GitHub secrets: `19`
+- Known GitHub secret names: `19`
+- Minimum secrets required to trigger: `18` (`17` runtime + `1` attestation)
 - Attestation alternatives: `GATEFORGE_HOSTED_STAGING_ATTESTATION_JSON` or `GATEFORGE_HOSTED_STAGING_ATTESTATION_B64`
 - Runtime secrets: `17`
 - Target gate after evidence closes: `CONDITIONAL_GO`

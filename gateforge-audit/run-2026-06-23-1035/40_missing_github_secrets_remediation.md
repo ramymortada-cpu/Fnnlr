@@ -1,6 +1,6 @@
 # Missing GitHub Secrets Remediation
 
-Generated: `2026-06-23T21:03:44.292Z`
+Generated: `2026-06-23T21:10:28.601Z`
 
 Status: `ACTION_REQUIRED`
 
@@ -8,16 +8,24 @@ This file contains secret names and setup commands only. It must not contain sec
 
 ## Summary
 
-- Required secrets: `19`
-- Missing secrets: `19`
+- Known secret names: `19`
+- Required runtime secrets: `17`
+- Required attestation secrets: `1 of 2`
+- Missing runtime secrets: `17`
+- Missing attestation requirement: `yes`
 
 ## Commands
+
+Set exactly one attestation secret. Prefer the base64 packet:
+
+```bash
+gh secret set GATEFORGE_HOSTED_STAGING_ATTESTATION_B64
+gh secret set GATEFORGE_HOSTED_STAGING_ATTESTATION_JSON
+```
 
 Run these commands locally and paste each staging value when prompted:
 
 ```bash
-gh secret set GATEFORGE_HOSTED_STAGING_ATTESTATION_JSON
-gh secret set GATEFORGE_HOSTED_STAGING_ATTESTATION_B64
 gh secret set CONTROL_PLANE_DATABASE_URL
 gh secret set TENANT_DB_ADMIN_URL
 gh secret set TENANT_DB_HOST
@@ -41,5 +49,5 @@ gh secret set ANTHROPIC_API_KEY
 
 ```bash
 npm run gateforge:github-secrets-audit
-gh workflow run "GateForge Hosted Staging Strict"
+npm run gateforge:trigger-hosted-strict
 ```

@@ -59,6 +59,9 @@ jobs:
       - name: GateForge hosted setup guide
         run: npm run gateforge:hosted-setup-guide
         if: always()
+      - name: GateForge life-or-death plan
+        run: npm run gateforge:life-or-death-plan
+        if: always()
       - name: GateForge final report
         run: npm run gateforge:final-report
         if: always()
@@ -79,6 +82,9 @@ jobs:
             gateforge-audit/run-*/36_life_or_death_war_room.md
             gateforge-audit/run-*/37_hosted_staging_strict_dispatch.md
             gateforge-audit/run-*/38_hosted_staging_operator_setup.md
+            gateforge-audit/run-*/42_life_or_death_execution_plan.md
+            gateforge-audit/run-*/42_life_or_death_secret_collection.csv
+            gateforge-audit/run-*/43_operator_secret_command_pack.md
             gateforge-audit/external-attestations/HOSTED_STAGING_WAR_ROOM.md
             gateforge-audit/external-attestations/hosted-staging-secrets.manifest.json
             gateforge-audit/external-attestations/hosted-staging-attestation.json

@@ -37,6 +37,8 @@ jobs:
         run: npm run gateforge:hosted-operator-drift-smoke
       - name: GateForge GitHub secrets audit smoke
         run: npm run gateforge:github-secrets-audit-smoke
+      - name: GateForge GitHub secrets B64-only audit smoke
+        run: npm run gateforge:github-secrets-audit-b64-smoke
       - name: GateForge hosted strict trigger smoke
         run: npm run gateforge:trigger-hosted-strict-smoke
       - name: GateForge GA unblock evidence
@@ -47,6 +49,9 @@ jobs:
         if: always()
       - name: GateForge hosted setup guide
         run: npm run gateforge:hosted-setup-guide
+        if: always()
+      - name: GateForge life-or-death plan
+        run: npm run gateforge:life-or-death-plan
         if: always()
       - name: GateForge final decision report
         run: npm run gateforge:final-report
@@ -78,6 +83,9 @@ jobs:
             gateforge-audit/run-*/39_github_secrets_presence_audit.md
             gateforge-audit/run-*/40_missing_github_secrets_remediation.md
             gateforge-audit/run-*/41_hosted_strict_trigger_attempt.md
+            gateforge-audit/run-*/42_life_or_death_execution_plan.md
+            gateforge-audit/run-*/42_life_or_death_secret_collection.csv
+            gateforge-audit/run-*/43_operator_secret_command_pack.md
             gateforge-audit/external-attestations/HOSTED_STAGING_WAR_ROOM.md
             gateforge-audit/external-attestations/*.md
             gateforge-audit/external-attestations/*.json
