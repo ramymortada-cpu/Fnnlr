@@ -37,6 +37,8 @@ jobs:
         run: npm run gateforge:scaffold-local-secrets-smoke
       - name: GateForge local secret files check smoke
         run: npm run gateforge:local-secret-files-check-smoke
+      - name: GateForge secret replacement packet smoke
+        run: npm run gateforge:secret-replacement-packet-smoke
       - name: GateForge upload local secrets smoke
         run: npm run gateforge:upload-local-secrets-smoke
       - name: GateForge hosted unblock runner smoke
@@ -97,6 +99,8 @@ jobs:
             gateforge-audit/run-*/42_life_or_death_secret_collection.csv
             gateforge-audit/run-*/43_operator_secret_command_pack.md
             gateforge-audit/run-*/44_hosted_readiness_doctor.md
+            gateforge-audit/run-*/45_secret_replacement_packet.md
+            gateforge-audit/run-*/45_secret_replacement_packet.csv
             gateforge-audit/external-attestations/HOSTED_STAGING_WAR_ROOM.md
             gateforge-audit/external-attestations/*.md
             gateforge-audit/external-attestations/*.json
