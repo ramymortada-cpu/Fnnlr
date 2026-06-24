@@ -26,7 +26,7 @@ export function isGateForgePlaceholder(value: string): boolean {
 
 export function invalidGateForgeSecretReason(name: string, value: string): string | null {
   if (name === 'GATEFORGE_HOSTED_STAGING_ATTESTATION_JSON') return invalidJsonAttestationReason(value);
-  if (name === 'GATEFORGE_HOSTED_STAGING_ATTESTATION_B64') return invalidBase64Reason(value);
+  if (name === 'GATEFORGE_HOSTED_STAGING_ATTESTATION_B64') return invalidBase64AttestationReason(value);
   if (name === 'CONTROL_PLANE_DATABASE_URL' || name === 'TENANT_DB_ADMIN_URL') return invalidPostgresUrlReason(value);
   if (name === 'TENANT_DB_HOST') return invalidHostReason(value);
   if (name === 'FNNLR_AI_TENANT_DAILY_USD_CAP' || name === 'FNNLR_AI_GLOBAL_DAILY_USD_CAP') return invalidPositiveNumberReason(value);
@@ -43,15 +43,56 @@ function invalidJsonAttestationReason(value: string): string | null {
   try {
     const parsed = JSON.parse(value) as unknown;
     if (!parsed || typeof parsed !== 'object') return 'must be a JSON object';
-    return null;
+    return invalidAttestationPacketReason(parsed);
   } catch {
     return 'must be valid JSON';
   }
 }
 
-function invalidBase64Reason(value: string): string | null {
+function invalidBase64AttestationReason(value: string): string | null {
   if (!/^[A-Za-z0-9+/]+={0,2}$/.test(value)) return 'must be base64 text';
   if (value.length < 24) return 'must be a non-trivial base64 evidence packet';
+  let decoded = '';
+  try {
+    decoded = Buffer.from(value, 'base64').toString('utf8');
+  } catch {
+    return 'must decode to JSON';
+  }
+  return invalidJsonAttestationReason(decoded);
+}
+
+function invalidAttestationPacketReason(packet: unknown): string | null {
+  const candidate = packet as {
+    environment?: unknown;
+    decisionRequested?: unknown;
+    items?: unknown;
+  };
+  if (candidate.environment !== 'HOSTED_STAGING' && candidate.environment !== 'PRODUCTION_READ_ONLY') {
+    return 'must include a valid evidence environment';
+  }
+  if (candidate.decisionRequested !== 'CONDITIONAL_GO' && candidate.decisionRequested !== 'GO') {
+    return 'must request CONDITIONAL_GO or GO';
+  }
+  if (!Array.isArray(candidate.items)) return 'must include evidence items';
+  const requiredIds = [
+    'hosted_staging_gateforge_run',
+    'provider_webhook_replay_idempotency',
+    'monitoring_alerting_proof',
+    'hosted_restore_drill',
+    'legal_commercial_final_approval',
+    'admin_mfa_runtime_proof',
+    'ai_budget_runtime_proof',
+  ];
+  const byId = new Map(
+    candidate.items
+      .filter((item): item is { id: string; status: string } => Boolean(item && typeof item === 'object' && 'id' in item && 'status' in item))
+      .map((item) => [item.id, item]),
+  );
+  for (const id of requiredIds) {
+    const item = byId.get(id);
+    if (!item) return `must include evidence item ${id}`;
+    if (item.status !== 'PASS') return `evidence item ${id} must be PASS`;
+  }
   return null;
 }
 
