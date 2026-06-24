@@ -7,6 +7,7 @@ const runDir = 'gateforge-audit/run-2026-06-23-1035';
 const outIndex = process.argv.indexOf('--out');
 const outPath = outIndex >= 0 ? process.argv[outIndex + 1] : `${runDir}/44_hosted_readiness_doctor.md`;
 const replacementPacketPath = `${runDir}/45_secret_replacement_packet.md`;
+const attestationPackPath = `${runDir}/46_attestation_secret_pack.md`;
 const dirIndex = process.argv.indexOf('--dir');
 const secretDir = dirIndex >= 0 ? process.argv[dirIndex + 1] : '/tmp/fnnlr-gateforge-secrets';
 const fromFileIndex = process.argv.indexOf('--from-file');
@@ -26,6 +27,11 @@ type LocalSecretJson = {
   runtime: { name: string; status: 'READY' | 'MISSING' | 'EMPTY' | 'PLACEHOLDER' | 'INVALID' }[];
 };
 
+type LocalSecretProbe = Probe & {
+  attestationReady?: boolean;
+  runtimeReady?: boolean;
+};
+
 function run(command: string, args: string[]) {
   const result = spawnSync(command, args, {
     encoding: 'utf8',
@@ -38,12 +44,16 @@ function run(command: string, args: string[]) {
   };
 }
 
-function probeLocalSecrets(): Probe {
+function probeLocalSecrets(): LocalSecretProbe {
   const result = run('npx', ['tsx', 'scripts/gateforge-local-secret-files-check.ts', '--dir', secretDir, '--json']);
   let localState: Probe['localState'] = 'MISSING_FILES';
+  let attestationReady = false;
+  let runtimeReady = false;
   try {
     const parsed = JSON.parse(result.output) as LocalSecretJson;
     const statuses = [...parsed.attestationOptions, ...parsed.runtime].map((entry) => entry.status);
+    attestationReady = parsed.attestationOptions.some((entry) => entry.status === 'READY');
+    runtimeReady = parsed.runtime.every((entry) => entry.status === 'READY');
     if (parsed.ok) localState = 'READY';
     else if (statuses.includes('PLACEHOLDER')) localState = 'PLACEHOLDERS';
     else if (statuses.includes('EMPTY')) localState = 'EMPTY_FILES';
@@ -67,6 +77,26 @@ function probeLocalSecrets(): Probe {
     detail,
     output: result.output,
     localState,
+    attestationReady,
+    runtimeReady,
+  };
+}
+
+function probeAttestationPack(): Probe {
+  if (!fs.existsSync(attestationPackPath)) {
+    return {
+      status: 'UNKNOWN',
+      detail: 'attestation secret pack report has not been generated',
+      output: `Run npm run gateforge:attestation-secret-pack.`,
+    };
+  }
+  const report = fs.readFileSync(attestationPackPath, 'utf8');
+  const ready = report.includes('Decision: `READY`');
+  const blocked = report.includes('Decision: `BLOCKED`');
+  return {
+    status: ready ? 'PASS' : blocked ? 'FAIL' : 'UNKNOWN',
+    detail: ready ? 'attestation packet can be encoded safely' : blocked ? 'attestation packet is not ready for B64 secret packaging' : 'could not determine attestation pack decision',
+    output: `${attestationPackPath}\n${ready ? 'Decision=READY' : blocked ? 'Decision=BLOCKED' : 'Decision=UNKNOWN'}`,
   };
 }
 
@@ -123,6 +153,7 @@ function probeLatestStrictRun(): Probe {
 }
 
 const localSecrets = probeLocalSecrets();
+const attestationPack = probeAttestationPack();
 const githubSecrets = probeGithubSecrets();
 const strictRun = probeLatestStrictRun();
 const decision =
@@ -139,7 +170,9 @@ const nextCommand =
   decision === 'SCAFFOLD_LOCAL_SECRET_FILES'
     ? 'npm run gateforge:scaffold-local-secrets'
     : decision === 'REPLACE_LOCAL_SECRET_PLACEHOLDERS'
-      ? `npm run gateforge:secret-replacement-packet, then replace the listed local secret values and rerun npm run gateforge:hosted-readiness-doctor.`
+      ? !localSecrets.attestationReady && localSecrets.runtimeReady
+        ? 'npm run gateforge:attestation-secret-pack -- --write-b64, then rerun npm run gateforge:hosted-readiness-doctor.'
+        : `npm run gateforge:secret-replacement-packet, then replace the listed local secret values and rerun npm run gateforge:hosted-readiness-doctor.`
     : decision === 'UPLOAD_GITHUB_SECRETS'
       ? 'npm run gateforge:hosted-unblock -- --apply'
       : decision === 'TRIGGER_HOSTED_STRICT'
@@ -163,6 +196,7 @@ This doctor checks readiness without printing secret values.
 | Probe | Status | Detail |
 | --- | --- | --- |
 | Local secret files | \`${localSecrets.status}\` | ${localSecrets.detail} |
+| Attestation secret pack | \`${attestationPack.status}\` | ${attestationPack.detail} |
 | GitHub secret names | \`${githubSecrets.status}\` | ${githubSecrets.detail} |
 | Hosted strict workflow | \`${strictRun.status}\` | ${strictRun.detail} |
 
@@ -172,6 +206,7 @@ This doctor checks readiness without printing secret values.
 - GitHub secrets source: \`${fromFile ? fromFile : 'gh secret list --json name'}\`
 - Workflow: \`${workflow}\`
 - Secret replacement packet: \`${replacementPacketPath}\`
+- Attestation secret pack: \`${attestationPackPath}\`
 
 ## Sanitized Probe Output
 
@@ -185,6 +220,12 @@ ${localSecrets.output.trim() || '(no output)'}
 
 \`\`\`text
 ${githubSecrets.output.trim() || '(no output)'}
+\`\`\`
+
+### Attestation Secret Pack
+
+\`\`\`text
+${attestationPack.output.trim() || '(no output)'}
 \`\`\`
 
 ### Hosted Strict Workflow

@@ -1,6 +1,6 @@
 # Hosted Readiness Doctor
 
-Generated: `2026-06-24T11:27:55.895Z`
+Generated: `2026-06-24T13:02:10.081Z`
 
 This doctor checks readiness without printing secret values.
 
@@ -14,6 +14,7 @@ This doctor checks readiness without printing secret values.
 | Probe | Status | Detail |
 | --- | --- | --- |
 | Local secret files | `FAIL` | local secret files exist but placeholders remain |
+| Attestation secret pack | `FAIL` | attestation packet is not ready for B64 secret packaging |
 | GitHub secret names | `FAIL` | GitHub secret names are missing |
 | Hosted strict workflow | `UNKNOWN` | no hosted strict workflow run found |
 
@@ -23,6 +24,7 @@ This doctor checks readiness without printing secret values.
 - GitHub secrets source: `gh secret list --json name`
 - Workflow: `GateForge Hosted Staging Strict`
 - Secret replacement packet: `gateforge-audit/run-2026-06-23-1035/45_secret_replacement_packet.md`
+- Attestation secret pack: `gateforge-audit/run-2026-06-23-1035/46_attestation_secret_pack.md`
 
 ## Sanitized Probe Output
 
@@ -161,6 +163,13 @@ GateForge GitHub secrets audit: MISSING_SECRETS
   - EMAIL_REPLY_TO
   - ANTHROPIC_API_KEY
 wrote gateforge-audit/run-2026-06-23-1035/39_github_secrets_presence_audit.md
+```
+
+### Attestation Secret Pack
+
+```text
+gateforge-audit/run-2026-06-23-1035/46_attestation_secret_pack.md
+Decision=BLOCKED
 ```
 
 ### Hosted Strict Workflow
