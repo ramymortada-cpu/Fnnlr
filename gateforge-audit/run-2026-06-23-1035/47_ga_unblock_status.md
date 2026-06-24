@@ -1,6 +1,6 @@
 # GateForge GA Unblock Status
 
-Generated: `2026-06-24T15:49:00.977Z`
+Generated: `2026-06-24T16:23:57.315Z`
 
 This status file is the single operator dashboard for the GA unblock path. It contains secret names and readiness states only; no secret values are printed.
 
@@ -19,7 +19,7 @@ This status file is the single operator dashboard for the GA unblock path. It co
 | Attestation secret pack | `FAIL` | attestation packet is blocked until real hosted evidence exists |
 | GitHub Actions secret names | `FAIL` | required GitHub secret names are missing |
 | Hosted strict workflow | `UNKNOWN` | no GateForge Hosted Staging Strict run found |
-| GA evidence workflow | `PASS` | 28100761090 completed/success 9401b17690d431040379f7e75ac15407e537f158 (https://github.com/ramymortada-cpu/Fnnlr/actions/runs/28100761090) |
+| GA evidence workflow | `PASS` | 28111216039 completed/success f8f409bc2604cbad77a70fbbd634d29d15ce2f5b (https://github.com/ramymortada-cpu/Fnnlr/actions/runs/28111216039) |
 
 ## Open Runtime Secret Names
 
