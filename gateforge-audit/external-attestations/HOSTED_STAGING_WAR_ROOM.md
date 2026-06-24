@@ -55,6 +55,7 @@ npm run deploy:verify-restore
 
 ```bash
 npm run gateforge:external-check
+npm run gateforge:attestation-secret-pack -- --write-b64
 npm run gateforge:final-gate
 npm run gateforge:final-report
 ```

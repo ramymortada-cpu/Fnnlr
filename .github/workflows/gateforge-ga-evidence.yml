@@ -29,6 +29,8 @@ jobs:
         run: npm run gateforge:external-smoke
       - name: GateForge final gate evaluator smoke
         run: npm run gateforge:final-gate-smoke
+      - name: GateForge attestation secret pack smoke
+        run: npm run gateforge:attestation-secret-pack-smoke
       - name: GateForge hosted secrets manifest smoke
         run: npm run gateforge:hosted-secrets-manifest-smoke
       - name: GateForge hosted secrets preflight smoke
@@ -101,6 +103,7 @@ jobs:
             gateforge-audit/run-*/44_hosted_readiness_doctor.md
             gateforge-audit/run-*/45_secret_replacement_packet.md
             gateforge-audit/run-*/45_secret_replacement_packet.csv
+            gateforge-audit/run-*/46_attestation_secret_pack.md
             gateforge-audit/external-attestations/HOSTED_STAGING_WAR_ROOM.md
             gateforge-audit/external-attestations/*.md
             gateforge-audit/external-attestations/*.json
