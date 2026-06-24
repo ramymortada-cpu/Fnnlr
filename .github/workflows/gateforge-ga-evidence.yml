@@ -45,6 +45,8 @@ jobs:
         run: npm run gateforge:upload-local-secrets-smoke
       - name: GateForge hosted unblock runner smoke
         run: npm run gateforge:hosted-unblock-smoke
+      - name: GateForge GA unblock status smoke
+        run: npm run gateforge:ga-unblock-status-smoke
       - name: GateForge hosted readiness doctor smoke
         run: npm run gateforge:hosted-readiness-doctor-smoke
       - name: GateForge hosted operator drift smoke
@@ -104,6 +106,8 @@ jobs:
             gateforge-audit/run-*/45_secret_replacement_packet.md
             gateforge-audit/run-*/45_secret_replacement_packet.csv
             gateforge-audit/run-*/46_attestation_secret_pack.md
+            gateforge-audit/run-*/47_ga_unblock_status.md
+            gateforge-audit/run-*/47_ga_unblock_status.json
             gateforge-audit/external-attestations/HOSTED_STAGING_WAR_ROOM.md
             gateforge-audit/external-attestations/*.md
             gateforge-audit/external-attestations/*.json

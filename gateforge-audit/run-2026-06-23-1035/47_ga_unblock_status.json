@@ -1,0 +1,56 @@
+{
+  "generatedAt": "2026-06-24T15:49:00.977Z",
+  "decision": {
+    "state": "CANNOT_APPROVE_LOCAL_EVIDENCE",
+    "scoreBand": "65-70/100",
+    "nextAction": "Replace local runtime secrets and create a valid hosted staging attestation packet, then run npm run gateforge:hosted-readiness-doctor.",
+    "rationale": "Code controls are materially stronger, but GA evidence is still local/incomplete."
+  },
+  "probes": {
+    "localSecrets": {
+      "status": "FAIL",
+      "detail": "runtime 6/17, attestation 0/1; open runtime 11"
+    },
+    "attestationPack": {
+      "status": "FAIL",
+      "detail": "attestation packet is blocked until real hosted evidence exists"
+    },
+    "githubSecrets": {
+      "status": "FAIL",
+      "detail": "required GitHub secret names are missing"
+    },
+    "hostedStrictWorkflow": {
+      "status": "UNKNOWN",
+      "detail": "no GateForge Hosted Staging Strict run found"
+    },
+    "gaEvidenceWorkflow": {
+      "status": "PASS",
+      "detail": "28100761090 completed/success 9401b17690d431040379f7e75ac15407e537f158",
+      "url": "https://github.com/ramymortada-cpu/Fnnlr/actions/runs/28100761090"
+    }
+  },
+  "blockers": {
+    "openRuntimeSecrets": [
+      "CONTROL_PLANE_DATABASE_URL",
+      "TENANT_DB_ADMIN_URL",
+      "TENANT_DB_HOST",
+      "SENTRY_DSN",
+      "UPTIME_HEALTHCHECK_URL",
+      "ALERT_EMAIL_TO",
+      "ALERT_WEBHOOK_URL",
+      "RESEND_API_KEY",
+      "EMAIL_FROM",
+      "EMAIL_REPLY_TO",
+      "ANTHROPIC_API_KEY"
+    ],
+    "openAttestationSecrets": [
+      "GATEFORGE_HOSTED_STAGING_ATTESTATION_JSON",
+      "GATEFORGE_HOSTED_STAGING_ATTESTATION_B64"
+    ]
+  },
+  "safety": {
+    "secretValuesPrinted": false,
+    "productionMutated": false,
+    "sourceCodeFixesAppliedByThisCommand": false
+  }
+}
