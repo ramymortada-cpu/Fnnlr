@@ -37,6 +37,49 @@ const secretDir = fs.mkdtempSync(path.join(os.tmpdir(), 'fnnlr-gateforge-hosted-
 fs.writeFileSync(path.join(secretDir, attestationSecrets[1]), fixtureValueFor(attestationSecrets[1]));
 for (const name of runtimeSecrets) fs.writeFileSync(path.join(secretDir, name), fixtureValueFor(name));
 
+function run(args: string[]) {
+  const result = spawnSync('npx', ['tsx', 'scripts/gateforge-hosted-unblock-runner.ts', ...args], {
+    encoding: 'utf8',
+    maxBuffer: 1024 * 1024,
+  });
+  return {
+    status: result.status ?? 1,
+    output: `${result.stdout || ''}${result.stderr || ''}`,
+  };
+}
+
+const preparedDir = fs.mkdtempSync(path.join(os.tmpdir(), 'fnnlr-gateforge-hosted-unblock-prepared-'));
+const preparedReport = path.join(os.tmpdir(), 'fnnlr-gateforge-hosted-unblock-prepared-attestation.md');
+for (const name of runtimeSecrets) fs.writeFileSync(path.join(preparedDir, name), fixtureValueFor(name));
+
+const prepared = run([
+  '--dry-run',
+  '--prepare-attestation',
+  '--packet',
+  'tests/fixtures/gateforge-external-pass.json',
+  '--attestation-pack-out',
+  preparedReport,
+  '--dir',
+  preparedDir,
+  '--from-file',
+  'tests/fixtures/gateforge-gh-secrets-b64-only-pass.json',
+]);
+
+const preparedOutput = prepared.output;
+if (prepared.status !== 0) {
+  console.error('GateForge hosted unblock runner smoke: FAIL - prepared dry run failed');
+  console.error(preparedOutput);
+  process.exit(1);
+}
+if (!preparedOutput.includes('Prepare attestation B64 secret file')) {
+  console.error('GateForge hosted unblock runner smoke: FAIL - prepared dry run did not run attestation pack');
+  process.exit(1);
+}
+if (!fs.existsSync(path.join(preparedDir, attestationSecrets[1]))) {
+  console.error('GateForge hosted unblock runner smoke: FAIL - prepared dry run did not write B64 attestation file');
+  process.exit(1);
+}
+
 const result = spawnSync(
   'npx',
   [

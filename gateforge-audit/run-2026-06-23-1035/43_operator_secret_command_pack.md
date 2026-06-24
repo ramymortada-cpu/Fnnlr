@@ -1,6 +1,6 @@
 # Operator Secret Command Pack
 
-Generated: `2026-06-23T22:08:37.033Z`
+Generated: `2026-06-24T13:06:47.222Z`
 
 This file is an execution helper for closing the current GateForge blocker. It contains commands and secret names only. Do not paste real secret values into this file or commit generated secret files.
 
@@ -85,8 +85,8 @@ npm run gateforge:upload-local-secrets -- --apply
 
 ```bash
 npm run gateforge:hosted-readiness-doctor
-npm run gateforge:hosted-unblock -- --dry-run
-npm run gateforge:hosted-unblock -- --apply
+npm run gateforge:hosted-unblock -- --dry-run --prepare-attestation
+npm run gateforge:hosted-unblock -- --apply --prepare-attestation
 ```
 
 Manual fallback:

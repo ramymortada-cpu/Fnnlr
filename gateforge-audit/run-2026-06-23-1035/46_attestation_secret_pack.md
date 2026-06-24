@@ -1,6 +1,6 @@
 # GateForge Attestation Secret Pack
 
-Generated: `2026-06-24T12:58:09.655Z`
+Generated: `2026-06-24T13:06:46.747Z`
 
 This pack validates the hosted staging attestation packet before it can be encoded as a GitHub Actions secret. It never prints the packet body or base64 secret value.
 

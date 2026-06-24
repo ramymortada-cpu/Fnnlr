@@ -346,8 +346,8 @@ npm run gateforge:upload-local-secrets -- --apply
 
 \`\`\`bash
 npm run gateforge:hosted-readiness-doctor
-npm run gateforge:hosted-unblock -- --dry-run
-npm run gateforge:hosted-unblock -- --apply
+npm run gateforge:hosted-unblock -- --dry-run --prepare-attestation
+npm run gateforge:hosted-unblock -- --apply --prepare-attestation
 \`\`\`
 
 Manual fallback:

@@ -48,7 +48,9 @@ If secrets are missing, follow \`gateforge-audit/run-2026-06-23-1035/40_missing_
 Preferred secret:
 
 \`\`\`bash
-base64 -i gateforge-audit/external-attestations/hosted-staging-attestation.json | gh secret set GATEFORGE_HOSTED_STAGING_ATTESTATION_B64 --body-file -
+npm run gateforge:attestation-secret-pack -- --write-b64
+npm run gateforge:hosted-unblock -- --dry-run --prepare-attestation
+npm run gateforge:hosted-unblock -- --apply --prepare-attestation
 \`\`\`
 
 Alternative secret:
@@ -61,6 +63,7 @@ The packet must pass locally before upload:
 
 \`\`\`bash
 npm run gateforge:external-check -- gateforge-audit/external-attestations/hosted-staging-attestation.json
+npm run gateforge:attestation-secret-pack
 \`\`\`
 
 ## Runtime Secrets
