@@ -6,6 +6,7 @@ import path from 'node:path';
 const runDir = 'gateforge-audit/run-2026-06-23-1035';
 const outIndex = process.argv.indexOf('--out');
 const outPath = outIndex >= 0 ? process.argv[outIndex + 1] : `${runDir}/44_hosted_readiness_doctor.md`;
+const replacementPacketPath = `${runDir}/45_secret_replacement_packet.md`;
 const dirIndex = process.argv.indexOf('--dir');
 const secretDir = dirIndex >= 0 ? process.argv[dirIndex + 1] : '/tmp/fnnlr-gateforge-secrets';
 const fromFileIndex = process.argv.indexOf('--from-file');
@@ -135,7 +136,7 @@ const nextCommand =
   decision === 'SCAFFOLD_LOCAL_SECRET_FILES'
     ? 'npm run gateforge:scaffold-local-secrets'
     : decision === 'REPLACE_LOCAL_SECRET_PLACEHOLDERS'
-      ? 'Replace placeholders in /tmp/fnnlr-gateforge-secrets, then run npm run gateforge:hosted-readiness-doctor.'
+      ? `npm run gateforge:secret-replacement-packet, then replace the listed local secret values and rerun npm run gateforge:hosted-readiness-doctor.`
     : decision === 'UPLOAD_GITHUB_SECRETS'
       ? 'npm run gateforge:hosted-unblock -- --apply'
       : decision === 'TRIGGER_HOSTED_STRICT'
@@ -167,6 +168,7 @@ This doctor checks readiness without printing secret values.
 - Local secret directory: \`${secretDir}\`
 - GitHub secrets source: \`${fromFile ? fromFile : 'gh secret list --json name'}\`
 - Workflow: \`${workflow}\`
+- Secret replacement packet: \`${replacementPacketPath}\`
 
 ## Sanitized Probe Output
 

@@ -1,13 +1,13 @@
 # Hosted Readiness Doctor
 
-Generated: `2026-06-23T22:10:45.573Z`
+Generated: `2026-06-24T11:22:07.174Z`
 
 This doctor checks readiness without printing secret values.
 
 ## Decision
 
 - Status: `REPLACE_LOCAL_SECRET_PLACEHOLDERS`
-- Next command: `Replace placeholders in /tmp/fnnlr-gateforge-secrets, then run npm run gateforge:hosted-readiness-doctor.`
+- Next command: `npm run gateforge:secret-replacement-packet, then replace the listed local secret values and rerun npm run gateforge:hosted-readiness-doctor.`
 
 ## Probes
 
@@ -22,6 +22,7 @@ This doctor checks readiness without printing secret values.
 - Local secret directory: `/tmp/fnnlr-gateforge-secrets`
 - GitHub secrets source: `gh secret list --json name`
 - Workflow: `GateForge Hosted Staging Strict`
+- Secret replacement packet: `gateforge-audit/run-2026-06-23-1035/45_secret_replacement_packet.md`
 
 ## Sanitized Probe Output
 
