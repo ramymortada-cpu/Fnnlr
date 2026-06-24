@@ -11,12 +11,13 @@ const outPath = outIndex >= 0 ? process.argv[outIndex + 1] : `${runDir}/45_secre
 const csvIndex = process.argv.indexOf('--csv-out');
 const csvPath = csvIndex >= 0 ? process.argv[csvIndex + 1] : `${runDir}/45_secret_replacement_packet.csv`;
 
-type SecretStatus = 'READY' | 'MISSING' | 'EMPTY' | 'PLACEHOLDER';
+type SecretStatus = 'READY' | 'MISSING' | 'EMPTY' | 'PLACEHOLDER' | 'INVALID';
 type SecretKind = 'runtime' | 'attestation';
 type SecretEntry = {
   name: string;
   kind: SecretKind;
   status: SecretStatus;
+  reason?: string;
 };
 type LocalSecretSummary = {
   ok: boolean;
@@ -77,6 +78,7 @@ function actionFor(entry: SecretEntry): string {
   }
   if (entry.status === 'MISSING') return `Create ${path.join(secretDir, entry.name)} with the real staging value.`;
   if (entry.status === 'EMPTY') return `Replace the empty file ${path.join(secretDir, entry.name)} with the real staging value.`;
+  if (entry.status === 'INVALID') return `Replace ${path.join(secretDir, entry.name)} with a valid real staging value.`;
   return `Replace the placeholder in ${path.join(secretDir, entry.name)} with the real staging value.`;
 }
 
@@ -123,7 +125,7 @@ const rows: ReplacementRow[] = [...summary.attestationOptions, ...summary.runtim
 }));
 
 const blockers = rows.filter((row) => row.status !== 'READY');
-const replacementCount = blockers.filter((row) => row.status === 'PLACEHOLDER' || row.status === 'EMPTY' || row.status === 'MISSING').length;
+const replacementCount = blockers.filter((row) => row.status === 'PLACEHOLDER' || row.status === 'EMPTY' || row.status === 'MISSING' || row.status === 'INVALID').length;
 const runtimeReplacementCount = summary.runtime.filter((row) => row.status !== 'READY').length;
 const attestationSatisfied = summary.attestationReady >= summary.attestationRequired;
 const decision = summary.ok ? 'READY_FOR_UPLOAD' : 'REPLACE_LOCAL_SECRET_VALUES';
@@ -132,7 +134,7 @@ const now = new Date().toISOString();
 const table = rows
   .map(
     (row) =>
-      `| \`${row.name}\` | \`${row.kind}\` | \`${row.status}\` | ${markdownEscape(row.source)} | ${markdownEscape(row.requiredAction)} | ${markdownEscape(row.validation)} | ${markdownEscape(row.uploadPhase)} |`,
+      `| \`${row.name}\` | \`${row.kind}\` | \`${row.status}\` | ${markdownEscape(row.reason ?? '')} | ${markdownEscape(row.source)} | ${markdownEscape(row.requiredAction)} | ${markdownEscape(row.validation)} | ${markdownEscape(row.uploadPhase)} |`,
   )
   .join('\n');
 
@@ -154,7 +156,7 @@ This packet is sanitized. It reports secret file names and readiness states only
 
 ## Immediate Command Path
 
-1. Replace every runtime \`MISSING\`, \`EMPTY\`, or \`PLACEHOLDER\` file listed below with the real staging value.
+1. Replace every runtime \`MISSING\`, \`EMPTY\`, \`PLACEHOLDER\`, or \`INVALID\` file listed below with the real staging value.
 2. Make at least one attestation option \`READY\`; \`GATEFORGE_HOSTED_STAGING_ATTESTATION_B64\` is preferred, so \`GATEFORGE_HOSTED_STAGING_ATTESTATION_JSON\` may remain \`MISSING\` if B64 is ready.
 3. Run \`npm run gateforge:local-secret-files-check\`.
 4. Run \`npm run gateforge:hosted-readiness-doctor\`.
@@ -163,21 +165,21 @@ This packet is sanitized. It reports secret file names and readiness states only
 
 ## Replacement Matrix
 
-| Secret | Kind | Status | Source | Required action | Validation | Upload phase |
-| --- | --- | --- | --- | --- | --- | --- |
+| Secret | Kind | Status | Reason | Source | Required action | Validation | Upload phase |
+| --- | --- | --- | --- | --- | --- | --- | --- |
 ${table}
 
 ## Hard Rules
 
-- Do not upload while any runtime secret is \`MISSING\`, \`EMPTY\`, or \`PLACEHOLDER\`.
+- Do not upload while any runtime secret is \`MISSING\`, \`EMPTY\`, \`PLACEHOLDER\`, or \`INVALID\`.
 - At least one attestation option must be \`READY\`; \`GATEFORGE_HOSTED_STAGING_ATTESTATION_B64\` is the preferred upload format.
 - Do not paste secret values into reports, Git commits, issues, or chat.
 - If a provider value does not exist yet, keep the item open instead of using fake data.
 `;
 
-const csvHeader = ['secret', 'kind', 'status', 'source', 'required_action', 'validation', 'upload_phase'];
+const csvHeader = ['secret', 'kind', 'status', 'reason', 'source', 'required_action', 'validation', 'upload_phase'];
 const csvRows = rows.map((row) =>
-  [row.name, row.kind, row.status, row.source, row.requiredAction, row.validation, row.uploadPhase].map(csvEscape).join(','),
+  [row.name, row.kind, row.status, row.reason ?? '', row.source, row.requiredAction, row.validation, row.uploadPhase].map(csvEscape).join(','),
 );
 
 fs.mkdirSync(path.dirname(outPath), { recursive: true });

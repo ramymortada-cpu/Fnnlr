@@ -7,6 +7,33 @@ import { loadHostedSecretsManifest } from './gateforge-hosted-secrets-manifest.j
 
 const { attestationSecrets, runtimeSecrets } = loadHostedSecretsManifest();
 
+function fixtureValueFor(name: string): string {
+  const values: Record<string, string> = {
+    GATEFORGE_HOSTED_STAGING_ATTESTATION_JSON: '{"hosted_staging_gateforge_run":{"status":"PASS"}}',
+    GATEFORGE_HOSTED_STAGING_ATTESTATION_B64: 'eyJob3N0ZWRfc3RhZ2luZ19nYXRlZm9yZ2VfcnVuIjp7InN0YXR1cyI6IlBBU1MifX0=',
+    CONTROL_PLANE_DATABASE_URL: 'postgres://control_user:control_password@db.staging.example.com:5432/fnnlr_control?sslmode=require',
+    TENANT_DB_ADMIN_URL: 'postgres://tenant_admin:tenant_password@db.staging.example.com:5432/postgres?sslmode=require',
+    TENANT_DB_HOST: 'db.staging.example.com',
+    TENANT_CREDENTIAL_ENCRYPTION_KEY: 'tenant-credential-key-fixture-32',
+    INTEGRATION_ENCRYPTION_KEY: 'integration-key-fixture-32chars',
+    FNNLR_CRON_SECRET: 'cron-secret-fixture-32-characters',
+    AUTH_MFA_ENCRYPTION_KEY: 'mfa-encryption-key-fixture-32',
+    FNNLR_AI_TENANT_DAILY_USD_CAP: '1',
+    FNNLR_AI_GLOBAL_DAILY_USD_CAP: '5',
+    SENTRY_DSN: 'https://public@sentry.example.com/1',
+    UPTIME_HEALTHCHECK_URL: 'https://staging.example.com/health',
+    ALERT_EMAIL_TO: 'ops@example.com',
+    ALERT_WEBHOOK_URL: 'https://hooks.example.com/fnnlr-alerts',
+    RESEND_API_KEY: 're_fixture_key_123456',
+    EMAIL_FROM: 'noreply@example.com',
+    EMAIL_REPLY_TO: 'support@example.com',
+    ANTHROPIC_API_KEY: 'sk-ant-fixture-key-123456',
+  };
+  const value = values[name];
+  if (!value) throw new Error(`missing fixture value for ${name}`);
+  return value;
+}
+
 function run(dir: string) {
   const result = spawnSync('npx', ['tsx', 'scripts/gateforge-local-secret-files-check.ts', '--dir', dir], {
     encoding: 'utf8',
@@ -32,7 +59,7 @@ if (!missing.output.includes('No secret values were printed.')) fail('missing ca
 
 const placeholderDir = fs.mkdtempSync(path.join(os.tmpdir(), 'fnnlr-gateforge-secret-placeholder-'));
 fs.writeFileSync(path.join(placeholderDir, attestationSecrets[0]), '{}');
-for (const name of runtimeSecrets) fs.writeFileSync(path.join(placeholderDir, name), 'ok');
+for (const name of runtimeSecrets) fs.writeFileSync(path.join(placeholderDir, name), fixtureValueFor(name));
 fs.writeFileSync(path.join(placeholderDir, 'SENTRY_DSN'), 'REPLACE_WITH_STAGING_SENTRY_DSN');
 const placeholder = run(placeholderDir);
 if (placeholder.status === 0) fail('placeholder case unexpectedly passed');
@@ -49,9 +76,28 @@ if (!parsedPlaceholder.runtime.some((entry: { name: string; status: string }) =>
   fail('placeholder JSON did not include SENTRY_DSN placeholder status');
 }
 
+const invalidDir = fs.mkdtempSync(path.join(os.tmpdir(), 'fnnlr-gateforge-secret-invalid-'));
+fs.writeFileSync(path.join(invalidDir, attestationSecrets[1]), fixtureValueFor(attestationSecrets[1]));
+for (const name of runtimeSecrets) fs.writeFileSync(path.join(invalidDir, name), fixtureValueFor(name));
+fs.writeFileSync(path.join(invalidDir, 'CONTROL_PLANE_DATABASE_URL'), 'https://not-postgres.example.com');
+const invalidJson = spawnSync('npx', ['tsx', 'scripts/gateforge-local-secret-files-check.ts', '--dir', invalidDir, '--json'], {
+  encoding: 'utf8',
+  maxBuffer: 1024 * 1024,
+});
+if (invalidJson.status === 0) fail('invalid JSON case unexpectedly passed');
+const parsedInvalid = JSON.parse(invalidJson.stdout);
+if (
+  !parsedInvalid.runtime.some(
+    (entry: { name: string; status: string; reason?: string }) =>
+      entry.name === 'CONTROL_PLANE_DATABASE_URL' && entry.status === 'INVALID' && entry.reason?.includes('postgres'),
+  )
+) {
+  fail('invalid JSON did not include CONTROL_PLANE_DATABASE_URL invalid reason');
+}
+
 const passingDir = fs.mkdtempSync(path.join(os.tmpdir(), 'fnnlr-gateforge-secret-pass-'));
-fs.writeFileSync(path.join(passingDir, attestationSecrets[1]), 'base64-packet');
-for (const name of runtimeSecrets) fs.writeFileSync(path.join(passingDir, name), name.includes('CAP') ? '1' : `value-for-${name}`);
+fs.writeFileSync(path.join(passingDir, attestationSecrets[1]), fixtureValueFor(attestationSecrets[1]));
+for (const name of runtimeSecrets) fs.writeFileSync(path.join(passingDir, name), fixtureValueFor(name));
 const passing = run(passingDir);
 if (passing.status !== 0) fail(`passing case failed: ${passing.output}`);
 if (!passing.output.includes('GateForge local secret files check: PASS')) fail('passing case did not print PASS');

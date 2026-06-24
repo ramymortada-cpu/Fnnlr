@@ -17,13 +17,13 @@ type Probe = {
   status: 'PASS' | 'FAIL' | 'UNKNOWN';
   detail: string;
   output: string;
-  localState?: 'READY' | 'MISSING_FILES' | 'PLACEHOLDERS' | 'EMPTY_FILES';
+  localState?: 'READY' | 'MISSING_FILES' | 'PLACEHOLDERS' | 'EMPTY_FILES' | 'INVALID_FILES';
 };
 
 type LocalSecretJson = {
   ok: boolean;
-  attestationOptions: { name: string; status: 'READY' | 'MISSING' | 'EMPTY' | 'PLACEHOLDER' }[];
-  runtime: { name: string; status: 'READY' | 'MISSING' | 'EMPTY' | 'PLACEHOLDER' }[];
+  attestationOptions: { name: string; status: 'READY' | 'MISSING' | 'EMPTY' | 'PLACEHOLDER' | 'INVALID' }[];
+  runtime: { name: string; status: 'READY' | 'MISSING' | 'EMPTY' | 'PLACEHOLDER' | 'INVALID' }[];
 };
 
 function run(command: string, args: string[]) {
@@ -47,6 +47,7 @@ function probeLocalSecrets(): Probe {
     if (parsed.ok) localState = 'READY';
     else if (statuses.includes('PLACEHOLDER')) localState = 'PLACEHOLDERS';
     else if (statuses.includes('EMPTY')) localState = 'EMPTY_FILES';
+    else if (statuses.includes('INVALID')) localState = 'INVALID_FILES';
     else localState = 'MISSING_FILES';
   } catch {
     localState = 'MISSING_FILES';
@@ -58,7 +59,9 @@ function probeLocalSecrets(): Probe {
         ? 'local secret files exist but placeholders remain'
         : localState === 'EMPTY_FILES'
           ? 'local secret files contain empty values'
-          : 'local secret files are missing';
+          : localState === 'INVALID_FILES'
+            ? 'local secret files contain invalid values'
+            : 'local secret files are missing';
   return {
     status: result.status === 0 ? 'PASS' : 'FAIL',
     detail,
@@ -124,7 +127,7 @@ const githubSecrets = probeGithubSecrets();
 const strictRun = probeLatestStrictRun();
 const decision =
   localSecrets.status !== 'PASS'
-    ? localSecrets.localState === 'PLACEHOLDERS' || localSecrets.localState === 'EMPTY_FILES'
+    ? localSecrets.localState === 'PLACEHOLDERS' || localSecrets.localState === 'EMPTY_FILES' || localSecrets.localState === 'INVALID_FILES'
       ? 'REPLACE_LOCAL_SECRET_PLACEHOLDERS'
       : 'SCAFFOLD_LOCAL_SECRET_FILES'
     : githubSecrets.status !== 'PASS'
