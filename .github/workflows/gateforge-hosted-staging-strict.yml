@@ -85,6 +85,9 @@ jobs:
             gateforge-audit/run-*/42_life_or_death_execution_plan.md
             gateforge-audit/run-*/42_life_or_death_secret_collection.csv
             gateforge-audit/run-*/43_operator_secret_command_pack.md
+            gateforge-audit/run-*/44_hosted_readiness_doctor.md
+            gateforge-audit/run-*/45_secret_replacement_packet.md
+            gateforge-audit/run-*/45_secret_replacement_packet.csv
             gateforge-audit/external-attestations/HOSTED_STAGING_WAR_ROOM.md
             gateforge-audit/external-attestations/hosted-staging-secrets.manifest.json
             gateforge-audit/external-attestations/hosted-staging-attestation.json
