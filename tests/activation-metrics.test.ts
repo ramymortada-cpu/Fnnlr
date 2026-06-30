@@ -5,6 +5,10 @@ import {
   computeActivationMetrics,
   type ActivationEvent,
 } from '../modules/activation/src/metrics.js';
+import {
+  createActivationCohortReview,
+  DEFAULT_ACTIVATION_COHORT_THRESHOLDS,
+} from '../modules/activation/src/cohort-review.js';
 
 const base = {
   tenantId: 'tenant_1',
@@ -73,5 +77,87 @@ test('activation cohort summary measures repeatability across workspaces', () =>
     abandoned: 1,
     medianTimeToFirstWorkflowMinutes: 40,
     medianTimeToFirstPublishMinutes: 60,
+  });
+});
+
+test('activation cohort review marks healthy cohorts with no required actions', () => {
+  const profile = {
+    period: '2026-W25',
+    segment: 'pilot',
+    industry: 'real-estate',
+    acquisitionSource: 'founder-led',
+  };
+  const days = ['2026-06-01', '2026-06-02', '2026-06-03'];
+  const metrics = ['workspace_1', 'workspace_2', 'workspace_3'].map((workspaceId, index) =>
+    computeActivationMetrics(workspaceId, [
+      { ...base, workspaceId, eventName: 'workspace_created', occurredAt: `${days[index]}T10:00:00.000Z` },
+      { ...base, workspaceId, eventName: 'first_workflow_created', occurredAt: `${days[index]}T10:20:00.000Z` },
+      { ...base, workspaceId, eventName: 'first_publish', occurredAt: `${days[index]}T10:35:00.000Z` },
+      { ...base, workspaceId, eventName: 'first_lead_action', occurredAt: `${days[index]}T11:00:00.000Z` },
+    ]),
+  );
+
+  const review = createActivationCohortReview(profile, metrics);
+
+  assert.equal(review.status, 'HEALTHY');
+  assert.deepEqual(review.rates, {
+    firstWorkflow: 1,
+    firstPublish: 1,
+    firstLeadAction: 1,
+    abandonment: 0,
+  });
+  assert.deepEqual(review.blockers, []);
+  assert.deepEqual(review.actions, []);
+});
+
+test('activation cohort review turns weak cohorts into owner-driven rescue actions', () => {
+  const profile = {
+    period: '2026-W26',
+    segment: 'trial',
+    industry: 'clinics',
+    acquisitionSource: 'paid-social',
+  };
+  const activated = computeActivationMetrics('workspace_1', [
+    { ...base, workspaceId: 'workspace_1', eventName: 'workspace_created', occurredAt: '2026-06-10T10:00:00.000Z' },
+    { ...base, workspaceId: 'workspace_1', eventName: 'first_workflow_created', occurredAt: '2026-06-10T12:00:00.000Z' },
+  ]);
+  const abandoned = ['workspace_2', 'workspace_3'].map((workspaceId) =>
+    computeActivationMetrics(workspaceId, [
+      { ...base, workspaceId, eventName: 'workspace_created', occurredAt: '2026-06-10T10:00:00.000Z' },
+      {
+        ...base,
+        workspaceId,
+        eventName: 'onboarding_abandoned',
+        occurredAt: '2026-06-10T10:15:00.000Z',
+        abandonmentStep: 'integration',
+        abandonmentReason: 'missing WhatsApp account',
+      },
+    ]),
+  );
+
+  const review = createActivationCohortReview(profile, [activated, ...abandoned]);
+
+  assert.equal(review.status, 'RESCUE');
+  assert.deepEqual(review.blockers, [
+    'first_workflow_rate_below_threshold',
+    'first_publish_rate_below_threshold',
+    'first_lead_action_rate_below_threshold',
+    'abandonment_rate_above_threshold',
+    'median_first_workflow_time_above_threshold',
+  ]);
+  assert.ok(review.actions.some((action) => action.owner === 'Product'));
+  assert.ok(review.actions.some((action) => action.owner === 'Support'));
+  assert.ok(review.actions.some((action) => action.owner === 'Engineering'));
+  assert.ok(review.actions.some((action) => action.owner === 'Sales'));
+  assert.ok(review.actions.every((action) => action.evidenceRequired.length > 10));
+});
+
+test('default activation cohort thresholds keep the weekly review measurable', () => {
+  assert.deepEqual(DEFAULT_ACTIVATION_COHORT_THRESHOLDS, {
+    minFirstWorkflowRate: 0.75,
+    minFirstPublishRate: 0.6,
+    minLeadActionRate: 0.4,
+    maxAbandonmentRate: 0.2,
+    maxMedianFirstWorkflowMinutes: 45,
   });
 });
