@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { scoreFit, type SalesLeadIntake } from '../modules/sales-ops/src/fit.js';
 import { proposalReadiness, buildHandoffPack, checkOwnership } from '../modules/sales-ops/src/proposal.js';
-import { intakeSupportIssue } from '../modules/sales-ops/src/support-workflow.js';
+import { SUPPORT_TRIAGE_CATALOG, inferSupportCategory, intakeSupportIssue, reviewSupport } from '../modules/sales-ops/src/support-workflow.js';
 import { checkCommercialDocs, isCommercialDoc } from '../modules/commercial/src/consistency.js';
 
 /** Sprint 44 — sales & support operating system. Pure logic + consistency. */
@@ -99,9 +99,68 @@ test('support intake requires an owner + next action for P0/P1', () => {
   const bad = intakeSupportIssue({ summary: 's', source: 'go-live', severity: 'P0', evidence: 'e' });
   assert.equal(bad.ok, false);
   assert.ok(bad.errors.some((e) => /owner/.test(e)));
-  const ok = intakeSupportIssue({ summary: 's', source: 'go-live', severity: 'P0', evidence: 'e', owner: 'platform', nextAction: 'disable' });
+  assert.ok(bad.errors.some((e) => /due date/.test(e)));
+  assert.ok(bad.errors.some((e) => /evidence link/.test(e)));
+  const ok = intakeSupportIssue({
+    summary: 's',
+    source: 'go-live',
+    severity: 'P0',
+    category: 'tenant_isolation',
+    evidence: 'e',
+    owner: 'platform',
+    nextAction: 'disable',
+    dueDate: '2026-07-01',
+    evidenceLink: 'gateforge-audit/example.md',
+  });
   assert.equal(ok.ok, true);
+  assert.equal(ok.record?.category, 'tenant_isolation');
   assert.equal(ok.record?.safeRollback !== null, true);
+});
+
+test('support triage taxonomy classifies categories and default owners', () => {
+  assert.equal(inferSupportCategory('Webhook signature rejected for provider event'), 'webhook_failure');
+  assert.equal(inferSupportCategory('Customer asks for data deletion'), 'data_lifecycle');
+  assert.equal(SUPPORT_TRIAGE_CATALOG.webhook_failure.defaultOwner, 'platform');
+
+  const ok = intakeSupportIssue({
+    summary: 'AI budget cap exceeded',
+    source: 'daily-check',
+    severity: 'P2',
+    evidence: 'ai_usage_events degraded',
+  });
+  assert.equal(ok.ok, true);
+  assert.equal(ok.record?.category, 'ai_degraded');
+  assert.equal(ok.record?.owner, 'support');
+});
+
+test('support review reports category counts and rejects incomplete P0/P1 blockers', () => {
+  const review = reviewSupport([
+    {
+      severity: 'P1',
+      status: 'open',
+      category: 'workflow_blocked',
+      nextAction: 'publish recovery',
+      owner: 'support',
+      source: 'customer',
+      dueDate: '2026-07-01',
+      evidenceLink: 'docs/evidence.md',
+    },
+    {
+      severity: 'P0',
+      status: 'open',
+      category: 'tenant_isolation',
+      nextAction: '',
+      owner: '',
+      source: 'daily-check',
+      dueDate: null,
+      evidenceLink: null,
+    },
+  ]);
+
+  assert.equal(review.categoryCounts.workflow_blocked, 1);
+  assert.equal(review.categoryCounts.tenant_isolation, 1);
+  assert.equal(review.openBlockers.length, 2);
+  assert.equal(review.allCriticalOwned, false);
 });
 
 test('sales-ops docs (if mounted) pass the consistency checker', () => {

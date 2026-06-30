@@ -1,5 +1,13 @@
 # Support Triage Taxonomy
 
+Status: `CONTRACT_READY`
+
+Code evidence:
+
+- `modules/sales-ops/src/support-workflow.ts` defines the canonical support categories, default owners, category inference, and P0/P1 validation.
+- `tests/sales-ops.test.ts` proves category classification, default ownership, and incomplete P0/P1 rejection.
+- P0/P1 issues require owner, next action, due date, and evidence link.
+
 | Category | Severity trigger | Owner |
 | --- | --- | --- |
 | Tenant isolation | Any cross-tenant suspicion | Engineering |

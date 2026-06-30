@@ -9,13 +9,14 @@
    `support:intake`.
 2. **Classify** — P0 (critical), P1 (customer blocked), P2 (degraded), P3 (info).
    See the operating-room incident classes for the canonical definitions.
-3. **Assign owner** — platform / support / customer. **A P0/P1 without an owner
-   and a next action is rejected** (the issue log enforces this).
+3. **Assign owner** — platform / support / customer. **A P0/P1 without an owner,
+   next action, due date, and evidence link is rejected** (the support workflow
+   contract enforces this).
 4. **Next action** — concrete and safe. Manual DB edits are forbidden as a normal
    path (emergency-only, per triage).
 5. **Resolve** — mark resolved with a resolution note (`issue_resolved`).
 6. **Review** — `support:review` summarizes counts by severity and the open P0/P1
-   blockers; this feeds `customer:week1-review`.
+   blockers by category; this feeds `customer:week1-review`.
 
 ## Severity guide
 - **P0**: security / availability / data-corruption risk → safe rollback/disable
