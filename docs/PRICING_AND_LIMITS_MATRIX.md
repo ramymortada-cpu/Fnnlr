@@ -1,6 +1,6 @@
 # fnnlr Pricing and Limits Matrix
 
-This is a commercial packaging matrix, not a billing implementation. Limits must be mapped to code enforcement before self-serve GA.
+This is a commercial packaging matrix with a code-level enforcement contract. The source-of-truth profile lives in `modules/commercial/src/limits.ts`, and acceptance coverage lives in `tests/commercial-limits.test.ts`. API route enforcement is still rolled out per resource path before self-serve GA.
 
 | Plan | Target customer | Seats | Active workflows | Contacts | Integrations | AI budget posture | Support |
 | --- | --- | ---: | ---: | ---: | ---: | --- | --- |
@@ -13,12 +13,19 @@ This is a commercial packaging matrix, not a billing implementation. Limits must
 
 | Limit | Required enforcement point | Status |
 | --- | --- | --- |
-| Seats | Workspace membership creation and invitation flow | `NEXT` |
-| Workflows | Workflow creation/publish path | `NEXT` |
-| Contacts | Lead/contact import and creation path | `NEXT` |
-| Integrations | Connection creation path | `NEXT` |
+| Seats | Workspace membership creation and invitation flow | `CONTRACT_READY` |
+| Workflows | Workflow creation/publish path | `CONTRACT_READY` |
+| Contacts | Lead/contact import and creation path | `CONTRACT_READY` |
+| Integrations | Connection creation path | `CONTRACT_READY` |
 | AI budget | AI gateway and tenant/global caps | `PARTIAL_CODE_READY` |
 | Support tier | Customer success operating workflow | `DOC_READY` |
+
+## Acceptance Evidence
+
+- `modules/commercial/src/limits.ts` defines the Starter, Growth, Scale, and Enterprise resource limits.
+- `tests/commercial-limits.test.ts` blocks drift from the public packaging matrix.
+- Over-limit decisions return `PLAN_LIMIT_EXCEEDED` with the next upgrade path.
+- Enterprise remains `custom` and requires human review before contract signature.
 
 ## Commercial Guardrails
 
