@@ -25,6 +25,15 @@ process payments, and makes no guaranteed-revenue claim.
 - Live DB: `npm run test:pg` against a real Postgres.
 - Commercial/proof consistency: `npm run commercial:check` / `npm run proof:check`.
 - Deployment: `npm run deploy:health-gate`, `npm run deploy:smoke`, `npm run ci`.
+- SaaS moat execution board: `npm run moat:plan` then `npm run moat:check`.
+
+## SaaS moat execution evidence
+- `SAAS_MOAT_ACTION_PLAN.md` — 165-point execution board.
+- `SAAS_MOAT_ACTION_PLAN.csv` — machine-readable action board.
+- `TRUST_CENTER_INDEX.md` — buyer-safe proof index.
+- `PRICING_AND_LIMITS_MATRIX.md` — packaging and enforcement plan.
+- `ACTIVATION_METRICS_SPEC.md` — activation measurement plan.
+- `WORKFLOW_INTELLIGENCE_SPEC.md` — AI/workflow data moat plan.
 
 ## What is NOT claimed
 No guaranteed revenue. No auto-send. No payment processing. No unconditional
