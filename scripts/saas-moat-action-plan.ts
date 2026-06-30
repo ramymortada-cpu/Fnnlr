@@ -119,7 +119,7 @@ const evidenceFilesByActionId: Record<string, string[]> = {
   'OP-001': ['gateforge-audit/run-2026-06-23-1035/47_ga_unblock_status.md'],
   'OP-002': ['docs/SAAS_MOAT_ACTION_PLAN.md'],
   'OP-003': ['docs/WEEKLY_MOAT_REVIEW_TEMPLATE.md'],
-  'OP-004': ['docs/CUSTOMER_HEALTH_SCORE_SPEC.md'],
+  'OP-004': ['docs/CUSTOMER_HEALTH_SCORE_SPEC.md', 'modules/operating-room/src/health-score.ts', 'tests/customer-health-score.test.ts'],
   'OP-005': ['docs/SUPPORT_TRIAGE_TAXONOMY.md'],
   'OP-006': ['docs/ACTIVATION_COHORT_REVIEW.md'],
   'OP-007': ['docs/AI_SPEND_REVIEW_TEMPLATE.md'],
