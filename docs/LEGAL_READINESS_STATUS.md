@@ -17,3 +17,16 @@ Required before GA:
 
 Evidence rule: draft docs are supporting evidence only; final legal approval is
 human attestation.
+
+## Approval Tracker
+
+See `LEGAL_APPROVAL_TRACKER.md`.
+
+| Item | Current state | Owner |
+| --- | --- | --- |
+| Terms of Service | `HUMAN_ATTESTATION_REQUIRED` | Founder/legal |
+| Privacy Policy | `HUMAN_ATTESTATION_REQUIRED` | Founder/legal |
+| DPA | `HUMAN_ATTESTATION_REQUIRED` | Founder/legal |
+| Subprocessors | `DRAFT_READY` | Founder/legal |
+| Retention policy | `DRAFT_READY` | Founder/legal + Engineering |
+| Security contact | `DRAFT_READY` | Engineering |

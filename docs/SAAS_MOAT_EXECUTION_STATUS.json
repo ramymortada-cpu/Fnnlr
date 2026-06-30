@@ -1,0 +1,156 @@
+{
+  "generatedAt": "2026-06-30T22:31:32.961Z",
+  "total": 165,
+  "byState": {
+    "BLOCKED_EXTERNAL": 16,
+    "COMMAND_READY": 7,
+    "EVIDENCE_FILE_PRESENT": 89,
+    "OWNER_OR_DOC_ACTION_READY": 53
+  },
+  "openP0": [
+    {
+      "id": "GF-001",
+      "state": "BLOCKED_EXTERNAL",
+      "action": "Provision hosted staging control-plane Postgres.",
+      "evidence": "Provider database URL and successful hosted health gate."
+    },
+    {
+      "id": "GF-002",
+      "state": "BLOCKED_EXTERNAL",
+      "action": "Provision tenant database admin access for staging.",
+      "evidence": "TENANT_DB_ADMIN_URL validated by live tenant provision/delete test."
+    },
+    {
+      "id": "GF-003",
+      "state": "BLOCKED_EXTERNAL",
+      "action": "Set CONTROL_PLANE_DATABASE_URL in the local secret pack and GitHub Actions.",
+      "evidence": "npm run gateforge:local-secret-files-check and GitHub secrets audit PASS."
+    },
+    {
+      "id": "GF-004",
+      "state": "BLOCKED_EXTERNAL",
+      "action": "Set TENANT_DB_ADMIN_URL in the local secret pack and GitHub Actions.",
+      "evidence": "Hosted strict live DB tests PASS."
+    },
+    {
+      "id": "GF-005",
+      "state": "BLOCKED_EXTERNAL",
+      "action": "Set TENANT_DB_HOST in the local secret pack and GitHub Actions.",
+      "evidence": "Local secret files check reports READY."
+    },
+    {
+      "id": "GF-006",
+      "state": "BLOCKED_EXTERNAL",
+      "action": "Create staging Sentry or equivalent error-monitoring project.",
+      "evidence": "SENTRY_DSN present and alert proof attached."
+    },
+    {
+      "id": "GF-007",
+      "state": "BLOCKED_EXTERNAL",
+      "action": "Set SENTRY_DSN for staging.",
+      "evidence": "Hosted strict monitoring item PASS."
+    },
+    {
+      "id": "GF-008",
+      "state": "BLOCKED_EXTERNAL",
+      "action": "Create uptime monitor for /health.",
+      "evidence": "UPTIME_HEALTHCHECK_URL and screenshot/log reference in attestation."
+    },
+    {
+      "id": "GF-009",
+      "state": "BLOCKED_EXTERNAL",
+      "action": "Set UPTIME_HEALTHCHECK_URL.",
+      "evidence": "GateForge secret check READY and hosted attestation item PASS."
+    },
+    {
+      "id": "GF-010",
+      "state": "BLOCKED_EXTERNAL",
+      "action": "Set ALERT_EMAIL_TO for staging operations.",
+      "evidence": "Alert delivery proof in hosted evidence packet."
+    },
+    {
+      "id": "GF-011",
+      "state": "BLOCKED_EXTERNAL",
+      "action": "Set ALERT_WEBHOOK_URL for staging alerts.",
+      "evidence": "Cron/webhook failure alert proof."
+    },
+    {
+      "id": "GF-012",
+      "state": "BLOCKED_EXTERNAL",
+      "action": "Create Resend staging key or approved transactional email provider key.",
+      "evidence": "Provider test send and DNS posture evidence."
+    },
+    {
+      "id": "GF-013",
+      "state": "BLOCKED_EXTERNAL",
+      "action": "Set RESEND_API_KEY.",
+      "evidence": "Hosted strict email readiness evidence."
+    },
+    {
+      "id": "GF-014",
+      "state": "BLOCKED_EXTERNAL",
+      "action": "Verify sender domain and set EMAIL_FROM.",
+      "evidence": "SPF/DKIM/DMARC evidence and provider verified sender."
+    },
+    {
+      "id": "GF-015",
+      "state": "BLOCKED_EXTERNAL",
+      "action": "Set EMAIL_REPLY_TO.",
+      "evidence": "Transactional provider config proof."
+    },
+    {
+      "id": "GF-016",
+      "state": "BLOCKED_EXTERNAL",
+      "action": "Create capped Anthropic staging key.",
+      "evidence": "ANTHROPIC_API_KEY present with provider-side cap proof."
+    },
+    {
+      "id": "GF-017",
+      "state": "COMMAND_READY",
+      "action": "Run local secret replacement packet after operator values exist.",
+      "evidence": "npm run gateforge:secret-replacement-packet PASS."
+    },
+    {
+      "id": "GF-018",
+      "state": "COMMAND_READY",
+      "action": "Generate hosted staging attestation packet from real evidence only.",
+      "evidence": "hosted-staging-attestation.json validates with external-check."
+    },
+    {
+      "id": "GF-019",
+      "state": "COMMAND_READY",
+      "action": "Encode validated attestation as the preferred B64 secret.",
+      "evidence": "npm run gateforge:attestation-secret-pack -- --write-b64 PASS."
+    },
+    {
+      "id": "GF-020",
+      "state": "COMMAND_READY",
+      "action": "Run hosted readiness doctor.",
+      "evidence": "44_hosted_readiness_doctor.md says UPLOAD_GITHUB_SECRETS or later."
+    },
+    {
+      "id": "GF-021",
+      "state": "COMMAND_READY",
+      "action": "Upload local secret pack to GitHub Actions after validation.",
+      "evidence": "GitHub secrets audit READY."
+    },
+    {
+      "id": "GF-022",
+      "state": "OWNER_OR_DOC_ACTION_READY",
+      "action": "Trigger GateForge Hosted Staging Strict.",
+      "evidence": "Hosted strict workflow success URL."
+    },
+    {
+      "id": "GF-023",
+      "state": "COMMAND_READY",
+      "action": "Run final gate and final report.",
+      "evidence": "final-gate CONDITIONAL_GO or precise blockers."
+    },
+    {
+      "id": "GF-024",
+      "state": "COMMAND_READY",
+      "action": "Refresh GA unblock status dashboard.",
+      "evidence": "47_ga_unblock_status.md/json updated."
+    }
+  ]
+}

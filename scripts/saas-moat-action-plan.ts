@@ -19,15 +19,30 @@ type Action = {
 
 const outMd = 'docs/SAAS_MOAT_ACTION_PLAN.md';
 const outCsv = 'docs/SAAS_MOAT_ACTION_PLAN.csv';
+const statusMd = 'docs/SAAS_MOAT_EXECUTION_STATUS.md';
+const statusJson = 'docs/SAAS_MOAT_EXECUTION_STATUS.json';
 const checkOnly = process.argv.includes('--check');
+const statusOnly = process.argv.includes('--status');
 const requiredEvidenceFiles = [
   'docs/TRUST_CENTER_INDEX.md',
+  'docs/LEGAL_APPROVAL_TRACKER.md',
+  'docs/SUBPROCESSORS.md',
+  'docs/SECURITY_CONTACT_AND_DISCLOSURE.md',
+  'docs/INCIDENT_RESPONSE_EXERCISE.md',
+  'docs/AUDIT_LOG_VIEWER_BACKLOG.md',
+  'docs/DATA_EXPORT_DELETE_UI_BACKLOG.md',
   'docs/PRICING_AND_LIMITS_MATRIX.md',
+  'docs/USAGE_LIMIT_ENFORCEMENT_MAP.md',
   'docs/ACTIVATION_METRICS_SPEC.md',
+  'docs/ACTIVATION_COHORT_REVIEW.md',
+  'docs/ONBOARDING_RECOVERY_SEQUENCE.md',
   'docs/WORKFLOW_INTELLIGENCE_SPEC.md',
   'docs/ADMIN_ONBOARDING_CHECKLIST.md',
   'docs/ENTERPRISE_READINESS_BACKLOG.md',
   'docs/PROCUREMENT_CHECKLIST.md',
+  'docs/SSO_OIDC_READINESS.md',
+  'docs/SOC2_READINESS_OUTLINE.md',
+  'docs/DATA_RESIDENCY_POSITION.md',
   'docs/WEEKLY_MOAT_REVIEW_TEMPLATE.md',
   'docs/CUSTOMER_HEALTH_SCORE_SPEC.md',
   'docs/SUPPORT_TRIAGE_TAXONOMY.md',
@@ -44,6 +59,72 @@ const requiredEvidenceFiles = [
   'docs/industry-templates/agencies.md',
   'docs/industry-templates/ecommerce.md',
 ];
+const evidenceFilesByActionId: Record<string, string[]> = {
+  'TR-001': ['docs/LEGAL_APPROVAL_TRACKER.md'],
+  'TR-002': ['docs/LEGAL_APPROVAL_TRACKER.md'],
+  'TR-003': ['docs/LEGAL_APPROVAL_TRACKER.md'],
+  'TR-004': ['docs/SUBPROCESSORS.md'],
+  'TR-005': ['docs/DATA_LIFECYCLE.md', 'docs/DATA_EXPORT_DELETE_UI_BACKLOG.md'],
+  'TR-006': ['docs/SECURITY_CONTACT_AND_DISCLOSURE.md'],
+  'TR-007': ['docs/TRUST_CENTER_INDEX.md'],
+  'TR-008': ['docs/BACKUP_RESTORE_RUNBOOK.md'],
+  'TR-009': ['docs/AUDIT_LOG_VIEWER_BACKLOG.md'],
+  'TR-010': ['docs/DATA_EXPORT_DELETE_UI_BACKLOG.md'],
+  'TR-011': ['docs/DATA_EXPORT_DELETE_UI_BACKLOG.md'],
+  'TR-012': ['docs/INCIDENT_RESPONSE_EXERCISE.md'],
+  'PK-001': ['docs/COMPETITIVE_POSITIONING.md'],
+  'PK-002': ['docs/PRICING_AND_LIMITS_MATRIX.md'],
+  'PK-003': ['docs/PRICING_AND_LIMITS_MATRIX.md'],
+  'PK-004': ['docs/PRICING_AND_LIMITS_MATRIX.md'],
+  'PK-005': ['docs/PRICING_AND_LIMITS_MATRIX.md'],
+  'PK-006': ['docs/USAGE_LIMIT_ENFORCEMENT_MAP.md'],
+  'PK-007': ['docs/USAGE_LIMIT_ENFORCEMENT_MAP.md'],
+  'PK-008': ['docs/CUSTOMER_PROOF_PACK.md'],
+  'PK-009': ['docs/COMMERCIAL_PACKAGING.md', 'docs/PRICING_AND_LIMITS_MATRIX.md'],
+  'PK-010': ['docs/SUPPORT_WORKFLOW.md', 'docs/PRICING_AND_LIMITS_MATRIX.md'],
+  'WI-001': ['docs/WORKFLOW_INTELLIGENCE_SPEC.md'],
+  'WI-002': ['docs/WORKFLOW_INTELLIGENCE_SPEC.md'],
+  'WI-003': ['docs/WORKFLOW_INTELLIGENCE_SPEC.md'],
+  'WI-004': ['docs/WORKFLOW_INTELLIGENCE_SPEC.md'],
+  'WI-005': ['docs/WORKFLOW_INTELLIGENCE_SPEC.md'],
+  'WI-006': ['docs/WORKFLOW_INTELLIGENCE_SPEC.md'],
+  'WI-007': ['docs/AI_SPEND_REVIEW_TEMPLATE.md'],
+  'WI-008': ['docs/WORKFLOW_INTELLIGENCE_SPEC.md'],
+  'AC-001': ['docs/ONBOARDING_PROMISE.md', 'docs/ACTIVATION_METRICS_SPEC.md'],
+  'AC-002': ['docs/ACTIVATION_METRICS_SPEC.md'],
+  'AC-003': ['docs/ACTIVATION_METRICS_SPEC.md'],
+  'AC-004': ['docs/ACTIVATION_METRICS_SPEC.md'],
+  'AC-005': ['docs/ACTIVATION_METRICS_SPEC.md'],
+  'AC-006': ['docs/ACTIVATION_METRICS_SPEC.md'],
+  'AC-007': ['docs/ONBOARDING_RECOVERY_SEQUENCE.md'],
+  'AC-008': ['docs/ADMIN_ONBOARDING_CHECKLIST.md'],
+  'DT-001': ['docs/SAAS_MOAT_ACTION_PLAN.md'],
+  'DT-002': ['docs/industry-templates/real-estate.md'],
+  'DT-003': ['docs/industry-templates/clinics.md'],
+  'DT-004': ['docs/industry-templates/education.md'],
+  'DT-005': ['docs/industry-templates/agencies.md'],
+  'DT-006': ['docs/industry-templates/ecommerce.md'],
+  'DT-007': ['docs/FOUNDER_LED_DEMO_SCRIPT.md'],
+  'DT-008': ['docs/OBJECTION_HANDLING_LIBRARY.md'],
+  'DT-009': ['docs/PARTNER_AGENCY_PROGRAM.md'],
+  'DT-010': ['docs/CASE_STUDY_TEMPLATE.md'],
+  'EN-001': ['docs/ENTERPRISE_READINESS_BACKLOG.md'],
+  'EN-002': ['docs/ENTERPRISE_READINESS_BACKLOG.md'],
+  'EN-003': ['docs/ENTERPRISE_READINESS_BACKLOG.md'],
+  'EN-004': ['docs/SSO_OIDC_READINESS.md'],
+  'EN-005': ['docs/SSO_OIDC_READINESS.md'],
+  'EN-006': ['docs/DATA_RESIDENCY_POSITION.md'],
+  'EN-007': ['docs/PROCUREMENT_CHECKLIST.md'],
+  'EN-008': ['docs/SOC2_READINESS_OUTLINE.md'],
+  'OP-001': ['gateforge-audit/run-2026-06-23-1035/47_ga_unblock_status.md'],
+  'OP-002': ['docs/SAAS_MOAT_ACTION_PLAN.md'],
+  'OP-003': ['docs/WEEKLY_MOAT_REVIEW_TEMPLATE.md'],
+  'OP-004': ['docs/CUSTOMER_HEALTH_SCORE_SPEC.md'],
+  'OP-005': ['docs/SUPPORT_TRIAGE_TAXONOMY.md'],
+  'OP-006': ['docs/ACTIVATION_COHORT_REVIEW.md'],
+  'OP-007': ['docs/AI_SPEND_REVIEW_TEMPLATE.md'],
+  'OP-008': ['docs/TEMPLATE_PERFORMANCE_REVIEW.md'],
+};
 
 const actions: Action[] = [
   ...gateforgeUnblock(),
@@ -373,7 +454,87 @@ function renderCsv(items: Action[]) {
   return `${header.join(',')}\n${rows.join('\n')}\n`;
 }
 
+function referencedDocs(item: Action): string[] {
+  return `${item.evidence} ${item.command ?? ''}`.match(/docs\/[A-Za-z0-9_./-]+\.md/g) ?? [];
+}
+
+function actionExecutionState(item: Action) {
+  if (item.status === 'BLOCKED_EXTERNAL') return 'BLOCKED_EXTERNAL';
+  const mappedDocs = evidenceFilesByActionId[item.id] ?? [];
+  if (mappedDocs.length && mappedDocs.every((file) => fs.existsSync(file))) return 'EVIDENCE_FILE_PRESENT';
+  const docs = referencedDocs(item);
+  if (docs.length && docs.every((file) => fs.existsSync(file))) return 'EVIDENCE_FILE_PRESENT';
+  if (item.command) return 'COMMAND_READY';
+  if (item.status === 'READY_NOW') return 'OWNER_OR_DOC_ACTION_READY';
+  return item.status;
+}
+
+function renderStatus(items: Action[]) {
+  const generatedAt = new Date().toISOString();
+  const rows = items.map((item) => ({ ...item, executionState: actionExecutionState(item) }));
+  const states = [...new Set(rows.map((item) => item.executionState))].sort();
+  const stateSummary = states
+    .map((state) => `| \`${state}\` | ${rows.filter((item) => item.executionState === state).length} |`)
+    .join('\n');
+  const phaseSummary = [...new Set(rows.map((item) => item.phase))]
+    .map((phase) => {
+      const inPhase = rows.filter((item) => item.phase === phase);
+      const done = inPhase.filter((item) => item.executionState === 'EVIDENCE_FILE_PRESENT').length;
+      const blocked = inPhase.filter((item) => item.executionState === 'BLOCKED_EXTERNAL').length;
+      return `| ${phase} | ${inPhase.length} | ${done} | ${blocked} |`;
+    })
+    .join('\n');
+  const openP0 = rows
+    .filter((item) => item.priority === 'P0' && item.executionState !== 'EVIDENCE_FILE_PRESENT')
+    .map((item) => `| \`${item.id}\` | \`${item.executionState}\` | ${markdownEscape(item.action)} | ${markdownEscape(item.evidence)} |`)
+    .join('\n');
+  const body = `# SaaS Moat Execution Status
+
+Generated: \`${generatedAt}\`
+
+This status is derived from the 165-point board. It treats hosted/operator-only work as blocked until real external evidence exists.
+
+## Summary By State
+
+| State | Count |
+| --- | ---: |
+${stateSummary}
+
+## Summary By Phase
+
+| Phase | Actions | Evidence-file present | Externally blocked |
+| --- | ---: | ---: | ---: |
+${phaseSummary}
+
+## Open P0 Items
+
+| ID | State | Action | Evidence required |
+| --- | --- | --- | --- |
+${openP0 || '| None | None | None | None |'}
+`;
+  return {
+    body,
+    json: {
+      generatedAt,
+      total: rows.length,
+      byState: Object.fromEntries(states.map((state) => [state, rows.filter((item) => item.executionState === state).length])),
+      openP0: rows
+        .filter((item) => item.priority === 'P0' && item.executionState !== 'EVIDENCE_FILE_PRESENT')
+        .map((item) => ({ id: item.id, state: item.executionState, action: item.action, evidence: item.evidence })),
+    },
+  };
+}
+
 validate(actions);
+
+if (statusOnly) {
+  const rendered = renderStatus(actions);
+  fs.writeFileSync(statusMd, rendered.body);
+  fs.writeFileSync(statusJson, `${JSON.stringify(rendered.json, null, 2)}\n`);
+  console.log(`SaaS moat execution status: wrote ${statusMd}`);
+  console.log(`SaaS moat execution status: wrote ${statusJson}`);
+  process.exit(0);
+}
 
 if (checkOnly) {
   const expectedMd = renderMarkdown(actions);

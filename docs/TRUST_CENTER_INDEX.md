@@ -13,12 +13,21 @@ fnnlr is an Arabic-first AI Revenue Operations OS. Its trust posture is built ar
 | Security proof | `SECURITY_TRUST_PROOF.md` | Code-supported, hosted evidence pending |
 | Tenant isolation | `TECHNICAL_PROOF.md` | Local proven, live staging proof pending |
 | Legal readiness | `LEGAL_READINESS_STATUS.md` | Human attestation required |
+| Legal approval tracker | `LEGAL_APPROVAL_TRACKER.md` | Human attestation required |
+| Subprocessors | `SUBPROCESSORS.md` | Draft ready, approval required |
+| Security contact | `SECURITY_CONTACT_AND_DISCLOSURE.md` | Draft ready, approval required |
 | Data lifecycle | `DATA_LIFECYCLE.md` | Export/delete command proof exists; hosted proof pending |
+| Data lifecycle workflow | `DATA_EXPORT_DELETE_UI_BACKLOG.md` | Product backlog ready |
 | Backup/restore | `BACKUP_RESTORE_RUNBOOK.md` | Runbook exists; hosted restore drill pending |
 | Observability | `OBSERVABILITY_GA_RUNBOOK.md` | Runbook exists; provider proof pending |
+| Incident drill | `INCIDENT_RESPONSE_EXERCISE.md` | Drill template ready |
 | Email deliverability | `EMAIL_DELIVERABILITY.md` | Provider/DNS proof pending |
 | Dependency security | `DEPENDENCY_SECURITY.md` | Local audit/SBOM supported |
 | Support workflow | `SUPPORT_WORKFLOW.md` | Operational process documented |
+| Usage limits | `USAGE_LIMIT_ENFORCEMENT_MAP.md` | Enforcement backlog ready |
+| Data residency | `DATA_RESIDENCY_POSITION.md` | Draft ready, approval required |
+| SSO/OIDC | `SSO_OIDC_READINESS.md` | Roadmap |
+| SOC2 | `SOC2_READINESS_OUTLINE.md` | Roadmap |
 | GateForge status | `../gateforge-audit/run-2026-06-23-1035/47_ga_unblock_status.md` | Current launch decision |
 | SaaS moat board | `SAAS_MOAT_ACTION_PLAN.md` | 165 execution actions |
 

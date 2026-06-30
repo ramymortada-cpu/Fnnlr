@@ -59,6 +59,8 @@ jobs:
         run: npm run gateforge:trigger-hosted-strict-smoke
       - name: SaaS moat action plan check
         run: npm run moat:check
+      - name: SaaS moat execution status
+        run: npm run moat:status
       - name: GateForge GA unblock evidence
         run: npm run gateforge:ga-unblock
         continue-on-error: true
@@ -83,6 +85,8 @@ jobs:
             gateforge-audit/evidence/sbom.json
             docs/SAAS_MOAT_ACTION_PLAN.md
             docs/SAAS_MOAT_ACTION_PLAN.csv
+            docs/SAAS_MOAT_EXECUTION_STATUS.md
+            docs/SAAS_MOAT_EXECUTION_STATUS.json
             gateforge-audit/GA_UNBLOCK_WAR_ROOM.md
             gateforge-audit/run-*/10_final_gate_report.md
             gateforge-audit/run-*/11_implementation_plan.md

@@ -19,3 +19,8 @@ Deletion evidence:
 
 GateForge rule: deletion/export code is not enough; staging command output must
 be archived for GA.
+
+## Productization Backlog
+
+See `DATA_EXPORT_DELETE_UI_BACKLOG.md` for the admin/operator workflow required
+to move export/delete from command evidence into a customer-operable process.

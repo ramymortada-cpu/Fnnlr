@@ -32,8 +32,11 @@ process payments, and makes no guaranteed-revenue claim.
 - `SAAS_MOAT_ACTION_PLAN.csv` — machine-readable action board.
 - `TRUST_CENTER_INDEX.md` — buyer-safe proof index.
 - `PRICING_AND_LIMITS_MATRIX.md` — packaging and enforcement plan.
+- `USAGE_LIMIT_ENFORCEMENT_MAP.md` — plan-limit enforcement backlog.
 - `ACTIVATION_METRICS_SPEC.md` — activation measurement plan.
+- `ACTIVATION_COHORT_REVIEW.md` — cohort review template.
 - `WORKFLOW_INTELLIGENCE_SPEC.md` — AI/workflow data moat plan.
+- `LEGAL_APPROVAL_TRACKER.md` and `SUBPROCESSORS.md` — legal/compliance execution trackers.
 
 ## What is NOT claimed
 No guaranteed revenue. No auto-send. No payment processing. No unconditional

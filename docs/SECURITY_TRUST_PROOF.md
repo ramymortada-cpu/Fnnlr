@@ -50,6 +50,10 @@ Security/operational events are recorded in `audit_events` (commands, repairs,
 execution, launch, issues) with safe detail — no secrets, no customer-facing stack
 traces.
 
+## Security contact and disclosure
+Security contact/disclosure draft: `SECURITY_CONTACT_AND_DISCLOSURE.md`.
+Publishing requires founder/legal approval before GA.
+
 ## Rollback safety
 The default rollback is non-destructive and preserves all databases; it never
 drops a tenant DB. A restore-from-backup is included only with explicit
