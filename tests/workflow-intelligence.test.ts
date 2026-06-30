@@ -2,7 +2,10 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import {
   computeWorkflowIntelligenceMetrics,
+  rankNextBestActions,
+  scoreFollowUpQuality,
   workflowIntelligenceReadiness,
+  type NextBestActionCandidate,
   type WorkflowIntelligenceEvent,
 } from '../modules/ai-ops/src/workflow-intelligence.js';
 import {
@@ -119,4 +122,80 @@ test('AI spend review treats missing successful-action cost evidence as rescue',
   assert.equal(review.status, 'COST_RESCUE');
   assert.deepEqual(review.blockers, ['missing_successful_action_cost_evidence']);
   assert.ok(review.actions.some((action) => action.owner === 'Product'));
+});
+
+test('next-best-action ranks P0 operational evidence before growth suggestions', () => {
+  const candidates: NextBestActionCandidate[] = [
+    {
+      id: 'growth_1',
+      label: 'Launch a new campaign variant',
+      priority: 'P2',
+      category: 'growth',
+      requiresMutation: false,
+      humanApprovalRequired: false,
+      evidenceStrength: 'direct',
+      sampleSize: 50,
+      locale: 'ar',
+    },
+    {
+      id: 'ops_1',
+      label: 'Fix webhook failure alerts',
+      priority: 'P0',
+      category: 'operational',
+      requiresMutation: false,
+      humanApprovalRequired: false,
+      evidenceStrength: 'direct',
+      sampleSize: 8,
+      locale: 'global',
+    },
+  ];
+
+  const ranked = rankNextBestActions(candidates);
+
+  assert.equal(ranked[0].id, 'ops_1');
+  assert.equal(ranked[0].rank, 1);
+  assert.equal(ranked[0].confidence, 'medium');
+  assert.match(ranked[0].reason, /P0 operational/);
+});
+
+test('next-best-action blocks mutating actions that lack human approval', () => {
+  const ranked = rankNextBestActions([
+    {
+      id: 'auto_send',
+      label: 'Auto-send WhatsApp recovery message',
+      priority: 'P1',
+      category: 'revenue',
+      requiresMutation: true,
+      humanApprovalRequired: false,
+      evidenceStrength: 'direct',
+      sampleSize: 30,
+      locale: 'ar',
+    },
+  ]);
+
+  assert.equal(ranked[0].confidence, 'blocked');
+  assert.match(ranked[0].reason, /human approval/);
+});
+
+test('follow-up quality score rewards Arabic-safe measurable copy', () => {
+  const excellent = scoreFollowUpQuality({
+    hasClearNextStep: true,
+    hasLocalArabicTone: true,
+    avoidsFalseUrgency: true,
+    hasHonestPaymentOrSupportBoundary: true,
+    hasMeasurableCta: true,
+  });
+  const weak = scoreFollowUpQuality({
+    hasClearNextStep: true,
+    hasLocalArabicTone: false,
+    avoidsFalseUrgency: false,
+    hasHonestPaymentOrSupportBoundary: true,
+    hasMeasurableCta: false,
+  });
+
+  assert.equal(excellent.score, 100);
+  assert.equal(excellent.grade, 'excellent');
+  assert.equal(weak.score, 40);
+  assert.equal(weak.grade, 'needs_revision');
+  assert.deepEqual(weak.missing, ['hasLocalArabicTone', 'avoidsFalseUrgency', 'hasMeasurableCta']);
 });

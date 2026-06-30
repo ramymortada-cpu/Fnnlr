@@ -9,7 +9,8 @@ Code evidence:
 - `packages/db/tenant/migrations/0031_ai_workflow_intelligence.sql` adds optional `workflow_id`, `outcome_id`, and `outcome_status` linkage to `ai_usage_events`.
 - `packages/ai-core/src/gateway.ts` exposes optional workflow/outcome fields on `AIUsageEvent`.
 - `modules/ai-ops/src/workflow-intelligence.ts` computes workflow intelligence metrics from AI usage events.
-- `tests/workflow-intelligence.test.ts` proves the metrics stay honest when linkage evidence is missing.
+- `modules/ai-ops/src/workflow-intelligence.ts` ranks next-best-action candidates and scores follow-up quality.
+- `tests/workflow-intelligence.test.ts` proves the metrics stay honest when linkage evidence is missing, P0 operational issues rank before growth suggestions, mutating recommendations require human approval, and Arabic follow-up quality is measurable.
 
 ## Metrics
 
@@ -29,6 +30,8 @@ Code evidence:
 4. Downgrade confidence when sample size is low.
 5. Keep Arabic/local-market copy separate from global generic copy.
 
+Implementation status: `CONTRACT_READY` via `rankNextBestActions`.
+
 ## Rubrics
 
 ### Follow-Up Quality Score
@@ -38,6 +41,8 @@ Code evidence:
 - No false urgency.
 - Payment/support boundary is honest.
 - CTA is measurable.
+
+Implementation status: `CONTRACT_READY` via `scoreFollowUpQuality`.
 
 ### Lead Qualification Confidence
 
