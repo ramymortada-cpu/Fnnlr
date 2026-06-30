@@ -30,10 +30,11 @@ export async function logAiUsageEvent(row: AIUsageEvent): Promise<void> {
   await withTenant(row.tenantId, async (c) => {
     await c.query(
       `INSERT INTO ai_usage_events
-        (tenant_id_label, brain, provider, model, estimated_tokens, estimated_cost_usd, actual_cost_usd, status, degradation_reason)
-       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)`,
-      [row.tenantId, row.brain, row.provider ?? null, row.model ?? null, row.estimatedTokens ?? null,
-       row.estimatedCostUsd ?? null, row.actualCostUsd ?? null, row.status, row.degradationReason ?? null],
+        (tenant_id_label, brain, workflow_id, outcome_id, outcome_status, provider, model, estimated_tokens, estimated_cost_usd, actual_cost_usd, status, degradation_reason)
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)`,
+      [row.tenantId, row.brain, row.workflowId ?? null, row.outcomeId ?? null, row.outcomeStatus ?? null,
+       row.provider ?? null, row.model ?? null, row.estimatedTokens ?? null, row.estimatedCostUsd ?? null,
+       row.actualCostUsd ?? null, row.status, row.degradationReason ?? null],
     );
   }).catch(() => {});
 }

@@ -18,6 +18,9 @@ export interface LLMClient {
 export interface AIUsageEvent {
   tenantId: string;
   brain: string;
+  workflowId?: string;
+  outcomeId?: string;
+  outcomeStatus?: 'successful' | 'failed' | 'neutral' | 'unknown';
   provider?: string;
   model?: string;
   estimatedTokens?: number;

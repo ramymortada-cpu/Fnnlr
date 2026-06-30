@@ -2,6 +2,15 @@
 
 Purpose: convert fnnlr AI usage and workflow outcomes into a compounding moat.
 
+Status: `CONTRACT_READY`
+
+Code evidence:
+
+- `packages/db/tenant/migrations/0031_ai_workflow_intelligence.sql` adds optional `workflow_id`, `outcome_id`, and `outcome_status` linkage to `ai_usage_events`.
+- `packages/ai-core/src/gateway.ts` exposes optional workflow/outcome fields on `AIUsageEvent`.
+- `modules/ai-ops/src/workflow-intelligence.ts` computes workflow intelligence metrics from AI usage events.
+- `tests/workflow-intelligence.test.ts` proves the metrics stay honest when linkage evidence is missing.
+
 ## Metrics
 
 | Metric | Formula | Moat value |
@@ -40,7 +49,7 @@ Purpose: convert fnnlr AI usage and workflow outcomes into a compounding moat.
 
 ## Engineering Backlog
 
-- Link `ai_usage_events` to workflow id where available.
-- Link AI usage to recommendation/outcome id where available.
-- Add dashboard for AI spend by tenant and workflow.
+- Wire workflow ids from workflow/funnel routes into `AIUsageEvent.workflowId`.
+- Wire recommendation/outcome ids into `AIUsageEvent.outcomeId` and `AIUsageEvent.outcomeStatus`.
+- Add dashboard for AI spend by tenant and workflow using `computeWorkflowIntelligenceMetrics`.
 - Add tenant AI cap UI on top of existing budget guard.
