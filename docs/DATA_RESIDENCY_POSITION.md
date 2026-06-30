@@ -1,6 +1,11 @@
 # Data Residency Position
 
-Status: `DRAFT_READY_HUMAN_APPROVAL_REQUIRED`
+Status: `CONTRACT_READY_HUMAN_APPROVAL_REQUIRED`
+
+Code evidence:
+
+- `modules/enterprise/src/procurement-readiness.ts` marks data residency as guarded, buyer-safe, and human-attestation-required.
+- `tests/procurement-readiness.test.ts` rejects unconditional regional residency claims.
 
 ## Current Position
 
@@ -18,3 +23,14 @@ fnnlr is designed for DB-per-tenant isolation. Data residency is determined by t
 - Data processing addendum alignment.
 - Subprocessor region disclosure.
 - Restore/backup region disclosure.
+
+## Claim Rule
+
+Do not claim unconditional regional residency in GA v1.
+
+Customer-specific residency commitments require:
+
+- provider region evidence
+- backup/restore region evidence
+- subprocessor region disclosure
+- founder/legal approval or customer-specific contract language
