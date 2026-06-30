@@ -103,7 +103,7 @@ export function workflowIntelligenceReadiness(events: WorkflowIntelligenceEvent[
   return { ready: missing.size === 0, missing: [...missing] };
 }
 
-function actionScore(candidate: RankedNextBestAction): number {
+function actionScore(candidate: NextBestActionCandidate & Pick<RankedNextBestAction, 'confidence'>): number {
   if (candidate.confidence === 'blocked') return -1_000;
   const priorityScore = { P0: 400, P1: 300, P2: 200, P3: 100 }[candidate.priority];
   const categoryScore = candidate.category === 'operational' ? 40 : 0;
