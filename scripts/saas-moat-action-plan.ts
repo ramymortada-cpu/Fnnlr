@@ -115,7 +115,7 @@ const evidenceFilesByActionId: Record<string, string[]> = {
   'EN-005': ['docs/SSO_OIDC_READINESS.md', 'modules/enterprise/src/identity-readiness.ts', 'tests/enterprise-identity-readiness.test.ts'],
   'EN-006': ['docs/DATA_RESIDENCY_POSITION.md', 'modules/enterprise/src/procurement-readiness.ts', 'tests/procurement-readiness.test.ts'],
   'EN-007': ['docs/PROCUREMENT_CHECKLIST.md', 'modules/enterprise/src/procurement-readiness.ts', 'tests/procurement-readiness.test.ts'],
-  'EN-008': ['docs/SOC2_READINESS_OUTLINE.md'],
+  'EN-008': ['docs/SOC2_READINESS_OUTLINE.md', 'modules/enterprise/src/soc2-readiness.ts', 'tests/soc2-readiness.test.ts'],
   'OP-001': ['gateforge-audit/run-2026-06-23-1035/47_ga_unblock_status.md'],
   'OP-002': ['docs/SAAS_MOAT_ACTION_PLAN.md'],
   'OP-003': ['docs/WEEKLY_MOAT_REVIEW_TEMPLATE.md'],

@@ -1,8 +1,12 @@
 # SOC2 Readiness Outline
 
-Status: `ROADMAP`
+Status: `CONTRACT_READY_ROADMAP`
 
 This is not a SOC2 claim. It is a control-readiness outline.
+
+Code evidence:
+- `modules/enterprise/src/soc2-readiness.ts`
+- `tests/soc2-readiness.test.ts`
 
 | Control area | Current evidence | Gap |
 | --- | --- | --- |
@@ -17,3 +21,12 @@ This is not a SOC2 claim. It is a control-readiness outline.
 ## Next Step
 
 After Conditional GO, convert GateForge evidence artifacts into a control evidence library.
+
+## Claim Gate
+
+fnnlr must not claim SOC2 certification, SOC2 readiness, or SOC2-equivalent assurance in customer-facing material until every control area is `EVIDENCE_READY` with evidence attached. The current allowed language is: "SOC2 readiness roadmap exists; formal certification is not claimed."
+
+The code contract enforces:
+- `MISSING_EVIDENCE` or empty evidence produces `DO_NOT_CLAIM_SOC2`.
+- Any customer-facing claim on a non-evidence-ready control produces `DO_NOT_CLAIM_SOC2`.
+- `CONTROL_LIBRARY_READY` is allowed only when every control area is `EVIDENCE_READY`.
