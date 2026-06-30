@@ -122,7 +122,7 @@ const evidenceFilesByActionId: Record<string, string[]> = {
   'OP-004': ['docs/CUSTOMER_HEALTH_SCORE_SPEC.md', 'modules/operating-room/src/health-score.ts', 'tests/customer-health-score.test.ts'],
   'OP-005': ['docs/SUPPORT_TRIAGE_TAXONOMY.md', 'modules/sales-ops/src/support-workflow.ts', 'tests/sales-ops.test.ts'],
   'OP-006': ['docs/ACTIVATION_COHORT_REVIEW.md', 'modules/activation/src/cohort-review.ts', 'tests/activation-metrics.test.ts'],
-  'OP-007': ['docs/AI_SPEND_REVIEW_TEMPLATE.md'],
+  'OP-007': ['docs/AI_SPEND_REVIEW_TEMPLATE.md', 'modules/ai-ops/src/spend-review.ts', 'tests/workflow-intelligence.test.ts'],
   'OP-008': ['docs/TEMPLATE_PERFORMANCE_REVIEW.md'],
 };
 

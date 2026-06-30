@@ -5,6 +5,10 @@ import {
   workflowIntelligenceReadiness,
   type WorkflowIntelligenceEvent,
 } from '../modules/ai-ops/src/workflow-intelligence.js';
+import {
+  createAISpendReview,
+  DEFAULT_AI_SPEND_REVIEW_THRESHOLDS,
+} from '../modules/ai-ops/src/spend-review.js';
 
 const base = {
   tenantId: 'tenant_1',
@@ -49,4 +53,70 @@ test('workflow intelligence readiness passes with workflow and outcome evidence'
   ]);
 
   assert.deepEqual(readiness, { ready: true, missing: [] });
+});
+
+test('AI spend review passes only when cost, outcomes, and degradation stay controlled', () => {
+  const review = createAISpendReview(
+    { start: '2026-06-01', end: '2026-06-30' },
+    [
+      { ...base, workflowId: 'wf_1', outcomeStatus: 'successful', actualCostUsd: 0.08 },
+      { ...base, workflowId: 'wf_2', outcomeStatus: 'successful', actualCostUsd: 0.12 },
+      { ...base, workflowId: 'wf_3', outcomeStatus: 'failed', actualCostUsd: 0.04 },
+    ],
+    { ...DEFAULT_AI_SPEND_REVIEW_THRESHOLDS, monthlyBudgetUsd: 10 },
+  );
+
+  assert.equal(review.status, 'IN_BUDGET');
+  assert.equal(review.totalCostUsd, 0.24);
+  assert.equal(review.budgetUtilizationRate, 0.024);
+  assert.equal(review.costPerSuccessfulActionUsd, 0.12);
+  assert.equal(review.degradedFallbackRate, 0);
+  assert.deepEqual(review.blockers, []);
+  assert.deepEqual(review.actions, []);
+});
+
+test('AI spend review creates owner actions for budget, margin, and fallback problems', () => {
+  const review = createAISpendReview(
+    { start: '2026-06-01', end: '2026-06-30' },
+    [
+      { ...base, workflowId: 'wf_1', outcomeStatus: 'successful', actualCostUsd: 1.1 },
+      { ...base, workflowId: 'wf_2', outcomeStatus: 'failed', actualCostUsd: 0.8 },
+      {
+        ...base,
+        workflowId: 'wf_3',
+        status: 'degraded',
+        degradationReason: 'AI kill switch enabled',
+        estimatedCostUsd: 0.2,
+      },
+    ],
+    {
+      monthlyBudgetUsd: 1,
+      maxCostPerSuccessfulActionUsd: 0.35,
+      maxDegradedFallbackRate: 0.1,
+      maxKillSwitchActivations: 0,
+    },
+  );
+
+  assert.equal(review.status, 'COST_RESCUE');
+  assert.deepEqual(review.blockers, [
+    'monthly_budget_exceeded',
+    'cost_per_successful_action_above_threshold',
+    'degraded_fallback_rate_above_threshold',
+    'kill_switch_activation_detected',
+  ]);
+  assert.ok(review.actions.some((action) => action.owner === 'Finance/ops'));
+  assert.ok(review.actions.some((action) => action.owner === 'Product'));
+  assert.ok(review.actions.some((action) => action.owner === 'Engineering'));
+  assert.ok(review.actions.some((action) => action.owner === 'Support'));
+});
+
+test('AI spend review treats missing successful-action cost evidence as rescue', () => {
+  const review = createAISpendReview(
+    { start: '2026-06-01', end: '2026-06-30' },
+    [{ ...base, workflowId: 'wf_1', outcomeStatus: 'unknown', actualCostUsd: 0.05 }],
+  );
+
+  assert.equal(review.status, 'COST_RESCUE');
+  assert.deepEqual(review.blockers, ['missing_successful_action_cost_evidence']);
+  assert.ok(review.actions.some((action) => action.owner === 'Product'));
 });
