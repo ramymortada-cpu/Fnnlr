@@ -2,6 +2,13 @@
 
 Purpose: make onboarding repeatability measurable instead of anecdotal.
 
+Status: `CONTRACT_READY`
+
+Code evidence:
+
+- `modules/activation/src/metrics.ts` computes time-to-first-workflow, time-to-first-publish, time-to-first-lead-action, template selection, first signal, and abandonment state from observed activation events.
+- `tests/activation-metrics.test.ts` proves missing evidence stays explicit instead of being treated as activation.
+
 | Metric | Definition | Why it matters |
 | --- | --- | --- |
 | `time_to_first_workflow` | Time from workspace creation to first workflow/template created | Measures setup speed |
@@ -28,3 +35,9 @@ Purpose: make onboarding repeatability measurable instead of anecdotal.
 - Daily during customer zero/customer one onboarding.
 - Weekly after public beta.
 - Every failed onboarding must produce a reason, owner, and next action.
+
+## Implementation Notes
+
+- The metrics contract is pure and ready for route/database wiring.
+- A workspace without a `workspace_created` event or first-value events remains incomplete with `missingEvidence`.
+- Cohort summaries use medians so one slow onboarding does not distort the operating review.
