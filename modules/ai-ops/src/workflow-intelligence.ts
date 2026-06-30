@@ -51,6 +51,21 @@ export type FollowUpQualityScore = {
   missing: Array<keyof FollowUpQualityInput>;
 };
 
+export type LeadQualificationInput = {
+  hasExplicitNeed: boolean;
+  hasBudgetOrPaymentReadiness: boolean;
+  hasTimeUrgency: boolean;
+  hasAuthoritySignal: boolean;
+  matchesSupportedIndustryTemplate: boolean;
+};
+
+export type LeadQualificationConfidence = {
+  score: number;
+  confidence: 'high' | 'medium' | 'low';
+  missing: Array<keyof LeadQualificationInput>;
+  nextAction: 'qualify_now' | 'confirm_missing_signals' | 'route_to_discovery';
+};
+
 export function computeWorkflowIntelligenceMetrics(events: WorkflowIntelligenceEvent[]): WorkflowIntelligenceMetrics {
   const totalAiRequests = events.length;
   const totalCostUsd = roundMoney(events.reduce((sum, event) => sum + eventCost(event), 0));
@@ -67,6 +82,26 @@ export function computeWorkflowIntelligenceMetrics(events: WorkflowIntelligenceE
     costPerWorkflow: workflowsTouched > 0 ? roundMoney(totalCostUsd / workflowsTouched) : null,
     costPerSuccessfulAction: successfulActions > 0 ? roundMoney(totalCostUsd / successfulActions) : null,
     degradedFallbackRate: totalAiRequests > 0 ? roundRate(degradedFallbacks / totalAiRequests) : 0,
+  };
+}
+
+export function scoreLeadQualificationConfidence(input: LeadQualificationInput): LeadQualificationConfidence {
+  const weights: Record<keyof LeadQualificationInput, number> = {
+    hasExplicitNeed: 25,
+    hasBudgetOrPaymentReadiness: 25,
+    hasTimeUrgency: 15,
+    hasAuthoritySignal: 20,
+    matchesSupportedIndustryTemplate: 15,
+  };
+  const entries = Object.entries(input) as Array<[keyof LeadQualificationInput, boolean]>;
+  const missing = entries.filter(([, present]) => !present).map(([key]) => key);
+  const score = entries.reduce((sum, [key, present]) => sum + (present ? weights[key] : 0), 0);
+
+  return {
+    score,
+    confidence: score >= 80 ? 'high' : score >= 50 ? 'medium' : 'low',
+    missing,
+    nextAction: score >= 80 ? 'qualify_now' : score >= 50 ? 'confirm_missing_signals' : 'route_to_discovery',
   };
 }
 

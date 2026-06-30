@@ -87,7 +87,7 @@ const evidenceFilesByActionId: Record<string, string[]> = {
   'WI-003': ['docs/WORKFLOW_INTELLIGENCE_SPEC.md', 'modules/ai-ops/src/workflow-intelligence.ts', 'tests/workflow-intelligence.test.ts'],
   'WI-004': ['docs/WORKFLOW_INTELLIGENCE_SPEC.md', 'modules/ai-ops/src/workflow-intelligence.ts', 'tests/workflow-intelligence.test.ts'],
   'WI-005': ['docs/WORKFLOW_INTELLIGENCE_SPEC.md', 'modules/ai-ops/src/workflow-intelligence.ts', 'tests/workflow-intelligence.test.ts'],
-  'WI-006': ['docs/WORKFLOW_INTELLIGENCE_SPEC.md'],
+  'WI-006': ['docs/WORKFLOW_INTELLIGENCE_SPEC.md', 'modules/ai-ops/src/workflow-intelligence.ts', 'tests/workflow-intelligence.test.ts'],
   'WI-007': ['docs/AI_SPEND_REVIEW_TEMPLATE.md'],
   'WI-008': ['docs/WORKFLOW_INTELLIGENCE_SPEC.md'],
   'AC-001': ['docs/ONBOARDING_PROMISE.md', 'docs/ACTIVATION_METRICS_SPEC.md'],

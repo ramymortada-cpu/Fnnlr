@@ -4,6 +4,7 @@ import {
   computeWorkflowIntelligenceMetrics,
   rankNextBestActions,
   scoreFollowUpQuality,
+  scoreLeadQualificationConfidence,
   workflowIntelligenceReadiness,
   type NextBestActionCandidate,
   type WorkflowIntelligenceEvent,
@@ -198,4 +199,54 @@ test('follow-up quality score rewards Arabic-safe measurable copy', () => {
   assert.equal(weak.score, 40);
   assert.equal(weak.grade, 'needs_revision');
   assert.deepEqual(weak.missing, ['hasLocalArabicTone', 'avoidsFalseUrgency', 'hasMeasurableCta']);
+});
+
+test('lead qualification confidence is high only when core fit signals are present', () => {
+  const confidence = scoreLeadQualificationConfidence({
+    hasExplicitNeed: true,
+    hasBudgetOrPaymentReadiness: true,
+    hasTimeUrgency: true,
+    hasAuthoritySignal: true,
+    matchesSupportedIndustryTemplate: true,
+  });
+
+  assert.equal(confidence.score, 100);
+  assert.equal(confidence.confidence, 'high');
+  assert.equal(confidence.nextAction, 'qualify_now');
+  assert.deepEqual(confidence.missing, []);
+});
+
+test('lead qualification confidence routes partial evidence to missing-signal confirmation', () => {
+  const confidence = scoreLeadQualificationConfidence({
+    hasExplicitNeed: true,
+    hasBudgetOrPaymentReadiness: true,
+    hasTimeUrgency: false,
+    hasAuthoritySignal: false,
+    matchesSupportedIndustryTemplate: true,
+  });
+
+  assert.equal(confidence.score, 65);
+  assert.equal(confidence.confidence, 'medium');
+  assert.equal(confidence.nextAction, 'confirm_missing_signals');
+  assert.deepEqual(confidence.missing, ['hasTimeUrgency', 'hasAuthoritySignal']);
+});
+
+test('lead qualification confidence sends weak leads to discovery instead of fabricating confidence', () => {
+  const confidence = scoreLeadQualificationConfidence({
+    hasExplicitNeed: false,
+    hasBudgetOrPaymentReadiness: false,
+    hasTimeUrgency: true,
+    hasAuthoritySignal: false,
+    matchesSupportedIndustryTemplate: false,
+  });
+
+  assert.equal(confidence.score, 15);
+  assert.equal(confidence.confidence, 'low');
+  assert.equal(confidence.nextAction, 'route_to_discovery');
+  assert.deepEqual(confidence.missing, [
+    'hasExplicitNeed',
+    'hasBudgetOrPaymentReadiness',
+    'hasAuthoritySignal',
+    'matchesSupportedIndustryTemplate',
+  ]);
 });
