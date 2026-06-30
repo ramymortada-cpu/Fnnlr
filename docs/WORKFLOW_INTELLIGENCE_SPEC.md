@@ -10,6 +10,7 @@ Code evidence:
 - `packages/ai-core/src/gateway.ts` exposes optional workflow/outcome fields on `AIUsageEvent`.
 - `modules/ai-ops/src/workflow-intelligence.ts` computes workflow intelligence metrics from AI usage events.
 - `modules/ai-ops/src/workflow-intelligence.ts` ranks next-best-action candidates, scores follow-up quality, and scores lead qualification confidence.
+- `modules/ai-ops/src/dashboard-readiness.ts` reviews AI cost dashboard and tenant cap UI readiness without over-claiming unfinished surfaces.
 - `tests/workflow-intelligence.test.ts` proves the metrics stay honest when linkage evidence is missing, P0 operational issues rank before growth suggestions, mutating recommendations require human approval, Arabic follow-up quality is measurable, and weak qualification evidence routes to discovery instead of fabricated confidence.
 
 ## Metrics
@@ -58,5 +59,5 @@ Implementation status: `CONTRACT_READY` via `scoreLeadQualificationConfidence`.
 
 - Wire workflow ids from workflow/funnel routes into `AIUsageEvent.workflowId`.
 - Wire recommendation/outcome ids into `AIUsageEvent.outcomeId` and `AIUsageEvent.outcomeStatus`.
-- Add dashboard for AI spend by tenant and workflow using `computeWorkflowIntelligenceMetrics`.
-- Add tenant AI cap UI on top of existing budget guard.
+- Add dashboard for AI spend by tenant and workflow using `computeWorkflowIntelligenceMetrics`: `CONTRACT_READY_WITH_GAPS` via `reviewAIOperationsReadiness`.
+- Add tenant AI cap UI on top of existing budget guard: `ROADMAP` until cap display and cap-change request surfaces have UI/API evidence.

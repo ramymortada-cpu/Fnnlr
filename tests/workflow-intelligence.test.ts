@@ -13,6 +13,11 @@ import {
   createAISpendReview,
   DEFAULT_AI_SPEND_REVIEW_THRESHOLDS,
 } from '../modules/ai-ops/src/spend-review.js';
+import {
+  AI_OPERATIONS_SURFACES,
+  reviewAIOperationsReadiness,
+  type AIOperationsSurface,
+} from '../modules/ai-ops/src/dashboard-readiness.js';
 
 const base = {
   tenantId: 'tenant_1',
@@ -249,4 +254,47 @@ test('lead qualification confidence sends weak leads to discovery instead of fab
     'hasAuthoritySignal',
     'matchesSupportedIndustryTemplate',
   ]);
+});
+
+test('AI operations dashboard readiness is contract-ready but gap-labeled for cap UI', () => {
+  const review = reviewAIOperationsReadiness();
+
+  assert.equal(review.decision, 'CONTRACT_READY_WITH_GAPS');
+  assert.equal(review.dashboardReady, false);
+  assert.equal(review.tenantCapUiReady, false);
+  assert.ok(review.readySurfaces.includes('tenant_cost_summary'));
+  assert.ok(review.readySurfaces.includes('workflow_cost_breakdown'));
+  assert.ok(review.gapSurfaces.includes('tenant_cap_display'));
+  assert.ok(review.gapSurfaces.includes('tenant_cap_change_request'));
+  assert.deepEqual(review.blockedSurfaces, []);
+});
+
+test('AI operations readiness blocks ready claims when evidence is missing', () => {
+  const surfaces: AIOperationsSurface[] = AI_OPERATIONS_SURFACES.map((surface) =>
+    surface.id === 'tenant_cost_summary'
+      ? { ...surface, evidence: [] }
+      : surface,
+  );
+
+  const review = reviewAIOperationsReadiness(surfaces);
+
+  assert.equal(review.decision, 'DO_NOT_CLAIM_READY');
+  assert.deepEqual(review.blockedSurfaces, ['tenant_cost_summary']);
+  assert.ok(review.actions.some((action) => action.action.includes('Attach AI operations evidence')));
+});
+
+test('AI operations readiness becomes operator-ready only when every surface is evidenced and ready', () => {
+  const surfaces: AIOperationsSurface[] = AI_OPERATIONS_SURFACES.map((surface) => ({
+    ...surface,
+    status: 'READY',
+    evidence: [`evidence/ai-ops/${surface.id}.md`],
+  }));
+
+  const review = reviewAIOperationsReadiness(surfaces);
+
+  assert.equal(review.decision, 'OPERATOR_READY');
+  assert.equal(review.dashboardReady, true);
+  assert.equal(review.tenantCapUiReady, true);
+  assert.deepEqual(review.gapSurfaces, []);
+  assert.deepEqual(review.blockedSurfaces, []);
 });
