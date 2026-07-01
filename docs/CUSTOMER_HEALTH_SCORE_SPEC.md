@@ -7,7 +7,9 @@ Status: `CONTRACT_READY`
 Code evidence:
 
 - `modules/operating-room/src/health-score.ts` computes health from activation, usage, signal, recommendation, support, and AI degradation evidence.
+- `modules/operating-room/src/readiness.ts` reviews customer health and support cadence readiness without overstating hosted operating proof.
 - `tests/customer-health-score.test.ts` proves healthy, watch, at-risk, and blocked behavior.
+- `tests/operating-cadence-readiness.test.ts` proves hosted issue-log evidence remains a gap before claiming the operating cadence is live-ready.
 - Non-healthy scores always return an owner and a next action.
 
 | Signal | Positive | Negative |

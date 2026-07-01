@@ -1,6 +1,6 @@
 # SaaS Moat Action Plan
 
-Generated: `2026-07-01T02:44:39.294Z`
+Generated: `2026-07-01T02:49:33.185Z`
 
 This is the execution board for turning fnnlr from a GateForge-blocked release candidate into a global SaaS with a defensible moat. It intentionally separates code-ready work from external hosted evidence so the team does not confuse local progress with GA approval.
 
@@ -158,8 +158,8 @@ fnnlr's moat is the combination of DB-per-tenant trust, Arabic-first revenue wor
 | `OP-001` | `P0` | `READY_NOW` | Engineering | Run GateForge status after every evidence-changing change. | Operating moat: the launch gate stays current. | 47_ga_unblock_status updated. | `npm run gateforge:ga-unblock-status` |
 | `OP-002` | `P1` | `READY_NOW` | Engineering | Run moat action plan check in CI. | Execution moat: roadmap quality is enforced. | npm run moat:check PASS. | `npm run moat:check` |
 | `OP-003` | `P1` | `READY_NOW` | Leadership | Review P0/P1 moat board weekly. | Operating moat: leadership attention follows blockers, not noise. | Meeting note with changed statuses. |  |
-| `OP-004` | `P1` | `NEXT` | Support | Create customer health score definition. | Retention moat: support sees risk early. | Health score doc and event inputs. |  |
-| `OP-005` | `P1` | `NEXT` | Support | Create support triage board categories. | Support moat: support issues become product intelligence. | SUPPORT_WORKFLOW updated. |  |
+| `OP-004` | `P1` | `NEXT` | Support | Create customer health operating readiness gate. | Retention moat: support sees risk early. | Health score plus hosted issue-log evidence gap. |  |
+| `OP-005` | `P1` | `NEXT` | Support | Create support triage operating readiness gate. | Support moat: support issues become product intelligence. | Support triage readiness plus P0/P1 ownership proof. |  |
 | `OP-006` | `P1` | `NEXT` | Product | Create activation cohort review template. | Activation moat: cohorts reveal what is repeatable. | Template linked from operating docs. |  |
 | `OP-007` | `P2` | `NEXT` | Finance/ops | Create monthly AI spend review. | Margin moat: AI cost is managed like COGS. | Monthly report template. |  |
 | `OP-008` | `P2` | `NEXT` | Product | Create template performance review. | Workflow moat: templates improve from observed outcomes. | Review template and metrics. |  |

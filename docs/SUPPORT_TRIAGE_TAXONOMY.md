@@ -5,7 +5,9 @@ Status: `CONTRACT_READY`
 Code evidence:
 
 - `modules/sales-ops/src/support-workflow.ts` defines the canonical support categories, default owners, category inference, and P0/P1 validation.
+- `modules/operating-room/src/readiness.ts` checks support triage as part of the operating cadence readiness gate.
 - `tests/sales-ops.test.ts` proves category classification, default ownership, and incomplete P0/P1 rejection.
+- `tests/operating-cadence-readiness.test.ts` proves hosted issue-log evidence is required before claiming live operating cadence readiness.
 - P0/P1 issues require owner, next action, due date, and evidence link.
 
 | Category | Severity trigger | Owner |
