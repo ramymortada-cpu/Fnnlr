@@ -44,7 +44,12 @@ if (parsed.safety?.secretValuesPrinted !== false || parsed.safety?.productionMut
   fail('packet safety flags are not all false');
 }
 if (!md.includes('GateForge Operator Execution Packet')) fail('markdown title missing');
+if (!md.includes('npm run gateforge:local-secrets-env-template')) fail('template generation command missing');
+if (!md.includes('npm run gateforge:import-local-secrets -- --env-file /secure/path/fnnlr-staging.env --require-all')) {
+  fail('batch import command missing');
+}
 if (!md.includes('npm run gateforge:hosted-unblock -- --apply --prepare-attestation')) fail('operator command path missing');
+if (!md.includes('Single-secret correction path')) fail('single-secret correction path missing');
 if (!csv.startsWith('id,status,owner,action,secret_names')) fail('csv header changed unexpectedly');
 for (const forbidden of ['postgres://', 'sk-ant-', 're_fixture', 'password@']) {
   if (md.includes(forbidden) || csv.includes(forbidden)) fail(`packet leaked forbidden value fragment: ${forbidden}`);

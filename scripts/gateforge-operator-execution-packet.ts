@@ -192,14 +192,22 @@ This packet is the operator-facing execution map for closing the remaining 16 Ga
 
 ## Command Path
 
-1. \`npm run gateforge:scaffold-local-secrets\`
-2. Replace placeholder files under \`/tmp/fnnlr-gateforge-secrets\`.
-3. \`npm run gateforge:local-secret-files-check\`
-4. \`npm run gateforge:external-blocker-progress\`
-5. \`npm run gateforge:hosted-unblock -- --dry-run --prepare-attestation\`
-6. \`npm run gateforge:hosted-unblock -- --apply --prepare-attestation\`
-7. \`npm run gateforge:trigger-hosted-strict\`
-8. \`npm run gateforge:ga-unblock-status\`
+1. \`npm run gateforge:local-secrets-env-template\`
+2. \`cp gateforge-audit/run-2026-06-23-1035/49_local_secret_env_template.env /secure/path/fnnlr-staging.env\`
+3. Fill \`/secure/path/fnnlr-staging.env\` outside git with real staging values only.
+4. \`npm run gateforge:import-local-secrets -- --env-file /secure/path/fnnlr-staging.env --require-all\`
+5. \`npm run gateforge:local-secret-files-check\`
+6. \`npm run gateforge:external-blocker-progress\`
+7. \`npm run gateforge:hosted-unblock -- --dry-run --prepare-attestation\`
+8. \`npm run gateforge:hosted-unblock -- --apply --prepare-attestation\`
+9. \`npm run gateforge:trigger-hosted-strict\`
+10. \`npm run gateforge:ga-unblock-status\`
+
+Single-secret correction path:
+
+\`\`\`bash
+npm run gateforge:write-local-secret -- --name CONTROL_PLANE_DATABASE_URL --value-env CONTROL_PLANE_DATABASE_URL
+\`\`\`
 
 ## Fast Matrix
 

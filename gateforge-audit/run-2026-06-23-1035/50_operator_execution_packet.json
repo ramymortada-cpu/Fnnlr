@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-01T14:14:42.447Z",
+  "generatedAt": "2026-07-01T17:49:30.328Z",
   "total": 16,
   "source": {
     "closeoutPath": "gateforge-audit/run-2026-06-23-1035/48_remaining_external_blocker_closeout.json",
@@ -210,6 +210,18 @@
       "secretCount": 1,
       "localReady": 0,
       "githubReady": 0,
+      "localStatuses": [
+        {
+          "name": "CONTROL_PLANE_DATABASE_URL",
+          "status": "PLACEHOLDER"
+        }
+      ],
+      "githubStatuses": [
+        {
+          "name": "CONTROL_PLANE_DATABASE_URL",
+          "present": false
+        }
+      ],
       "status": "LOCAL_SECRET_PENDING",
       "nextAction": "Create or replace local staging secret files, then run npm run gateforge:local-secret-files-check."
     },
@@ -234,6 +246,18 @@
       "secretCount": 1,
       "localReady": 0,
       "githubReady": 0,
+      "localStatuses": [
+        {
+          "name": "TENANT_DB_ADMIN_URL",
+          "status": "PLACEHOLDER"
+        }
+      ],
+      "githubStatuses": [
+        {
+          "name": "TENANT_DB_ADMIN_URL",
+          "present": false
+        }
+      ],
       "status": "LOCAL_SECRET_PENDING",
       "nextAction": "Create or replace local staging secret files, then run npm run gateforge:local-secret-files-check."
     },
@@ -258,6 +282,18 @@
       "secretCount": 1,
       "localReady": 0,
       "githubReady": 0,
+      "localStatuses": [
+        {
+          "name": "CONTROL_PLANE_DATABASE_URL",
+          "status": "PLACEHOLDER"
+        }
+      ],
+      "githubStatuses": [
+        {
+          "name": "CONTROL_PLANE_DATABASE_URL",
+          "present": false
+        }
+      ],
       "status": "LOCAL_SECRET_PENDING",
       "nextAction": "Create or replace local staging secret files, then run npm run gateforge:local-secret-files-check."
     },
@@ -283,6 +319,18 @@
       "secretCount": 1,
       "localReady": 0,
       "githubReady": 0,
+      "localStatuses": [
+        {
+          "name": "TENANT_DB_ADMIN_URL",
+          "status": "PLACEHOLDER"
+        }
+      ],
+      "githubStatuses": [
+        {
+          "name": "TENANT_DB_ADMIN_URL",
+          "present": false
+        }
+      ],
       "status": "LOCAL_SECRET_PENDING",
       "nextAction": "Create or replace local staging secret files, then run npm run gateforge:local-secret-files-check."
     },
@@ -307,6 +355,18 @@
       "secretCount": 1,
       "localReady": 0,
       "githubReady": 0,
+      "localStatuses": [
+        {
+          "name": "TENANT_DB_HOST",
+          "status": "PLACEHOLDER"
+        }
+      ],
+      "githubStatuses": [
+        {
+          "name": "TENANT_DB_HOST",
+          "present": false
+        }
+      ],
       "status": "LOCAL_SECRET_PENDING",
       "nextAction": "Create or replace local staging secret files, then run npm run gateforge:local-secret-files-check."
     },
@@ -330,6 +390,18 @@
       "secretCount": 1,
       "localReady": 0,
       "githubReady": 0,
+      "localStatuses": [
+        {
+          "name": "SENTRY_DSN",
+          "status": "PLACEHOLDER"
+        }
+      ],
+      "githubStatuses": [
+        {
+          "name": "SENTRY_DSN",
+          "present": false
+        }
+      ],
       "status": "LOCAL_SECRET_PENDING",
       "nextAction": "Create or replace local staging secret files, then run npm run gateforge:local-secret-files-check."
     },
@@ -355,6 +427,18 @@
       "secretCount": 1,
       "localReady": 0,
       "githubReady": 0,
+      "localStatuses": [
+        {
+          "name": "SENTRY_DSN",
+          "status": "PLACEHOLDER"
+        }
+      ],
+      "githubStatuses": [
+        {
+          "name": "SENTRY_DSN",
+          "present": false
+        }
+      ],
       "status": "LOCAL_SECRET_PENDING",
       "nextAction": "Create or replace local staging secret files, then run npm run gateforge:local-secret-files-check."
     },
@@ -378,6 +462,18 @@
       "secretCount": 1,
       "localReady": 0,
       "githubReady": 0,
+      "localStatuses": [
+        {
+          "name": "UPTIME_HEALTHCHECK_URL",
+          "status": "PLACEHOLDER"
+        }
+      ],
+      "githubStatuses": [
+        {
+          "name": "UPTIME_HEALTHCHECK_URL",
+          "present": false
+        }
+      ],
       "status": "LOCAL_SECRET_PENDING",
       "nextAction": "Create or replace local staging secret files, then run npm run gateforge:local-secret-files-check."
     },
@@ -403,6 +499,18 @@
       "secretCount": 1,
       "localReady": 0,
       "githubReady": 0,
+      "localStatuses": [
+        {
+          "name": "UPTIME_HEALTHCHECK_URL",
+          "status": "PLACEHOLDER"
+        }
+      ],
+      "githubStatuses": [
+        {
+          "name": "UPTIME_HEALTHCHECK_URL",
+          "present": false
+        }
+      ],
       "status": "LOCAL_SECRET_PENDING",
       "nextAction": "Create or replace local staging secret files, then run npm run gateforge:local-secret-files-check."
     },
@@ -426,6 +534,18 @@
       "secretCount": 1,
       "localReady": 0,
       "githubReady": 0,
+      "localStatuses": [
+        {
+          "name": "ALERT_EMAIL_TO",
+          "status": "PLACEHOLDER"
+        }
+      ],
+      "githubStatuses": [
+        {
+          "name": "ALERT_EMAIL_TO",
+          "present": false
+        }
+      ],
       "status": "LOCAL_SECRET_PENDING",
       "nextAction": "Create or replace local staging secret files, then run npm run gateforge:local-secret-files-check."
     },
@@ -449,6 +569,18 @@
       "secretCount": 1,
       "localReady": 0,
       "githubReady": 0,
+      "localStatuses": [
+        {
+          "name": "ALERT_WEBHOOK_URL",
+          "status": "PLACEHOLDER"
+        }
+      ],
+      "githubStatuses": [
+        {
+          "name": "ALERT_WEBHOOK_URL",
+          "present": false
+        }
+      ],
       "status": "LOCAL_SECRET_PENDING",
       "nextAction": "Create or replace local staging secret files, then run npm run gateforge:local-secret-files-check."
     },
@@ -472,6 +604,18 @@
       "secretCount": 1,
       "localReady": 0,
       "githubReady": 0,
+      "localStatuses": [
+        {
+          "name": "RESEND_API_KEY",
+          "status": "PLACEHOLDER"
+        }
+      ],
+      "githubStatuses": [
+        {
+          "name": "RESEND_API_KEY",
+          "present": false
+        }
+      ],
       "status": "LOCAL_SECRET_PENDING",
       "nextAction": "Create or replace local staging secret files, then run npm run gateforge:local-secret-files-check."
     },
@@ -497,6 +641,18 @@
       "secretCount": 1,
       "localReady": 0,
       "githubReady": 0,
+      "localStatuses": [
+        {
+          "name": "RESEND_API_KEY",
+          "status": "PLACEHOLDER"
+        }
+      ],
+      "githubStatuses": [
+        {
+          "name": "RESEND_API_KEY",
+          "present": false
+        }
+      ],
       "status": "LOCAL_SECRET_PENDING",
       "nextAction": "Create or replace local staging secret files, then run npm run gateforge:local-secret-files-check."
     },
@@ -520,6 +676,18 @@
       "secretCount": 1,
       "localReady": 0,
       "githubReady": 0,
+      "localStatuses": [
+        {
+          "name": "EMAIL_FROM",
+          "status": "PLACEHOLDER"
+        }
+      ],
+      "githubStatuses": [
+        {
+          "name": "EMAIL_FROM",
+          "present": false
+        }
+      ],
       "status": "LOCAL_SECRET_PENDING",
       "nextAction": "Create or replace local staging secret files, then run npm run gateforge:local-secret-files-check."
     },
@@ -543,6 +711,18 @@
       "secretCount": 1,
       "localReady": 0,
       "githubReady": 0,
+      "localStatuses": [
+        {
+          "name": "EMAIL_REPLY_TO",
+          "status": "PLACEHOLDER"
+        }
+      ],
+      "githubStatuses": [
+        {
+          "name": "EMAIL_REPLY_TO",
+          "present": false
+        }
+      ],
       "status": "LOCAL_SECRET_PENDING",
       "nextAction": "Create or replace local staging secret files, then run npm run gateforge:local-secret-files-check."
     },
@@ -567,6 +747,18 @@
       "secretCount": 1,
       "localReady": 0,
       "githubReady": 0,
+      "localStatuses": [
+        {
+          "name": "ANTHROPIC_API_KEY",
+          "status": "PLACEHOLDER"
+        }
+      ],
+      "githubStatuses": [
+        {
+          "name": "ANTHROPIC_API_KEY",
+          "present": false
+        }
+      ],
       "status": "LOCAL_SECRET_PENDING",
       "nextAction": "Create or replace local staging secret files, then run npm run gateforge:local-secret-files-check."
     }
