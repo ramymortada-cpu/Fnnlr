@@ -78,6 +78,9 @@ jobs:
       - name: GateForge final decision report
         run: npm run gateforge:final-report
         if: always()
+      - name: GateForge CI artifact index smoke
+        run: npm run gateforge:ci-artifact-index-smoke
+        if: always()
       - name: Upload sanitized evidence
         uses: actions/upload-artifact@v4
         if: always()

@@ -94,6 +94,7 @@
     "gateforge:hosted-setup-guide": "tsx scripts/gateforge-hosted-setup-guide.ts",
     "gateforge:life-or-death-plan": "tsx scripts/gateforge-life-or-death-plan.ts",
     "gateforge:remaining-blockers-closeout": "tsx scripts/gateforge-remaining-blockers-closeout.ts",
+    "gateforge:ci-artifact-index-smoke": "tsx scripts/gateforge-ci-artifact-index-smoke.ts",
     "gateforge:external-smoke": "tsx scripts/gateforge-external-smoke.ts",
     "gateforge:final-gate": "tsx scripts/gateforge-final-gate.ts",
     "gateforge:final-gate-smoke": "tsx scripts/gateforge-final-gate-smoke.ts",
