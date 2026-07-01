@@ -106,6 +106,12 @@ jobs:
             gateforge-audit/run-*/36_life_or_death_war_room.md
             gateforge-audit/run-*/37_hosted_staging_strict_dispatch.md
             gateforge-audit/run-*/38_hosted_staging_operator_setup.md
+            gateforge-audit/run-*/39_github_secrets_presence_audit.md
+            gateforge-audit/run-*/39_github_secrets_presence_audit.json
+            gateforge-audit/run-*/40_missing_github_secrets_remediation.md
+            gateforge-audit/run-*/40_missing_github_secrets_remediation.json
+            gateforge-audit/run-*/41_hosted_strict_trigger_attempt.md
+            gateforge-audit/run-*/41_hosted_strict_trigger_attempt.json
             gateforge-audit/run-*/42_life_or_death_execution_plan.md
             gateforge-audit/run-*/42_life_or_death_secret_collection.csv
             gateforge-audit/run-*/43_operator_secret_command_pack.md
