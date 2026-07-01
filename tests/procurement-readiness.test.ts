@@ -1,10 +1,19 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import path from 'node:path';
 import {
   PROCUREMENT_BASELINE,
+  PROCUREMENT_PACKET_REQUIREMENTS,
+  findUnsafeProcurementClaims,
+  reviewProcurementChecklist,
   reviewProcurementReadiness,
   type ProcurementQuestion,
 } from '../modules/enterprise/src/procurement-readiness.js';
+
+function procurementChecklist() {
+  return fs.readFileSync(path.join(process.cwd(), 'docs', 'PROCUREMENT_CHECKLIST.md'), 'utf8');
+}
 
 test('procurement baseline is buyer-safe but honestly gap-labeled', () => {
   const review = reviewProcurementReadiness();
@@ -61,4 +70,43 @@ test('procurement packet is ready only when all questions are ready, not applica
   assert.deepEqual(review.gapAnswers, []);
   assert.deepEqual(review.unsafeAnswers, []);
   assert.equal(review.buyerSafeAnswers.length, questions.length);
+});
+
+test('procurement checklist links every required enterprise buyer packet artifact', () => {
+  const review = reviewProcurementChecklist(procurementChecklist());
+
+  assert.equal(review.decision, 'PROCUREMENT_CHECKLIST_READY', JSON.stringify(review, null, 2));
+  assert.deepEqual(review.missing, []);
+  assert.deepEqual(review.unsafeClaims, []);
+  assert.equal(review.present.length, PROCUREMENT_PACKET_REQUIREMENTS.length);
+});
+
+test('procurement checklist reports missing packet artifacts', () => {
+  const review = reviewProcurementChecklist('Only TRUST_CENTER_INDEX.md is linked.');
+
+  assert.equal(review.decision, 'PROCUREMENT_CHECKLIST_HAS_GAPS');
+  assert.ok(review.missing.includes('customer_agreement'));
+  assert.ok(review.actions.some((action) => action.evidenceRequired.includes('CUSTOMER_AGREEMENT_DRAFT.md')));
+});
+
+test('procurement checklist blocks unsafe enterprise sales claims', () => {
+  const unsafe = findUnsafeProcurementClaims([
+    'SOC 2 certified for every buyer.',
+    'Enterprise-ready today.',
+    'Payment processing is ready.',
+    'Guaranteed revenue.',
+  ].join('\n'));
+
+  assert.deepEqual(unsafe.sort(), ['enterprise_ready', 'guaranteed_revenue', 'payment_processing_ready', 'soc2_certified']);
+});
+
+test('procurement checklist permits roadmap and gap-labeled language', () => {
+  const safe = findUnsafeProcurementClaims([
+    'SOC2 is roadmap only.',
+    'Enterprise readiness is limited until hosted proof closes.',
+    'No guaranteed revenue.',
+    'Payment processing is not part of GA v1.',
+  ].join('\n'));
+
+  assert.deepEqual(safe, []);
 });
