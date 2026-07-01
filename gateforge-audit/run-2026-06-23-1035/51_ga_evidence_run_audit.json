@@ -1,13 +1,13 @@
 {
-  "generatedAt": "2026-07-01T18:51:17.062Z",
+  "generatedAt": "2026-07-01T18:59:55.963Z",
   "workflow": "GateForge GA Evidence",
   "decision": "PASS",
   "run": {
     "conclusion": "success",
-    "databaseId": 28540051610,
-    "headSha": "3a90d6e4257bd73521fc603ac3c53794ba281006",
+    "databaseId": 28540665084,
+    "headSha": "5b615b257bd2a914eab61425340fc82212de98da",
     "status": "completed",
-    "url": "https://github.com/ramymortada-cpu/Fnnlr/actions/runs/28540051610"
+    "url": "https://github.com/ramymortada-cpu/Fnnlr/actions/runs/28540665084"
   },
   "counts": {
     "failureAnnotations": 0,

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-01T12:52:03.913Z",
+  "generatedAt": "2026-07-01T18:59:55.667Z",
   "decision": {
     "state": "CANNOT_APPROVE_LOCAL_EVIDENCE",
     "scoreBand": "65-70/100",
@@ -9,7 +9,7 @@
   "probes": {
     "localSecrets": {
       "status": "FAIL",
-      "detail": "runtime 0/17, attestation 0/1; open runtime 17"
+      "detail": "runtime 6/17, attestation 0/1; open runtime 11"
     },
     "attestationPack": {
       "status": "FAIL",
@@ -37,8 +37,8 @@
     },
     "gaEvidenceWorkflow": {
       "status": "PASS",
-      "detail": "28518276640 completed/success c13a5b54e834e619667238c84712b0c53dc6d757",
-      "url": "https://github.com/ramymortada-cpu/Fnnlr/actions/runs/28518276640"
+      "detail": "28540665084 completed/success 5b615b257bd2a914eab61425340fc82212de98da",
+      "url": "https://github.com/ramymortada-cpu/Fnnlr/actions/runs/28540665084"
     }
   },
   "blockers": {
@@ -46,12 +46,6 @@
       "CONTROL_PLANE_DATABASE_URL",
       "TENANT_DB_ADMIN_URL",
       "TENANT_DB_HOST",
-      "TENANT_CREDENTIAL_ENCRYPTION_KEY",
-      "INTEGRATION_ENCRYPTION_KEY",
-      "FNNLR_CRON_SECRET",
-      "AUTH_MFA_ENCRYPTION_KEY",
-      "FNNLR_AI_TENANT_DAILY_USD_CAP",
-      "FNNLR_AI_GLOBAL_DAILY_USD_CAP",
       "SENTRY_DSN",
       "UPTIME_HEALTHCHECK_URL",
       "ALERT_EMAIL_TO",
@@ -88,6 +82,13 @@
       "GITHUB_SECRET_PENDING": 0,
       "HOSTED_EVIDENCE_PENDING": 0
     }
+  },
+  "evidenceScope": {
+    "localSecretDirectory": "/tmp/fnnlr-gateforge-secrets",
+    "localSecretDirectoryMode": "default-local-dir",
+    "githubSecretSource": "live-github",
+    "localSecretReadinessIsGaEvidence": false,
+    "hostedStrictWorkflowRequiredForGa": true
   },
   "safety": {
     "secretValuesPrinted": false,

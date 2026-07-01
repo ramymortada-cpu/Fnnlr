@@ -1,6 +1,6 @@
 # GateForge GA Unblock Status
 
-Generated: `2026-07-01T12:52:03.913Z`
+Generated: `2026-07-01T18:59:55.667Z`
 
 This status file is the single operator dashboard for the GA unblock path. It contains secret names and readiness states only; no secret values are printed.
 
@@ -15,26 +15,20 @@ This status file is the single operator dashboard for the GA unblock path. It co
 
 | Probe | Status | Detail |
 | --- | --- | --- |
-| Local secret values | `FAIL` | runtime 0/17, attestation 0/1; open runtime 17 |
+| Local secret values | `FAIL` | runtime 6/17, attestation 0/1; open runtime 11 |
 | Attestation secret pack | `FAIL` | attestation packet is blocked until real hosted evidence exists |
 | Remaining external blocker closeout | `PASS` | 16 BLOCKED_EXTERNAL items mapped in 48_remaining_external_blocker_closeout.json |
 | External blocker progress | `PASS` | 16 local, 0 GitHub, 0 hosted evidence pending |
 | Operator execution packet | `PASS` | 16 blockers mapped with 19 hosted secret file options |
 | GitHub Actions secret names | `FAIL` | required GitHub secret names are missing |
 | Hosted strict workflow | `UNKNOWN` | no GateForge Hosted Staging Strict run found |
-| GA evidence workflow | `PASS` | 28518276640 completed/success c13a5b54e834e619667238c84712b0c53dc6d757 (https://github.com/ramymortada-cpu/Fnnlr/actions/runs/28518276640) |
+| GA evidence workflow | `PASS` | 28540665084 completed/success 5b615b257bd2a914eab61425340fc82212de98da (https://github.com/ramymortada-cpu/Fnnlr/actions/runs/28540665084) |
 
 ## Open Runtime Secret Names
 
 - `CONTROL_PLANE_DATABASE_URL`
 - `TENANT_DB_ADMIN_URL`
 - `TENANT_DB_HOST`
-- `TENANT_CREDENTIAL_ENCRYPTION_KEY`
-- `INTEGRATION_ENCRYPTION_KEY`
-- `FNNLR_CRON_SECRET`
-- `AUTH_MFA_ENCRYPTION_KEY`
-- `FNNLR_AI_TENANT_DAILY_USD_CAP`
-- `FNNLR_AI_GLOBAL_DAILY_USD_CAP`
 - `SENTRY_DSN`
 - `UPTIME_HEALTHCHECK_URL`
 - `ALERT_EMAIL_TO`
@@ -75,6 +69,14 @@ This status file is the single operator dashboard for the GA unblock path. It co
 - Hosted/provider evidence pending: `0`
 - Source: `gateforge-audit/run-2026-06-23-1035/49_external_blocker_progress.json`
 - Operator packet: `gateforge-audit/run-2026-06-23-1035/50_operator_execution_packet.json`
+
+## Evidence Scope
+
+- Local secret directory mode: `default-local-dir`
+- Local secret directory: `/tmp/fnnlr-gateforge-secrets`
+- GitHub secret source: `live-github`
+- Local secret readiness is GA evidence: `NO`
+- Hosted strict workflow required for GA: `YES`
 
 ## Score Translation
 
