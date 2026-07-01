@@ -1,6 +1,6 @@
 # SaaS Moat Action Plan
 
-Generated: `2026-07-01T02:49:33.185Z`
+Generated: `2026-07-01T02:54:19.055Z`
 
 This is the execution board for turning fnnlr from a GateForge-blocked release candidate into a global SaaS with a defensible moat. It intentionally separates code-ready work from external hosted evidence so the team does not confuse local progress with GA approval.
 
@@ -162,7 +162,7 @@ fnnlr's moat is the combination of DB-per-tenant trust, Arabic-first revenue wor
 | `OP-005` | `P1` | `NEXT` | Support | Create support triage operating readiness gate. | Support moat: support issues become product intelligence. | Support triage readiness plus P0/P1 ownership proof. |  |
 | `OP-006` | `P1` | `NEXT` | Product | Create activation cohort review template. | Activation moat: cohorts reveal what is repeatable. | Template linked from operating docs. |  |
 | `OP-007` | `P2` | `NEXT` | Finance/ops | Create monthly AI spend review. | Margin moat: AI cost is managed like COGS. | Monthly report template. |  |
-| `OP-008` | `P2` | `NEXT` | Product | Create template performance review. | Workflow moat: templates improve from observed outcomes. | Review template and metrics. |  |
+| `OP-008` | `P2` | `NEXT` | Product | Create template performance readiness gate. | Workflow moat: templates improve from observed outcomes. | Template-loop readiness plus hosted cohort evidence gap. |  |
 
 ## Trust center execution
 

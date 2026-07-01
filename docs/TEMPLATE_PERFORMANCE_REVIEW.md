@@ -5,7 +5,8 @@ Status: `CONTRACT_READY`
 Code evidence:
 
 - `modules/activation/src/template-performance.ts` converts observed template signals into `PROMOTE`, `KEEP`, `REVISE`, `RETIRE`, or `INSUFFICIENT_EVIDENCE`.
-- `tests/template-performance.test.ts` verifies high-performing templates, weak templates, low-evidence templates, and missing recommendation outcome evidence.
+- `modules/activation/src/template-performance.ts` reviews template-loop readiness without treating missing hosted cohort evidence as a pass.
+- `tests/template-performance.test.ts` verifies high-performing templates, weak templates, low-evidence templates, missing recommendation outcome evidence, and the hosted cohort readiness gap.
 
 Default thresholds:
 
@@ -57,3 +58,9 @@ Every revise/retire action must include:
 - owner
 - action
 - evidence required for the next review
+
+## Claim Gate
+
+Status: `CONTRACT_READY_WITH_HOSTED_GAPS`
+
+The template loop is not `TEMPLATE_LOOP_READY` until a hosted cohort review links selected workspaces, template version, decision, owner action, and follow-up evidence.

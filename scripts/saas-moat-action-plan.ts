@@ -262,7 +262,7 @@ function operatingCadence(): Action[] {
     a('OP-005', 'Operating cadence', 'P1', 'NEXT', 'Support', 'Create support triage operating readiness gate.', 'Support moat: support issues become product intelligence.', 'Support triage readiness plus P0/P1 ownership proof.'),
     a('OP-006', 'Operating cadence', 'P1', 'NEXT', 'Product', 'Create activation cohort review template.', 'Activation moat: cohorts reveal what is repeatable.', 'Template linked from operating docs.'),
     a('OP-007', 'Operating cadence', 'P2', 'NEXT', 'Finance/ops', 'Create monthly AI spend review.', 'Margin moat: AI cost is managed like COGS.', 'Monthly report template.'),
-    a('OP-008', 'Operating cadence', 'P2', 'NEXT', 'Product', 'Create template performance review.', 'Workflow moat: templates improve from observed outcomes.', 'Review template and metrics.'),
+    a('OP-008', 'Operating cadence', 'P2', 'NEXT', 'Product', 'Create template performance readiness gate.', 'Workflow moat: templates improve from observed outcomes.', 'Template-loop readiness plus hosted cohort evidence gap.'),
   ];
 }
 

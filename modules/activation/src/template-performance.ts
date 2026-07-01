@@ -33,6 +33,45 @@ export type TemplatePerformanceAction = {
   evidenceRequired: string;
 };
 
+export type TemplatePerformanceCapabilityId =
+  | 'template_signal_schema'
+  | 'promotion_thresholds'
+  | 'revise_retire_actions'
+  | 'recommendation_outcome_capture'
+  | 'support_issue_feedback'
+  | 'hosted_template_cohort_evidence';
+
+export type TemplatePerformanceCapabilityStatus =
+  | 'READY'
+  | 'CONTRACT_READY'
+  | 'HOSTED_PROOF_PENDING'
+  | 'MISSING_EVIDENCE';
+
+export type TemplatePerformanceCapability = {
+  id: TemplatePerformanceCapabilityId;
+  label: string;
+  status: TemplatePerformanceCapabilityStatus;
+  owner: 'Product' | 'Support' | 'Sales';
+  evidence: string[];
+  requiredForTemplateLoopClaim: boolean;
+};
+
+export type TemplatePerformanceReadinessReview = {
+  decision:
+    | 'TEMPLATE_LOOP_READY'
+    | 'CONTRACT_READY_WITH_HOSTED_GAPS'
+    | 'DO_NOT_CLAIM_TEMPLATE_LOOP_READY';
+  templateLoopClaimAllowed: boolean;
+  readyCapabilities: TemplatePerformanceCapabilityId[];
+  gapCapabilities: TemplatePerformanceCapabilityId[];
+  blockedCapabilities: TemplatePerformanceCapabilityId[];
+  actions: Array<{
+    owner: TemplatePerformanceCapability['owner'];
+    action: string;
+    evidenceRequired: string;
+  }>;
+};
+
 export type TemplatePerformanceReview = {
   profile: TemplatePerformanceProfile;
   decision: TemplatePerformanceDecision;
@@ -60,6 +99,33 @@ export const DEFAULT_TEMPLATE_PERFORMANCE_THRESHOLDS: TemplatePerformanceThresho
   minRecommendationCaptureRate: 0.35,
   maxSupportIssueRate: 0.2,
 };
+
+export const TEMPLATE_PERFORMANCE_BASELINE: TemplatePerformanceCapability[] = [
+  performanceCap('template_signal_schema', 'Template signal schema captures selection, publish, first signal, lead action, recommendations, and support issues', 'CONTRACT_READY', 'Product', [
+    'modules/activation/src/template-performance.ts',
+    'tests/template-performance.test.ts',
+  ], true),
+  performanceCap('promotion_thresholds', 'Promotion thresholds require selection count, publish rate, lead-action rate, and recommendation capture', 'CONTRACT_READY', 'Product', [
+    'modules/activation/src/template-performance.ts',
+    'docs/TEMPLATE_PERFORMANCE_REVIEW.md',
+    'tests/template-performance.test.ts',
+  ], true),
+  performanceCap('revise_retire_actions', 'Weak templates produce owner-driven revise or retire actions', 'CONTRACT_READY', 'Product', [
+    'modules/activation/src/template-performance.ts',
+    'tests/template-performance.test.ts',
+  ], true),
+  performanceCap('recommendation_outcome_capture', 'Recommendation outcome evidence is required before templates pass', 'CONTRACT_READY', 'Product', [
+    'modules/activation/src/template-performance.ts',
+    'tests/template-performance.test.ts',
+  ], true),
+  performanceCap('support_issue_feedback', 'Template-related support issues feed revise/retire actions', 'CONTRACT_READY', 'Support', [
+    'modules/activation/src/template-performance.ts',
+    'tests/template-performance.test.ts',
+  ], true),
+  performanceCap('hosted_template_cohort_evidence', 'Hosted cohort review proves the template loop on real customer workspaces', 'HOSTED_PROOF_PENDING', 'Sales', [
+    'docs/TEMPLATE_PERFORMANCE_REVIEW.md',
+  ], true),
+];
 
 export function createTemplatePerformanceReview(
   profile: TemplatePerformanceProfile,
@@ -94,6 +160,26 @@ export function createTemplatePerformanceReview(
     metrics,
     blockers,
     actions: templatePerformanceActions(blockers),
+  };
+}
+
+export function reviewTemplatePerformanceReadiness(
+  capabilities: TemplatePerformanceCapability[] = TEMPLATE_PERFORMANCE_BASELINE,
+): TemplatePerformanceReadinessReview {
+  const readyCapabilities = capabilities.filter(isPerformanceReady).map((capability) => capability.id);
+  const gapCapabilities = capabilities.filter(isPerformanceGap).map((capability) => capability.id);
+  const blockedCapabilities = capabilities.filter(isPerformanceBlocked).map((capability) => capability.id);
+  const templateLoopClaimAllowed = capabilities
+    .filter((capability) => capability.requiredForTemplateLoopClaim)
+    .every(isPerformanceReady);
+
+  return {
+    decision: templateReadinessDecision(blockedCapabilities, templateLoopClaimAllowed),
+    templateLoopClaimAllowed,
+    readyCapabilities,
+    gapCapabilities,
+    blockedCapabilities,
+    actions: templateReadinessActions(capabilities, blockedCapabilities, gapCapabilities),
   };
 }
 
@@ -181,4 +267,61 @@ function rate(part: number, whole: number) {
 
 function roundRate(value: number) {
   return Math.round(value * 1_000) / 1_000;
+}
+
+function performanceCap(
+  id: TemplatePerformanceCapabilityId,
+  label: string,
+  status: TemplatePerformanceCapabilityStatus,
+  owner: TemplatePerformanceCapability['owner'],
+  evidence: string[],
+  requiredForTemplateLoopClaim: boolean,
+): TemplatePerformanceCapability {
+  return { id, label, status, owner, evidence, requiredForTemplateLoopClaim };
+}
+
+function isPerformanceReady(capability: TemplatePerformanceCapability) {
+  return ['READY', 'CONTRACT_READY'].includes(capability.status) && capability.evidence.length > 0;
+}
+
+function isPerformanceGap(capability: TemplatePerformanceCapability) {
+  return capability.status === 'HOSTED_PROOF_PENDING';
+}
+
+function isPerformanceBlocked(capability: TemplatePerformanceCapability) {
+  return capability.status === 'MISSING_EVIDENCE' || capability.evidence.length === 0;
+}
+
+function templateReadinessDecision(
+  blockedCapabilities: TemplatePerformanceCapabilityId[],
+  templateLoopClaimAllowed: boolean,
+): TemplatePerformanceReadinessReview['decision'] {
+  if (blockedCapabilities.length > 0) return 'DO_NOT_CLAIM_TEMPLATE_LOOP_READY';
+  return templateLoopClaimAllowed ? 'TEMPLATE_LOOP_READY' : 'CONTRACT_READY_WITH_HOSTED_GAPS';
+}
+
+function templateReadinessActions(
+  capabilities: TemplatePerformanceCapability[],
+  blockedCapabilities: TemplatePerformanceCapabilityId[],
+  gapCapabilities: TemplatePerformanceCapabilityId[],
+): TemplatePerformanceReadinessReview['actions'] {
+  const actions: TemplatePerformanceReadinessReview['actions'] = [];
+  for (const capability of capabilities) {
+    if (blockedCapabilities.includes(capability.id)) {
+      actions.push({
+        owner: capability.owner,
+        action: `Attach template performance evidence for ${capability.label}.`,
+        evidenceRequired: 'Code, test, review output, support cluster, or hosted cohort evidence proving the template loop capability.',
+      });
+      continue;
+    }
+    if (gapCapabilities.includes(capability.id)) {
+      actions.push({
+        owner: capability.owner,
+        action: `Keep ${capability.label} gap-labeled until hosted cohort evidence exists.`,
+        evidenceRequired: 'Hosted cohort review with selected workspaces, template version, decision, owner action, and follow-up evidence link.',
+      });
+    }
+  }
+  return actions;
 }

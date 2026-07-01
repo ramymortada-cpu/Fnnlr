@@ -86,7 +86,7 @@ id,phase,priority,status,owner,action,moat,evidence,command
 "OP-005","Operating cadence","P1","NEXT","Support","Create support triage operating readiness gate.","Support moat: support issues become product intelligence.","Support triage readiness plus P0/P1 ownership proof.",""
 "OP-006","Operating cadence","P1","NEXT","Product","Create activation cohort review template.","Activation moat: cohorts reveal what is repeatable.","Template linked from operating docs.",""
 "OP-007","Operating cadence","P2","NEXT","Finance/ops","Create monthly AI spend review.","Margin moat: AI cost is managed like COGS.","Monthly report template.",""
-"OP-008","Operating cadence","P2","NEXT","Product","Create template performance review.","Workflow moat: templates improve from observed outcomes.","Review template and metrics.",""
+"OP-008","Operating cadence","P2","NEXT","Product","Create template performance readiness gate.","Workflow moat: templates improve from observed outcomes.","Template-loop readiness plus hosted cohort evidence gap.",""
 "EX-001","Trust center execution","P1","READY_NOW","Engineering","Create trust center landing index with security, legal, data lifecycle, support, and incident links.","Trust moat: proof becomes self-serve for buyers.","docs/TRUST_CENTER_INDEX.md exists and links proof docs.",""
 "EX-002","Trust center execution","P1","READY_NOW","Engineering","Add security overview summary for sales use.","Trust moat: security answers stop being improvised.","Security overview section linked from trust center.",""
 "EX-003","Trust center execution","P1","READY_NOW","Founder/legal","Add legal approval tracker row for Terms.","Trust moat: legal status is explicit, not assumed.","Legal tracker shows owner, state, and evidence.",""

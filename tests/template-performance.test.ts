@@ -3,6 +3,9 @@ import assert from 'node:assert/strict';
 import {
   createTemplatePerformanceReview,
   DEFAULT_TEMPLATE_PERFORMANCE_THRESHOLDS,
+  TEMPLATE_PERFORMANCE_BASELINE,
+  reviewTemplatePerformanceReadiness,
+  type TemplatePerformanceCapability,
   type TemplatePerformanceSignal,
 } from '../modules/activation/src/template-performance.js';
 
@@ -104,4 +107,43 @@ test('default template thresholds are strict enough for repeatability reviews', 
     minRecommendationCaptureRate: 0.35,
     maxSupportIssueRate: 0.2,
   });
+});
+
+test('template performance readiness is contract-ready with hosted cohort gap', () => {
+  const review = reviewTemplatePerformanceReadiness();
+
+  assert.equal(review.decision, 'CONTRACT_READY_WITH_HOSTED_GAPS');
+  assert.equal(review.templateLoopClaimAllowed, false);
+  assert.ok(review.readyCapabilities.includes('template_signal_schema'));
+  assert.ok(review.readyCapabilities.includes('revise_retire_actions'));
+  assert.ok(review.gapCapabilities.includes('hosted_template_cohort_evidence'));
+  assert.deepEqual(review.blockedCapabilities, []);
+});
+
+test('template performance readiness blocks claims when evidence is missing', () => {
+  const capabilities = TEMPLATE_PERFORMANCE_BASELINE.map((capability) =>
+    capability.id === 'recommendation_outcome_capture'
+      ? { ...capability, status: 'MISSING_EVIDENCE' as const, evidence: [] }
+      : capability,
+  );
+
+  const review = reviewTemplatePerformanceReadiness(capabilities);
+
+  assert.equal(review.decision, 'DO_NOT_CLAIM_TEMPLATE_LOOP_READY');
+  assert.deepEqual(review.blockedCapabilities, ['recommendation_outcome_capture']);
+});
+
+test('template performance loop can become ready when every capability has proof', () => {
+  const capabilities: TemplatePerformanceCapability[] = TEMPLATE_PERFORMANCE_BASELINE.map((capability) => ({
+    ...capability,
+    status: 'READY',
+    evidence: capability.evidence.length ? capability.evidence : ['template-loop-proof.md'],
+  }));
+
+  const review = reviewTemplatePerformanceReadiness(capabilities);
+
+  assert.equal(review.decision, 'TEMPLATE_LOOP_READY');
+  assert.equal(review.templateLoopClaimAllowed, true);
+  assert.deepEqual(review.gapCapabilities, []);
+  assert.deepEqual(review.blockedCapabilities, []);
 });
