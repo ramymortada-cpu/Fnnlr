@@ -254,9 +254,9 @@ function distributionMoat(): Action[] {
 
 function enterpriseMoat(): Action[] {
   return [
-    a('EN-001', 'Enterprise moat', 'P2', 'NEXT', 'Engineering', 'Create RBAC expansion readiness contract.', 'Enterprise moat: admins need granular control.', 'Role matrix, governance readiness tests, and route policy gaps.'),
-    a('EN-002', 'Enterprise moat', 'P2', 'NEXT', 'Engineering', 'Create workspace policy readiness contract.', 'Enterprise moat: workspace governance supports larger accounts.', 'Policy acceptance criteria, governance readiness tests, and admin UI gap.'),
-    a('EN-003', 'Enterprise moat', 'P2', 'NEXT', 'Engineering', 'Create audit export backlog.', 'Trust moat: enterprise security teams need exportable logs.', 'Export format and permissions spec.'),
+    a('EN-001', 'Enterprise moat', 'P2', 'READY_NOW', 'Engineering', 'Create RBAC expansion readiness contract.', 'Enterprise moat: admins need granular control.', 'Enterprise backlog, governance readiness gate, and tests define role inventory, permission catalog, route policy mapping, and negative-test gaps without claiming RBAC feature readiness.'),
+    a('EN-002', 'Enterprise moat', 'P2', 'READY_NOW', 'Engineering', 'Create workspace policy readiness contract.', 'Enterprise moat: workspace governance supports larger accounts.', 'Enterprise backlog, governance readiness gate, and tests define workspace policy catalog, enforcement hooks, admin UI, and audit gaps as roadmap evidence.'),
+    a('EN-003', 'Enterprise moat', 'P2', 'READY_NOW', 'Engineering', 'Create audit export backlog.', 'Trust moat: enterprise security teams need exportable logs.', 'Audit log viewer backlog, enterprise readiness gate, audit readiness tests, and export acceptance criteria keep audit export roadmap-labeled until route/UI proof exists.'),
     a('EN-004', 'Enterprise moat', 'P2', 'LATER', 'Engineering', 'Create SSO/OIDC readiness plan.', 'Enterprise moat: procurement path for larger buyers.', 'SSO readiness doc.'),
     a('EN-005', 'Enterprise moat', 'P2', 'LATER', 'Engineering', 'Create SAML backlog.', 'Enterprise moat: supports traditional enterprise identity.', 'SAML acceptance criteria.'),
     a('EN-006', 'Enterprise moat', 'P2', 'READY_NOW', 'Product', 'Define data residency position.', 'Enterprise moat: MENA/global readiness needs a clear answer.', 'Security/trust docs updated.'),
