@@ -1,6 +1,6 @@
 # SaaS Moat Action Plan
 
-Generated: `2026-07-01T08:55:41.050Z`
+Generated: `2026-07-01T08:57:00.738Z`
 
 This is the execution board for turning fnnlr from a GateForge-blocked release candidate into a global SaaS with a defensible moat. It intentionally separates code-ready work from external hosted evidence so the team does not confuse local progress with GA approval.
 
@@ -133,10 +133,10 @@ fnnlr's moat is the combination of DB-per-tenant trust, Arabic-first revenue wor
 | `DT-004` | `P1` | `READY_NOW` | Marketing | Create education template brief. | MENA moat: admissions follow-up is repeatable. | Industry template brief. |  |
 | `DT-005` | `P1` | `READY_NOW` | Marketing | Create agency template brief. | Distribution moat: agencies can resell repeatable workflows. | Industry template brief. |  |
 | `DT-006` | `P1` | `READY_NOW` | Marketing | Create ecommerce template brief. | Distribution moat: abandoned lead/order workflows are measurable. | Industry template brief. |  |
-| `DT-007` | `P1` | `NEXT` | Sales | Create founder-led demo readiness contract. | Distribution moat: demos become consistent and measurable. | Demo readiness review with CTA proof gap. |  |
-| `DT-008` | `P1` | `NEXT` | Sales | Create objection handling readiness contract. | Distribution moat: Arabic buyer objections become reusable data. | Objection coverage blocks unsafe demo claims. |  |
-| `DT-009` | `P2` | `NEXT` | Sales | Create partner agency readiness contract. | Channel moat: agencies multiply distribution without unsafe claims. | Partner brief, qualification criteria, GTM proof readiness contract, and hosted pilot evidence gap. |  |
-| `DT-010` | `P2` | `NEXT` | Marketing | Create customer proof readiness contract. | Proof moat: customer evidence becomes repeatable without fake ROI. | Case-study template, customer proof pack, GTM proof readiness contract, approval gate, and hosted metric evidence gap. |  |
+| `DT-007` | `P1` | `READY_NOW` | Sales | Create founder-led demo readiness contract. | Distribution moat: demos become consistent and measurable. | Founder-led demo script, demo readiness gate, and tests make the demo repeatable contract-ready while CTA/next-step proof remains gap-labeled. |  |
+| `DT-008` | `P1` | `READY_NOW` | Sales | Create objection handling readiness contract. | Distribution moat: Arabic buyer objections become reusable data. | Objection library and demo readiness tests cover guarantee, auto-send, payment, security, CRM, and self-serve boundaries before demo claims. |  |
+| `DT-009` | `P2` | `READY_NOW` | Sales | Create partner agency readiness contract. | Channel moat: agencies multiply distribution without unsafe claims. | Partner program doc, qualification criteria, GTM proof readiness gate, and tests define channel readiness while hosted partner pilot proof remains pending. |  |
+| `DT-010` | `P2` | `READY_NOW` | Marketing | Create customer proof readiness contract. | Proof moat: customer evidence becomes repeatable without fake ROI. | Case-study template, customer proof pack, GTM proof readiness gate, and tests require customer approval, privacy approval, and hosted metric evidence before public claims. |  |
 
 ## Enterprise moat
 
