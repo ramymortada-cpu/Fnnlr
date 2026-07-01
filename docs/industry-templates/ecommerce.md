@@ -26,3 +26,7 @@ Recover high-intent shoppers and improve follow-up around manual or assisted che
 - Delivery city.
 - Payment preference.
 - Urgency.
+
+## Readiness Gate
+
+Template doc is ready for controlled use. Promotion or repeatability claims require hosted template usage evidence from observed cohort outcomes.

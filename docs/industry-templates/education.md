@@ -26,3 +26,7 @@ Convert course/program inquiries into qualified admissions conversations.
 - Start date.
 - Budget/payment preference.
 - Parent/decision maker where relevant.
+
+## Readiness Gate
+
+Template doc is ready for controlled use. Promotion or repeatability claims require hosted template usage evidence from observed cohort outcomes.

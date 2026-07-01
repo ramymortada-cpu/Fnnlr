@@ -26,3 +26,7 @@ Help agencies qualify leads and turn discovery conversations into scoped proposa
 - Budget range.
 - Timeline.
 - Decision maker.
+
+## Readiness Gate
+
+Template doc is ready for controlled use. Promotion or repeatability claims require hosted template usage evidence from observed cohort outcomes.

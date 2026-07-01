@@ -29,3 +29,7 @@ Convert property inquiries into qualified WhatsApp conversations and scheduled v
 ## Sales Handoff
 
 Send lead summary with budget, area, property interest, and next action.
+
+## Readiness Gate
+
+Template doc is ready for controlled use. Promotion or repeatability claims require hosted template usage evidence from observed cohort outcomes.

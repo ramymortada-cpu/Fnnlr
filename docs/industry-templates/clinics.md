@@ -29,3 +29,7 @@ Convert health/service inquiries into booked appointments without making medical
 ## Safety Boundary
 
 No diagnosis, treatment promise, or medical advice should be generated.
+
+## Readiness Gate
+
+Template doc is ready for controlled use. Promotion or repeatability claims require hosted template usage evidence from observed cohort outcomes.
