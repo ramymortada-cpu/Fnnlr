@@ -5,6 +5,11 @@ import path from 'node:path';
 import { scoreFit, type SalesLeadIntake } from '../modules/sales-ops/src/fit.js';
 import { proposalReadiness, buildHandoffPack, checkOwnership } from '../modules/sales-ops/src/proposal.js';
 import { SUPPORT_TRIAGE_CATALOG, inferSupportCategory, intakeSupportIssue, reviewSupport } from '../modules/sales-ops/src/support-workflow.js';
+import {
+  FOUNDER_LED_DEMO_BASELINE,
+  reviewFounderLedDemoReadiness,
+  type DemoCapability,
+} from '../modules/sales-ops/src/demo-readiness.js';
 import { checkCommercialDocs, isCommercialDoc } from '../modules/commercial/src/consistency.js';
 
 /** Sprint 44 — sales & support operating system. Pure logic + consistency. */
@@ -161,6 +166,45 @@ test('support review reports category counts and rejects incomplete P0/P1 blocke
   assert.equal(review.categoryCounts.tenant_isolation, 1);
   assert.equal(review.openBlockers.length, 2);
   assert.equal(review.allCriticalOwned, false);
+});
+
+test('founder-led demo readiness is contract-ready with CTA proof gap', () => {
+  const review = reviewFounderLedDemoReadiness();
+
+  assert.equal(review.decision, 'CONTRACT_READY_WITH_GAPS');
+  assert.equal(review.repeatableDemoReady, false);
+  assert.ok(review.readyCapabilities.includes('category_positioning'));
+  assert.ok(review.readyCapabilities.includes('objection_library'));
+  assert.ok(review.gapCapabilities.includes('cta_and_next_step'));
+  assert.deepEqual(review.blockedCapabilities, []);
+});
+
+test('founder-led demo readiness blocks use when required evidence is missing', () => {
+  const capabilities = FOUNDER_LED_DEMO_BASELINE.map((capability) =>
+    capability.id === 'human_approval_boundary'
+      ? { ...capability, status: 'MISSING_EVIDENCE' as const, evidence: [] }
+      : capability,
+  );
+
+  const review = reviewFounderLedDemoReadiness(capabilities);
+
+  assert.equal(review.decision, 'DO_NOT_USE_DEMO');
+  assert.deepEqual(review.blockedCapabilities, ['human_approval_boundary']);
+});
+
+test('founder-led demo readiness becomes repeatable when every required capability is ready', () => {
+  const capabilities: DemoCapability[] = FOUNDER_LED_DEMO_BASELINE.map((capability) => ({
+    ...capability,
+    status: 'READY',
+    evidence: capability.evidence.length ? capability.evidence : ['demo-proof.md'],
+  }));
+
+  const review = reviewFounderLedDemoReadiness(capabilities);
+
+  assert.equal(review.decision, 'REPEATABLE_DEMO_READY');
+  assert.equal(review.repeatableDemoReady, true);
+  assert.deepEqual(review.gapCapabilities, []);
+  assert.deepEqual(review.blockedCapabilities, []);
 });
 
 test('sales-ops docs (if mounted) pass the consistency checker', () => {

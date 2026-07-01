@@ -1,6 +1,6 @@
 # SaaS Moat Action Plan
 
-Generated: `2026-07-01T02:39:57.137Z`
+Generated: `2026-07-01T02:44:39.294Z`
 
 This is the execution board for turning fnnlr from a GateForge-blocked release candidate into a global SaaS with a defensible moat. It intentionally separates code-ready work from external hosted evidence so the team does not confuse local progress with GA approval.
 
@@ -133,8 +133,8 @@ fnnlr's moat is the combination of DB-per-tenant trust, Arabic-first revenue wor
 | `DT-004` | `P1` | `READY_NOW` | Marketing | Create education template brief. | MENA moat: admissions follow-up is repeatable. | Industry template brief. |  |
 | `DT-005` | `P1` | `READY_NOW` | Marketing | Create agency template brief. | Distribution moat: agencies can resell repeatable workflows. | Industry template brief. |  |
 | `DT-006` | `P1` | `READY_NOW` | Marketing | Create ecommerce template brief. | Distribution moat: abandoned lead/order workflows are measurable. | Industry template brief. |  |
-| `DT-007` | `P1` | `NEXT` | Sales | Create founder-led demo script. | Distribution moat: demos become consistent and measurable. | PILOT_DEMO updated. |  |
-| `DT-008` | `P1` | `NEXT` | Sales | Create objection handling library. | Distribution moat: Arabic buyer objections become reusable data. | INTERNAL_SALES_SCRIPT updated. |  |
+| `DT-007` | `P1` | `NEXT` | Sales | Create founder-led demo readiness contract. | Distribution moat: demos become consistent and measurable. | Demo readiness review with CTA proof gap. |  |
+| `DT-008` | `P1` | `NEXT` | Sales | Create objection handling readiness contract. | Distribution moat: Arabic buyer objections become reusable data. | Objection coverage blocks unsafe demo claims. |  |
 | `DT-009` | `P2` | `NEXT` | Sales | Create partner agency program brief. | Channel moat: agencies multiply distribution. | Partner brief and qualification criteria. |  |
 | `DT-010` | `P2` | `NEXT` | Marketing | Create first case-study template. | Proof moat: customer evidence becomes repeatable. | CUSTOMER_PROOF_PACK updated. |  |
 

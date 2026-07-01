@@ -1,5 +1,12 @@
 # Objection Handling Library
 
+Status: `CONTRACT_READY`
+
+Code evidence:
+
+- `modules/sales-ops/src/demo-readiness.ts` requires objection coverage before a founder-led demo can be considered repeatable.
+- `tests/sales-ops.test.ts` verifies missing trust-boundary evidence blocks demo use.
+
 | Objection | Safe response |
 | --- | --- |
 | Can it guarantee sales? | No. It improves visibility, follow-up, and evidence-based action, but revenue depends on offer, traffic, team response, and market. |
