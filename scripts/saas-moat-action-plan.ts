@@ -95,7 +95,7 @@ const evidenceFilesByActionId: Record<string, string[]> = {
   'AC-003': ['docs/ACTIVATION_METRICS_SPEC.md', 'apps/web/onboarding.html', 'modules/activation/src/metrics.ts', 'modules/activation/src/onboarding-readiness.ts', 'tests/onboarding-readiness.test.ts'],
   'AC-004': ['docs/ACTIVATION_METRICS_SPEC.md', 'modules/activation/src/metrics.ts', 'tests/activation-metrics.test.ts'],
   'AC-005': ['docs/ACTIVATION_METRICS_SPEC.md', 'modules/activation/src/metrics.ts', 'tests/activation-metrics.test.ts'],
-  'AC-006': ['docs/ACTIVATION_METRICS_SPEC.md', 'modules/activation/src/metrics.ts', 'tests/activation-metrics.test.ts'],
+  'AC-006': ['docs/ACTIVATION_METRICS_SPEC.md', 'docs/ACTIVATION_COHORT_REVIEW.md', 'modules/activation/src/metrics.ts', 'modules/activation/src/cohort-review.ts', 'tests/activation-metrics.test.ts'],
   'AC-007': ['docs/ONBOARDING_RECOVERY_SEQUENCE.md'],
   'AC-008': ['docs/ADMIN_ONBOARDING_CHECKLIST.md'],
   'DT-001': ['docs/SAAS_MOAT_ACTION_PLAN.md'],
@@ -219,7 +219,7 @@ function activationMoat(): Action[] {
     a('AC-003', 'Activation moat', 'P1', 'NEXT', 'Engineering', 'Add goal selection readiness contract and event evidence.', 'Activation moat: workflows map to customer outcomes.', 'Readiness module, metrics evidence, and goal mapping gap.'),
     a('AC-004', 'Activation moat', 'P1', 'NEXT', 'Product', 'Define time-to-first-workflow metric.', 'Activation moat: onboarding quality becomes measurable.', 'Metric definition with event names.'),
     a('AC-005', 'Activation moat', 'P1', 'NEXT', 'Product', 'Define time-to-first-lead-action metric.', 'Revenue moat: activation is tied to customer work, not login.', 'Metric definition with event names.'),
-    a('AC-006', 'Activation moat', 'P1', 'NEXT', 'Engineering', 'Track onboarding abandonment reason backlog.', 'Activation moat: every failed setup trains the system.', 'Backlog item with event schema.'),
+    a('AC-006', 'Activation moat', 'P1', 'NEXT', 'Engineering', 'Aggregate onboarding abandonment reasons into cohort review actions.', 'Activation moat: every failed setup trains the system.', 'Cohort review exposes top abandonment step/reason with owner action.'),
     a('AC-007', 'Activation moat', 'P2', 'NEXT', 'Product', 'Create onboarding recovery email sequence.', 'Distribution moat: reduces trial drop-off.', 'Email copy and trigger conditions.'),
     a('AC-008', 'Activation moat', 'P2', 'NEXT', 'Support', 'Create admin onboarding checklist.', 'Support moat: handoff becomes repeatable.', 'Checklist linked to SALES_TO_ACTIVATION_HANDOFF.'),
   ];

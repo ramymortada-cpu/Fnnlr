@@ -35,6 +35,8 @@ export type ActivationCohortReview = {
   };
   medianTimeToFirstWorkflowMinutes: number | null;
   medianTimeToFirstPublishMinutes: number | null;
+  topAbandonmentSteps: Array<{ value: string; count: number }>;
+  topAbandonmentReasons: Array<{ value: string; count: number }>;
   blockers: string[];
   actions: ActivationCohortAction[];
 };
@@ -69,6 +71,8 @@ export function createActivationCohortReview(
     rates,
     medianTimeToFirstWorkflowMinutes: summary.medianTimeToFirstWorkflowMinutes,
     medianTimeToFirstPublishMinutes: summary.medianTimeToFirstPublishMinutes,
+    topAbandonmentSteps: summary.topAbandonmentSteps,
+    topAbandonmentReasons: summary.topAbandonmentReasons,
     blockers,
     actions: activationCohortActions(blockers),
   };

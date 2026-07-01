@@ -29,6 +29,14 @@ Status: `CONTRACT_READY_WITH_ONBOARDING_GAPS`
 - Industry template briefs exist for the first wedge segments.
 - Full tailored onboarding must stay unclaimed until route validation, goal-to-workflow mapping, negative tests, and hosted persistence proof are attached.
 
+## Abandonment Learning Loop
+
+Status: `CONTRACT_READY`
+
+- `onboarding_abandoned` stores the last step and reason.
+- Cohort summaries aggregate top abandonment steps and reasons instead of leaving them buried per workspace.
+- Cohort reviews expose the repeated step/reason so Product and Support can remove the highest-friction onboarding question in the next review.
+
 ## Required Event Fields
 
 - `tenant_id`

@@ -36,6 +36,11 @@ export type ActivationMetrics = {
   missingEvidence: Array<'workspace_created' | 'first_workflow_created' | 'first_publish' | 'first_lead_action'>;
 };
 
+export type ActivationAbandonmentBreakdown = {
+  value: string;
+  count: number;
+};
+
 export function computeActivationMetrics(workspaceId: string, events: ActivationEvent[]): ActivationMetrics {
   const scoped = events
     .filter((event) => event.workspaceId === workspaceId)
@@ -76,6 +81,8 @@ export function activationCohortSummary(metrics: ActivationMetrics[]): {
   published: number;
   leadActionActivated: number;
   abandoned: number;
+  topAbandonmentSteps: ActivationAbandonmentBreakdown[];
+  topAbandonmentReasons: ActivationAbandonmentBreakdown[];
   medianTimeToFirstWorkflowMinutes: number | null;
   medianTimeToFirstPublishMinutes: number | null;
 } {
@@ -85,6 +92,8 @@ export function activationCohortSummary(metrics: ActivationMetrics[]): {
     published: metrics.filter((metric) => metric.timeToFirstPublishMinutes !== null).length,
     leadActionActivated: metrics.filter((metric) => metric.timeToFirstLeadActionMinutes !== null).length,
     abandoned: metrics.filter((metric) => metric.onboardingAbandoned).length,
+    topAbandonmentSteps: breakdown(metrics.map((metric) => metric.abandonmentStep)),
+    topAbandonmentReasons: breakdown(metrics.map((metric) => metric.abandonmentReason)),
     medianTimeToFirstWorkflowMinutes: median(metrics.map((metric) => metric.timeToFirstWorkflowMinutes)),
     medianTimeToFirstPublishMinutes: median(metrics.map((metric) => metric.timeToFirstPublishMinutes)),
   };
@@ -110,4 +119,15 @@ function median(values: Array<number | null>): number | null {
   const middle = Math.floor(present.length / 2);
   if (present.length % 2 === 1) return present[middle];
   return Math.round((present[middle - 1] + present[middle]) / 2);
+}
+
+function breakdown(values: Array<string | null>): ActivationAbandonmentBreakdown[] {
+  const counts = new Map<string, number>();
+  for (const value of values) {
+    if (!value) continue;
+    counts.set(value, (counts.get(value) ?? 0) + 1);
+  }
+  return [...counts.entries()]
+    .map(([value, count]) => ({ value, count }))
+    .sort((a, b) => b.count - a.count || a.value.localeCompare(b.value));
 }

@@ -84,6 +84,8 @@ test('activation cohort summary measures repeatability across workspaces', () =>
     published: 1,
     leadActionActivated: 0,
     abandoned: 1,
+    topAbandonmentSteps: [],
+    topAbandonmentReasons: [],
     medianTimeToFirstWorkflowMinutes: 40,
     medianTimeToFirstPublishMinutes: 60,
   });
@@ -154,6 +156,8 @@ test('activation cohort review turns weak cohorts into owner-driven rescue actio
     'abandonment_rate_above_threshold',
     'median_first_workflow_time_above_threshold',
   ]);
+  assert.deepEqual(review.topAbandonmentSteps, [{ value: 'integration', count: 2 }]);
+  assert.deepEqual(review.topAbandonmentReasons, [{ value: 'missing WhatsApp account', count: 2 }]);
   assert.ok(review.actions.some((action) => action.owner === 'Product'));
   assert.ok(review.actions.some((action) => action.owner === 'Support'));
   assert.ok(review.actions.some((action) => action.owner === 'Engineering'));

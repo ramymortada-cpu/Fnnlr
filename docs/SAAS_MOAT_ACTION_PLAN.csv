@@ -58,7 +58,7 @@ id,phase,priority,status,owner,action,moat,evidence,command
 "AC-003","Activation moat","P1","NEXT","Engineering","Add goal selection readiness contract and event evidence.","Activation moat: workflows map to customer outcomes.","Readiness module, metrics evidence, and goal mapping gap.",""
 "AC-004","Activation moat","P1","NEXT","Product","Define time-to-first-workflow metric.","Activation moat: onboarding quality becomes measurable.","Metric definition with event names.",""
 "AC-005","Activation moat","P1","NEXT","Product","Define time-to-first-lead-action metric.","Revenue moat: activation is tied to customer work, not login.","Metric definition with event names.",""
-"AC-006","Activation moat","P1","NEXT","Engineering","Track onboarding abandonment reason backlog.","Activation moat: every failed setup trains the system.","Backlog item with event schema.",""
+"AC-006","Activation moat","P1","NEXT","Engineering","Aggregate onboarding abandonment reasons into cohort review actions.","Activation moat: every failed setup trains the system.","Cohort review exposes top abandonment step/reason with owner action.",""
 "AC-007","Activation moat","P2","NEXT","Product","Create onboarding recovery email sequence.","Distribution moat: reduces trial drop-off.","Email copy and trigger conditions.",""
 "AC-008","Activation moat","P2","NEXT","Support","Create admin onboarding checklist.","Support moat: handoff becomes repeatable.","Checklist linked to SALES_TO_ACTIVATION_HANDOFF.",""
 "DT-001","Distribution moat","P1","READY_NOW","Product","Select first ICP for launch wedge.","Distribution moat: focus beats broad generic positioning.","ICP chosen in SAAS_MOAT_ACTION_PLAN.",""

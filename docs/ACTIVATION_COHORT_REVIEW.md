@@ -6,7 +6,7 @@ Code evidence:
 
 - `modules/activation/src/metrics.ts` computes time-to-value and missing evidence from observed activation events.
 - `modules/activation/src/cohort-review.ts` converts weekly cohort metrics into `HEALTHY`, `WATCH`, or `RESCUE` decisions.
-- `tests/activation-metrics.test.ts` verifies healthy cohorts, weak cohort rescue actions, thresholds, and missing evidence behavior.
+- `tests/activation-metrics.test.ts` verifies healthy cohorts, weak cohort rescue actions, top abandonment step/reason aggregation, thresholds, and missing evidence behavior.
 
 Default thresholds:
 
@@ -37,7 +37,8 @@ Default thresholds:
 | First lead action rate |  |  |
 | Median time to first workflow |  |  |
 | Median time to first publish |  |  |
-| Onboarding abandonment step |  |  |
+| Top onboarding abandonment step |  |  |
+| Top onboarding abandonment reason |  |  |
 
 ## Decisions
 
@@ -51,6 +52,8 @@ Default thresholds:
 Any cohort with three or more blockers is `RESCUE`.
 
 Any cohort without first-workflow timing evidence is `RESCUE`; missing evidence is not treated as a pass.
+
+Any cohort over the abandonment threshold must name the top abandonment step and reason before the review can be closed.
 
 Every rescue action must name:
 
