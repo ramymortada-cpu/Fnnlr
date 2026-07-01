@@ -1,18 +1,18 @@
 {
-  "generatedAt": "2026-07-01T13:41:18.658Z",
+  "generatedAt": "2026-07-01T13:48:26.075Z",
   "source": "docs/SAAS_MOAT_EXECUTION_STATUS.json",
   "executionState": "OWNER_OR_DOC_ACTION_READY",
-  "total": 36,
+  "total": 26,
   "byOwner": {
     "Engineering": 6,
     "Founder/legal": 4,
     "Marketing": 1,
-    "Product": 21,
+    "Product": 11,
     "Sales": 3,
     "Support": 1
   },
   "byPriority": {
-    "P1": 31,
+    "P1": 21,
     "P2": 5
   },
   "rows": [
@@ -84,116 +84,6 @@
     },
     {
       "rank": 7,
-      "id": "EX-027",
-      "priority": "P1",
-      "owner": "Product",
-      "phase": "Industry template execution",
-      "action": "Create real-estate WhatsApp sequence.",
-      "evidence": "Template includes WhatsApp sequence.",
-      "nextCommand": "OWNER_ACTION_REQUIRED",
-      "unblockEvidence": "Template includes WhatsApp sequence."
-    },
-    {
-      "rank": 8,
-      "id": "EX-028",
-      "priority": "P1",
-      "owner": "Product",
-      "phase": "Industry template execution",
-      "action": "Create real-estate qualification rules.",
-      "evidence": "Template includes qualification rules.",
-      "nextCommand": "OWNER_ACTION_REQUIRED",
-      "unblockEvidence": "Template includes qualification rules."
-    },
-    {
-      "rank": 9,
-      "id": "EX-030",
-      "priority": "P1",
-      "owner": "Product",
-      "phase": "Industry template execution",
-      "action": "Create clinic WhatsApp sequence.",
-      "evidence": "Template includes WhatsApp sequence.",
-      "nextCommand": "OWNER_ACTION_REQUIRED",
-      "unblockEvidence": "Template includes WhatsApp sequence."
-    },
-    {
-      "rank": 10,
-      "id": "EX-031",
-      "priority": "P1",
-      "owner": "Product",
-      "phase": "Industry template execution",
-      "action": "Create clinic qualification rules.",
-      "evidence": "Template includes qualification rules.",
-      "nextCommand": "OWNER_ACTION_REQUIRED",
-      "unblockEvidence": "Template includes qualification rules."
-    },
-    {
-      "rank": 11,
-      "id": "EX-033",
-      "priority": "P1",
-      "owner": "Product",
-      "phase": "Industry template execution",
-      "action": "Create education WhatsApp sequence.",
-      "evidence": "Template includes WhatsApp sequence.",
-      "nextCommand": "OWNER_ACTION_REQUIRED",
-      "unblockEvidence": "Template includes WhatsApp sequence."
-    },
-    {
-      "rank": 12,
-      "id": "EX-034",
-      "priority": "P1",
-      "owner": "Product",
-      "phase": "Industry template execution",
-      "action": "Create education qualification rules.",
-      "evidence": "Template includes qualification rules.",
-      "nextCommand": "OWNER_ACTION_REQUIRED",
-      "unblockEvidence": "Template includes qualification rules."
-    },
-    {
-      "rank": 13,
-      "id": "EX-036",
-      "priority": "P1",
-      "owner": "Product",
-      "phase": "Industry template execution",
-      "action": "Create agency WhatsApp sequence.",
-      "evidence": "Template includes WhatsApp sequence.",
-      "nextCommand": "OWNER_ACTION_REQUIRED",
-      "unblockEvidence": "Template includes WhatsApp sequence."
-    },
-    {
-      "rank": 14,
-      "id": "EX-037",
-      "priority": "P1",
-      "owner": "Product",
-      "phase": "Industry template execution",
-      "action": "Create agency qualification rules.",
-      "evidence": "Template includes qualification rules.",
-      "nextCommand": "OWNER_ACTION_REQUIRED",
-      "unblockEvidence": "Template includes qualification rules."
-    },
-    {
-      "rank": 15,
-      "id": "EX-039",
-      "priority": "P1",
-      "owner": "Product",
-      "phase": "Industry template execution",
-      "action": "Create ecommerce WhatsApp sequence.",
-      "evidence": "Template includes WhatsApp sequence.",
-      "nextCommand": "OWNER_ACTION_REQUIRED",
-      "unblockEvidence": "Template includes WhatsApp sequence."
-    },
-    {
-      "rank": 16,
-      "id": "EX-040",
-      "priority": "P1",
-      "owner": "Product",
-      "phase": "Industry template execution",
-      "action": "Create ecommerce qualification rules.",
-      "evidence": "Template includes qualification rules.",
-      "nextCommand": "OWNER_ACTION_REQUIRED",
-      "unblockEvidence": "Template includes qualification rules."
-    },
-    {
-      "rank": 17,
       "id": "EX-042",
       "priority": "P1",
       "owner": "Product",
@@ -204,7 +94,7 @@
       "unblockEvidence": "Metric spec includes event definition."
     },
     {
-      "rank": 18,
+      "rank": 8,
       "id": "EX-043",
       "priority": "P1",
       "owner": "Product",
@@ -215,7 +105,7 @@
       "unblockEvidence": "Metric spec includes event definition."
     },
     {
-      "rank": 19,
+      "rank": 9,
       "id": "EX-044",
       "priority": "P1",
       "owner": "Product",
@@ -226,7 +116,7 @@
       "unblockEvidence": "Metric spec includes event definition."
     },
     {
-      "rank": 20,
+      "rank": 10,
       "id": "EX-045",
       "priority": "P1",
       "owner": "Product",
@@ -237,7 +127,7 @@
       "unblockEvidence": "Metric spec includes event definition."
     },
     {
-      "rank": 21,
+      "rank": 11,
       "id": "EX-046",
       "priority": "P1",
       "owner": "Product",
@@ -248,7 +138,7 @@
       "unblockEvidence": "Metric spec includes event definition."
     },
     {
-      "rank": 22,
+      "rank": 12,
       "id": "EX-050",
       "priority": "P1",
       "owner": "Product",
@@ -259,7 +149,7 @@
       "unblockEvidence": "Workflow intelligence spec includes metric formula."
     },
     {
-      "rank": 23,
+      "rank": 13,
       "id": "EX-051",
       "priority": "P1",
       "owner": "Product",
@@ -270,7 +160,7 @@
       "unblockEvidence": "Workflow intelligence spec includes metric formula."
     },
     {
-      "rank": 24,
+      "rank": 14,
       "id": "EX-052",
       "priority": "P1",
       "owner": "Product",
@@ -281,7 +171,7 @@
       "unblockEvidence": "Workflow intelligence spec includes metric formula."
     },
     {
-      "rank": 25,
+      "rank": 15,
       "id": "EX-053",
       "priority": "P1",
       "owner": "Product",
@@ -292,7 +182,7 @@
       "unblockEvidence": "Workflow intelligence spec includes rule table."
     },
     {
-      "rank": 26,
+      "rank": 16,
       "id": "EX-054",
       "priority": "P1",
       "owner": "Product",
@@ -303,7 +193,7 @@
       "unblockEvidence": "Workflow intelligence spec includes rubric."
     },
     {
-      "rank": 27,
+      "rank": 17,
       "id": "EX-055",
       "priority": "P1",
       "owner": "Product",
@@ -314,7 +204,7 @@
       "unblockEvidence": "Workflow intelligence spec includes rubric."
     },
     {
-      "rank": 28,
+      "rank": 18,
       "id": "EX-024",
       "priority": "P1",
       "owner": "Sales",
@@ -325,7 +215,7 @@
       "unblockEvidence": "Enterprise row lists security, legal, SLA, and procurement proof."
     },
     {
-      "rank": 29,
+      "rank": 19,
       "id": "EX-025",
       "priority": "P1",
       "owner": "Sales",
@@ -336,7 +226,7 @@
       "unblockEvidence": "Pricing matrix includes onboarding package."
     },
     {
-      "rank": 30,
+      "rank": 20,
       "id": "EX-059",
       "priority": "P1",
       "owner": "Sales",
@@ -347,7 +237,7 @@
       "unblockEvidence": "Pilot offer brief, pilot readiness contract, fit gate, owner model, success criteria, and hosted pilot evidence gap."
     },
     {
-      "rank": 31,
+      "rank": 21,
       "id": "EX-048",
       "priority": "P1",
       "owner": "Support",
@@ -358,7 +248,7 @@
       "unblockEvidence": "Checklist includes owners and triggers."
     },
     {
-      "rank": 32,
+      "rank": 22,
       "id": "EX-064",
       "priority": "P2",
       "owner": "Engineering",
@@ -369,7 +259,7 @@
       "unblockEvidence": "Enterprise backlog includes RBAC row."
     },
     {
-      "rank": 33,
+      "rank": 23,
       "id": "EX-065",
       "priority": "P2",
       "owner": "Engineering",
@@ -380,7 +270,7 @@
       "unblockEvidence": "Enterprise backlog includes workspace policy row."
     },
     {
-      "rank": 34,
+      "rank": 24,
       "id": "EX-066",
       "priority": "P2",
       "owner": "Engineering",
@@ -391,7 +281,7 @@
       "unblockEvidence": "Enterprise backlog includes audit export row."
     },
     {
-      "rank": 35,
+      "rank": 25,
       "id": "EX-067",
       "priority": "P2",
       "owner": "Engineering",
@@ -402,7 +292,7 @@
       "unblockEvidence": "Enterprise backlog includes SSO row."
     },
     {
-      "rank": 36,
+      "rank": 26,
       "id": "EX-068",
       "priority": "P2",
       "owner": "Engineering",

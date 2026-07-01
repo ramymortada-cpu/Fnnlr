@@ -165,6 +165,16 @@ const evidenceFilesByActionId: Record<string, string[]> = {
   'EX-021': ['docs/PRICING_AND_LIMITS_MATRIX.md', 'modules/commercial/src/limits.ts', 'tests/commercial-limits.test.ts'],
   'EX-022': ['docs/PRICING_AND_LIMITS_MATRIX.md', 'modules/commercial/src/limits.ts', 'tests/commercial-limits.test.ts'],
   'EX-023': ['docs/PRICING_AND_LIMITS_MATRIX.md', 'modules/commercial/src/limits.ts', 'tests/commercial-limits.test.ts'],
+  'EX-027': ['docs/industry-templates/real-estate.md', 'modules/activation/src/industry-template-readiness.ts', 'tests/industry-template-readiness.test.ts'],
+  'EX-028': ['docs/industry-templates/real-estate.md', 'modules/activation/src/industry-template-readiness.ts', 'tests/industry-template-readiness.test.ts'],
+  'EX-030': ['docs/industry-templates/clinics.md', 'modules/activation/src/industry-template-readiness.ts', 'tests/industry-template-readiness.test.ts'],
+  'EX-031': ['docs/industry-templates/clinics.md', 'modules/activation/src/industry-template-readiness.ts', 'tests/industry-template-readiness.test.ts'],
+  'EX-033': ['docs/industry-templates/education.md', 'modules/activation/src/industry-template-readiness.ts', 'tests/industry-template-readiness.test.ts'],
+  'EX-034': ['docs/industry-templates/education.md', 'modules/activation/src/industry-template-readiness.ts', 'tests/industry-template-readiness.test.ts'],
+  'EX-036': ['docs/industry-templates/agencies.md', 'modules/activation/src/industry-template-readiness.ts', 'tests/industry-template-readiness.test.ts'],
+  'EX-037': ['docs/industry-templates/agencies.md', 'modules/activation/src/industry-template-readiness.ts', 'tests/industry-template-readiness.test.ts'],
+  'EX-039': ['docs/industry-templates/ecommerce.md', 'modules/activation/src/industry-template-readiness.ts', 'tests/industry-template-readiness.test.ts'],
+  'EX-040': ['docs/industry-templates/ecommerce.md', 'modules/activation/src/industry-template-readiness.ts', 'tests/industry-template-readiness.test.ts'],
 };
 
 const actions: Action[] = [
