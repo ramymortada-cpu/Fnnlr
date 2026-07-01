@@ -18,6 +18,7 @@ Code evidence:
 | `time_to_first_publish` | Time from workspace creation to first published funnel/page/workflow | Measures launch readiness |
 | `time_to_first_lead_action` | Time from workspace creation to first human-approved lead action | Measures revenue-operation activation |
 | `template_selected` | Industry template selected during onboarding | Measures template-market fit |
+| `first_publish` | Raw activation event emitted when the first funnel/page/workflow is published | Proves the launch milestone exists before computing publish speed |
 | `onboarding_abandoned` | Last completed onboarding step before exit | Finds setup friction |
 | `first_signal_received` | First page view, WhatsApp click, lead, or payment-state signal | Confirms instrumentation works |
 

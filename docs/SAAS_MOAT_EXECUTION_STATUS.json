@@ -1,13 +1,13 @@
 {
-  "generatedAt": "2026-07-01T13:48:26.075Z",
+  "generatedAt": "2026-07-01T13:56:14.684Z",
   "total": 165,
   "byState": {
     "BLOCKED_BY_GITHUB_SECRET_READINESS": 1,
     "BLOCKED_BY_HOSTED_ATTESTATION": 2,
     "BLOCKED_BY_SECRET_READINESS": 2,
     "BLOCKED_EXTERNAL": 16,
-    "EVIDENCE_FILE_PRESENT": 118,
-    "OWNER_OR_DOC_ACTION_READY": 26
+    "EVIDENCE_FILE_PRESENT": 123,
+    "OWNER_OR_DOC_ACTION_READY": 21
   },
   "rows": [
     {
@@ -1821,7 +1821,7 @@
       "phase": "Activation execution",
       "priority": "P1",
       "status": "READY_NOW",
-      "executionState": "OWNER_OR_DOC_ACTION_READY",
+      "executionState": "EVIDENCE_FILE_PRESENT",
       "owner": "Product",
       "action": "Define time_to_first_workflow event.",
       "moat": "Activation moat: first value has a measurable timestamp.",
@@ -1835,7 +1835,7 @@
       "phase": "Activation execution",
       "priority": "P1",
       "status": "READY_NOW",
-      "executionState": "OWNER_OR_DOC_ACTION_READY",
+      "executionState": "EVIDENCE_FILE_PRESENT",
       "owner": "Product",
       "action": "Define time_to_first_lead_action event.",
       "moat": "Revenue moat: activation ties to real customer work.",
@@ -1849,7 +1849,7 @@
       "phase": "Activation execution",
       "priority": "P1",
       "status": "READY_NOW",
-      "executionState": "OWNER_OR_DOC_ACTION_READY",
+      "executionState": "EVIDENCE_FILE_PRESENT",
       "owner": "Product",
       "action": "Define onboarding_abandoned event.",
       "moat": "Activation moat: failures create learning data.",
@@ -1863,7 +1863,7 @@
       "phase": "Activation execution",
       "priority": "P1",
       "status": "READY_NOW",
-      "executionState": "OWNER_OR_DOC_ACTION_READY",
+      "executionState": "EVIDENCE_FILE_PRESENT",
       "owner": "Product",
       "action": "Define template_selected event.",
       "moat": "Workflow moat: template adoption becomes measurable.",
@@ -1877,7 +1877,7 @@
       "phase": "Activation execution",
       "priority": "P1",
       "status": "READY_NOW",
-      "executionState": "OWNER_OR_DOC_ACTION_READY",
+      "executionState": "EVIDENCE_FILE_PRESENT",
       "owner": "Product",
       "action": "Define first_publish event.",
       "moat": "Activation moat: launch readiness becomes measurable.",

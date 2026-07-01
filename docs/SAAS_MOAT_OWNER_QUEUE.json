@@ -1,18 +1,18 @@
 {
-  "generatedAt": "2026-07-01T13:48:26.075Z",
+  "generatedAt": "2026-07-01T13:56:14.684Z",
   "source": "docs/SAAS_MOAT_EXECUTION_STATUS.json",
   "executionState": "OWNER_OR_DOC_ACTION_READY",
-  "total": 26,
+  "total": 21,
   "byOwner": {
     "Engineering": 6,
     "Founder/legal": 4,
     "Marketing": 1,
-    "Product": 11,
+    "Product": 6,
     "Sales": 3,
     "Support": 1
   },
   "byPriority": {
-    "P1": 21,
+    "P1": 16,
     "P2": 5
   },
   "rows": [
@@ -84,61 +84,6 @@
     },
     {
       "rank": 7,
-      "id": "EX-042",
-      "priority": "P1",
-      "owner": "Product",
-      "phase": "Activation execution",
-      "action": "Define time_to_first_workflow event.",
-      "evidence": "Metric spec includes event definition.",
-      "nextCommand": "OWNER_ACTION_REQUIRED",
-      "unblockEvidence": "Metric spec includes event definition."
-    },
-    {
-      "rank": 8,
-      "id": "EX-043",
-      "priority": "P1",
-      "owner": "Product",
-      "phase": "Activation execution",
-      "action": "Define time_to_first_lead_action event.",
-      "evidence": "Metric spec includes event definition.",
-      "nextCommand": "OWNER_ACTION_REQUIRED",
-      "unblockEvidence": "Metric spec includes event definition."
-    },
-    {
-      "rank": 9,
-      "id": "EX-044",
-      "priority": "P1",
-      "owner": "Product",
-      "phase": "Activation execution",
-      "action": "Define onboarding_abandoned event.",
-      "evidence": "Metric spec includes event definition.",
-      "nextCommand": "OWNER_ACTION_REQUIRED",
-      "unblockEvidence": "Metric spec includes event definition."
-    },
-    {
-      "rank": 10,
-      "id": "EX-045",
-      "priority": "P1",
-      "owner": "Product",
-      "phase": "Activation execution",
-      "action": "Define template_selected event.",
-      "evidence": "Metric spec includes event definition.",
-      "nextCommand": "OWNER_ACTION_REQUIRED",
-      "unblockEvidence": "Metric spec includes event definition."
-    },
-    {
-      "rank": 11,
-      "id": "EX-046",
-      "priority": "P1",
-      "owner": "Product",
-      "phase": "Activation execution",
-      "action": "Define first_publish event.",
-      "evidence": "Metric spec includes event definition.",
-      "nextCommand": "OWNER_ACTION_REQUIRED",
-      "unblockEvidence": "Metric spec includes event definition."
-    },
-    {
-      "rank": 12,
       "id": "EX-050",
       "priority": "P1",
       "owner": "Product",
@@ -149,7 +94,7 @@
       "unblockEvidence": "Workflow intelligence spec includes metric formula."
     },
     {
-      "rank": 13,
+      "rank": 8,
       "id": "EX-051",
       "priority": "P1",
       "owner": "Product",
@@ -160,7 +105,7 @@
       "unblockEvidence": "Workflow intelligence spec includes metric formula."
     },
     {
-      "rank": 14,
+      "rank": 9,
       "id": "EX-052",
       "priority": "P1",
       "owner": "Product",
@@ -171,7 +116,7 @@
       "unblockEvidence": "Workflow intelligence spec includes metric formula."
     },
     {
-      "rank": 15,
+      "rank": 10,
       "id": "EX-053",
       "priority": "P1",
       "owner": "Product",
@@ -182,7 +127,7 @@
       "unblockEvidence": "Workflow intelligence spec includes rule table."
     },
     {
-      "rank": 16,
+      "rank": 11,
       "id": "EX-054",
       "priority": "P1",
       "owner": "Product",
@@ -193,7 +138,7 @@
       "unblockEvidence": "Workflow intelligence spec includes rubric."
     },
     {
-      "rank": 17,
+      "rank": 12,
       "id": "EX-055",
       "priority": "P1",
       "owner": "Product",
@@ -204,7 +149,7 @@
       "unblockEvidence": "Workflow intelligence spec includes rubric."
     },
     {
-      "rank": 18,
+      "rank": 13,
       "id": "EX-024",
       "priority": "P1",
       "owner": "Sales",
@@ -215,7 +160,7 @@
       "unblockEvidence": "Enterprise row lists security, legal, SLA, and procurement proof."
     },
     {
-      "rank": 19,
+      "rank": 14,
       "id": "EX-025",
       "priority": "P1",
       "owner": "Sales",
@@ -226,7 +171,7 @@
       "unblockEvidence": "Pricing matrix includes onboarding package."
     },
     {
-      "rank": 20,
+      "rank": 15,
       "id": "EX-059",
       "priority": "P1",
       "owner": "Sales",
@@ -237,7 +182,7 @@
       "unblockEvidence": "Pilot offer brief, pilot readiness contract, fit gate, owner model, success criteria, and hosted pilot evidence gap."
     },
     {
-      "rank": 21,
+      "rank": 16,
       "id": "EX-048",
       "priority": "P1",
       "owner": "Support",
@@ -248,7 +193,7 @@
       "unblockEvidence": "Checklist includes owners and triggers."
     },
     {
-      "rank": 22,
+      "rank": 17,
       "id": "EX-064",
       "priority": "P2",
       "owner": "Engineering",
@@ -259,7 +204,7 @@
       "unblockEvidence": "Enterprise backlog includes RBAC row."
     },
     {
-      "rank": 23,
+      "rank": 18,
       "id": "EX-065",
       "priority": "P2",
       "owner": "Engineering",
@@ -270,7 +215,7 @@
       "unblockEvidence": "Enterprise backlog includes workspace policy row."
     },
     {
-      "rank": 24,
+      "rank": 19,
       "id": "EX-066",
       "priority": "P2",
       "owner": "Engineering",
@@ -281,7 +226,7 @@
       "unblockEvidence": "Enterprise backlog includes audit export row."
     },
     {
-      "rank": 25,
+      "rank": 20,
       "id": "EX-067",
       "priority": "P2",
       "owner": "Engineering",
@@ -292,7 +237,7 @@
       "unblockEvidence": "Enterprise backlog includes SSO row."
     },
     {
-      "rank": 26,
+      "rank": 21,
       "id": "EX-068",
       "priority": "P2",
       "owner": "Engineering",

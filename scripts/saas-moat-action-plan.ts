@@ -175,6 +175,11 @@ const evidenceFilesByActionId: Record<string, string[]> = {
   'EX-037': ['docs/industry-templates/agencies.md', 'modules/activation/src/industry-template-readiness.ts', 'tests/industry-template-readiness.test.ts'],
   'EX-039': ['docs/industry-templates/ecommerce.md', 'modules/activation/src/industry-template-readiness.ts', 'tests/industry-template-readiness.test.ts'],
   'EX-040': ['docs/industry-templates/ecommerce.md', 'modules/activation/src/industry-template-readiness.ts', 'tests/industry-template-readiness.test.ts'],
+  'EX-042': ['docs/ACTIVATION_METRICS_SPEC.md', 'modules/activation/src/metrics.ts', 'tests/activation-metrics.test.ts'],
+  'EX-043': ['docs/ACTIVATION_METRICS_SPEC.md', 'modules/activation/src/metrics.ts', 'tests/activation-metrics.test.ts'],
+  'EX-044': ['docs/ACTIVATION_METRICS_SPEC.md', 'modules/activation/src/metrics.ts', 'tests/activation-metrics.test.ts'],
+  'EX-045': ['docs/ACTIVATION_METRICS_SPEC.md', 'modules/activation/src/metrics.ts', 'tests/activation-metrics.test.ts'],
+  'EX-046': ['docs/ACTIVATION_METRICS_SPEC.md', 'modules/activation/src/metrics.ts', 'tests/activation-metrics.test.ts'],
 };
 
 const actions: Action[] = [

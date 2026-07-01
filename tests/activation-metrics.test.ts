@@ -1,5 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import path from 'node:path';
 import {
   activationCohortSummary,
   computeActivationMetrics,
@@ -15,6 +17,22 @@ const base = {
   workspaceId: 'workspace_1',
   businessId: 'business_1',
 };
+
+const activationContractNames = [
+  'time_to_first_workflow',
+  'time_to_first_lead_action',
+  'onboarding_abandoned',
+  'template_selected',
+  'first_publish',
+] as const;
+
+test('activation metrics spec names the owner-queue event contracts', () => {
+  const spec = fs.readFileSync(path.join(process.cwd(), 'docs', 'ACTIVATION_METRICS_SPEC.md'), 'utf8');
+
+  for (const name of activationContractNames) {
+    assert.ok(spec.includes(`\`${name}\``), `${name} is documented in activation metrics spec`);
+  }
+});
 
 test('activation metrics compute time-to-value from observed events only', () => {
   const events: ActivationEvent[] = [
