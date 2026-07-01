@@ -72,6 +72,8 @@ jobs:
         run: npm run gateforge:github-secrets-audit-smoke
       - name: GateForge GitHub secrets B64-only audit smoke
         run: npm run gateforge:github-secrets-audit-b64-smoke
+      - name: GateForge GitHub secrets remediation check
+        run: npm run gateforge:github-secrets-remediation-check
       - name: GateForge hosted strict trigger smoke
         run: npm run gateforge:trigger-hosted-strict-smoke
       - name: SaaS moat action plan check

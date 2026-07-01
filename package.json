@@ -97,6 +97,7 @@
     "gateforge:github-secrets-audit": "tsx scripts/gateforge-github-secrets-audit.ts",
     "gateforge:github-secrets-audit-smoke": "tsx scripts/gateforge-github-secrets-audit.ts --from-file tests/fixtures/gateforge-gh-secrets-pass.json --out /tmp/fnnlr-gateforge-gh-secrets-audit-smoke.md --remediation-out /tmp/fnnlr-gateforge-gh-secrets-remediation-smoke.md",
     "gateforge:github-secrets-audit-b64-smoke": "tsx scripts/gateforge-github-secrets-audit.ts --from-file tests/fixtures/gateforge-gh-secrets-b64-only-pass.json --out /tmp/fnnlr-gateforge-gh-secrets-b64-smoke.md --remediation-out /tmp/fnnlr-gateforge-gh-secrets-b64-remediation-smoke.md",
+    "gateforge:github-secrets-remediation-check": "tsx scripts/gateforge-github-secrets-audit.ts --from-file tests/fixtures/gateforge-gh-secrets-empty.json --source-label \"gh secret list --json name\" --check",
     "gateforge:trigger-hosted-strict": "tsx scripts/gateforge-trigger-hosted-strict.ts",
     "gateforge:trigger-hosted-strict-smoke": "tsx scripts/gateforge-trigger-hosted-strict.ts --dry-run --from-file tests/fixtures/gateforge-gh-secrets-pass.json",
     "gateforge:hosted-setup-guide": "tsx scripts/gateforge-hosted-setup-guide.ts",
