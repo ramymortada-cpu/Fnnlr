@@ -2,6 +2,8 @@
 
 This is a commercial packaging matrix with a code-level enforcement contract. The source-of-truth profile lives in `modules/commercial/src/limits.ts`, and acceptance coverage lives in `tests/commercial-limits.test.ts`. API route enforcement is still rolled out per resource path before self-serve GA.
 
+Usage-enforcement claim gate lives in `modules/commercial/src/enforcement-readiness.ts` and `tests/commercial-enforcement-readiness.test.ts`. This keeps pricing claims honest: plan limits are contract-ready, while full route-level enforcement remains gap-labeled until every guarded route has negative overage proof.
+
 | Plan | Target customer | Seats | Active workflows | Contacts | Integrations | AI budget posture | Support |
 | --- | --- | ---: | ---: | ---: | ---: | --- | --- |
 | Starter | One business proving first revenue workflow | 2 | 3 | 2,000 | 1 | Low capped tenant budget | Email/async launch support |
@@ -24,6 +26,8 @@ This is a commercial packaging matrix with a code-level enforcement contract. Th
 
 - `modules/commercial/src/limits.ts` defines the Starter, Growth, Scale, and Enterprise resource limits.
 - `tests/commercial-limits.test.ts` blocks drift from the public packaging matrix.
+- `modules/commercial/src/enforcement-readiness.ts` blocks full enforcement claims while route-level proof is partial.
+- `tests/commercial-enforcement-readiness.test.ts` covers the enforcement readiness decision.
 - Over-limit decisions return `PLAN_LIMIT_EXCEEDED` with the next upgrade path.
 - Enterprise remains `custom` and requires human review before contract signature.
 
