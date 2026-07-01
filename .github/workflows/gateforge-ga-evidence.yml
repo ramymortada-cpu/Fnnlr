@@ -49,6 +49,8 @@ jobs:
         run: npm run gateforge:ga-unblock-status-smoke
       - name: GateForge hosted readiness doctor smoke
         run: npm run gateforge:hosted-readiness-doctor-smoke
+      - name: GateForge external blocker progress smoke
+        run: npm run gateforge:external-blocker-progress-smoke
       - name: GateForge hosted operator drift smoke
         run: npm run gateforge:hosted-operator-drift-smoke
       - name: GateForge GitHub secrets audit smoke
@@ -63,6 +65,9 @@ jobs:
         run: npm run moat:status
       - name: GateForge remaining external blocker closeout
         run: npm run gateforge:remaining-blockers-closeout -- --check
+      - name: GateForge external blocker progress
+        run: npm run gateforge:external-blocker-progress
+        continue-on-error: true
       - name: GateForge GA unblock evidence
         run: npm run gateforge:ga-unblock
         continue-on-error: true
@@ -123,6 +128,8 @@ jobs:
             gateforge-audit/run-*/47_ga_unblock_status.json
             gateforge-audit/run-*/48_remaining_external_blocker_closeout.md
             gateforge-audit/run-*/48_remaining_external_blocker_closeout.json
+            gateforge-audit/run-*/49_external_blocker_progress.md
+            gateforge-audit/run-*/49_external_blocker_progress.json
             gateforge-audit/external-attestations/HOSTED_STAGING_WAR_ROOM.md
             gateforge-audit/external-attestations/*.md
             gateforge-audit/external-attestations/*.json

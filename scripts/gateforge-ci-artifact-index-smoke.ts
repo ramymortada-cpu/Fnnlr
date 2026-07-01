@@ -15,6 +15,8 @@ const requiredArtifacts = [
   '47_ga_unblock_status.json',
   '48_remaining_external_blocker_closeout.md',
   '48_remaining_external_blocker_closeout.json',
+  '49_external_blocker_progress.md',
+  '49_external_blocker_progress.json',
 ];
 
 function fail(message: string): never {
