@@ -1,0 +1,16 @@
+{
+  "generatedAt": "2026-07-01T23:28:18.792Z",
+  "status": "BLOCKED_BY_SECRET_AUDIT",
+  "workflow": "GateForge Hosted Staging Strict",
+  "dryRun": false,
+  "source": "gh secret list --json name",
+  "details": [
+    "The strict hosted staging workflow was not triggered.",
+    "Run `npm run gateforge:github-secrets-audit` and follow `gateforge-audit/run-2026-06-23-1035/40_missing_github_secrets_remediation.md`."
+  ],
+  "safety": {
+    "secretValuesRead": false,
+    "secretValuesPrinted": false,
+    "productionMutated": false
+  }
+}

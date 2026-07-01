@@ -15,6 +15,9 @@ const reportPath =
     : dryRun || fromFile
       ? '/tmp/fnnlr-gateforge-hosted-strict-trigger-smoke.md'
       : 'gateforge-audit/run-2026-06-23-1035/41_hosted_strict_trigger_attempt.md';
+const jsonOutIndex = process.argv.indexOf('--json-out');
+const jsonPath =
+  jsonOutIndex >= 0 ? process.argv[jsonOutIndex + 1] : reportPath.replace(/\.md$/, '.json');
 
 function run(command: string, args: string[]) {
   const result = spawnSync(command, args, {
@@ -157,12 +160,27 @@ function parseLatestRun(output: string): { status?: string; conclusion?: string;
 }
 
 function writeReport(status: string, details: string[]) {
+  const generatedAt = new Date().toISOString();
+  const source = fromFile ? fromFile : 'gh secret list --json name';
+  const payload = {
+    generatedAt,
+    status,
+    workflow,
+    dryRun,
+    source,
+    details,
+    safety: {
+      secretValuesRead: false,
+      secretValuesPrinted: false,
+      productionMutated: false,
+    },
+  };
   fs.mkdirSync(path.dirname(reportPath), { recursive: true });
   fs.writeFileSync(
     reportPath,
     `# Hosted Strict Trigger Attempt
 
-Generated: \`${new Date().toISOString()}\`
+Generated: \`${generatedAt}\`
 
 Status: \`${status}\`
 
@@ -170,7 +188,7 @@ Workflow: \`${workflow}\`
 
 Dry run: \`${dryRun ? 'true' : 'false'}\`
 
-Source: \`${fromFile ? fromFile : 'gh secret list --json name'}\`
+Source: \`${source}\`
 
 This report contains trigger status and secret names only. It does not contain secret values.
 
@@ -179,4 +197,6 @@ This report contains trigger status and secret names only. It does not contain s
 ${details.map((detail) => `- ${detail}`).join('\n')}
 `,
   );
+  fs.mkdirSync(path.dirname(jsonPath), { recursive: true });
+  fs.writeFileSync(jsonPath, `${JSON.stringify(payload, null, 2)}\n`);
 }
