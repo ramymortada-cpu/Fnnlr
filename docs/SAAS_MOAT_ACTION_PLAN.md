@@ -1,6 +1,6 @@
 # SaaS Moat Action Plan
 
-Generated: `2026-07-01T08:42:12.061Z`
+Generated: `2026-07-01T08:45:51.768Z`
 
 This is the execution board for turning fnnlr from a GateForge-blocked release candidate into a global SaaS with a defensible moat. It intentionally separates code-ready work from external hosted evidence so the team does not confuse local progress with GA approval.
 
@@ -115,8 +115,8 @@ fnnlr's moat is the combination of DB-per-tenant trust, Arabic-first revenue wor
 | ID | Priority | Status | Owner | Action | Moat rationale | Evidence required | Command |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | `AC-001` | `P1` | `READY_NOW` | Product | Define onboarding wizard steps. | Activation moat: time-to-first-value becomes engineered. | ONBOARDING_PROMISE updated with steps. |  |
-| `AC-002` | `P1` | `NEXT` | Engineering | Add industry selection readiness contract and event evidence. | Distribution moat: each segment gets a tailored path. | Readiness module, metrics evidence, and hosted proof gap. |  |
-| `AC-003` | `P1` | `NEXT` | Engineering | Add goal selection readiness contract and event evidence. | Activation moat: workflows map to customer outcomes. | Readiness module, metrics evidence, and goal mapping gap. |  |
+| `AC-002` | `P1` | `READY_NOW` | Engineering | Add industry selection readiness contract and event evidence. | Distribution moat: each segment gets a tailored path. | Onboarding readiness, activation metrics, and tests preserve industry evidence while keeping hosted route proof gap-labeled. |  |
+| `AC-003` | `P1` | `READY_NOW` | Engineering | Add goal selection readiness contract and event evidence. | Activation moat: workflows map to customer outcomes. | Onboarding readiness, activation metrics, and tests preserve goal evidence and workflow mapping while keeping hosted route proof gap-labeled. |  |
 | `AC-004` | `P1` | `READY_NOW` | Product | Define time-to-first-workflow metric. | Activation moat: onboarding quality becomes measurable. | Activation metrics spec, module, and tests define time-to-first-workflow from observed events. |  |
 | `AC-005` | `P1` | `READY_NOW` | Product | Define time-to-first-lead-action metric. | Revenue moat: activation is tied to customer work, not login. | Activation metrics spec, module, and tests define time-to-first-lead-action from observed events. |  |
 | `AC-006` | `P1` | `READY_NOW` | Engineering | Aggregate onboarding abandonment reasons into cohort review actions. | Activation moat: every failed setup trains the system. | Cohort review exposes top abandonment step/reason inside Product and Support owner actions. |  |
