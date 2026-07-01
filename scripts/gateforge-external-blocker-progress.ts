@@ -177,6 +177,20 @@ function countStatuses(rows: ReturnType<typeof buildRows>): Record<BlockerStatus
   };
 }
 
+function renderJson(generatedAt: string, rows: ReturnType<typeof buildRows>) {
+  return {
+    generatedAt,
+    total: rows.length,
+    counts: countStatuses(rows),
+    rows,
+    safety: {
+      secretValuesPrinted: false,
+      productionMutated: false,
+      sourceDumpsIncluded: false,
+    },
+  };
+}
+
 const closeout = readJson<CloseoutJson>(closeoutPath);
 const closeoutErrors = validateCloseout(closeout);
 if (closeoutErrors.length) {
@@ -189,20 +203,38 @@ const localStatuses = loadLocalSecrets();
 const githubNames = loadGithubSecretNames();
 const rows = buildRows(closeout, localStatuses, githubNames);
 const generatedAt = new Date().toISOString();
-const payload = {
-  generatedAt,
-  total: rows.length,
-  counts: countStatuses(rows),
-  rows,
-  safety: {
-    secretValuesPrinted: false,
-    productionMutated: false,
-    sourceDumpsIncluded: false,
-  },
-};
+const payload = renderJson(generatedAt, rows);
 
 if (checkOnly) {
-  if (rows.length !== 16) throw new Error(`expected 16 progress rows, found ${rows.length}`);
+  const expectedGeneratedAt = 'CHECK_TIMESTAMP';
+  const expectedMarkdown = `${renderMarkdown(expectedGeneratedAt, rows).trimEnd()}\n`;
+  const expectedJson = `${JSON.stringify(renderJson(expectedGeneratedAt, rows), null, 2)}\n`;
+  const errors: string[] = [];
+
+  if (rows.length !== 16) errors.push(`expected 16 progress rows, found ${rows.length}`);
+
+  if (!fs.existsSync(outPath)) {
+    errors.push(`missing generated markdown: ${outPath}`);
+  } else {
+    const currentMarkdown = fs.readFileSync(outPath, 'utf8').replace(/Generated: `[^`]+`/, `Generated: \`${expectedGeneratedAt}\``);
+    if (currentMarkdown !== expectedMarkdown) errors.push(`stale generated markdown: ${outPath}`);
+  }
+
+  if (!fs.existsSync(jsonOutPath)) {
+    errors.push(`missing generated json: ${jsonOutPath}`);
+  } else {
+    const currentJson = JSON.parse(fs.readFileSync(jsonOutPath, 'utf8')) as ReturnType<typeof renderJson>;
+    const normalizedJson = `${JSON.stringify({ ...currentJson, generatedAt: expectedGeneratedAt }, null, 2)}\n`;
+    if (normalizedJson !== expectedJson) errors.push(`stale generated json: ${jsonOutPath}`);
+  }
+
+  if (errors.length) {
+    console.error('GateForge external blocker progress: FAIL');
+    errors.forEach((error) => console.error(`  - ${error}`));
+    console.error('Run: npm run gateforge:external-blocker-progress');
+    process.exit(1);
+  }
+
   console.log(`GateForge external blocker progress: PASS (${rows.length} blockers)`);
   process.exit(0);
 }

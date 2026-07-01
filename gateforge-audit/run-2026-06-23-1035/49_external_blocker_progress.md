@@ -1,6 +1,6 @@
 # GateForge External Blocker Progress
 
-Generated: `2026-07-01T10:54:02.604Z`
+Generated: `2026-07-01T12:37:05.315Z`
 
 This progress board converts the 16 remaining external blockers into executable status. It uses secret names and readiness states only; no secret values are printed.
 
