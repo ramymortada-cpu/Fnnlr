@@ -32,6 +32,8 @@ for (const command of [
   'npm run deploy:health-gate',
   'npm run deploy:smoke',
   'npm run gateforge:ga-unblock',
+  'npm run gateforge:external-closeout-validator',
+  'npm run gateforge:hosted-dependency-chain',
   'npm run gateforge:final-gate',
 ]) {
   requireContains(workflowPath, workflow, command);
@@ -50,12 +52,25 @@ for (const artifact of ['49_local_secret_env_template.env', '49_local_secret_env
   requireContains(guidePath, guide, artifact);
 }
 
+for (const artifact of [
+  '52_external_closeout_validator.md',
+  '52_external_closeout_validator.json',
+  '53_hosted_dependency_chain.md',
+  '53_hosted_dependency_chain.json',
+]) {
+  requireContains(workflowPath, workflow, artifact);
+  requireContains(gaEvidenceWorkflowPath, gaEvidenceWorkflow, artifact);
+  requireContains(guidePath, guide, artifact);
+}
+
 for (const phrase of [
   'Hosted secrets preflight',
   'Prepare hosted attestation packet',
   'Validate external evidence packet',
   'Hosted live CI',
   'Hosted Postgres tests',
+  'GateForge external closeout validator',
+  'GateForge hosted dependency chain',
   'GateForge final gate',
 ]) {
   requireContains(guidePath, guide, phrase);
