@@ -163,6 +163,16 @@ This packet is sanitized. It reports secret file names and readiness states only
 5. When the doctor says \`UPLOAD_GITHUB_SECRETS\`, run \`npm run gateforge:hosted-unblock -- --apply\`.
 6. When hosted strict evidence finishes, run \`npm run gateforge:final-gate\` and \`npm run gateforge:final-report\`.
 
+Safe writer helper:
+
+\`\`\`bash
+npm run gateforge:write-local-secret -- --name CONTROL_PLANE_DATABASE_URL --value-env CONTROL_PLANE_DATABASE_URL
+npm run gateforge:write-local-secret -- --name TENANT_DB_ADMIN_URL --value-file /secure/path/TENANT_DB_ADMIN_URL.txt
+printf '%s' "$TENANT_DB_HOST" | npm run gateforge:write-local-secret -- --name TENANT_DB_HOST --stdin
+\`\`\`
+
+The writer validates the value before writing, stores it under \`${secretDir}\`, keeps file permissions at \`0600\`, and never prints the value.
+
 ## Replacement Matrix
 
 | Secret | Kind | Status | Reason | Source | Required action | Validation | Upload phase |
