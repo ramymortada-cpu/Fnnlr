@@ -1,6 +1,6 @@
 # GateForge Secret Replacement Packet
 
-Generated: `2026-07-01T14:38:49.931Z`
+Generated: `2026-07-01T17:36:58.048Z`
 
 This packet is sanitized. It reports secret file names and readiness states only. No secret values were printed or copied.
 
@@ -26,13 +26,15 @@ This packet is sanitized. It reports secret file names and readiness states only
 Safe writer helper:
 
 ```bash
+npm run gateforge:local-secrets-env-template
+cp gateforge-audit/run-2026-06-23-1035/49_local_secret_env_template.env /secure/path/fnnlr-staging.env
 npm run gateforge:import-local-secrets -- --env-file /secure/path/fnnlr-staging.env --require-all
 npm run gateforge:write-local-secret -- --name CONTROL_PLANE_DATABASE_URL --value-env CONTROL_PLANE_DATABASE_URL
 npm run gateforge:write-local-secret -- --name TENANT_DB_ADMIN_URL --value-file /secure/path/TENANT_DB_ADMIN_URL.txt
 printf '%s' "$TENANT_DB_HOST" | npm run gateforge:write-local-secret -- --name TENANT_DB_HOST --stdin
 ```
 
-The import helper validates every provided row before writing any file. The single-secret writer validates the value before writing. Both store files under `/tmp/fnnlr-gateforge-secrets`, keep file permissions at `0600`, and never print secret values.
+The generated env template contains placeholders only and must be filled outside git. The import helper validates every provided row before writing any file. The single-secret writer validates the value before writing. Both store files under `/tmp/fnnlr-gateforge-secrets`, keep file permissions at `0600`, and never print secret values.
 
 ## Replacement Matrix
 
