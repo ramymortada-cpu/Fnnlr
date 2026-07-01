@@ -76,8 +76,7 @@ function list(values: string[]) {
   return values.map((value) => `- ${value}`).join('\n');
 }
 
-function renderMarkdown() {
-  const generatedAt = new Date().toISOString();
+function renderMarkdown(generatedAt: string) {
   const rows = blockers
     .map((blocker) => `| \`${blocker.id}\` | ${blocker.owner} | ${blocker.action} | ${blocker.secrets.map((secret) => `\`${secret}\``).join('<br>')} | ${blocker.validationCommands.map((command) => `\`${command}\``).join('<br>')} |`)
     .join('\n');
@@ -139,9 +138,9 @@ ${sections}
 `;
 }
 
-function renderJson() {
+function renderJson(generatedAt: string) {
   return {
-    generatedAt: new Date().toISOString(),
+    generatedAt,
     status: 'BLOCKED_EXTERNAL',
     count: blockers.length,
     blockerIds: blockers.map((blocker) => blocker.id),
@@ -157,12 +156,40 @@ function renderJson() {
 validate();
 
 if (checkOnly) {
+  const expectedGeneratedAt = 'CHECK_TIMESTAMP';
+  const expectedMarkdown = `${renderMarkdown(expectedGeneratedAt).trimEnd()}\n`;
+  const expectedJson = `${JSON.stringify(renderJson(expectedGeneratedAt), null, 2)}\n`;
+  const errors: string[] = [];
+
+  if (!fs.existsSync(outPath)) {
+    errors.push(`missing generated markdown: ${outPath}`);
+  } else {
+    const currentMarkdown = fs.readFileSync(outPath, 'utf8').replace(/Generated: `[^`]+`/, `Generated: \`${expectedGeneratedAt}\``);
+    if (currentMarkdown !== expectedMarkdown) errors.push(`stale generated markdown: ${outPath}`);
+  }
+
+  if (!fs.existsSync(jsonOutPath)) {
+    errors.push(`missing generated json: ${jsonOutPath}`);
+  } else {
+    const currentJson = JSON.parse(fs.readFileSync(jsonOutPath, 'utf8')) as ReturnType<typeof renderJson>;
+    const normalizedJson = `${JSON.stringify({ ...currentJson, generatedAt: expectedGeneratedAt }, null, 2)}\n`;
+    if (normalizedJson !== expectedJson) errors.push(`stale generated json: ${jsonOutPath}`);
+  }
+
+  if (errors.length) {
+    console.error('GateForge remaining blocker closeout: FAIL');
+    errors.forEach((error) => console.error(`  - ${error}`));
+    console.error('Run: npm run gateforge:remaining-blockers-closeout');
+    process.exit(1);
+  }
+
   console.log(`GateForge remaining blocker closeout: PASS (${blockers.length} blockers)`);
   process.exit(0);
 }
 
+const generatedAt = new Date().toISOString();
 fs.mkdirSync(path.dirname(outPath), { recursive: true });
-fs.writeFileSync(outPath, `${renderMarkdown().trimEnd()}\n`);
-fs.writeFileSync(jsonOutPath, `${JSON.stringify(renderJson(), null, 2)}\n`);
+fs.writeFileSync(outPath, `${renderMarkdown(generatedAt).trimEnd()}\n`);
+fs.writeFileSync(jsonOutPath, `${JSON.stringify(renderJson(generatedAt), null, 2)}\n`);
 console.log(`GateForge remaining blocker closeout: wrote ${outPath}`);
 console.log(`GateForge remaining blocker closeout: wrote ${jsonOutPath}`);

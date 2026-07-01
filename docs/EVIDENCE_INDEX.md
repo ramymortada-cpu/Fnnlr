@@ -37,6 +37,8 @@ process payments, and makes no guaranteed-revenue claim.
 - `ACTIVATION_COHORT_REVIEW.md` — cohort review template.
 - `WORKFLOW_INTELLIGENCE_SPEC.md` — AI/workflow data moat plan.
 - `LEGAL_APPROVAL_TRACKER.md` and `SUBPROCESSORS.md` — legal/compliance execution trackers.
+- `gateforge-audit/run-2026-06-23-1035/48_remaining_external_blocker_closeout.md` — exact closeout checklist for the 16 remaining externally blocked GA evidence items.
+- `gateforge-audit/run-2026-06-23-1035/48_remaining_external_blocker_closeout.json` — machine-readable owner/action/secret/evidence/validation map for the same 16 blockers.
 
 ## Readiness Contract Index
 
