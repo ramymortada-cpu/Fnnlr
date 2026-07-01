@@ -1,0 +1,104 @@
+{
+  "generatedAt": "2026-07-01T19:10:09.101Z",
+  "decision": "PASS",
+  "scoreBand": "65-70/100",
+  "gateState": "CANNOT_APPROVE_LOCAL_EVIDENCE",
+  "nextAction": "Replace local runtime secrets and create a valid hosted staging attestation packet, then run npm run gateforge:hosted-readiness-doctor.",
+  "source": {
+    "moatStatusPath": "docs/SAAS_MOAT_EXECUTION_STATUS.json",
+    "gateStatusPath": "gateforge-audit/run-2026-06-23-1035/47_ga_unblock_status.json",
+    "operatorPacketPath": "gateforge-audit/run-2026-06-23-1035/50_operator_execution_packet.json",
+    "runAuditPath": "gateforge-audit/run-2026-06-23-1035/51_ga_evidence_run_audit.json"
+  },
+  "counts": {
+    "totalMoatActions": 165,
+    "evidenceFilePresent": 144,
+    "externalBlockers": 16,
+    "dependencyBlockers": 5,
+    "operatorRows": 16,
+    "runtimeSecretsOpen": 11,
+    "attestationSecretOptionsOpen": 2
+  },
+  "results": [
+    {
+      "id": "MOAT-165-ROWS",
+      "status": "PASS",
+      "evidence": "docs/SAAS_MOAT_EXECUTION_STATUS.json has 165 row-level records."
+    },
+    {
+      "id": "MOAT-LOCAL-EVIDENCE",
+      "status": "PASS",
+      "evidence": "144 actions are backed by evidence files."
+    },
+    {
+      "id": "MOAT-EXTERNAL-COUNT",
+      "status": "PASS",
+      "evidence": "16 remaining items are externally blocked provider/runtime evidence."
+    },
+    {
+      "id": "P0-SCOPE",
+      "status": "PASS",
+      "evidence": "Open P0 scope is exactly GF-001..GF-016 plus hosted-secret dependency gates GF-017, GF-018, GF-019, GF-021, GF-022."
+    },
+    {
+      "id": "GATE-EXTERNAL-SCOPE",
+      "status": "PASS",
+      "evidence": "GA unblock status lists GF-001..GF-016 as the only open external blockers."
+    },
+    {
+      "id": "GATE-DECISION-HONESTY",
+      "status": "PASS",
+      "evidence": "Gate remains CANNOT_APPROVE_LOCAL_EVIDENCE at 65-70/100 until hosted proof exists."
+    },
+    {
+      "id": "EVIDENCE-SCOPE",
+      "status": "PASS",
+      "evidence": "Local secret readiness is not treated as GA evidence; hosted strict workflow remains required."
+    },
+    {
+      "id": "GATE-SAFETY",
+      "status": "PASS",
+      "evidence": "GA unblock status safety flags confirm no secrets printed and no production mutation."
+    },
+    {
+      "id": "OPERATOR-PACKET-SCOPE",
+      "status": "PASS",
+      "evidence": "Operator packet has 16 blocker rows."
+    },
+    {
+      "id": "OPERATOR-PACKET-COMPLETE",
+      "status": "PASS",
+      "evidence": "Every operator blocker has secret names, evidence requirements, validation commands, exit criteria, and next action."
+    },
+    {
+      "id": "OPERATOR-PACKET-STATE",
+      "status": "PASS",
+      "evidence": "Current next step is local secret replacement for all 16 external blockers."
+    },
+    {
+      "id": "OPERATOR-PACKET-SAFETY",
+      "status": "PASS",
+      "evidence": "Operator packet safety flags confirm no secrets printed, no production mutation, and no source dump."
+    },
+    {
+      "id": "GA-EVIDENCE-WORKFLOW",
+      "status": "PASS",
+      "evidence": "GateForge GA Evidence workflow passed: https://github.com/ramymortada-cpu/Fnnlr/actions/runs/28540665084."
+    },
+    {
+      "id": "GA-EVIDENCE-ANNOTATIONS",
+      "status": "PASS",
+      "evidence": "Latest successful GA evidence workflow has zero failure annotations."
+    },
+    {
+      "id": "GA-EVIDENCE-SAFETY",
+      "status": "PASS",
+      "evidence": "GA evidence run audit safety flags confirm no secrets printed, no production mutation, and no source dump."
+    }
+  ],
+  "safety": {
+    "secretValuesPrinted": false,
+    "productionMutated": false,
+    "sourceDumpsIncluded": false
+  }
+}

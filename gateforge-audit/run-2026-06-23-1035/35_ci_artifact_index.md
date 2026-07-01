@@ -32,6 +32,8 @@ This index defines the expected contents of the `gateforge-ga-evidence` GitHub A
 - `50_operator_execution_packet.json`
 - `51_ga_evidence_run_audit.md`
 - `51_ga_evidence_run_audit.json`
+- `52_external_closeout_validator.md`
+- `52_external_closeout_validator.json`
 
 ## External Evidence Intake
 
