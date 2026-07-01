@@ -37,6 +37,8 @@ This index defines the expected contents of the `gateforge-ga-evidence` GitHub A
 - `52_external_closeout_validator.json`
 - `53_hosted_dependency_chain.md`
 - `53_hosted_dependency_chain.json`
+- `54_hosted_readiness_contract.md`
+- `54_hosted_readiness_contract.json`
 
 ## External Evidence Intake
 

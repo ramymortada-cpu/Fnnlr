@@ -32,6 +32,8 @@ const requiredArtifacts = [
   '52_external_closeout_validator.json',
   '53_hosted_dependency_chain.md',
   '53_hosted_dependency_chain.json',
+  '54_hosted_readiness_contract.md',
+  '54_hosted_readiness_contract.json',
 ];
 const hostedStrictArtifacts = [
   '24_ga_unblock_evidence_pack.md',
@@ -60,6 +62,8 @@ const hostedStrictArtifacts = [
   '52_external_closeout_validator.json',
   '53_hosted_dependency_chain.md',
   '53_hosted_dependency_chain.json',
+  '54_hosted_readiness_contract.md',
+  '54_hosted_readiness_contract.json',
 ];
 
 function fail(message: string): never {

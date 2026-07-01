@@ -74,6 +74,9 @@ jobs:
       - name: GateForge hosted dependency chain
         run: npm run gateforge:hosted-dependency-chain
         if: always()
+      - name: GateForge hosted readiness contract
+        run: npm run gateforge:hosted-readiness-contract
+        if: always()
       - name: GateForge final gate
         run: npm run gateforge:final-gate
       - name: Upload hosted staging evidence
@@ -114,6 +117,8 @@ jobs:
             gateforge-audit/run-*/52_external_closeout_validator.json
             gateforge-audit/run-*/53_hosted_dependency_chain.md
             gateforge-audit/run-*/53_hosted_dependency_chain.json
+            gateforge-audit/run-*/54_hosted_readiness_contract.md
+            gateforge-audit/run-*/54_hosted_readiness_contract.json
             gateforge-audit/external-attestations/HOSTED_STAGING_WAR_ROOM.md
             gateforge-audit/external-attestations/hosted-staging-secrets.manifest.json
             gateforge-audit/external-attestations/hosted-staging-attestation.json
