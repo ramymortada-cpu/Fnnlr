@@ -2,6 +2,13 @@
 
 Purpose: recover users who start onboarding but do not reach first workflow or first publish.
 
+Status: `CONTRACT_READY`
+
+Code evidence:
+
+- `modules/activation/src/recovery-readiness.ts` creates guarded recovery plans from activation metrics.
+- `tests/onboarding-recovery-readiness.test.ts` verifies email/support/operator recovery triggers, abandonment evidence, and guardrails.
+
 ## Triggers
 
 | Trigger | Recovery action |
@@ -22,3 +29,7 @@ Purpose: recover users who start onboarding but do not reach first workflow or f
 ## Owner
 
 Support owns recovery during assisted GA. Product owns metrics and improvements.
+
+## Claim Gate
+
+Do not claim automated onboarding recovery until provider delivery, unsubscribe handling, and hosted evidence exist. Current status is recovery decisioning plus guarded message/task contract.

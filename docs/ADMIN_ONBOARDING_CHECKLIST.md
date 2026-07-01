@@ -2,6 +2,13 @@
 
 Use this for every customer setup. Do not mark a step done without evidence.
 
+Status: `CONTRACT_READY`
+
+Code evidence:
+
+- `modules/activation/src/recovery-readiness.ts` exposes `adminOnboardingChecklistReadiness`.
+- `tests/onboarding-recovery-readiness.test.ts` proves the checklist cannot close while evidence items are missing.
+
 | Step | Evidence |
 | --- | --- |
 | Industry selected | onboarding answer or config |

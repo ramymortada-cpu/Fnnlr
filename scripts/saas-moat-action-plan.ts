@@ -96,8 +96,8 @@ const evidenceFilesByActionId: Record<string, string[]> = {
   'AC-004': ['docs/ACTIVATION_METRICS_SPEC.md', 'modules/activation/src/metrics.ts', 'tests/activation-metrics.test.ts'],
   'AC-005': ['docs/ACTIVATION_METRICS_SPEC.md', 'modules/activation/src/metrics.ts', 'tests/activation-metrics.test.ts'],
   'AC-006': ['docs/ACTIVATION_METRICS_SPEC.md', 'docs/ACTIVATION_COHORT_REVIEW.md', 'modules/activation/src/metrics.ts', 'modules/activation/src/cohort-review.ts', 'tests/activation-metrics.test.ts'],
-  'AC-007': ['docs/ONBOARDING_RECOVERY_SEQUENCE.md'],
-  'AC-008': ['docs/ADMIN_ONBOARDING_CHECKLIST.md'],
+  'AC-007': ['docs/ONBOARDING_RECOVERY_SEQUENCE.md', 'modules/activation/src/recovery-readiness.ts', 'tests/onboarding-recovery-readiness.test.ts'],
+  'AC-008': ['docs/ADMIN_ONBOARDING_CHECKLIST.md', 'modules/activation/src/recovery-readiness.ts', 'tests/onboarding-recovery-readiness.test.ts'],
   'DT-001': ['docs/SAAS_MOAT_ACTION_PLAN.md'],
   'DT-002': ['docs/industry-templates/real-estate.md'],
   'DT-003': ['docs/industry-templates/clinics.md'],
@@ -220,8 +220,8 @@ function activationMoat(): Action[] {
     a('AC-004', 'Activation moat', 'P1', 'NEXT', 'Product', 'Define time-to-first-workflow metric.', 'Activation moat: onboarding quality becomes measurable.', 'Metric definition with event names.'),
     a('AC-005', 'Activation moat', 'P1', 'NEXT', 'Product', 'Define time-to-first-lead-action metric.', 'Revenue moat: activation is tied to customer work, not login.', 'Metric definition with event names.'),
     a('AC-006', 'Activation moat', 'P1', 'NEXT', 'Engineering', 'Aggregate onboarding abandonment reasons into cohort review actions.', 'Activation moat: every failed setup trains the system.', 'Cohort review exposes top abandonment step/reason with owner action.'),
-    a('AC-007', 'Activation moat', 'P2', 'NEXT', 'Product', 'Create onboarding recovery email sequence.', 'Distribution moat: reduces trial drop-off.', 'Email copy and trigger conditions.'),
-    a('AC-008', 'Activation moat', 'P2', 'NEXT', 'Support', 'Create admin onboarding checklist.', 'Support moat: handoff becomes repeatable.', 'Checklist linked to SALES_TO_ACTIVATION_HANDOFF.'),
+    a('AC-007', 'Activation moat', 'P2', 'NEXT', 'Product', 'Create onboarding recovery decision contract.', 'Distribution moat: reduces trial drop-off.', 'Recovery plan module with guarded email/support/operator triggers.'),
+    a('AC-008', 'Activation moat', 'P2', 'NEXT', 'Support', 'Create evidence-gated admin onboarding checklist.', 'Support moat: handoff becomes repeatable.', 'Checklist readiness blocks closure until proof exists.'),
   ];
 }
 
