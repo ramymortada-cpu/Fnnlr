@@ -63,6 +63,8 @@ jobs:
         run: npm run gateforge:trigger-hosted-strict-smoke
       - name: SaaS moat action plan check
         run: npm run moat:check
+      - name: SaaS moat status consistency smoke
+        run: npm run moat:status-consistency-smoke
       - name: SaaS moat execution status
         run: npm run moat:status
       - name: GateForge remaining external blocker closeout

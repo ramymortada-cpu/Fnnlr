@@ -106,6 +106,7 @@
     "gateforge:war-room": "tsx scripts/gateforge-war-room.ts",
     "moat:plan": "tsx scripts/saas-moat-action-plan.ts",
     "moat:check": "tsx scripts/saas-moat-action-plan.ts --check",
+    "moat:status-consistency-smoke": "tsx scripts/saas-moat-status-consistency-smoke.ts",
     "moat:status": "tsx scripts/saas-moat-action-plan.ts --status",
     "customer:repeatability-check": "tsx scripts/repeatability.ts check",
     "customer:repeatability-report": "tsx scripts/repeatability.ts report",
