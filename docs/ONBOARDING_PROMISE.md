@@ -6,6 +6,8 @@
 ## Day 0 — setup
 - Config validation (`customer:verify`, `customer:execution-verify`).
 - Workspace / business setup (`customer:create`, idempotent).
+- Industry and goal selection are validated against the supported activation contract.
+- The selected industry maps to a reusable template, and the selected goal maps to the first workflow, primary activation metric, and support prompt.
 - First funnel created.
 - Activation begins (`/activation`).
 
@@ -31,6 +33,7 @@
 - We do not promise revenue, sales, or a specific number of leads.
 - We do not auto-send WhatsApp and we do not process payments.
 - Recommendations appear only when there is enough observed data.
+- We do not claim fully tailored onboarding until route validation and hosted persistence proof are attached.
 
 ## What we need from you to keep this schedule
 The customer responsibilities checklist in `CUSTOMER_AGREEMENT_DRAFT.md` —

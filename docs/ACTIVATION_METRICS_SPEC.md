@@ -9,7 +9,8 @@ Code evidence:
 - `modules/activation/src/metrics.ts` computes time-to-first-workflow, time-to-first-publish, time-to-first-lead-action, template selection, first signal, and abandonment state from observed activation events.
 - `tests/activation-metrics.test.ts` proves missing evidence stays explicit instead of being treated as activation.
 - `modules/activation/src/onboarding-readiness.ts` classifies industry and goal selection readiness without overstating UI/hosted proof.
-- `tests/onboarding-readiness.test.ts` proves tailored onboarding remains gap-labeled until validation and hosted persistence evidence exist.
+- `modules/activation/src/onboarding-readiness.ts` maps supported industries and goals to first activation workflow, template id, primary metric, and support prompt.
+- `tests/onboarding-readiness.test.ts` proves tailored onboarding remains gap-labeled until route and hosted persistence evidence exist, while supported industry/goal validation and workflow mapping are contract-ready.
 
 | Metric | Definition | Why it matters |
 | --- | --- | --- |
@@ -27,7 +28,14 @@ Status: `CONTRACT_READY_WITH_ONBOARDING_GAPS`
 - Industry and goal values are part of the activation event contract.
 - Activation metrics expose selected industries and selected goals per workspace.
 - Industry template briefs exist for the first wedge segments.
-- Full tailored onboarding must stay unclaimed until route validation, goal-to-workflow mapping, negative tests, and hosted persistence proof are attached.
+- Goal-to-workflow mapping is contract-ready for:
+  - `get_more_leads` → lead capture/follow-up with `first_signal_received`.
+  - `improve_whatsapp_conversion` → WhatsApp response loop with `time_to_first_lead_action`.
+  - `reduce_payment_drop_off` → payment-state recovery with `time_to_first_lead_action`.
+  - `launch_new_offer` → offer publish launch with `time_to_first_publish`.
+  - `improve_follow_up` → follow-up recovery with `time_to_first_lead_action`.
+  - `diagnose_revenue_leaks` → revenue leak diagnosis with `time_to_first_workflow`.
+- Full tailored onboarding must stay unclaimed until route validation and hosted persistence proof are attached.
 
 ## Abandonment Learning Loop
 
