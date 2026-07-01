@@ -84,8 +84,8 @@ jobs:
         run: npm run gateforge:operator-execution-packet
         continue-on-error: true
       - name: GateForge GA unblock evidence
-        run: npm run gateforge:ga-unblock
-        continue-on-error: true
+        run: |
+          npm run gateforge:ga-unblock || echo "::notice title=GateForge GA evidence remains blocked::Local evidence artifact generation completed with CANNOT_APPROVE because hosted staging/runtime evidence is still missing."
       - name: GateForge war room
         run: npm run gateforge:war-room
         if: always()
