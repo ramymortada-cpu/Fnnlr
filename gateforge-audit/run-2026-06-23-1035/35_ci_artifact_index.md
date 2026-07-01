@@ -17,6 +17,10 @@ This index defines the expected contents of the `gateforge-ga-evidence` GitHub A
 - `32_external_evidence_intake.md`
 - `33_final_gate_evaluator.md`
 - `34_final_gate_current_decision.md`
+- `35_ci_artifact_index.md`
+- `46_attestation_secret_pack.md`
+- `49_local_secret_env_template.env`
+- `49_local_secret_env_template.md`
 - `47_ga_unblock_status.md`
 - `47_ga_unblock_status.json`
 - `48_remaining_external_blocker_closeout.md`
