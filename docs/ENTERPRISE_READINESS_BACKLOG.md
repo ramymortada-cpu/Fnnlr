@@ -7,7 +7,9 @@ This is not required for initial Conditional GO, but it is required for a global
 Code evidence:
 
 - `modules/enterprise/src/readiness.ts` defines the enterprise capability contract and sales-posture gate.
+- `modules/enterprise/src/governance-readiness.ts` defines the RBAC/workspace policy readiness gate.
 - `tests/enterprise-readiness.test.ts` verifies roadmap honesty, unsupported-claim blocking, missing-evidence blocking, and the strict enterprise-ready condition.
+- `tests/enterprise-governance-readiness.test.ts` verifies governance cannot be claimed ready while permission catalog, route policy mapping, negative permission tests, policy enforcement hooks, or admin policy UI remain roadmap-only.
 
 | Area | Requirement | Priority |
 | --- | --- | --- |
@@ -19,6 +21,10 @@ Code evidence:
 | Data residency | Clear MENA/global hosting position | P2 |
 | Procurement | Security/legal checklist for buyer review | P2 |
 | SOC2 | Control roadmap and evidence owners | P3 |
+
+## RBAC and Workspace Policy Claim Gate
+
+Do not claim "enterprise RBAC ready" or "workspace governance ready" until all required capabilities in `GOVERNANCE_READINESS_BASELINE` are `READY` or `CONTRACT_READY` with evidence attached. The current owner/admin/member model is contract evidence, but granular permissions, route policy mapping, negative permission tests, policy enforcement hooks, and admin policy UI remain roadmap until implemented and tested.
 
 ## Rule
 

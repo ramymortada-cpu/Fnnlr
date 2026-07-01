@@ -108,8 +108,8 @@ const evidenceFilesByActionId: Record<string, string[]> = {
   'DT-008': ['docs/OBJECTION_HANDLING_LIBRARY.md'],
   'DT-009': ['docs/PARTNER_AGENCY_PROGRAM.md'],
   'DT-010': ['docs/CASE_STUDY_TEMPLATE.md'],
-  'EN-001': ['docs/ENTERPRISE_READINESS_BACKLOG.md', 'modules/enterprise/src/readiness.ts', 'tests/enterprise-readiness.test.ts'],
-  'EN-002': ['docs/ENTERPRISE_READINESS_BACKLOG.md', 'modules/enterprise/src/readiness.ts', 'tests/enterprise-readiness.test.ts'],
+  'EN-001': ['docs/ENTERPRISE_READINESS_BACKLOG.md', 'modules/enterprise/src/readiness.ts', 'modules/enterprise/src/governance-readiness.ts', 'tests/enterprise-readiness.test.ts', 'tests/enterprise-governance-readiness.test.ts'],
+  'EN-002': ['docs/ENTERPRISE_READINESS_BACKLOG.md', 'modules/enterprise/src/readiness.ts', 'modules/enterprise/src/governance-readiness.ts', 'tests/enterprise-readiness.test.ts', 'tests/enterprise-governance-readiness.test.ts'],
   'EN-003': ['docs/ENTERPRISE_READINESS_BACKLOG.md', 'docs/AUDIT_LOG_VIEWER_BACKLOG.md', 'modules/enterprise/src/readiness.ts', 'modules/enterprise/src/audit-log-readiness.ts', 'tests/enterprise-readiness.test.ts', 'tests/audit-log-readiness.test.ts'],
   'EN-004': ['docs/SSO_OIDC_READINESS.md', 'modules/enterprise/src/identity-readiness.ts', 'tests/enterprise-identity-readiness.test.ts'],
   'EN-005': ['docs/SSO_OIDC_READINESS.md', 'modules/enterprise/src/identity-readiness.ts', 'tests/enterprise-identity-readiness.test.ts'],
@@ -242,8 +242,8 @@ function distributionMoat(): Action[] {
 
 function enterpriseMoat(): Action[] {
   return [
-    a('EN-001', 'Enterprise moat', 'P2', 'NEXT', 'Engineering', 'Create RBAC expansion backlog.', 'Enterprise moat: admins need granular control.', 'Role matrix and tests backlog.'),
-    a('EN-002', 'Enterprise moat', 'P2', 'NEXT', 'Engineering', 'Create workspace policy backlog.', 'Enterprise moat: workspace governance supports larger accounts.', 'Policy acceptance criteria.'),
+    a('EN-001', 'Enterprise moat', 'P2', 'NEXT', 'Engineering', 'Create RBAC expansion readiness contract.', 'Enterprise moat: admins need granular control.', 'Role matrix, governance readiness tests, and route policy gaps.'),
+    a('EN-002', 'Enterprise moat', 'P2', 'NEXT', 'Engineering', 'Create workspace policy readiness contract.', 'Enterprise moat: workspace governance supports larger accounts.', 'Policy acceptance criteria, governance readiness tests, and admin UI gap.'),
     a('EN-003', 'Enterprise moat', 'P2', 'NEXT', 'Engineering', 'Create audit export backlog.', 'Trust moat: enterprise security teams need exportable logs.', 'Export format and permissions spec.'),
     a('EN-004', 'Enterprise moat', 'P2', 'LATER', 'Engineering', 'Create SSO/OIDC readiness plan.', 'Enterprise moat: procurement path for larger buyers.', 'SSO readiness doc.'),
     a('EN-005', 'Enterprise moat', 'P2', 'LATER', 'Engineering', 'Create SAML backlog.', 'Enterprise moat: supports traditional enterprise identity.', 'SAML acceptance criteria.'),

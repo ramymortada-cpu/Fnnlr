@@ -1,6 +1,6 @@
 # SaaS Moat Action Plan
 
-Generated: `2026-07-01T00:37:48.612Z`
+Generated: `2026-07-01T00:43:56.367Z`
 
 This is the execution board for turning fnnlr from a GateForge-blocked release candidate into a global SaaS with a defensible moat. It intentionally separates code-ready work from external hosted evidence so the team does not confuse local progress with GA approval.
 
@@ -142,8 +142,8 @@ fnnlr's moat is the combination of DB-per-tenant trust, Arabic-first revenue wor
 
 | ID | Priority | Status | Owner | Action | Moat rationale | Evidence required | Command |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| `EN-001` | `P2` | `NEXT` | Engineering | Create RBAC expansion backlog. | Enterprise moat: admins need granular control. | Role matrix and tests backlog. |  |
-| `EN-002` | `P2` | `NEXT` | Engineering | Create workspace policy backlog. | Enterprise moat: workspace governance supports larger accounts. | Policy acceptance criteria. |  |
+| `EN-001` | `P2` | `NEXT` | Engineering | Create RBAC expansion readiness contract. | Enterprise moat: admins need granular control. | Role matrix, governance readiness tests, and route policy gaps. |  |
+| `EN-002` | `P2` | `NEXT` | Engineering | Create workspace policy readiness contract. | Enterprise moat: workspace governance supports larger accounts. | Policy acceptance criteria, governance readiness tests, and admin UI gap. |  |
 | `EN-003` | `P2` | `NEXT` | Engineering | Create audit export backlog. | Trust moat: enterprise security teams need exportable logs. | Export format and permissions spec. |  |
 | `EN-004` | `P2` | `LATER` | Engineering | Create SSO/OIDC readiness plan. | Enterprise moat: procurement path for larger buyers. | SSO readiness doc. |  |
 | `EN-005` | `P2` | `LATER` | Engineering | Create SAML backlog. | Enterprise moat: supports traditional enterprise identity. | SAML acceptance criteria. |  |
