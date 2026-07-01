@@ -1,6 +1,6 @@
 # SaaS Moat Action Plan
 
-Generated: `2026-07-01T02:30:57.365Z`
+Generated: `2026-07-01T02:35:29.677Z`
 
 This is the execution board for turning fnnlr from a GateForge-blocked release candidate into a global SaaS with a defensible moat. It intentionally separates code-ready work from external hosted evidence so the team does not confuse local progress with GA approval.
 
@@ -107,8 +107,8 @@ fnnlr's moat is the combination of DB-per-tenant trust, Arabic-first revenue wor
 | `WI-004` | `P1` | `NEXT` | Product | Define next-best-action v1 rules. | Workflow moat: recommendations become productized operating guidance. | Rules document with evidence inputs. |  |
 | `WI-005` | `P1` | `NEXT` | Product | Define follow-up quality score. | Arabic-first moat: sales language can be scored by local norms. | Scoring rubric in docs. |  |
 | `WI-006` | `P2` | `NEXT` | Product | Create lead qualification confidence rubric. | Workflow moat: CRM work becomes guided and measurable. | Rubric and test fixtures. |  |
-| `WI-007` | `P2` | `NEXT` | Engineering | Create AI cost dashboard backlog. | Margin moat: operators can see and cap AI spend. | Dashboard acceptance criteria. |  |
-| `WI-008` | `P2` | `NEXT` | Engineering | Create tenant AI cap UI backlog. | Trust moat: customers get predictable AI behavior. | UI acceptance criteria linked to existing env caps. |  |
+| `WI-007` | `P2` | `NEXT` | Engineering | Add AI cost dashboard readiness and cap forecast evidence. | Margin moat: operators can see and cap AI spend. | Dashboard readiness review plus cap forecast tests. |  |
+| `WI-008` | `P2` | `NEXT` | Engineering | Add tenant AI cap change forecast contract before UI implementation. | Trust moat: customers get predictable AI behavior. | Cap change forecast, approval evidence, and remaining UI gap. |  |
 
 ## Activation moat
 

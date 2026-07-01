@@ -88,8 +88,8 @@ const evidenceFilesByActionId: Record<string, string[]> = {
   'WI-004': ['docs/WORKFLOW_INTELLIGENCE_SPEC.md', 'modules/ai-ops/src/workflow-intelligence.ts', 'tests/workflow-intelligence.test.ts'],
   'WI-005': ['docs/WORKFLOW_INTELLIGENCE_SPEC.md', 'modules/ai-ops/src/workflow-intelligence.ts', 'tests/workflow-intelligence.test.ts'],
   'WI-006': ['docs/WORKFLOW_INTELLIGENCE_SPEC.md', 'modules/ai-ops/src/workflow-intelligence.ts', 'tests/workflow-intelligence.test.ts'],
-  'WI-007': ['docs/AI_SPEND_REVIEW_TEMPLATE.md', 'modules/ai-ops/src/dashboard-readiness.ts', 'tests/workflow-intelligence.test.ts'],
-  'WI-008': ['docs/WORKFLOW_INTELLIGENCE_SPEC.md', 'modules/ai-ops/src/dashboard-readiness.ts', 'tests/workflow-intelligence.test.ts'],
+  'WI-007': ['docs/AI_SPEND_REVIEW_TEMPLATE.md', 'modules/ai-ops/src/spend-review.ts', 'modules/ai-ops/src/dashboard-readiness.ts', 'tests/workflow-intelligence.test.ts'],
+  'WI-008': ['docs/WORKFLOW_INTELLIGENCE_SPEC.md', 'docs/AI_SPEND_REVIEW_TEMPLATE.md', 'modules/ai-ops/src/spend-review.ts', 'modules/ai-ops/src/dashboard-readiness.ts', 'tests/workflow-intelligence.test.ts'],
   'AC-001': ['docs/ONBOARDING_PROMISE.md', 'docs/ACTIVATION_METRICS_SPEC.md'],
   'AC-002': ['docs/ACTIVATION_METRICS_SPEC.md', 'apps/web/onboarding.html', 'modules/activation/src/metrics.ts', 'modules/activation/src/onboarding-readiness.ts', 'tests/onboarding-readiness.test.ts'],
   'AC-003': ['docs/ACTIVATION_METRICS_SPEC.md', 'apps/web/onboarding.html', 'modules/activation/src/metrics.ts', 'modules/activation/src/onboarding-readiness.ts', 'tests/onboarding-readiness.test.ts'],
@@ -207,8 +207,8 @@ function workflowIntelligenceMoat(): Action[] {
     a('WI-004', 'Workflow intelligence moat', 'P1', 'NEXT', 'Product', 'Define next-best-action v1 rules.', 'Workflow moat: recommendations become productized operating guidance.', 'Rules document with evidence inputs.'),
     a('WI-005', 'Workflow intelligence moat', 'P1', 'NEXT', 'Product', 'Define follow-up quality score.', 'Arabic-first moat: sales language can be scored by local norms.', 'Scoring rubric in docs.'),
     a('WI-006', 'Workflow intelligence moat', 'P2', 'NEXT', 'Product', 'Create lead qualification confidence rubric.', 'Workflow moat: CRM work becomes guided and measurable.', 'Rubric and test fixtures.'),
-    a('WI-007', 'Workflow intelligence moat', 'P2', 'NEXT', 'Engineering', 'Create AI cost dashboard backlog.', 'Margin moat: operators can see and cap AI spend.', 'Dashboard acceptance criteria.'),
-    a('WI-008', 'Workflow intelligence moat', 'P2', 'NEXT', 'Engineering', 'Create tenant AI cap UI backlog.', 'Trust moat: customers get predictable AI behavior.', 'UI acceptance criteria linked to existing env caps.'),
+    a('WI-007', 'Workflow intelligence moat', 'P2', 'NEXT', 'Engineering', 'Add AI cost dashboard readiness and cap forecast evidence.', 'Margin moat: operators can see and cap AI spend.', 'Dashboard readiness review plus cap forecast tests.'),
+    a('WI-008', 'Workflow intelligence moat', 'P2', 'NEXT', 'Engineering', 'Add tenant AI cap change forecast contract before UI implementation.', 'Trust moat: customers get predictable AI behavior.', 'Cap change forecast, approval evidence, and remaining UI gap.'),
   ];
 }
 

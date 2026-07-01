@@ -6,7 +6,8 @@ Code evidence:
 
 - `modules/ai-ops/src/workflow-intelligence.ts` computes total AI cost, cost per workflow, cost per successful action, and degraded fallback rate.
 - `modules/ai-ops/src/spend-review.ts` converts spend metrics into `IN_BUDGET`, `WATCH`, or `COST_RESCUE`.
-- `tests/workflow-intelligence.test.ts` verifies controlled spend, budget overrun rescue, kill-switch degradation, and missing successful-action evidence.
+- `modules/ai-ops/src/spend-review.ts` forecasts tenant AI cap changes before Finance/ops approval.
+- `tests/workflow-intelligence.test.ts` verifies controlled spend, budget overrun rescue, kill-switch degradation, missing successful-action evidence, and cap-change forecast decisions.
 
 Default thresholds:
 
@@ -56,3 +57,17 @@ The review is `WATCH` when:
 - any kill-switch activation is detected
 
 Every action must include owner, action, and evidence required for the next monthly review.
+
+## Tenant Cap Change Forecast
+
+Status: `CONTRACT_READY`
+
+Before increasing or decreasing a tenant AI cap, Finance/ops must attach:
+
+- tenant-scoped AI usage events for the requested period
+- projected utilization against the proposed cap
+- cost per successful action
+- degraded fallback rate
+- requester, approver, old cap, new cap, and audit event reference
+
+Cap changes are `APPROVE` only when successful-action cost evidence exists, degraded fallback rate is within threshold, and projected utilization is not near limit. Otherwise the change is `REVIEW` or `REJECT`.

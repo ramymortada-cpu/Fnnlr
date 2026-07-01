@@ -12,6 +12,7 @@ import {
 import {
   createAISpendReview,
   DEFAULT_AI_SPEND_REVIEW_THRESHOLDS,
+  forecastAICapChange,
 } from '../modules/ai-ops/src/spend-review.js';
 import {
   AI_OPERATIONS_SURFACES,
@@ -128,6 +129,43 @@ test('AI spend review treats missing successful-action cost evidence as rescue',
   assert.equal(review.status, 'COST_RESCUE');
   assert.deepEqual(review.blockers, ['missing_successful_action_cost_evidence']);
   assert.ok(review.actions.some((action) => action.owner === 'Product'));
+});
+
+test('AI cap change forecast approves clean increases with margin evidence', () => {
+  const forecast = forecastAICapChange({
+    tenantId: 'tenant_1',
+    currentCapUsd: 50,
+    proposedCapUsd: 100,
+    events: [
+      { ...base, tenantId: 'tenant_1', workflowId: 'wf_1', outcomeStatus: 'successful', actualCostUsd: 4 },
+      { ...base, tenantId: 'tenant_1', workflowId: 'wf_2', outcomeStatus: 'successful', actualCostUsd: 6 },
+      { ...base, tenantId: 'tenant_2', workflowId: 'wf_3', outcomeStatus: 'successful', actualCostUsd: 90 },
+    ],
+    thresholds: { ...DEFAULT_AI_SPEND_REVIEW_THRESHOLDS, maxCostPerSuccessfulActionUsd: 10 },
+  });
+
+  assert.equal(forecast.decision, 'APPROVE');
+  assert.equal(forecast.projectedUtilizationRate, 0.1);
+  assert.equal(forecast.projectedCostPerSuccessfulActionUsd, 5);
+  assert.deepEqual(forecast.reasons, []);
+  assert.ok(forecast.evidenceRequired.some((item) => item.includes('audit event')));
+});
+
+test('AI cap change forecast requires review when outcome evidence or margin is weak', () => {
+  const forecast = forecastAICapChange({
+    tenantId: 'tenant_1',
+    currentCapUsd: 50,
+    proposedCapUsd: 55,
+    events: [
+      { ...base, tenantId: 'tenant_1', workflowId: 'wf_1', outcomeStatus: 'failed', actualCostUsd: 40 },
+      { ...base, tenantId: 'tenant_1', workflowId: 'wf_2', status: 'degraded', degradationReason: 'provider timeout', actualCostUsd: 10 },
+    ],
+  });
+
+  assert.equal(forecast.decision, 'REVIEW');
+  assert.ok(forecast.reasons.includes('missing_successful_action_cost_evidence'));
+  assert.ok(forecast.reasons.includes('degraded_fallback_rate_above_threshold'));
+  assert.ok(forecast.reasons.includes('projected_utilization_near_limit'));
 });
 
 test('next-best-action ranks P0 operational evidence before growth suggestions', () => {
@@ -260,10 +298,11 @@ test('AI operations dashboard readiness is contract-ready but gap-labeled for ca
   const review = reviewAIOperationsReadiness();
 
   assert.equal(review.decision, 'CONTRACT_READY_WITH_GAPS');
-  assert.equal(review.dashboardReady, false);
+  assert.equal(review.dashboardReady, true);
   assert.equal(review.tenantCapUiReady, false);
   assert.ok(review.readySurfaces.includes('tenant_cost_summary'));
   assert.ok(review.readySurfaces.includes('workflow_cost_breakdown'));
+  assert.ok(review.readySurfaces.includes('budget_forecast'));
   assert.ok(review.gapSurfaces.includes('tenant_cap_display'));
   assert.ok(review.gapSurfaces.includes('tenant_cap_change_request'));
   assert.deepEqual(review.blockedSurfaces, []);

@@ -23,6 +23,19 @@ export type AISpendReviewAction = {
   evidenceRequired: string;
 };
 
+export type AICapChangeDecision = 'APPROVE' | 'REVIEW' | 'REJECT';
+
+export type AICapChangeForecast = {
+  tenantId: string;
+  currentCapUsd: number;
+  proposedCapUsd: number;
+  projectedUtilizationRate: number;
+  projectedCostPerSuccessfulActionUsd: number | null;
+  decision: AICapChangeDecision;
+  reasons: string[];
+  evidenceRequired: string[];
+};
+
 export type AISpendReview = {
   period: AISpendReviewPeriod;
   status: AISpendReviewStatus;
@@ -68,6 +81,52 @@ export function createAISpendReview(
     killSwitchActivations,
     blockers,
     actions: aiSpendActions(blockers),
+  };
+}
+
+export function forecastAICapChange(input: {
+  tenantId: string;
+  currentCapUsd: number;
+  proposedCapUsd: number;
+  events: WorkflowIntelligenceEvent[];
+  thresholds?: AISpendReviewThresholds;
+}): AICapChangeForecast {
+  const thresholds = input.thresholds ?? DEFAULT_AI_SPEND_REVIEW_THRESHOLDS;
+  const tenantEvents = input.events.filter((event) => event.tenantId === input.tenantId);
+  const metrics = computeWorkflowIntelligenceMetrics(tenantEvents);
+  const projectedUtilizationRate = input.proposedCapUsd > 0
+    ? roundRate(metrics.totalCostUsd / input.proposedCapUsd)
+    : 1;
+  const reasons: string[] = [];
+
+  if (input.proposedCapUsd <= 0) reasons.push('proposed_cap_must_be_positive');
+  if (input.proposedCapUsd < input.currentCapUsd) reasons.push('cap_decrease_requires_manual_review');
+  if (metrics.costPerSuccessfulAction === null) reasons.push('missing_successful_action_cost_evidence');
+  if (
+    metrics.costPerSuccessfulAction !== null &&
+    metrics.costPerSuccessfulAction > thresholds.maxCostPerSuccessfulActionUsd
+  ) {
+    reasons.push('cost_per_successful_action_above_threshold');
+  }
+  if (metrics.degradedFallbackRate > thresholds.maxDegradedFallbackRate) {
+    reasons.push('degraded_fallback_rate_above_threshold');
+  }
+  if (projectedUtilizationRate >= 0.85) reasons.push('projected_utilization_near_limit');
+
+  return {
+    tenantId: input.tenantId,
+    currentCapUsd: input.currentCapUsd,
+    proposedCapUsd: input.proposedCapUsd,
+    projectedUtilizationRate,
+    projectedCostPerSuccessfulActionUsd: metrics.costPerSuccessfulAction,
+    decision: capChangeDecision(reasons),
+    reasons,
+    evidenceRequired: [
+      'tenant AI usage events for the requested period',
+      'cost per successful action evidence',
+      'Finance/ops approval note for the proposed cap',
+      'audit event linking requester, approver, old cap, and new cap',
+    ],
   };
 }
 
@@ -144,6 +203,19 @@ function aiSpendActions(blockers: string[]): AISpendReviewAction[] {
   }
 
   return [...actions.values()];
+}
+
+function capChangeDecision(reasons: string[]): AICapChangeDecision {
+  if (reasons.includes('proposed_cap_must_be_positive')) return 'REJECT';
+  if (
+    reasons.includes('missing_successful_action_cost_evidence') ||
+    reasons.includes('cost_per_successful_action_above_threshold') ||
+    reasons.includes('degraded_fallback_rate_above_threshold')
+  ) {
+    return 'REVIEW';
+  }
+  if (reasons.length > 0) return 'REVIEW';
+  return 'APPROVE';
 }
 
 function roundRate(value: number) {

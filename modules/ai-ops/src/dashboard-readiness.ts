@@ -58,12 +58,16 @@ export const AI_OPERATIONS_SURFACES: AIOperationsSurface[] = [
   ]),
   s('tenant_cap_change_request', 'Tenant AI cap change request workflow', 'cap_control', 'ROADMAP', 'Finance/ops', [
     'docs/WORKFLOW_INTELLIGENCE_SPEC.md',
+    'modules/ai-ops/src/spend-review.ts',
+    'tests/workflow-intelligence.test.ts',
   ]),
   s('kill_switch_status', 'AI kill switch status', 'safety', 'CONTRACT_READY', 'Engineering', [
     'packages/ai-core/src/gateway.ts',
     'tests/brains.test.ts',
   ]),
-  s('budget_forecast', 'AI budget forecast before cap changes', 'dashboard', 'ROADMAP', 'Finance/ops', [
+  s('budget_forecast', 'AI budget forecast before cap changes', 'dashboard', 'CONTRACT_READY', 'Finance/ops', [
+    'modules/ai-ops/src/spend-review.ts',
+    'tests/workflow-intelligence.test.ts',
     'docs/AI_SPEND_REVIEW_TEMPLATE.md',
   ]),
 ];

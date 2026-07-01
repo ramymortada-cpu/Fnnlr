@@ -59,5 +59,5 @@ Implementation status: `CONTRACT_READY` via `scoreLeadQualificationConfidence`.
 
 - Wire workflow ids from workflow/funnel routes into `AIUsageEvent.workflowId`.
 - Wire recommendation/outcome ids into `AIUsageEvent.outcomeId` and `AIUsageEvent.outcomeStatus`.
-- Add dashboard for AI spend by tenant and workflow using `computeWorkflowIntelligenceMetrics`: `CONTRACT_READY_WITH_GAPS` via `reviewAIOperationsReadiness`.
-- Add tenant AI cap UI on top of existing budget guard: `ROADMAP` until cap display and cap-change request surfaces have UI/API evidence.
+- Add dashboard for AI spend by tenant and workflow using `computeWorkflowIntelligenceMetrics`: dashboard contract is ready via `reviewAIOperationsReadiness`.
+- Add tenant AI cap UI on top of existing budget guard: cap-change forecast is contract-ready via `forecastAICapChange`; cap display and end-user UI remain `ROADMAP` until UI/API evidence exists.
