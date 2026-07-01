@@ -8,6 +8,8 @@ Code evidence:
 
 - `modules/activation/src/metrics.ts` computes time-to-first-workflow, time-to-first-publish, time-to-first-lead-action, template selection, first signal, and abandonment state from observed activation events.
 - `tests/activation-metrics.test.ts` proves missing evidence stays explicit instead of being treated as activation.
+- `modules/activation/src/onboarding-readiness.ts` classifies industry and goal selection readiness without overstating UI/hosted proof.
+- `tests/onboarding-readiness.test.ts` proves tailored onboarding remains gap-labeled until validation and hosted persistence evidence exist.
 
 | Metric | Definition | Why it matters |
 | --- | --- | --- |
@@ -17,6 +19,15 @@ Code evidence:
 | `template_selected` | Industry template selected during onboarding | Measures template-market fit |
 | `onboarding_abandoned` | Last completed onboarding step before exit | Finds setup friction |
 | `first_signal_received` | First page view, WhatsApp click, lead, or payment-state signal | Confirms instrumentation works |
+
+## Industry And Goal Claim Gate
+
+Status: `CONTRACT_READY_WITH_ONBOARDING_GAPS`
+
+- Industry and goal values are part of the activation event contract.
+- Activation metrics expose selected industries and selected goals per workspace.
+- Industry template briefs exist for the first wedge segments.
+- Full tailored onboarding must stay unclaimed until route validation, goal-to-workflow mapping, negative tests, and hosted persistence proof are attached.
 
 ## Required Event Fields
 

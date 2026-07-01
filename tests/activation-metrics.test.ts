@@ -19,7 +19,14 @@ const base = {
 test('activation metrics compute time-to-value from observed events only', () => {
   const events: ActivationEvent[] = [
     { ...base, eventName: 'workspace_created', occurredAt: '2026-06-01T10:00:00.000Z' },
-    { ...base, eventName: 'template_selected', occurredAt: '2026-06-01T10:05:00.000Z', templateId: 'real-estate' },
+    {
+      ...base,
+      eventName: 'template_selected',
+      occurredAt: '2026-06-01T10:05:00.000Z',
+      templateId: 'real-estate',
+      industry: 'real-estate',
+      goal: 'improve WhatsApp conversion',
+    },
     { ...base, eventName: 'first_workflow_created', occurredAt: '2026-06-01T10:20:00.000Z' },
     { ...base, eventName: 'first_publish', occurredAt: '2026-06-01T11:00:00.000Z' },
     { ...base, eventName: 'first_signal_received', occurredAt: '2026-06-01T11:10:00.000Z' },
@@ -33,6 +40,8 @@ test('activation metrics compute time-to-value from observed events only', () =>
   assert.equal(metrics.timeToFirstLeadActionMinutes, 90);
   assert.equal(metrics.firstSignalReceived, true);
   assert.deepEqual(metrics.selectedTemplateIds, ['real-estate']);
+  assert.deepEqual(metrics.selectedIndustries, ['real-estate']);
+  assert.deepEqual(metrics.selectedGoals, ['improve WhatsApp conversion']);
   assert.deepEqual(metrics.missingEvidence, []);
 });
 

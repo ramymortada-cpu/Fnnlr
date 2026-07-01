@@ -91,8 +91,8 @@ const evidenceFilesByActionId: Record<string, string[]> = {
   'WI-007': ['docs/AI_SPEND_REVIEW_TEMPLATE.md', 'modules/ai-ops/src/dashboard-readiness.ts', 'tests/workflow-intelligence.test.ts'],
   'WI-008': ['docs/WORKFLOW_INTELLIGENCE_SPEC.md', 'modules/ai-ops/src/dashboard-readiness.ts', 'tests/workflow-intelligence.test.ts'],
   'AC-001': ['docs/ONBOARDING_PROMISE.md', 'docs/ACTIVATION_METRICS_SPEC.md'],
-  'AC-002': ['docs/ACTIVATION_METRICS_SPEC.md'],
-  'AC-003': ['docs/ACTIVATION_METRICS_SPEC.md'],
+  'AC-002': ['docs/ACTIVATION_METRICS_SPEC.md', 'apps/web/onboarding.html', 'modules/activation/src/metrics.ts', 'modules/activation/src/onboarding-readiness.ts', 'tests/onboarding-readiness.test.ts'],
+  'AC-003': ['docs/ACTIVATION_METRICS_SPEC.md', 'apps/web/onboarding.html', 'modules/activation/src/metrics.ts', 'modules/activation/src/onboarding-readiness.ts', 'tests/onboarding-readiness.test.ts'],
   'AC-004': ['docs/ACTIVATION_METRICS_SPEC.md', 'modules/activation/src/metrics.ts', 'tests/activation-metrics.test.ts'],
   'AC-005': ['docs/ACTIVATION_METRICS_SPEC.md', 'modules/activation/src/metrics.ts', 'tests/activation-metrics.test.ts'],
   'AC-006': ['docs/ACTIVATION_METRICS_SPEC.md', 'modules/activation/src/metrics.ts', 'tests/activation-metrics.test.ts'],
@@ -215,8 +215,8 @@ function workflowIntelligenceMoat(): Action[] {
 function activationMoat(): Action[] {
   return [
     a('AC-001', 'Activation moat', 'P1', 'READY_NOW', 'Product', 'Define onboarding wizard steps.', 'Activation moat: time-to-first-value becomes engineered.', 'ONBOARDING_PROMISE updated with steps.'),
-    a('AC-002', 'Activation moat', 'P1', 'NEXT', 'Engineering', 'Add industry selection to onboarding backlog.', 'Distribution moat: each segment gets a tailored path.', 'Backlog with acceptance criteria.'),
-    a('AC-003', 'Activation moat', 'P1', 'NEXT', 'Engineering', 'Add goal selection to onboarding backlog.', 'Activation moat: workflows map to customer outcomes.', 'Backlog with acceptance criteria.'),
+    a('AC-002', 'Activation moat', 'P1', 'NEXT', 'Engineering', 'Add industry selection readiness contract and event evidence.', 'Distribution moat: each segment gets a tailored path.', 'Readiness module, metrics evidence, and hosted proof gap.'),
+    a('AC-003', 'Activation moat', 'P1', 'NEXT', 'Engineering', 'Add goal selection readiness contract and event evidence.', 'Activation moat: workflows map to customer outcomes.', 'Readiness module, metrics evidence, and goal mapping gap.'),
     a('AC-004', 'Activation moat', 'P1', 'NEXT', 'Product', 'Define time-to-first-workflow metric.', 'Activation moat: onboarding quality becomes measurable.', 'Metric definition with event names.'),
     a('AC-005', 'Activation moat', 'P1', 'NEXT', 'Product', 'Define time-to-first-lead-action metric.', 'Revenue moat: activation is tied to customer work, not login.', 'Metric definition with event names.'),
     a('AC-006', 'Activation moat', 'P1', 'NEXT', 'Engineering', 'Track onboarding abandonment reason backlog.', 'Activation moat: every failed setup trains the system.', 'Backlog item with event schema.'),

@@ -1,6 +1,6 @@
 # SaaS Moat Action Plan
 
-Generated: `2026-07-01T02:19:04.544Z`
+Generated: `2026-07-01T02:26:23.482Z`
 
 This is the execution board for turning fnnlr from a GateForge-blocked release candidate into a global SaaS with a defensible moat. It intentionally separates code-ready work from external hosted evidence so the team does not confuse local progress with GA approval.
 
@@ -115,8 +115,8 @@ fnnlr's moat is the combination of DB-per-tenant trust, Arabic-first revenue wor
 | ID | Priority | Status | Owner | Action | Moat rationale | Evidence required | Command |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | `AC-001` | `P1` | `READY_NOW` | Product | Define onboarding wizard steps. | Activation moat: time-to-first-value becomes engineered. | ONBOARDING_PROMISE updated with steps. |  |
-| `AC-002` | `P1` | `NEXT` | Engineering | Add industry selection to onboarding backlog. | Distribution moat: each segment gets a tailored path. | Backlog with acceptance criteria. |  |
-| `AC-003` | `P1` | `NEXT` | Engineering | Add goal selection to onboarding backlog. | Activation moat: workflows map to customer outcomes. | Backlog with acceptance criteria. |  |
+| `AC-002` | `P1` | `NEXT` | Engineering | Add industry selection readiness contract and event evidence. | Distribution moat: each segment gets a tailored path. | Readiness module, metrics evidence, and hosted proof gap. |  |
+| `AC-003` | `P1` | `NEXT` | Engineering | Add goal selection readiness contract and event evidence. | Activation moat: workflows map to customer outcomes. | Readiness module, metrics evidence, and goal mapping gap. |  |
 | `AC-004` | `P1` | `NEXT` | Product | Define time-to-first-workflow metric. | Activation moat: onboarding quality becomes measurable. | Metric definition with event names. |  |
 | `AC-005` | `P1` | `NEXT` | Product | Define time-to-first-lead-action metric. | Revenue moat: activation is tied to customer work, not login. | Metric definition with event names. |  |
 | `AC-006` | `P1` | `NEXT` | Engineering | Track onboarding abandonment reason backlog. | Activation moat: every failed setup trains the system. | Backlog item with event schema. |  |

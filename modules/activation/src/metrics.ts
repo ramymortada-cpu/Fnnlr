@@ -28,6 +28,8 @@ export type ActivationMetrics = {
   timeToFirstLeadActionMinutes: number | null;
   firstSignalReceived: boolean;
   selectedTemplateIds: string[];
+  selectedIndustries: string[];
+  selectedGoals: string[];
   onboardingAbandoned: boolean;
   abandonmentStep: string | null;
   abandonmentReason: string | null;
@@ -59,6 +61,8 @@ export function computeActivationMetrics(workspaceId: string, events: Activation
     timeToFirstLeadActionMinutes: minutesBetween(workspaceCreated, firstLeadAction),
     firstSignalReceived: scoped.some((event) => event.eventName === 'first_signal_received'),
     selectedTemplateIds: [...new Set(scoped.filter((event) => event.eventName === 'template_selected').map((event) => event.templateId).filter(Boolean) as string[])],
+    selectedIndustries: [...new Set(scoped.map((event) => event.industry).filter(Boolean) as string[])],
+    selectedGoals: [...new Set(scoped.map((event) => event.goal).filter(Boolean) as string[])],
     onboardingAbandoned: !!abandonment,
     abandonmentStep: abandonment?.abandonmentStep ?? null,
     abandonmentReason: abandonment?.abandonmentReason ?? null,
