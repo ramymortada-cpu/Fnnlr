@@ -68,6 +68,19 @@ npm run gateforge:attestation-secret-pack
 
 ## Runtime Secrets
 
+Preferred local preparation path:
+
+\`\`\`bash
+npm run gateforge:local-secrets-env-template
+cp gateforge-audit/run-2026-06-23-1035/49_local_secret_env_template.env /secure/path/fnnlr-staging.env
+npm run gateforge:import-local-secrets -- --env-file /secure/path/fnnlr-staging.env --require-all
+npm run gateforge:hosted-readiness-doctor
+\`\`\`
+
+The generated env template contains placeholders only. Fill the copied file outside git, then import it so every row validates before any local secret file is written.
+
+Reference the sanitized template guide at \`gateforge-audit/run-2026-06-23-1035/49_local_secret_env_template.md\`.
+
 Set these repository secrets with safe staging values:
 
 \`\`\`bash

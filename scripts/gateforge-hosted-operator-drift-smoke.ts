@@ -5,8 +5,10 @@ import { hostedSecretsManifestPath, loadHostedSecretsManifest } from './gateforg
 const { attestationSecrets, runtimeSecrets } = loadHostedSecretsManifest();
 
 const workflowPath = '.github/workflows/gateforge-hosted-staging-strict.yml';
+const gaEvidenceWorkflowPath = '.github/workflows/gateforge-ga-evidence.yml';
 const guidePath = 'gateforge-audit/run-2026-06-23-1035/38_hosted_staging_operator_setup.md';
 const workflow = fs.readFileSync(workflowPath, 'utf8');
+const gaEvidenceWorkflow = fs.readFileSync(gaEvidenceWorkflowPath, 'utf8');
 const guide = fs.readFileSync(guidePath, 'utf8');
 const manifest = fs.readFileSync(hostedSecretsManifestPath, 'utf8');
 const failures: string[] = [];
@@ -33,6 +35,19 @@ for (const command of [
   'npm run gateforge:final-gate',
 ]) {
   requireContains(workflowPath, workflow, command);
+}
+
+for (const command of [
+  'npm run gateforge:local-secrets-env-template',
+  'npm run gateforge:import-local-secrets',
+  'npm run gateforge:hosted-readiness-doctor',
+]) {
+  requireContains(guidePath, guide, command);
+}
+
+for (const artifact of ['49_local_secret_env_template.env', '49_local_secret_env_template.md']) {
+  requireContains(gaEvidenceWorkflowPath, gaEvidenceWorkflow, artifact);
+  requireContains(guidePath, guide, artifact);
 }
 
 for (const phrase of [

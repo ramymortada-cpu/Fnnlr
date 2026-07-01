@@ -1,6 +1,6 @@
 # Hosted Staging Operator Setup
 
-Generated: `2026-06-24T13:06:47.205Z`
+Generated: `2026-07-01T17:44:35.553Z`
 
 This is the operator checklist for converting GateForge from `CANNOT_APPROVE` to a defensible `CONDITIONAL_GO`. It does not contain secret values.
 
@@ -56,6 +56,19 @@ npm run gateforge:attestation-secret-pack
 ```
 
 ## Runtime Secrets
+
+Preferred local preparation path:
+
+```bash
+npm run gateforge:local-secrets-env-template
+cp gateforge-audit/run-2026-06-23-1035/49_local_secret_env_template.env /secure/path/fnnlr-staging.env
+npm run gateforge:import-local-secrets -- --env-file /secure/path/fnnlr-staging.env --require-all
+npm run gateforge:hosted-readiness-doctor
+```
+
+The generated env template contains placeholders only. Fill the copied file outside git, then import it so every row validates before any local secret file is written.
+
+Reference the sanitized template guide at `gateforge-audit/run-2026-06-23-1035/49_local_secret_env_template.md`.
 
 Set these repository secrets with safe staging values:
 
