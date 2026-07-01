@@ -114,7 +114,8 @@ The strict workflow must complete these steps:
 10. GateForge final report.
 11. GateForge external closeout validator.
 12. GateForge hosted dependency chain.
-13. GateForge final gate.
+13. GateForge hosted readiness contract.
+14. GateForge final gate.
 
 The strict artifact must include:
 
@@ -124,6 +125,8 @@ The strict artifact must include:
 - \`gateforge-audit/run-*/52_external_closeout_validator.json\`
 - \`gateforge-audit/run-*/53_hosted_dependency_chain.md\`
 - \`gateforge-audit/run-*/53_hosted_dependency_chain.json\`
+- \`gateforge-audit/run-*/54_hosted_readiness_contract.md\`
+- \`gateforge-audit/run-*/54_hosted_readiness_contract.json\`
 
 ## Failure Interpretation
 
@@ -132,7 +135,7 @@ The strict artifact must include:
 - Hosted secrets preflight failure: set every listed GitHub Actions secret; the preflight prints names only, never values.
 - External evidence failure: a required packet item is not \`PASS\`, has no owner, has no evidence refs, or contains an unsafe ref.
 - Hosted live CI or Postgres failure: staging database/runtime evidence is still not accepted.
-- Closeout/dependency validator failure: local and hosted evidence boundaries drifted; do not approve GA until the validator is green.
+- Closeout/dependency/readiness contract failure: local and hosted evidence boundaries drifted; do not approve GA until all validators are green.
 - Final gate failure: at least one applicable P0 is still missing runtime or external evidence.
 
 Do not mark items \`PASS\` unless the evidence exists and is safe to reference.
