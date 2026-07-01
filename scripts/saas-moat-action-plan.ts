@@ -610,8 +610,7 @@ function actionExecutionState(item: Action) {
   return item.status;
 }
 
-function renderStatus(items: Action[]) {
-  const generatedAt = new Date().toISOString();
+function renderStatus(items: Action[], generatedAt = new Date().toISOString()) {
   const rows = items.map((item) => ({ ...item, executionState: actionExecutionState(item) }));
   const states = [...new Set(rows.map((item) => item.executionState))].sort();
   const stateSummary = states
@@ -694,7 +693,21 @@ ${openP0 || '| None | None | None | None | None | None |'}
 validate(actions);
 
 if (statusOnly) {
-  const rendered = renderStatus(actions);
+  const currentStatusMd = fs.existsSync(statusMd) ? fs.readFileSync(statusMd, 'utf8') : '';
+  const currentStatusJson = fs.existsSync(statusJson) ? fs.readFileSync(statusJson, 'utf8') : '';
+  const fresh = renderStatus(actions);
+  const normalizeGeneratedAt = (value: string) => value.replace(/Generated: `[^`]+`/, 'Generated: `<timestamp>`');
+  const normalizeStatusJson = (value: string) => {
+    if (!value) return '';
+    return `${JSON.stringify({ ...JSON.parse(value), generatedAt: '<timestamp>' }, null, 2)}\n`;
+  };
+  const normalizedFreshJson = `${JSON.stringify({ ...fresh.json, generatedAt: '<timestamp>' }, null, 2)}\n`;
+  const existingGeneratedAt = currentStatusJson ? (JSON.parse(currentStatusJson).generatedAt as string | undefined) : undefined;
+  const canKeepExistingTimestamp =
+    existingGeneratedAt &&
+    normalizeGeneratedAt(currentStatusMd) === normalizeGeneratedAt(fresh.body) &&
+    normalizeStatusJson(currentStatusJson) === normalizedFreshJson;
+  const rendered = canKeepExistingTimestamp ? renderStatus(actions, existingGeneratedAt) : fresh;
   fs.writeFileSync(statusMd, rendered.body);
   fs.writeFileSync(statusJson, `${JSON.stringify(rendered.json, null, 2)}\n`);
   console.log(`SaaS moat execution status: wrote ${statusMd}`);
