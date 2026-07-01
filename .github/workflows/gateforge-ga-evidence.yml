@@ -188,6 +188,7 @@ jobs:
             gateforge-audit/run-*/45_secret_replacement_packet.csv
             gateforge-audit/run-*/45_secret_replacement_packet.json
             gateforge-audit/run-*/46_attestation_secret_pack.md
+            gateforge-audit/run-*/46_attestation_secret_pack.json
             gateforge-audit/run-*/49_local_secret_env_template.env
             gateforge-audit/run-*/49_local_secret_env_template.md
             gateforge-audit/run-*/47_ga_unblock_status.md

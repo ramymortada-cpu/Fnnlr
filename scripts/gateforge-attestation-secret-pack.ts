@@ -11,6 +11,8 @@ const secretDirIndex = process.argv.indexOf('--secret-dir');
 const secretDir = secretDirIndex >= 0 ? process.argv[secretDirIndex + 1] : '/tmp/fnnlr-gateforge-secrets';
 const outIndex = process.argv.indexOf('--out');
 const outPath = outIndex >= 0 ? process.argv[outIndex + 1] : `${runDir}/46_attestation_secret_pack.md`;
+const jsonOutIndex = process.argv.indexOf('--json-out');
+const jsonOutPath = jsonOutIndex >= 0 ? process.argv[jsonOutIndex + 1] : outPath.replace(/\.md$/, '.json');
 const writeB64 = process.argv.includes('--write-b64');
 const b64SecretPath = path.join(secretDir, 'GATEFORGE_HOSTED_STAGING_ATTESTATION_B64');
 
@@ -34,10 +36,27 @@ function unsafePacketReason(raw: string): string | null {
 }
 
 function writeReport(status: 'READY' | 'BLOCKED', details: string[]) {
+  const generatedAt = new Date().toISOString();
+  const b64Written = status === 'READY' && writeB64;
+  const payload = {
+    generatedAt,
+    decision: status,
+    packet: packetPath,
+    b64TargetFile: b64SecretPath,
+    b64FileWritten: b64Written,
+    details,
+    safety: {
+      packetBodyPrinted: false,
+      b64SecretValuePrinted: false,
+      secretValuesPrinted: false,
+      productionMutated: false,
+      sourceDumpsIncluded: false,
+    },
+  };
   fs.mkdirSync(path.dirname(outPath), { recursive: true });
   const body = `# GateForge Attestation Secret Pack
 
-Generated: \`${new Date().toISOString()}\`
+Generated: \`${generatedAt}\`
 
 This pack validates the hosted staging attestation packet before it can be encoded as a GitHub Actions secret. It never prints the packet body or base64 secret value.
 
@@ -46,7 +65,7 @@ This pack validates the hosted staging attestation packet before it can be encod
 - Decision: \`${status}\`
 - Packet: \`${packetPath}\`
 - B64 target file: \`${b64SecretPath}\`
-- B64 file written: \`${status === 'READY' && writeB64 ? 'YES' : 'NO'}\`
+- B64 file written: \`${b64Written ? 'YES' : 'NO'}\`
 
 ## Details
 
@@ -57,6 +76,8 @@ ${details.map((detail) => `- ${detail}`).join('\n')}
 ${status === 'READY' ? '`npm run gateforge:local-secret-files-check` then `npm run gateforge:hosted-readiness-doctor`.' : 'Fix the attestation packet until `npm run gateforge:external-check` passes, then rerun this pack with `-- --write-b64`.'}
 `;
   fs.writeFileSync(outPath, body);
+  fs.mkdirSync(path.dirname(jsonOutPath), { recursive: true });
+  fs.writeFileSync(jsonOutPath, `${JSON.stringify(payload, null, 2)}\n`);
 }
 
 function fail(details: string[]): never {
@@ -64,6 +85,7 @@ function fail(details: string[]): never {
   console.error('GateForge attestation secret pack: BLOCKED');
   for (const detail of details) console.error(`  - ${detail}`);
   console.error(`  wrote ${outPath}`);
+  console.error(`  wrote ${jsonOutPath}`);
   console.error('  No secret values were printed.');
   process.exit(1);
 }
@@ -101,5 +123,6 @@ writeReport('READY', [
 console.log('GateForge attestation secret pack: READY');
 console.log(`  packet: ${packetPath}`);
 console.log(`  wrote ${outPath}`);
+console.log(`  wrote ${jsonOutPath}`);
 if (writeB64) console.log(`  wrote ${b64SecretPath}`);
 console.log('  No secret values were printed.');

@@ -20,6 +20,7 @@ This index defines the expected contents of the `gateforge-ga-evidence` GitHub A
 - `35_ci_artifact_index.md`
 - `45_secret_replacement_packet.json`
 - `46_attestation_secret_pack.md`
+- `46_attestation_secret_pack.json`
 - `49_local_secret_env_template.env`
 - `49_local_secret_env_template.md`
 - `47_ga_unblock_status.md`
