@@ -83,19 +83,19 @@ function renderMarkdown(rows: MoatRow[], generatedAt: string) {
   const ownerRows = Object.entries(byOwner)
     .sort(([a], [b]) => a.localeCompare(b))
     .map(([owner, count]) => `| ${markdownEscape(owner)} | ${count} |`)
-    .join('\n');
+    .join('\n') || '| None | 0 |';
   const priorityRows = Object.entries(byPriority)
     .sort(([a], [b]) => priorityRank[a as keyof typeof priorityRank] - priorityRank[b as keyof typeof priorityRank])
     .map(([priority, count]) => `| \`${priority}\` | ${count} |`)
-    .join('\n');
+    .join('\n') || '| None | 0 |';
   const actionRows = rows
     .map(
       (row, index) =>
         `| ${index + 1} | \`${row.id}\` | \`${row.priority}\` | ${markdownEscape(row.owner)} | ${markdownEscape(row.phase)} | ${markdownEscape(row.action)} | ${markdownEscape(row.evidence)} | \`${markdownEscape(row.nextCommand)}\` |`,
     )
-    .join('\n');
+    .join('\n') || '| 0 | None | None | None | None | No owner-ready actions remain. | External P0 blockers still gate GA. | None |';
 
-  return `# SaaS Moat Owner Execution Queue
+  return `${`# SaaS Moat Owner Execution Queue
 
 Generated: \`${generatedAt}\`
 
@@ -118,7 +118,7 @@ ${priorityRows}
 | # | ID | Priority | Owner | Phase | Action | Evidence required | Next command |
 | ---: | --- | --- | --- | --- | --- | --- | --- |
 ${actionRows}
-`;
+`.trimEnd()}\n`;
 }
 
 function renderCsv(rows: MoatRow[]) {
@@ -138,7 +138,7 @@ function renderCsv(rows: MoatRow[]) {
       .map(csvEscape)
       .join(','),
   );
-  return `${header.join(',')}\n${body.join('\n')}\n`;
+  return body.length ? `${header.join(',')}\n${body.join('\n')}\n` : `${header.join(',')}\n`;
 }
 
 function renderJson(rows: MoatRow[], generatedAt: string) {
