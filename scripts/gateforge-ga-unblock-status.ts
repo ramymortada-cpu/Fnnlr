@@ -13,6 +13,7 @@ const outPath = outIndex >= 0 ? process.argv[outIndex + 1] : `${runDir}/47_ga_un
 const jsonOutIndex = process.argv.indexOf('--json-out');
 const jsonOutPath = jsonOutIndex >= 0 ? process.argv[jsonOutIndex + 1] : `${runDir}/47_ga_unblock_status.json`;
 const closeoutPath = `${runDir}/48_remaining_external_blocker_closeout.json`;
+const progressPath = `${runDir}/49_external_blocker_progress.json`;
 const strictWorkflow = 'GateForge Hosted Staging Strict';
 const gaWorkflow = 'GateForge GA Evidence';
 
@@ -43,6 +44,19 @@ type CloseoutJson = {
   status?: string;
   count?: number;
   blockerIds?: string[];
+  safety?: {
+    secretValuesPrinted?: boolean;
+    productionMutated?: boolean;
+    sourceDumpsIncluded?: boolean;
+  };
+};
+type ExternalProgressJson = {
+  total?: number;
+  counts?: {
+    LOCAL_SECRET_PENDING?: number;
+    GITHUB_SECRET_PENDING?: number;
+    HOSTED_EVIDENCE_PENDING?: number;
+  };
   safety?: {
     secretValuesPrinted?: boolean;
     productionMutated?: boolean;
@@ -179,6 +193,56 @@ function probeRemainingCloseout(): { probe: Probe; openExternalBlockers: string[
   };
 }
 
+function probeExternalProgress(): { probe: Probe; counts: Required<NonNullable<ExternalProgressJson['counts']>> } {
+  const emptyCounts = {
+    LOCAL_SECRET_PENDING: 0,
+    GITHUB_SECRET_PENDING: 0,
+    HOSTED_EVIDENCE_PENDING: 0,
+  };
+  if (!fs.existsSync(progressPath)) {
+    return {
+      probe: { status: 'FAIL', detail: `external blocker progress is missing: ${progressPath}` },
+      counts: emptyCounts,
+    };
+  }
+
+  let parsed: ExternalProgressJson;
+  try {
+    parsed = JSON.parse(fs.readFileSync(progressPath, 'utf8')) as ExternalProgressJson;
+  } catch {
+    return {
+      probe: { status: 'FAIL', detail: 'external blocker progress JSON could not be parsed' },
+      counts: emptyCounts,
+    };
+  }
+
+  const counts = {
+    LOCAL_SECRET_PENDING: parsed.counts?.LOCAL_SECRET_PENDING ?? 0,
+    GITHUB_SECRET_PENDING: parsed.counts?.GITHUB_SECRET_PENDING ?? 0,
+    HOSTED_EVIDENCE_PENDING: parsed.counts?.HOSTED_EVIDENCE_PENDING ?? 0,
+  };
+  const total = counts.LOCAL_SECRET_PENDING + counts.GITHUB_SECRET_PENDING + counts.HOSTED_EVIDENCE_PENDING;
+  const safe =
+    parsed.safety?.secretValuesPrinted === false &&
+    parsed.safety?.productionMutated === false &&
+    parsed.safety?.sourceDumpsIncluded === false;
+  const errors = [
+    parsed.total === 16 ? '' : `total ${parsed.total ?? 'missing'}`,
+    total === 16 ? '' : `status counts sum to ${total}`,
+    safe ? '' : 'safety flags are not all false',
+  ].filter(Boolean);
+
+  return {
+    probe: {
+      status: errors.length ? 'FAIL' : 'PASS',
+      detail: errors.length
+        ? errors.join('; ')
+        : `${counts.LOCAL_SECRET_PENDING} local, ${counts.GITHUB_SECRET_PENDING} GitHub, ${counts.HOSTED_EVIDENCE_PENDING} hosted evidence pending`,
+    },
+    counts,
+  };
+}
+
 function decisionFor(local: Probe, github: Probe, strict: Probe) {
   if (local.status !== 'PASS') {
     return {
@@ -220,6 +284,7 @@ const localSecrets = probeLocalSecrets();
 const githubSecrets = probeGithubSecrets();
 const attestationPack = probeAttestationPack();
 const remainingCloseout = probeRemainingCloseout();
+const externalProgress = probeExternalProgress();
 const strictRun = probeWorkflow(strictWorkflow);
 const gaEvidenceRun = probeWorkflow(gaWorkflow);
 const decision = decisionFor(localSecrets.probe, githubSecrets, strictRun);
@@ -232,6 +297,7 @@ const json = {
     localSecrets: localSecrets.probe,
     attestationPack,
     remainingExternalBlockerCloseout: remainingCloseout.probe,
+    externalBlockerProgress: externalProgress.probe,
     githubSecrets,
     hostedStrictWorkflow: strictRun,
     gaEvidenceWorkflow: gaEvidenceRun,
@@ -240,6 +306,7 @@ const json = {
     openRuntimeSecrets: localSecrets.openRuntime,
     openAttestationSecrets: localSecrets.openAttestation,
     openExternalBlockers: remainingCloseout.openExternalBlockers,
+    externalBlockerProgressCounts: externalProgress.counts,
   },
   safety: {
     secretValuesPrinted: false,
@@ -268,6 +335,7 @@ This status file is the single operator dashboard for the GA unblock path. It co
 | Local secret values | \`${localSecrets.probe.status}\` | ${localSecrets.probe.detail} |
 | Attestation secret pack | \`${attestationPack.status}\` | ${attestationPack.detail} |
 | Remaining external blocker closeout | \`${remainingCloseout.probe.status}\` | ${remainingCloseout.probe.detail} |
+| External blocker progress | \`${externalProgress.probe.status}\` | ${externalProgress.probe.detail} |
 | GitHub Actions secret names | \`${githubSecrets.status}\` | ${githubSecrets.detail} |
 | Hosted strict workflow | \`${strictRun.status}\` | ${strictRun.detail}${strictRun.url ? ` (${strictRun.url})` : ''} |
 | GA evidence workflow | \`${gaEvidenceRun.status}\` | ${gaEvidenceRun.detail}${gaEvidenceRun.url ? ` (${gaEvidenceRun.url})` : ''} |
@@ -283,6 +351,13 @@ ${mdList(localSecrets.openAttestation)}
 ## Remaining External Blocker IDs
 
 ${mdList(remainingCloseout.openExternalBlockers)}
+
+## Remaining External Blocker Progress
+
+- Local secret pending: \`${externalProgress.counts.LOCAL_SECRET_PENDING}\`
+- GitHub secret pending: \`${externalProgress.counts.GITHUB_SECRET_PENDING}\`
+- Hosted/provider evidence pending: \`${externalProgress.counts.HOSTED_EVIDENCE_PENDING}\`
+- Source: \`${progressPath}\`
 
 ## Score Translation
 

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-01T09:52:48.768Z",
+  "generatedAt": "2026-07-01T12:41:29.098Z",
   "decision": {
     "state": "CANNOT_APPROVE_LOCAL_EVIDENCE",
     "scoreBand": "65-70/100",
@@ -19,6 +19,10 @@
       "status": "PASS",
       "detail": "16 BLOCKED_EXTERNAL items mapped in 48_remaining_external_blocker_closeout.json"
     },
+    "externalBlockerProgress": {
+      "status": "PASS",
+      "detail": "16 local, 0 GitHub, 0 hosted evidence pending"
+    },
     "githubSecrets": {
       "status": "FAIL",
       "detail": "required GitHub secret names are missing"
@@ -29,8 +33,8 @@
     },
     "gaEvidenceWorkflow": {
       "status": "PASS",
-      "detail": "28508784539 completed/success d1aa90a5b341f48fbacd671266b5c92d03130bc4",
-      "url": "https://github.com/ramymortada-cpu/Fnnlr/actions/runs/28508784539"
+      "detail": "28518057411 completed/success e975135e2249c252848073ade975936ebc2c60f2",
+      "url": "https://github.com/ramymortada-cpu/Fnnlr/actions/runs/28518057411"
     }
   },
   "blockers": {
@@ -74,7 +78,12 @@
       "GF-014",
       "GF-015",
       "GF-016"
-    ]
+    ],
+    "externalBlockerProgressCounts": {
+      "LOCAL_SECRET_PENDING": 16,
+      "GITHUB_SECRET_PENDING": 0,
+      "HOSTED_EVIDENCE_PENDING": 0
+    }
   },
   "safety": {
     "secretValuesPrinted": false,
