@@ -512,6 +512,35 @@ function gateForgeDependencyState(item: Action): string | null {
   return null;
 }
 
+function nextStepFor(item: Action & { executionState: string }) {
+  if (item.executionState === 'BLOCKED_EXTERNAL') {
+    return {
+      command: 'npm run gateforge:operator-execution-packet',
+      evidence: 'Real provider/staging evidence listed in 50_operator_execution_packet.md.',
+    };
+  }
+  if (item.executionState === 'BLOCKED_BY_SECRET_READINESS') {
+    return {
+      command: 'npm run gateforge:scaffold-local-secrets && npm run gateforge:local-secret-files-check',
+      evidence: 'All runtime secret files and one attestation option are READY without printing values.',
+    };
+  }
+  if (item.executionState === 'BLOCKED_BY_HOSTED_ATTESTATION') {
+    return {
+      command: 'npm run gateforge:external-check -- gateforge-audit/external-attestations/hosted-staging-attestation.json',
+      evidence: 'Hosted staging attestation packet exists, is sanitized, and validates.',
+    };
+  }
+  if (item.executionState === 'BLOCKED_BY_GITHUB_SECRET_READINESS') {
+    return {
+      command: 'npm run gateforge:github-secrets-audit',
+      evidence: 'GitHub Actions has all runtime secrets and one hosted attestation secret.',
+    };
+  }
+  if (item.command) return { command: item.command, evidence: item.evidence };
+  return { command: 'OWNER_ACTION_REQUIRED', evidence: item.evidence };
+}
+
 function actionExecutionState(item: Action) {
   if (item.status === 'BLOCKED_EXTERNAL') return 'BLOCKED_EXTERNAL';
   const mappedDocs = evidenceFilesByActionId[item.id] ?? [];
@@ -543,7 +572,10 @@ function renderStatus(items: Action[]) {
     .join('\n');
   const openP0 = rows
     .filter((item) => item.priority === 'P0' && item.executionState !== 'EVIDENCE_FILE_PRESENT')
-    .map((item) => `| \`${item.id}\` | \`${item.executionState}\` | ${markdownEscape(item.action)} | ${markdownEscape(item.evidence)} |`)
+    .map((item) => {
+      const next = nextStepFor(item);
+      return `| \`${item.id}\` | \`${item.executionState}\` | ${markdownEscape(item.action)} | ${markdownEscape(item.evidence)} | \`${markdownEscape(next.command)}\` | ${markdownEscape(next.evidence)} |`;
+    })
     .join('\n');
   const body = `# SaaS Moat Execution Status
 
@@ -565,19 +597,23 @@ ${phaseSummary}
 
 ## Open P0 Items
 
-| ID | State | Action | Evidence required |
-| --- | --- | --- | --- |
-${openP0 || '| None | None | None | None |'}
+| ID | State | Action | Evidence required | Next command | Unblock evidence |
+| --- | --- | --- | --- | --- | --- |
+${openP0 || '| None | None | None | None | None | None |'}
 `;
+  const openP0Rows = rows
+    .filter((item) => item.priority === 'P0' && item.executionState !== 'EVIDENCE_FILE_PRESENT')
+    .map((item) => {
+      const next = nextStepFor(item);
+      return { id: item.id, state: item.executionState, action: item.action, evidence: item.evidence, nextCommand: next.command, unblockEvidence: next.evidence };
+    });
   return {
     body,
     json: {
       generatedAt,
       total: rows.length,
       byState: Object.fromEntries(states.map((state) => [state, rows.filter((item) => item.executionState === state).length])),
-      openP0: rows
-        .filter((item) => item.priority === 'P0' && item.executionState !== 'EVIDENCE_FILE_PRESENT')
-        .map((item) => ({ id: item.id, state: item.executionState, action: item.action, evidence: item.evidence })),
+      openP0: openP0Rows,
     },
   };
 }
