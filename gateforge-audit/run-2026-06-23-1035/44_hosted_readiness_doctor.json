@@ -1,0 +1,62 @@
+{
+  "generatedAt": "2026-07-01T19:43:46.909Z",
+  "decision": "REPLACE_LOCAL_SECRET_PLACEHOLDERS",
+  "nextCommand": "npm run gateforge:secret-replacement-packet, then replace the listed local secret values and rerun npm run gateforge:hosted-readiness-doctor.",
+  "workflow": "GateForge Hosted Staging Strict",
+  "secretDir": "/tmp/fnnlr-gateforge-secrets",
+  "fromFile": null,
+  "probes": {
+    "localSecretFiles": {
+      "status": "FAIL",
+      "detail": "local secret files exist but placeholders remain",
+      "localState": "PLACEHOLDERS",
+      "attestationReady": false,
+      "runtimeReady": false
+    },
+    "attestationSecretPack": {
+      "status": "FAIL",
+      "detail": "attestation packet is not ready for B64 secret packaging"
+    },
+    "remainingExternalBlockerCloseout": {
+      "status": "PASS",
+      "detail": "16 external blockers are mapped for operator closeout",
+      "blockerIds": [
+        "GF-001",
+        "GF-002",
+        "GF-003",
+        "GF-004",
+        "GF-005",
+        "GF-006",
+        "GF-007",
+        "GF-008",
+        "GF-009",
+        "GF-010",
+        "GF-011",
+        "GF-012",
+        "GF-013",
+        "GF-014",
+        "GF-015",
+        "GF-016"
+      ]
+    },
+    "githubSecretNames": {
+      "status": "FAIL",
+      "detail": "GitHub secret names are missing"
+    },
+    "hostedStrictWorkflow": {
+      "status": "UNKNOWN",
+      "detail": "no hosted strict workflow run found"
+    }
+  },
+  "artifactRefs": {
+    "markdown": "gateforge-audit/run-2026-06-23-1035/44_hosted_readiness_doctor.md",
+    "json": "gateforge-audit/run-2026-06-23-1035/44_hosted_readiness_doctor.json",
+    "secretReplacementPacket": "gateforge-audit/run-2026-06-23-1035/45_secret_replacement_packet.md",
+    "attestationSecretPack": "gateforge-audit/run-2026-06-23-1035/46_attestation_secret_pack.md",
+    "remainingBlockerCloseout": "gateforge-audit/run-2026-06-23-1035/48_remaining_external_blocker_closeout.json"
+  },
+  "safety": {
+    "secretValuesPrinted": false,
+    "productionMutated": false
+  }
+}

@@ -6,6 +6,9 @@ import path from 'node:path';
 const runDir = 'gateforge-audit/run-2026-06-23-1035';
 const outIndex = process.argv.indexOf('--out');
 const outPath = outIndex >= 0 ? process.argv[outIndex + 1] : `${runDir}/44_hosted_readiness_doctor.md`;
+const jsonOutIndex = process.argv.indexOf('--json-out');
+const jsonOutPath =
+  jsonOutIndex >= 0 ? process.argv[jsonOutIndex + 1] : outIndex >= 0 ? `${outPath}.json` : `${runDir}/44_hosted_readiness_doctor.json`;
 const replacementPacketPath = `${runDir}/45_secret_replacement_packet.md`;
 const attestationPackPath = `${runDir}/46_attestation_secret_pack.md`;
 const closeoutPath = `${runDir}/48_remaining_external_blocker_closeout.json`;
@@ -316,9 +319,63 @@ ${strictRun.output.trim() || '(no output)'}
 
 fs.mkdirSync(path.dirname(outPath), { recursive: true });
 fs.writeFileSync(outPath, body);
+fs.mkdirSync(path.dirname(jsonOutPath), { recursive: true });
+fs.writeFileSync(
+  jsonOutPath,
+  `${JSON.stringify(
+    {
+      generatedAt: now,
+      decision,
+      nextCommand,
+      workflow,
+      secretDir,
+      fromFile: fromFile || null,
+      probes: {
+        localSecretFiles: {
+          status: localSecrets.status,
+          detail: localSecrets.detail,
+          localState: localSecrets.localState,
+          attestationReady: localSecrets.attestationReady,
+          runtimeReady: localSecrets.runtimeReady,
+        },
+        attestationSecretPack: {
+          status: attestationPack.status,
+          detail: attestationPack.detail,
+        },
+        remainingExternalBlockerCloseout: {
+          status: remainingCloseout.probe.status,
+          detail: remainingCloseout.probe.detail,
+          blockerIds: remainingCloseout.blockerIds,
+        },
+        githubSecretNames: {
+          status: githubSecrets.status,
+          detail: githubSecrets.detail,
+        },
+        hostedStrictWorkflow: {
+          status: strictRun.status,
+          detail: strictRun.detail,
+        },
+      },
+      artifactRefs: {
+        markdown: outPath,
+        json: jsonOutPath,
+        secretReplacementPacket: replacementPacketPath,
+        attestationSecretPack: attestationPackPath,
+        remainingBlockerCloseout: closeoutPath,
+      },
+      safety: {
+        secretValuesPrinted: false,
+        productionMutated: false,
+      },
+    },
+    null,
+    2,
+  )}\n`,
+);
 
 console.log(`GateForge hosted readiness doctor: ${decision}`);
 console.log(`  next: ${nextCommand}`);
 console.log(`  wrote ${outPath}`);
+console.log(`  wrote ${jsonOutPath}`);
 
 if (decision !== 'REVIEW_HOSTED_STRICT_EVIDENCE') process.exit(1);

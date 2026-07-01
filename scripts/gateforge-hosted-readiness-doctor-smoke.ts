@@ -35,6 +35,7 @@ function fixtureValueFor(name: string): string {
 
 const secretDir = fs.mkdtempSync(path.join(os.tmpdir(), 'fnnlr-gateforge-doctor-'));
 const outPath = path.join(os.tmpdir(), 'fnnlr-gateforge-doctor-smoke.md');
+const jsonOutPath = path.join(os.tmpdir(), 'fnnlr-gateforge-doctor-smoke.json');
 fs.writeFileSync(path.join(secretDir, attestationSecrets[1]), fixtureValueFor(attestationSecrets[1]));
 for (const name of runtimeSecrets) fs.writeFileSync(path.join(secretDir, name), fixtureValueFor(name));
 
@@ -49,6 +50,8 @@ const result = spawnSync(
     'tests/fixtures/gateforge-gh-secrets-b64-only-pass.json',
     '--out',
     outPath,
+    '--json-out',
+    jsonOutPath,
   ],
   {
     encoding: 'utf8',
@@ -58,6 +61,7 @@ const result = spawnSync(
 
 const output = `${result.stdout || ''}${result.stderr || ''}`;
 const report = fs.existsSync(outPath) ? fs.readFileSync(outPath, 'utf8') : '';
+const jsonReport = fs.existsSync(jsonOutPath) ? fs.readFileSync(jsonOutPath, 'utf8') : '';
 
 function fail(message: string): never {
   console.error(`GateForge hosted readiness doctor smoke: FAIL - ${message}`);
@@ -79,6 +83,12 @@ if (!report.includes('| Hosted strict workflow | `UNKNOWN` | skipped in fixture 
 }
 if (report.includes('postgres://') || report.includes('sk-ant-fixture') || report.includes(fixtureValueFor(attestationSecrets[1]))) {
   fail('report leaked fixture secret values');
+}
+if (!jsonReport.includes('"decision": "TRIGGER_HOSTED_STRICT"')) fail('JSON report did not expose the trigger decision');
+if (!jsonReport.includes('"status": "PASS"')) fail('JSON report did not expose passing probes');
+if (!jsonReport.includes('"secretValuesPrinted": false')) fail('JSON report did not include safety flags');
+if (jsonReport.includes('postgres://') || jsonReport.includes('sk-ant-fixture') || jsonReport.includes(fixtureValueFor(attestationSecrets[1]))) {
+  fail('JSON report leaked fixture secret values');
 }
 
 const placeholderDir = fs.mkdtempSync(path.join(os.tmpdir(), 'fnnlr-gateforge-doctor-placeholder-'));
