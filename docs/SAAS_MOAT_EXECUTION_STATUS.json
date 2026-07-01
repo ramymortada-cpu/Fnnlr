@@ -1,13 +1,13 @@
 {
-  "generatedAt": "2026-07-01T13:26:12.647Z",
+  "generatedAt": "2026-07-01T13:33:41.900Z",
   "total": 165,
   "byState": {
     "BLOCKED_BY_GITHUB_SECRET_READINESS": 1,
     "BLOCKED_BY_HOSTED_ATTESTATION": 2,
     "BLOCKED_BY_SECRET_READINESS": 2,
     "BLOCKED_EXTERNAL": 16,
-    "EVIDENCE_FILE_PRESENT": 91,
-    "OWNER_OR_DOC_ACTION_READY": 53
+    "EVIDENCE_FILE_PRESENT": 96,
+    "OWNER_OR_DOC_ACTION_READY": 48
   },
   "rows": [
     {
@@ -1261,7 +1261,7 @@
       "phase": "Trust center execution",
       "priority": "P1",
       "status": "READY_NOW",
-      "executionState": "OWNER_OR_DOC_ACTION_READY",
+      "executionState": "EVIDENCE_FILE_PRESENT",
       "owner": "Engineering",
       "action": "Add security overview summary for sales use.",
       "moat": "Trust moat: security answers stop being improvised.",
@@ -1331,7 +1331,7 @@
       "phase": "Trust center execution",
       "priority": "P1",
       "status": "READY_NOW",
-      "executionState": "OWNER_OR_DOC_ACTION_READY",
+      "executionState": "EVIDENCE_FILE_PRESENT",
       "owner": "Engineering",
       "action": "Add retention and deletion summary to trust center.",
       "moat": "Trust moat: customer data promises are easy to verify.",
@@ -1345,7 +1345,7 @@
       "phase": "Trust center execution",
       "priority": "P1",
       "status": "READY_NOW",
-      "executionState": "OWNER_OR_DOC_ACTION_READY",
+      "executionState": "EVIDENCE_FILE_PRESENT",
       "owner": "Engineering",
       "action": "Add backup and restore summary to trust center.",
       "moat": "Reliability moat: recoverability becomes part of sales proof.",
@@ -1359,7 +1359,7 @@
       "phase": "Trust center execution",
       "priority": "P1",
       "status": "READY_NOW",
-      "executionState": "OWNER_OR_DOC_ACTION_READY",
+      "executionState": "EVIDENCE_FILE_PRESENT",
       "owner": "Engineering",
       "action": "Add incident response summary to trust center.",
       "moat": "Trust moat: buyers can see escalation posture.",
@@ -1373,7 +1373,7 @@
       "phase": "Trust center execution",
       "priority": "P1",
       "status": "READY_NOW",
-      "executionState": "OWNER_OR_DOC_ACTION_READY",
+      "executionState": "EVIDENCE_FILE_PRESENT",
       "owner": "Support",
       "action": "Add support workflow summary to trust center.",
       "moat": "Support moat: operations maturity becomes visible.",

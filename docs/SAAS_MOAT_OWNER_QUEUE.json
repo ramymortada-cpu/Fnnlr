@@ -1,67 +1,23 @@
 {
-  "generatedAt": "2026-07-01T13:26:12.647Z",
+  "generatedAt": "2026-07-01T13:33:41.900Z",
   "source": "docs/SAAS_MOAT_EXECUTION_STATUS.json",
   "executionState": "OWNER_OR_DOC_ACTION_READY",
-  "total": 53,
+  "total": 48,
   "byOwner": {
-    "Engineering": 10,
+    "Engineering": 6,
     "Founder/legal": 4,
     "Marketing": 1,
     "Product": 33,
     "Sales": 3,
-    "Support": 2
+    "Support": 1
   },
   "byPriority": {
-    "P1": 48,
+    "P1": 43,
     "P2": 5
   },
   "rows": [
     {
       "rank": 1,
-      "id": "EX-002",
-      "priority": "P1",
-      "owner": "Engineering",
-      "phase": "Trust center execution",
-      "action": "Add security overview summary for sales use.",
-      "evidence": "Security overview section linked from trust center.",
-      "nextCommand": "OWNER_ACTION_REQUIRED",
-      "unblockEvidence": "Security overview section linked from trust center."
-    },
-    {
-      "rank": 2,
-      "id": "EX-007",
-      "priority": "P1",
-      "owner": "Engineering",
-      "phase": "Trust center execution",
-      "action": "Add retention and deletion summary to trust center.",
-      "evidence": "Trust center links DATA_LIFECYCLE.",
-      "nextCommand": "OWNER_ACTION_REQUIRED",
-      "unblockEvidence": "Trust center links DATA_LIFECYCLE."
-    },
-    {
-      "rank": 3,
-      "id": "EX-008",
-      "priority": "P1",
-      "owner": "Engineering",
-      "phase": "Trust center execution",
-      "action": "Add backup and restore summary to trust center.",
-      "evidence": "Trust center links BACKUP_RESTORE_RUNBOOK.",
-      "nextCommand": "OWNER_ACTION_REQUIRED",
-      "unblockEvidence": "Trust center links BACKUP_RESTORE_RUNBOOK."
-    },
-    {
-      "rank": 4,
-      "id": "EX-009",
-      "priority": "P1",
-      "owner": "Engineering",
-      "phase": "Trust center execution",
-      "action": "Add incident response summary to trust center.",
-      "evidence": "Trust center links incident/observability docs.",
-      "nextCommand": "OWNER_ACTION_REQUIRED",
-      "unblockEvidence": "Trust center links incident/observability docs."
-    },
-    {
-      "rank": 5,
       "id": "EX-056",
       "priority": "P1",
       "owner": "Engineering",
@@ -72,7 +28,7 @@
       "unblockEvidence": "Spec includes engineering backlog row."
     },
     {
-      "rank": 6,
+      "rank": 2,
       "id": "EX-003",
       "priority": "P1",
       "owner": "Founder/legal",
@@ -83,7 +39,7 @@
       "unblockEvidence": "Legal tracker shows owner, state, and evidence."
     },
     {
-      "rank": 7,
+      "rank": 3,
       "id": "EX-004",
       "priority": "P1",
       "owner": "Founder/legal",
@@ -94,7 +50,7 @@
       "unblockEvidence": "Legal tracker shows owner, state, and evidence."
     },
     {
-      "rank": 8,
+      "rank": 4,
       "id": "EX-005",
       "priority": "P1",
       "owner": "Founder/legal",
@@ -105,7 +61,7 @@
       "unblockEvidence": "Legal tracker shows owner, state, and evidence."
     },
     {
-      "rank": 9,
+      "rank": 5,
       "id": "EX-006",
       "priority": "P1",
       "owner": "Founder/legal",
@@ -116,7 +72,7 @@
       "unblockEvidence": "Subprocessor row exists with evidence owner."
     },
     {
-      "rank": 10,
+      "rank": 6,
       "id": "EX-062",
       "priority": "P1",
       "owner": "Marketing",
@@ -127,7 +83,7 @@
       "unblockEvidence": "ICP outreach doc plus outreach readiness contract, compliance review gate, tracking requirement, and hosted evidence gap."
     },
     {
-      "rank": 11,
+      "rank": 7,
       "id": "EX-012",
       "priority": "P1",
       "owner": "Product",
@@ -138,7 +94,7 @@
       "unblockEvidence": "Starter plan row has seats limit."
     },
     {
-      "rank": 12,
+      "rank": 8,
       "id": "EX-013",
       "priority": "P1",
       "owner": "Product",
@@ -149,7 +105,7 @@
       "unblockEvidence": "Starter plan row has workflow limit."
     },
     {
-      "rank": 13,
+      "rank": 9,
       "id": "EX-014",
       "priority": "P1",
       "owner": "Product",
@@ -160,7 +116,7 @@
       "unblockEvidence": "Starter plan row has contacts limit."
     },
     {
-      "rank": 14,
+      "rank": 10,
       "id": "EX-015",
       "priority": "P1",
       "owner": "Product",
@@ -171,7 +127,7 @@
       "unblockEvidence": "Starter plan row has AI cap."
     },
     {
-      "rank": 15,
+      "rank": 11,
       "id": "EX-016",
       "priority": "P1",
       "owner": "Product",
@@ -182,7 +138,7 @@
       "unblockEvidence": "Growth plan row has seats limit."
     },
     {
-      "rank": 16,
+      "rank": 12,
       "id": "EX-017",
       "priority": "P1",
       "owner": "Product",
@@ -193,7 +149,7 @@
       "unblockEvidence": "Growth plan row has workflow limit."
     },
     {
-      "rank": 17,
+      "rank": 13,
       "id": "EX-018",
       "priority": "P1",
       "owner": "Product",
@@ -204,7 +160,7 @@
       "unblockEvidence": "Growth plan row has contacts limit."
     },
     {
-      "rank": 18,
+      "rank": 14,
       "id": "EX-019",
       "priority": "P1",
       "owner": "Product",
@@ -215,7 +171,7 @@
       "unblockEvidence": "Growth plan row has AI cap."
     },
     {
-      "rank": 19,
+      "rank": 15,
       "id": "EX-020",
       "priority": "P1",
       "owner": "Product",
@@ -226,7 +182,7 @@
       "unblockEvidence": "Scale plan row has seats limit."
     },
     {
-      "rank": 20,
+      "rank": 16,
       "id": "EX-021",
       "priority": "P1",
       "owner": "Product",
@@ -237,7 +193,7 @@
       "unblockEvidence": "Scale plan row has workflow limit."
     },
     {
-      "rank": 21,
+      "rank": 17,
       "id": "EX-022",
       "priority": "P1",
       "owner": "Product",
@@ -248,7 +204,7 @@
       "unblockEvidence": "Scale plan row has contacts limit."
     },
     {
-      "rank": 22,
+      "rank": 18,
       "id": "EX-023",
       "priority": "P1",
       "owner": "Product",
@@ -259,7 +215,7 @@
       "unblockEvidence": "Scale plan row has AI cap."
     },
     {
-      "rank": 23,
+      "rank": 19,
       "id": "EX-027",
       "priority": "P1",
       "owner": "Product",
@@ -270,7 +226,7 @@
       "unblockEvidence": "Template includes WhatsApp sequence."
     },
     {
-      "rank": 24,
+      "rank": 20,
       "id": "EX-028",
       "priority": "P1",
       "owner": "Product",
@@ -281,7 +237,7 @@
       "unblockEvidence": "Template includes qualification rules."
     },
     {
-      "rank": 25,
+      "rank": 21,
       "id": "EX-030",
       "priority": "P1",
       "owner": "Product",
@@ -292,7 +248,7 @@
       "unblockEvidence": "Template includes WhatsApp sequence."
     },
     {
-      "rank": 26,
+      "rank": 22,
       "id": "EX-031",
       "priority": "P1",
       "owner": "Product",
@@ -303,7 +259,7 @@
       "unblockEvidence": "Template includes qualification rules."
     },
     {
-      "rank": 27,
+      "rank": 23,
       "id": "EX-033",
       "priority": "P1",
       "owner": "Product",
@@ -314,7 +270,7 @@
       "unblockEvidence": "Template includes WhatsApp sequence."
     },
     {
-      "rank": 28,
+      "rank": 24,
       "id": "EX-034",
       "priority": "P1",
       "owner": "Product",
@@ -325,7 +281,7 @@
       "unblockEvidence": "Template includes qualification rules."
     },
     {
-      "rank": 29,
+      "rank": 25,
       "id": "EX-036",
       "priority": "P1",
       "owner": "Product",
@@ -336,7 +292,7 @@
       "unblockEvidence": "Template includes WhatsApp sequence."
     },
     {
-      "rank": 30,
+      "rank": 26,
       "id": "EX-037",
       "priority": "P1",
       "owner": "Product",
@@ -347,7 +303,7 @@
       "unblockEvidence": "Template includes qualification rules."
     },
     {
-      "rank": 31,
+      "rank": 27,
       "id": "EX-039",
       "priority": "P1",
       "owner": "Product",
@@ -358,7 +314,7 @@
       "unblockEvidence": "Template includes WhatsApp sequence."
     },
     {
-      "rank": 32,
+      "rank": 28,
       "id": "EX-040",
       "priority": "P1",
       "owner": "Product",
@@ -369,7 +325,7 @@
       "unblockEvidence": "Template includes qualification rules."
     },
     {
-      "rank": 33,
+      "rank": 29,
       "id": "EX-042",
       "priority": "P1",
       "owner": "Product",
@@ -380,7 +336,7 @@
       "unblockEvidence": "Metric spec includes event definition."
     },
     {
-      "rank": 34,
+      "rank": 30,
       "id": "EX-043",
       "priority": "P1",
       "owner": "Product",
@@ -391,7 +347,7 @@
       "unblockEvidence": "Metric spec includes event definition."
     },
     {
-      "rank": 35,
+      "rank": 31,
       "id": "EX-044",
       "priority": "P1",
       "owner": "Product",
@@ -402,7 +358,7 @@
       "unblockEvidence": "Metric spec includes event definition."
     },
     {
-      "rank": 36,
+      "rank": 32,
       "id": "EX-045",
       "priority": "P1",
       "owner": "Product",
@@ -413,7 +369,7 @@
       "unblockEvidence": "Metric spec includes event definition."
     },
     {
-      "rank": 37,
+      "rank": 33,
       "id": "EX-046",
       "priority": "P1",
       "owner": "Product",
@@ -424,7 +380,7 @@
       "unblockEvidence": "Metric spec includes event definition."
     },
     {
-      "rank": 38,
+      "rank": 34,
       "id": "EX-050",
       "priority": "P1",
       "owner": "Product",
@@ -435,7 +391,7 @@
       "unblockEvidence": "Workflow intelligence spec includes metric formula."
     },
     {
-      "rank": 39,
+      "rank": 35,
       "id": "EX-051",
       "priority": "P1",
       "owner": "Product",
@@ -446,7 +402,7 @@
       "unblockEvidence": "Workflow intelligence spec includes metric formula."
     },
     {
-      "rank": 40,
+      "rank": 36,
       "id": "EX-052",
       "priority": "P1",
       "owner": "Product",
@@ -457,7 +413,7 @@
       "unblockEvidence": "Workflow intelligence spec includes metric formula."
     },
     {
-      "rank": 41,
+      "rank": 37,
       "id": "EX-053",
       "priority": "P1",
       "owner": "Product",
@@ -468,7 +424,7 @@
       "unblockEvidence": "Workflow intelligence spec includes rule table."
     },
     {
-      "rank": 42,
+      "rank": 38,
       "id": "EX-054",
       "priority": "P1",
       "owner": "Product",
@@ -479,7 +435,7 @@
       "unblockEvidence": "Workflow intelligence spec includes rubric."
     },
     {
-      "rank": 43,
+      "rank": 39,
       "id": "EX-055",
       "priority": "P1",
       "owner": "Product",
@@ -490,7 +446,7 @@
       "unblockEvidence": "Workflow intelligence spec includes rubric."
     },
     {
-      "rank": 44,
+      "rank": 40,
       "id": "EX-024",
       "priority": "P1",
       "owner": "Sales",
@@ -501,7 +457,7 @@
       "unblockEvidence": "Enterprise row lists security, legal, SLA, and procurement proof."
     },
     {
-      "rank": 45,
+      "rank": 41,
       "id": "EX-025",
       "priority": "P1",
       "owner": "Sales",
@@ -512,7 +468,7 @@
       "unblockEvidence": "Pricing matrix includes onboarding package."
     },
     {
-      "rank": 46,
+      "rank": 42,
       "id": "EX-059",
       "priority": "P1",
       "owner": "Sales",
@@ -523,18 +479,7 @@
       "unblockEvidence": "Pilot offer brief, pilot readiness contract, fit gate, owner model, success criteria, and hosted pilot evidence gap."
     },
     {
-      "rank": 47,
-      "id": "EX-010",
-      "priority": "P1",
-      "owner": "Support",
-      "phase": "Trust center execution",
-      "action": "Add support workflow summary to trust center.",
-      "evidence": "Trust center links SUPPORT_WORKFLOW.",
-      "nextCommand": "OWNER_ACTION_REQUIRED",
-      "unblockEvidence": "Trust center links SUPPORT_WORKFLOW."
-    },
-    {
-      "rank": 48,
+      "rank": 43,
       "id": "EX-048",
       "priority": "P1",
       "owner": "Support",
@@ -545,7 +490,7 @@
       "unblockEvidence": "Checklist includes owners and triggers."
     },
     {
-      "rank": 49,
+      "rank": 44,
       "id": "EX-064",
       "priority": "P2",
       "owner": "Engineering",
@@ -556,7 +501,7 @@
       "unblockEvidence": "Enterprise backlog includes RBAC row."
     },
     {
-      "rank": 50,
+      "rank": 45,
       "id": "EX-065",
       "priority": "P2",
       "owner": "Engineering",
@@ -567,7 +512,7 @@
       "unblockEvidence": "Enterprise backlog includes workspace policy row."
     },
     {
-      "rank": 51,
+      "rank": 46,
       "id": "EX-066",
       "priority": "P2",
       "owner": "Engineering",
@@ -578,7 +523,7 @@
       "unblockEvidence": "Enterprise backlog includes audit export row."
     },
     {
-      "rank": 52,
+      "rank": 47,
       "id": "EX-067",
       "priority": "P2",
       "owner": "Engineering",
@@ -589,7 +534,7 @@
       "unblockEvidence": "Enterprise backlog includes SSO row."
     },
     {
-      "rank": 53,
+      "rank": 48,
       "id": "EX-068",
       "priority": "P2",
       "owner": "Engineering",

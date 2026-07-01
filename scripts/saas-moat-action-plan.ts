@@ -148,6 +148,11 @@ const evidenceFilesByActionId: Record<string, string[]> = {
   'OP-006': ['docs/ACTIVATION_COHORT_REVIEW.md', 'modules/activation/src/cohort-review.ts', 'tests/activation-metrics.test.ts'],
   'OP-007': ['docs/AI_SPEND_REVIEW_TEMPLATE.md', 'modules/ai-ops/src/spend-review.ts', 'tests/workflow-intelligence.test.ts'],
   'OP-008': ['docs/TEMPLATE_PERFORMANCE_REVIEW.md', 'modules/activation/src/template-performance.ts', 'tests/template-performance.test.ts'],
+  'EX-002': ['docs/TRUST_CENTER_INDEX.md', 'docs/SECURITY_TRUST_PROOF.md', 'tests/trust-center-readiness.test.ts'],
+  'EX-007': ['docs/TRUST_CENTER_INDEX.md', 'docs/DATA_LIFECYCLE.md', 'docs/DATA_EXPORT_DELETE_UI_BACKLOG.md', 'tests/trust-center-readiness.test.ts'],
+  'EX-008': ['docs/TRUST_CENTER_INDEX.md', 'docs/BACKUP_RESTORE_RUNBOOK.md', 'tests/trust-center-readiness.test.ts'],
+  'EX-009': ['docs/TRUST_CENTER_INDEX.md', 'docs/INCIDENT_RESPONSE_EXERCISE.md', 'docs/OBSERVABILITY_GA_RUNBOOK.md', 'tests/trust-center-readiness.test.ts'],
+  'EX-010': ['docs/TRUST_CENTER_INDEX.md', 'docs/SUPPORT_WORKFLOW.md', 'docs/SUPPORT_TRIAGE_TAXONOMY.md', 'tests/trust-center-readiness.test.ts'],
 };
 
 const actions: Action[] = [

@@ -21,6 +21,12 @@ test('trust center links every buyer-critical trust proof area', () => {
   assert.equal(review.present.length, TRUST_CENTER_REQUIREMENTS.length);
 });
 
+test('trust center includes buyer-safe proof summaries for sales use', () => {
+  const review = reviewTrustCenter(trustCenter());
+
+  assert.ok(review.present.includes('buyer_safe_proof_summaries'));
+});
+
 test('trust center readiness reports missing proof links', () => {
   const review = reviewTrustCenter('Only SECURITY_TRUST_PROOF.md is linked.');
 

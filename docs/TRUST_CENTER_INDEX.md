@@ -38,6 +38,16 @@ fnnlr is an Arabic-first AI Revenue Operations OS. Its trust posture is built ar
 | GateForge operator execution packet | `../gateforge-audit/run-2026-06-23-1035/50_operator_execution_packet.md` | Command path, provider setup, and validation matrix for closing the remaining 16 blockers |
 | SaaS moat board | `SAAS_MOAT_ACTION_PLAN.md` | 165 execution actions |
 
+## Buyer-Safe Proof Summaries
+
+| Summary | Buyer-safe position | Source evidence |
+| --- | --- | --- |
+| Security overview | fnnlr uses DB-per-tenant isolation, production-safe tenant resolution, encrypted integration credentials, webhook signature checks, human approval for mutating actions, and explicit launch gates. Hosted runtime proof is still `HOSTED_PROOF_PENDING`. | `SECURITY_TRUST_PROOF.md`, `TECHNICAL_PROOF.md`, `EVIDENCE_INDEX.md` |
+| Retention and deletion | Customer data lifecycle controls are documented with export/delete command proof and an explicit product workflow backlog. Customer-operable UI readiness remains gap-labeled until request, approval, confirmation, delivery, and negative-auth proof are complete. | `DATA_LIFECYCLE.md`, `DATA_EXPORT_DELETE_UI_BACKLOG.md` |
+| Backup and restore | Backup and restore procedures are documented and tied to deployment safety gates. GA approval still requires hosted restore drill evidence, so the current state remains `HOSTED_PROOF_PENDING`. | `BACKUP_RESTORE_RUNBOOK.md`, `DEPLOYMENT_RUNBOOK.md` |
+| Incident response | Incident response has owner, severity, evidence, mitigation, communication, and follow-up expectations documented. A hosted/staging exercise artifact is still required before claiming incident-drill readiness. | `INCIDENT_RESPONSE_EXERCISE.md`, `OBSERVABILITY_GA_RUNBOOK.md` |
+| Support workflow | Support triage, escalation, and operating review are documented as evidence-gated workflows. Hosted issue-log evidence and live customer operating history are still pending. | `SUPPORT_WORKFLOW.md`, `SUPPORT_TRIAGE_TAXONOMY.md` |
+
 ## Readiness Contract
 
 The trust center is guarded by `modules/proof/src/trust-center-readiness.ts` and `tests/trust-center-readiness.test.ts`.

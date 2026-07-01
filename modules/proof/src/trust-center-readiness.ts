@@ -13,6 +13,7 @@ export type TrustCenterRequirementId =
   | 'support_workflow'
   | 'procurement_packet'
   | 'evidence_index'
+  | 'buyer_safe_proof_summaries'
   | 'hosted_gap_language'
   | 'human_attestation_language'
   | 'buyer_safe_commitments';
@@ -48,6 +49,14 @@ export const TRUST_CENTER_REQUIREMENTS: Array<{
   req('support_workflow', ['SUPPORT_WORKFLOW.md'], 'Support'),
   req('procurement_packet', ['PROCUREMENT_CHECKLIST.md'], 'Sales'),
   req('evidence_index', ['EVIDENCE_INDEX.md'], 'Engineering'),
+  req('buyer_safe_proof_summaries', [
+    'Buyer-Safe Proof Summaries',
+    'Security overview',
+    'Retention and deletion',
+    'Backup and restore',
+    'Incident response',
+    'Support workflow',
+  ], 'Sales'),
   req('hosted_gap_language', ['HOSTED_PROOF_PENDING'], 'Engineering'),
   req('human_attestation_language', ['HUMAN_ATTESTATION_REQUIRED'], 'Founder/legal'),
   req('buyer_safe_commitments', [

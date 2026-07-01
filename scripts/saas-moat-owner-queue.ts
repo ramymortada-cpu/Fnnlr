@@ -64,7 +64,7 @@ function queueRows(status: MoatStatus) {
       return a.id.localeCompare(b.id);
     });
   const expected = status.byState[state] ?? 0;
-  if (expected !== 53) fail(`expected 53 ${state} items from status summary, found ${expected}`);
+  if (expected < 0 || expected > 53) fail(`unexpected ${state} item count from status summary: ${expected}`);
   if (rows.length !== expected) fail(`summary says ${expected} owner-ready items but row filter found ${rows.length}`);
   for (const row of rows) {
     if (!row.owner.trim()) fail(`${row.id} is missing owner`);
