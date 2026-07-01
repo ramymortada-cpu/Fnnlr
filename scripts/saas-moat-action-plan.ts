@@ -45,6 +45,9 @@ const requiredEvidenceFiles = [
   'docs/DATA_RESIDENCY_POSITION.md',
   'docs/WEEKLY_MOAT_REVIEW_TEMPLATE.md',
   'docs/EVIDENCE_INDEX.md',
+  'docs/SAAS_MOAT_OWNER_QUEUE.md',
+  'docs/SAAS_MOAT_OWNER_QUEUE.csv',
+  'docs/SAAS_MOAT_OWNER_QUEUE.json',
   'modules/proof/src/evidence-index-readiness.ts',
   'tests/evidence-index-readiness.test.ts',
   'modules/proof/src/trust-center-readiness.ts',
@@ -613,6 +616,23 @@ ${openP0 || '| None | None | None | None | None | None |'}
       generatedAt,
       total: rows.length,
       byState: Object.fromEntries(states.map((state) => [state, rows.filter((item) => item.executionState === state).length])),
+      rows: rows.map((item) => {
+        const next = nextStepFor(item);
+        return {
+          id: item.id,
+          phase: item.phase,
+          priority: item.priority,
+          status: item.status,
+          executionState: item.executionState,
+          owner: item.owner,
+          action: item.action,
+          moat: item.moat,
+          evidence: item.evidence,
+          command: item.command ?? '',
+          nextCommand: next.command,
+          unblockEvidence: next.evidence,
+        };
+      }),
       openP0: openP0Rows,
     },
   };

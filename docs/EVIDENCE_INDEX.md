@@ -30,6 +30,8 @@ process payments, and makes no guaranteed-revenue claim.
 ## SaaS moat execution evidence
 - `SAAS_MOAT_ACTION_PLAN.md` — 165-point execution board.
 - `SAAS_MOAT_ACTION_PLAN.csv` — machine-readable action board.
+- `SAAS_MOAT_OWNER_QUEUE.md` — owner-sorted queue for the 53 non-code/doc-ready moat actions.
+- `SAAS_MOAT_OWNER_QUEUE.csv` and `.json` — machine-readable owner queue generated from the execution status.
 - `TRUST_CENTER_INDEX.md` — buyer-safe proof index.
 - `PRICING_AND_LIMITS_MATRIX.md` — packaging and enforcement plan.
 - `USAGE_LIMIT_ENFORCEMENT_MAP.md` — plan-limit enforcement backlog.

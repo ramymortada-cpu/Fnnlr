@@ -108,6 +108,8 @@
     "moat:check": "tsx scripts/saas-moat-action-plan.ts --check",
     "moat:status-consistency-smoke": "tsx scripts/saas-moat-status-consistency-smoke.ts",
     "moat:status": "tsx scripts/saas-moat-action-plan.ts --status",
+    "moat:owner-queue": "tsx scripts/saas-moat-owner-queue.ts",
+    "moat:owner-queue-check": "tsx scripts/saas-moat-owner-queue.ts --check",
     "customer:repeatability-check": "tsx scripts/repeatability.ts check",
     "customer:repeatability-report": "tsx scripts/repeatability.ts report",
     "typecheck": "tsc --noEmit"
