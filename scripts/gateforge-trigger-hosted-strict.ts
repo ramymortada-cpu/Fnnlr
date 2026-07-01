@@ -39,6 +39,18 @@ if (fromFile) {
   );
 }
 
+const runbook = run('npx', ['tsx', 'scripts/gateforge-open-p0-terminal-runbook.ts', '--check']);
+process.stdout.write(runbook.output);
+if (runbook.status !== 0) {
+  writeReport('BLOCKED_BY_OPEN_P0_RUNBOOK', [
+    'The strict hosted staging workflow was not triggered.',
+    'The open P0 terminal runbook is missing, stale, or internally inconsistent.',
+    'Run `npm run gateforge:open-p0-runbook`, review `gateforge-audit/run-2026-06-23-1035/55_open_p0_terminal_runbook.md`, then rerun this trigger.',
+  ]);
+  console.error('GateForge hosted strict trigger: BLOCKED_BY_OPEN_P0_RUNBOOK');
+  process.exit(runbook.status);
+}
+
 const audit = run('npx', auditArgs);
 process.stdout.write(audit.output);
 if (audit.status !== 0) {
@@ -52,6 +64,7 @@ if (audit.status !== 0) {
 
 if (dryRun) {
   writeReport('DRY_RUN_READY', [
+    'Open P0 terminal runbook preflight passed.',
     'Secret-name audit passed for the provided input.',
     `Dry run only; workflow was not triggered. Command would be: gh workflow run "${workflow}"`,
   ]);
@@ -72,6 +85,7 @@ if (trigger.status !== 0) {
 }
 
 writeReport('TRIGGERED', [
+  'Open P0 terminal runbook preflight passed.',
   'Secret-name audit passed.',
   `Triggered workflow: ${workflow}`,
   'Monitor with: gh run list --workflow "GateForge Hosted Staging Strict" --limit 1',
