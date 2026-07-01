@@ -1,22 +1,42 @@
 # Hosted Readiness Doctor
 
-Generated: `2026-06-24T13:02:10.081Z`
+Generated: `2026-07-01T10:00:18.228Z`
 
 This doctor checks readiness without printing secret values.
 
 ## Decision
 
-- Status: `REPLACE_LOCAL_SECRET_PLACEHOLDERS`
-- Next command: `npm run gateforge:secret-replacement-packet, then replace the listed local secret values and rerun npm run gateforge:hosted-readiness-doctor.`
+- Status: `SCAFFOLD_LOCAL_SECRET_FILES`
+- Next command: `npm run gateforge:scaffold-local-secrets`
 
 ## Probes
 
 | Probe | Status | Detail |
 | --- | --- | --- |
-| Local secret files | `FAIL` | local secret files exist but placeholders remain |
+| Local secret files | `FAIL` | local secret files are missing |
 | Attestation secret pack | `FAIL` | attestation packet is not ready for B64 secret packaging |
+| Remaining external blocker closeout | `PASS` | 16 external blockers are mapped for operator closeout |
 | GitHub secret names | `FAIL` | GitHub secret names are missing |
 | Hosted strict workflow | `UNKNOWN` | no hosted strict workflow run found |
+
+## Remaining External Blocker IDs
+
+- `GF-001`
+- `GF-002`
+- `GF-003`
+- `GF-004`
+- `GF-005`
+- `GF-006`
+- `GF-007`
+- `GF-008`
+- `GF-009`
+- `GF-010`
+- `GF-011`
+- `GF-012`
+- `GF-013`
+- `GF-014`
+- `GF-015`
+- `GF-016`
 
 ## Notes
 
@@ -25,6 +45,7 @@ This doctor checks readiness without printing secret values.
 - Workflow: `GateForge Hosted Staging Strict`
 - Secret replacement packet: `gateforge-audit/run-2026-06-23-1035/45_secret_replacement_packet.md`
 - Attestation secret pack: `gateforge-audit/run-2026-06-23-1035/46_attestation_secret_pack.md`
+- Remaining blocker closeout: `gateforge-audit/run-2026-06-23-1035/48_remaining_external_blocker_closeout.json`
 
 ## Sanitized Probe Output
 
@@ -45,96 +66,96 @@ This doctor checks readiness without printing secret values.
     {
       "name": "GATEFORGE_HOSTED_STAGING_ATTESTATION_B64",
       "kind": "attestation",
-      "status": "PLACEHOLDER"
+      "status": "MISSING"
     }
   ],
-  "runtimeReady": 6,
+  "runtimeReady": 0,
   "runtimeRequired": 17,
   "runtime": [
     {
       "name": "CONTROL_PLANE_DATABASE_URL",
       "kind": "runtime",
-      "status": "PLACEHOLDER"
+      "status": "MISSING"
     },
     {
       "name": "TENANT_DB_ADMIN_URL",
       "kind": "runtime",
-      "status": "PLACEHOLDER"
+      "status": "MISSING"
     },
     {
       "name": "TENANT_DB_HOST",
       "kind": "runtime",
-      "status": "PLACEHOLDER"
+      "status": "MISSING"
     },
     {
       "name": "TENANT_CREDENTIAL_ENCRYPTION_KEY",
       "kind": "runtime",
-      "status": "READY"
+      "status": "MISSING"
     },
     {
       "name": "INTEGRATION_ENCRYPTION_KEY",
       "kind": "runtime",
-      "status": "READY"
+      "status": "MISSING"
     },
     {
       "name": "FNNLR_CRON_SECRET",
       "kind": "runtime",
-      "status": "READY"
+      "status": "MISSING"
     },
     {
       "name": "AUTH_MFA_ENCRYPTION_KEY",
       "kind": "runtime",
-      "status": "READY"
+      "status": "MISSING"
     },
     {
       "name": "FNNLR_AI_TENANT_DAILY_USD_CAP",
       "kind": "runtime",
-      "status": "READY"
+      "status": "MISSING"
     },
     {
       "name": "FNNLR_AI_GLOBAL_DAILY_USD_CAP",
       "kind": "runtime",
-      "status": "READY"
+      "status": "MISSING"
     },
     {
       "name": "SENTRY_DSN",
       "kind": "runtime",
-      "status": "PLACEHOLDER"
+      "status": "MISSING"
     },
     {
       "name": "UPTIME_HEALTHCHECK_URL",
       "kind": "runtime",
-      "status": "PLACEHOLDER"
+      "status": "MISSING"
     },
     {
       "name": "ALERT_EMAIL_TO",
       "kind": "runtime",
-      "status": "PLACEHOLDER"
+      "status": "MISSING"
     },
     {
       "name": "ALERT_WEBHOOK_URL",
       "kind": "runtime",
-      "status": "PLACEHOLDER"
+      "status": "MISSING"
     },
     {
       "name": "RESEND_API_KEY",
       "kind": "runtime",
-      "status": "PLACEHOLDER"
+      "status": "MISSING"
     },
     {
       "name": "EMAIL_FROM",
       "kind": "runtime",
-      "status": "PLACEHOLDER"
+      "status": "MISSING"
     },
     {
       "name": "EMAIL_REPLY_TO",
       "kind": "runtime",
-      "status": "PLACEHOLDER"
+      "status": "MISSING"
     },
     {
       "name": "ANTHROPIC_API_KEY",
       "kind": "runtime",
-      "status": "PLACEHOLDER"
+      "status": "MISSING"
     }
   ]
 }
@@ -163,6 +184,28 @@ GateForge GitHub secrets audit: MISSING_SECRETS
   - EMAIL_REPLY_TO
   - ANTHROPIC_API_KEY
 wrote gateforge-audit/run-2026-06-23-1035/39_github_secrets_presence_audit.md
+```
+
+### Remaining External Blocker Closeout
+
+```text
+gateforge-audit/run-2026-06-23-1035/48_remaining_external_blocker_closeout.json
+GF-001
+GF-002
+GF-003
+GF-004
+GF-005
+GF-006
+GF-007
+GF-008
+GF-009
+GF-010
+GF-011
+GF-012
+GF-013
+GF-014
+GF-015
+GF-016
 ```
 
 ### Attestation Secret Pack

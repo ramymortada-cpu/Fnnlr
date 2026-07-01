@@ -8,6 +8,7 @@ const outIndex = process.argv.indexOf('--out');
 const outPath = outIndex >= 0 ? process.argv[outIndex + 1] : `${runDir}/44_hosted_readiness_doctor.md`;
 const replacementPacketPath = `${runDir}/45_secret_replacement_packet.md`;
 const attestationPackPath = `${runDir}/46_attestation_secret_pack.md`;
+const closeoutPath = `${runDir}/48_remaining_external_blocker_closeout.json`;
 const dirIndex = process.argv.indexOf('--dir');
 const secretDir = dirIndex >= 0 ? process.argv[dirIndex + 1] : '/tmp/fnnlr-gateforge-secrets';
 const fromFileIndex = process.argv.indexOf('--from-file');
@@ -30,6 +31,16 @@ type LocalSecretJson = {
 type LocalSecretProbe = Probe & {
   attestationReady?: boolean;
   runtimeReady?: boolean;
+};
+type CloseoutJson = {
+  status?: string;
+  count?: number;
+  blockerIds?: string[];
+  safety?: {
+    secretValuesPrinted?: boolean;
+    productionMutated?: boolean;
+    sourceDumpsIncluded?: boolean;
+  };
 };
 
 function run(command: string, args: string[]) {
@@ -152,10 +163,66 @@ function probeLatestStrictRun(): Probe {
   };
 }
 
+function probeRemainingCloseout(): { probe: Probe; blockerIds: string[] } {
+  if (!fs.existsSync(closeoutPath)) {
+    return {
+      probe: {
+        status: 'FAIL',
+        detail: 'remaining external blocker closeout is missing',
+        output: closeoutPath,
+      },
+      blockerIds: [],
+    };
+  }
+  let parsed: CloseoutJson;
+  try {
+    parsed = JSON.parse(fs.readFileSync(closeoutPath, 'utf8')) as CloseoutJson;
+  } catch {
+    return {
+      probe: {
+        status: 'FAIL',
+        detail: 'remaining external blocker closeout JSON could not be parsed',
+        output: closeoutPath,
+      },
+      blockerIds: [],
+    };
+  }
+
+  const expectedIds = Array.from({ length: 16 }, (_, index) => `GF-${String(index + 1).padStart(3, '0')}`);
+  const ids = parsed.blockerIds || [];
+  const missing = expectedIds.filter((id) => !ids.includes(id));
+  const extra = ids.filter((id) => !expectedIds.includes(id));
+  const safe =
+    parsed.safety?.secretValuesPrinted === false &&
+    parsed.safety?.productionMutated === false &&
+    parsed.safety?.sourceDumpsIncluded === false;
+  const errors = [
+    parsed.status === 'BLOCKED_EXTERNAL' ? '' : `status=${parsed.status || 'missing'}`,
+    parsed.count === 16 ? '' : `count=${parsed.count ?? 'missing'}`,
+    missing.length ? `missing=${missing.join(',')}` : '',
+    extra.length ? `extra=${extra.join(',')}` : '',
+    safe ? '' : 'unsafe-safety-flags',
+  ].filter(Boolean);
+
+  return {
+    probe: {
+      status: errors.length ? 'FAIL' : 'PASS',
+      detail: errors.length ? errors.join('; ') : '16 external blockers are mapped for operator closeout',
+      output: errors.length ? `${closeoutPath}\n${errors.join('\n')}` : `${closeoutPath}\n${ids.join('\n')}`,
+    },
+    blockerIds: ids,
+  };
+}
+
+function mdList(values: string[]) {
+  return values.length ? values.map((value) => `- \`${value}\``).join('\n') : '- None';
+}
+
 const localSecrets = probeLocalSecrets();
 const attestationPack = probeAttestationPack();
 const githubSecrets = probeGithubSecrets();
 const strictRun = probeLatestStrictRun();
+const remainingCloseout = probeRemainingCloseout();
 const decision =
   localSecrets.status !== 'PASS'
     ? localSecrets.localState === 'PLACEHOLDERS' || localSecrets.localState === 'EMPTY_FILES' || localSecrets.localState === 'INVALID_FILES'
@@ -197,8 +264,13 @@ This doctor checks readiness without printing secret values.
 | --- | --- | --- |
 | Local secret files | \`${localSecrets.status}\` | ${localSecrets.detail} |
 | Attestation secret pack | \`${attestationPack.status}\` | ${attestationPack.detail} |
+| Remaining external blocker closeout | \`${remainingCloseout.probe.status}\` | ${remainingCloseout.probe.detail} |
 | GitHub secret names | \`${githubSecrets.status}\` | ${githubSecrets.detail} |
 | Hosted strict workflow | \`${strictRun.status}\` | ${strictRun.detail} |
+
+## Remaining External Blocker IDs
+
+${mdList(remainingCloseout.blockerIds)}
 
 ## Notes
 
@@ -207,6 +279,7 @@ This doctor checks readiness without printing secret values.
 - Workflow: \`${workflow}\`
 - Secret replacement packet: \`${replacementPacketPath}\`
 - Attestation secret pack: \`${attestationPackPath}\`
+- Remaining blocker closeout: \`${closeoutPath}\`
 
 ## Sanitized Probe Output
 
@@ -220,6 +293,12 @@ ${localSecrets.output.trim() || '(no output)'}
 
 \`\`\`text
 ${githubSecrets.output.trim() || '(no output)'}
+\`\`\`
+
+### Remaining External Blocker Closeout
+
+\`\`\`text
+${remainingCloseout.probe.output.trim() || '(no output)'}
 \`\`\`
 
 ### Attestation Secret Pack

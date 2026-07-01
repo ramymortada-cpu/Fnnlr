@@ -69,6 +69,11 @@ if ((result.status ?? 1) !== 1) fail('fixture mode should stop before claiming h
 if (!output.includes('GateForge hosted readiness doctor: TRIGGER_HOSTED_STRICT')) fail('doctor did not pick trigger next step');
 if (!report.includes('| Local secret files | `PASS` |')) fail('report did not mark local secrets PASS');
 if (!report.includes('| GitHub secret names | `PASS` |')) fail('report did not mark GitHub secrets PASS');
+if (!report.includes('| Remaining external blocker closeout | `PASS` | 16 external blockers are mapped for operator closeout |')) {
+  fail('report did not include passing remaining closeout probe');
+}
+if (!report.includes('## Remaining External Blocker IDs')) fail('report did not list remaining external blocker IDs');
+if (!report.includes('- `GF-001`') || !report.includes('- `GF-016`')) fail('report did not include GF-001..GF-016');
 if (!report.includes('| Hosted strict workflow | `UNKNOWN` | skipped in fixture mode |')) {
   fail('report did not mark hosted strict workflow fixture skip');
 }
