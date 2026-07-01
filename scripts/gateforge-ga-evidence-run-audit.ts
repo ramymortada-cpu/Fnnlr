@@ -61,13 +61,14 @@ function readInput(): RunAuditInput {
     '--status',
     'completed',
     '--limit',
-    '1',
+    '10',
     '--json',
     'databaseId,status,conclusion,headSha,url',
   ]);
   if (latestRun.status !== 0) fail(`could not inspect latest ${workflow} run: ${latestRun.output.trim()}`);
-  const runRow = (JSON.parse(latestRun.output) as NonNullable<RunAuditInput['run']>[])[0];
-  if (!runRow?.databaseId) fail(`no ${workflow} run found`);
+  const runs = JSON.parse(latestRun.output) as NonNullable<RunAuditInput['run']>[];
+  const runRow = runs.find((row) => row.status === 'completed' && row.conclusion === 'success');
+  if (!runRow?.databaseId) fail(`no successful completed ${workflow} run found`);
 
   const jobs = run('gh', ['api', `repos/${repoName}/actions/runs/${runRow.databaseId}/jobs`, '--jq', '.jobs[].id']);
   if (jobs.status !== 0) fail(`could not inspect ${workflow} jobs: ${jobs.output.trim()}`);
@@ -122,7 +123,7 @@ const body = `# GateForge GA Evidence Run Audit
 
 Generated: \`${generatedAt}\`
 
-This audit checks the latest \`${workflow}\` run status and annotations. It validates workflow evidence quality only; it does not read or print secret values.
+This audit checks the latest successful completed \`${workflow}\` run status and annotations. It validates workflow evidence quality only; it does not read or print secret values.
 
 ## Decision
 
