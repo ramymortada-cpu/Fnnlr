@@ -1,6 +1,6 @@
 # SaaS Moat Action Plan
 
-Generated: `2026-07-01T08:45:51.768Z`
+Generated: `2026-07-01T08:50:34.893Z`
 
 This is the execution board for turning fnnlr from a GateForge-blocked release candidate into a global SaaS with a defensible moat. It intentionally separates code-ready work from external hosted evidence so the team does not confuse local progress with GA approval.
 
@@ -101,14 +101,14 @@ fnnlr's moat is the combination of DB-per-tenant trust, Arabic-first revenue wor
 
 | ID | Priority | Status | Owner | Action | Moat rationale | Evidence required | Command |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| `WI-001` | `P1` | `NEXT` | Engineering | Link ai_usage_events to workflow id where available. | Data moat: AI spend becomes workflow intelligence. | Schema/API design note and tests. |  |
-| `WI-002` | `P1` | `NEXT` | Engineering | Link ai_usage_events to business outcome where available. | Data moat: recommendations improve from outcomes, not prompts alone. | Outcome linkage test/backlog. |  |
-| `WI-003` | `P1` | `NEXT` | Engineering | Compute cost per successful workflow action. | Margin moat: fnnlr can optimize AI cost by outcome. | Metric definition and dashboard backlog. |  |
-| `WI-004` | `P1` | `NEXT` | Product | Define next-best-action v1 rules. | Workflow moat: recommendations become productized operating guidance. | Rules document with evidence inputs. |  |
-| `WI-005` | `P1` | `NEXT` | Product | Define follow-up quality score. | Arabic-first moat: sales language can be scored by local norms. | Scoring rubric in docs. |  |
-| `WI-006` | `P2` | `NEXT` | Product | Create lead qualification confidence rubric. | Workflow moat: CRM work becomes guided and measurable. | Rubric and test fixtures. |  |
-| `WI-007` | `P2` | `NEXT` | Engineering | Add AI cost dashboard readiness and cap forecast evidence. | Margin moat: operators can see and cap AI spend. | Dashboard readiness review plus cap forecast tests. |  |
-| `WI-008` | `P2` | `NEXT` | Engineering | Add tenant AI cap change forecast contract before UI implementation. | Trust moat: customers get predictable AI behavior. | Cap change forecast, approval evidence, and remaining UI gap. |  |
+| `WI-001` | `P1` | `READY_NOW` | Engineering | Link ai_usage_events to workflow id where available. | Data moat: AI spend becomes workflow intelligence. | Workflow intelligence schema, module, and tests support workflow_id linkage while route wiring remains backlog-labeled. |  |
+| `WI-002` | `P1` | `READY_NOW` | Engineering | Link ai_usage_events to business outcome where available. | Data moat: recommendations improve from outcomes, not prompts alone. | Workflow intelligence events, readiness checks, and tests support outcome_id/outcome_status linkage without fabricating missing evidence. |  |
+| `WI-003` | `P1` | `READY_NOW` | Engineering | Compute cost per successful workflow action. | Margin moat: fnnlr can optimize AI cost by outcome. | Workflow intelligence metrics and AI spend review tests compute cost per successful action from observed outcome evidence. |  |
+| `WI-004` | `P1` | `READY_NOW` | Product | Define next-best-action v1 rules. | Workflow moat: recommendations become productized operating guidance. | Workflow intelligence spec and tests rank next-best actions with P0 priority, evidence strength, sample size, locale, and human-approval guardrails. |  |
+| `WI-005` | `P1` | `READY_NOW` | Product | Define follow-up quality score. | Arabic-first moat: sales language can be scored by local norms. | Workflow intelligence spec and tests score Arabic-safe follow-up quality with measurable CTA and boundary guardrails. |  |
+| `WI-006` | `P2` | `READY_NOW` | Product | Create lead qualification confidence rubric. | Workflow moat: CRM work becomes guided and measurable. | Workflow intelligence spec and tests score qualification confidence and route weak evidence to discovery. |  |
+| `WI-007` | `P2` | `READY_NOW` | Engineering | Add AI cost dashboard readiness and cap forecast evidence. | Margin moat: operators can see and cap AI spend. | AI operations readiness review and tests prove dashboard contract readiness while keeping cap UI gaps explicit. |  |
+| `WI-008` | `P2` | `READY_NOW` | Engineering | Add tenant AI cap change forecast contract before UI implementation. | Trust moat: customers get predictable AI behavior. | AI spend review template, cap forecast module, and tests prove cap-change forecast contract with remaining UI gap labeled. |  |
 
 ## Activation moat
 
