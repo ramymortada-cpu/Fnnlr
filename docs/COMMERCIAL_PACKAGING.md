@@ -92,6 +92,15 @@ support pack · customer-facing updates.
 **Limits:** outcomes depend on the customer's traffic and response motion · no
 guaranteed revenue of any kind · all limits above still apply.
 
+### Paid Pilot
+For a qualified first customer who accepts the product boundaries and has owners
+for response, payment confirmation, support, setup, and rollback.
+**Includes:** assisted setup · first hosted workflow launch · tracked WhatsApp
+link · first-signal check · Revenue Desk evidence review · week-1 review.
+**Limits:** no guaranteed revenue · no auto-send · no payment processing · no
+repeatable-pilot claim until hosted pilot evidence exists. See
+`PILOT_OFFER_BRIEF.md`.
+
 ## Light SLA (honest)
 - Support is operator-assisted during the launch window agreed in the manifest.
 - Blockers are surfaced, never hidden; P0/P1 issues carry an owner and a next

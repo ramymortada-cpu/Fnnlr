@@ -45,6 +45,8 @@
 ## Package selected
 - `<<Starter Activation | Growth Ops | Managed Launch>>` — see
   `COMMERCIAL_PACKAGING.md` for includes and limits.
+- If this is a pilot, attach `PILOT_OFFER_BRIEF.md` and confirm fit,
+  responsibilities, owner map, success criteria, and hosted-evidence gaps.
 
 ## Support model
 - Operator-assisted within the agreed launch window. Owners: setup, support,
