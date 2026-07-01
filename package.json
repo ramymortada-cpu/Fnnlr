@@ -87,6 +87,8 @@
     "gateforge:hosted-unblock-smoke": "tsx scripts/gateforge-hosted-unblock-runner-smoke.ts",
     "gateforge:ga-unblock-status": "tsx scripts/gateforge-ga-unblock-status.ts",
     "gateforge:ga-unblock-status-smoke": "tsx scripts/gateforge-ga-unblock-status-smoke.ts",
+    "gateforge:ga-evidence-run-audit": "tsx scripts/gateforge-ga-evidence-run-audit.ts",
+    "gateforge:ga-evidence-run-audit-smoke": "tsx scripts/gateforge-ga-evidence-run-audit-smoke.ts",
     "gateforge:hosted-readiness-doctor": "tsx scripts/gateforge-hosted-readiness-doctor.ts",
     "gateforge:hosted-readiness-doctor-smoke": "tsx scripts/gateforge-hosted-readiness-doctor-smoke.ts",
     "gateforge:hosted-secrets-manifest-smoke": "tsx scripts/gateforge-hosted-secrets-manifest-smoke.ts",

@@ -25,6 +25,8 @@ const requiredArtifacts = [
   '50_operator_execution_packet.md',
   '50_operator_execution_packet.csv',
   '50_operator_execution_packet.json',
+  '51_ga_evidence_run_audit.md',
+  '51_ga_evidence_run_audit.json',
 ];
 const hostedStrictArtifacts = [
   '24_ga_unblock_evidence_pack.md',
