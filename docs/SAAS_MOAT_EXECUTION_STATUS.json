@@ -1,10 +1,10 @@
 {
-  "generatedAt": "2026-07-01T08:59:58.859Z",
+  "generatedAt": "2026-07-01T12:58:47.245Z",
   "total": 165,
   "byState": {
     "BLOCKED_EXTERNAL": 16,
-    "COMMAND_READY": 7,
-    "EVIDENCE_FILE_PRESENT": 88,
+    "COMMAND_READY": 4,
+    "EVIDENCE_FILE_PRESENT": 91,
     "OWNER_OR_DOC_ACTION_READY": 54
   },
   "openP0": [
@@ -123,12 +123,6 @@
       "evidence": "npm run gateforge:attestation-secret-pack -- --write-b64 PASS."
     },
     {
-      "id": "GF-020",
-      "state": "COMMAND_READY",
-      "action": "Run hosted readiness doctor.",
-      "evidence": "44_hosted_readiness_doctor.md says UPLOAD_GITHUB_SECRETS or later."
-    },
-    {
       "id": "GF-021",
       "state": "COMMAND_READY",
       "action": "Upload local secret pack to GitHub Actions after validation.",
@@ -139,18 +133,6 @@
       "state": "OWNER_OR_DOC_ACTION_READY",
       "action": "Trigger GateForge Hosted Staging Strict.",
       "evidence": "Hosted strict workflow success URL."
-    },
-    {
-      "id": "GF-023",
-      "state": "COMMAND_READY",
-      "action": "Run final gate and final report.",
-      "evidence": "final-gate CONDITIONAL_GO or precise blockers."
-    },
-    {
-      "id": "GF-024",
-      "state": "COMMAND_READY",
-      "action": "Refresh GA unblock status dashboard.",
-      "evidence": "47_ga_unblock_status.md/json updated."
     }
   ]
 }

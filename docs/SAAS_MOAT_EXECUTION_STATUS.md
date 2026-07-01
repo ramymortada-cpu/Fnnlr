@@ -1,6 +1,6 @@
 # SaaS Moat Execution Status
 
-Generated: `2026-07-01T08:59:58.859Z`
+Generated: `2026-07-01T12:58:47.245Z`
 
 This status is derived from the 165-point board. It treats hosted/operator-only work as blocked until real external evidence exists.
 
@@ -9,15 +9,15 @@ This status is derived from the 165-point board. It treats hosted/operator-only 
 | State | Count |
 | --- | ---: |
 | `BLOCKED_EXTERNAL` | 16 |
-| `COMMAND_READY` | 7 |
-| `EVIDENCE_FILE_PRESENT` | 88 |
+| `COMMAND_READY` | 4 |
+| `EVIDENCE_FILE_PRESENT` | 91 |
 | `OWNER_OR_DOC_ACTION_READY` | 54 |
 
 ## Summary By Phase
 
 | Phase | Actions | Evidence-file present | Externally blocked |
 | --- | ---: | ---: | ---: |
-| GateForge GA unblock | 24 | 0 | 16 |
+| GateForge GA unblock | 24 | 3 | 16 |
 | Trust moat | 12 | 12 | 0 |
 | SaaS packaging moat | 10 | 10 | 0 |
 | Workflow intelligence moat | 8 | 8 | 0 |
@@ -57,8 +57,5 @@ This status is derived from the 165-point board. It treats hosted/operator-only 
 | `GF-017` | `COMMAND_READY` | Run local secret replacement packet after operator values exist. | npm run gateforge:secret-replacement-packet PASS. |
 | `GF-018` | `COMMAND_READY` | Generate hosted staging attestation packet from real evidence only. | hosted-staging-attestation.json validates with external-check. |
 | `GF-019` | `COMMAND_READY` | Encode validated attestation as the preferred B64 secret. | npm run gateforge:attestation-secret-pack -- --write-b64 PASS. |
-| `GF-020` | `COMMAND_READY` | Run hosted readiness doctor. | 44_hosted_readiness_doctor.md says UPLOAD_GITHUB_SECRETS or later. |
 | `GF-021` | `COMMAND_READY` | Upload local secret pack to GitHub Actions after validation. | GitHub secrets audit READY. |
 | `GF-022` | `OWNER_OR_DOC_ACTION_READY` | Trigger GateForge Hosted Staging Strict. | Hosted strict workflow success URL. |
-| `GF-023` | `COMMAND_READY` | Run final gate and final report. | final-gate CONDITIONAL_GO or precise blockers. |
-| `GF-024` | `COMMAND_READY` | Refresh GA unblock status dashboard. | 47_ga_unblock_status.md/json updated. |

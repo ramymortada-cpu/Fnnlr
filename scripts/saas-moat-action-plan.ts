@@ -72,6 +72,15 @@ const requiredEvidenceFiles = [
   'docs/industry-templates/ecommerce.md',
 ];
 const evidenceFilesByActionId: Record<string, string[]> = {
+  'GF-020': ['gateforge-audit/run-2026-06-23-1035/44_hosted_readiness_doctor.md'],
+  'GF-023': [
+    'gateforge-audit/run-2026-06-23-1035/33_final_gate_evaluator.md',
+    'gateforge-audit/run-2026-06-23-1035/34_final_gate_current_decision.md',
+  ],
+  'GF-024': [
+    'gateforge-audit/run-2026-06-23-1035/47_ga_unblock_status.md',
+    'gateforge-audit/run-2026-06-23-1035/47_ga_unblock_status.json',
+  ],
   'TR-001': ['docs/LEGAL_APPROVAL_TRACKER.md'],
   'TR-002': ['docs/LEGAL_APPROVAL_TRACKER.md'],
   'TR-003': ['docs/LEGAL_APPROVAL_TRACKER.md'],
@@ -551,8 +560,11 @@ if (statusOnly) {
 if (checkOnly) {
   const expectedMd = renderMarkdown(actions);
   const expectedCsv = renderCsv(actions);
+  const expectedStatus = renderStatus(actions);
   const currentMd = fs.existsSync(outMd) ? fs.readFileSync(outMd, 'utf8') : '';
   const currentCsv = fs.existsSync(outCsv) ? fs.readFileSync(outCsv, 'utf8') : '';
+  const currentStatusMd = fs.existsSync(statusMd) ? fs.readFileSync(statusMd, 'utf8') : '';
+  const currentStatusJson = fs.existsSync(statusJson) ? fs.readFileSync(statusJson, 'utf8') : '';
   if (!currentMd || !currentCsv) {
     console.error('SaaS moat action plan: FAIL - generated docs are missing');
     process.exit(1);
@@ -561,6 +573,18 @@ if (checkOnly) {
   if (normalizeGeneratedAt(currentMd) !== normalizeGeneratedAt(expectedMd) || currentCsv !== expectedCsv) {
     console.error('SaaS moat action plan: FAIL - generated docs are stale');
     console.error(`  run: npm run moat:plan`);
+    process.exit(1);
+  }
+  if (!currentStatusMd || !currentStatusJson) {
+    console.error('SaaS moat action plan: FAIL - generated status files are missing');
+    console.error(`  run: npm run moat:status`);
+    process.exit(1);
+  }
+  const expectedStatusJson = `${JSON.stringify({ ...expectedStatus.json, generatedAt: '<timestamp>' }, null, 2)}\n`;
+  const normalizedStatusJson = `${JSON.stringify({ ...JSON.parse(currentStatusJson), generatedAt: '<timestamp>' }, null, 2)}\n`;
+  if (normalizeGeneratedAt(currentStatusMd) !== normalizeGeneratedAt(expectedStatus.body) || normalizedStatusJson !== expectedStatusJson) {
+    console.error('SaaS moat action plan: FAIL - generated status files are stale');
+    console.error(`  run: npm run moat:status`);
     process.exit(1);
   }
   const missingEvidenceFiles = requiredEvidenceFiles.filter((file) => !fs.existsSync(file));
