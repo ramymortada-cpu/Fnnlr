@@ -1,6 +1,6 @@
 # SaaS Moat Action Plan
 
-Generated: `2026-07-01T08:54:17.035Z`
+Generated: `2026-07-01T08:55:41.050Z`
 
 This is the execution board for turning fnnlr from a GateForge-blocked release candidate into a global SaaS with a defensible moat. It intentionally separates code-ready work from external hosted evidence so the team does not confuse local progress with GA approval.
 
@@ -91,8 +91,8 @@ fnnlr's moat is the combination of DB-per-tenant trust, Arabic-first revenue wor
 | `PK-003` | `P1` | `READY_NOW` | Product | Define Growth plan limits. | Business moat: expansion path is explicit. | Pricing/limits matrix. |  |
 | `PK-004` | `P1` | `READY_NOW` | Product | Define Scale plan limits. | Business moat: larger customers have a reason to upgrade. | Pricing/limits matrix. |  |
 | `PK-005` | `P1` | `READY_NOW` | Product | Define Enterprise custom limits and proof requirements. | Enterprise moat: procurement path is separated from self-serve. | Enterprise row in pricing/limits matrix. |  |
-| `PK-006` | `P1` | `NEXT` | Engineering | Map pricing limits to enforcement readiness contract. | Margin moat: plans are real only when enforced. | Limit-to-code map plus readiness tests for seats, workflows, AI spend, contacts, integrations. |  |
-| `PK-007` | `P1` | `NEXT` | Engineering | Add usage-limit acceptance readiness gate. | Margin moat: accidental overuse is caught before launch. | Commercial limit tests plus route-level proof gap tracking. |  |
+| `PK-006` | `P1` | `READY_NOW` | Engineering | Map pricing limits to enforcement readiness contract. | Margin moat: plans are real only when enforced. | Usage-limit enforcement map, plan-limit source, and readiness tests connect seats, workflows, contacts, integrations, AI spend, and support tiers while route-level enforcement remains gap-labeled. |  |
+| `PK-007` | `P1` | `READY_NOW` | Engineering | Add usage-limit acceptance readiness gate. | Margin moat: accidental overuse is caught before launch. | Commercial limit decisions and enforcement readiness tests block overage claims without full route proof and preserve customer-safe upgrade hints. |  |
 | `PK-008` | `P1` | `READY_NOW` | Sales | Create one-page sales proof pack. | Distribution moat: sales can repeat without founder improvisation. | CUSTOMER_PROOF_PACK linked from sales docs. |  |
 | `PK-009` | `P1` | `READY_NOW` | Sales | Create ROI calculator assumptions. | Distribution moat: buyers see payback, not feature count. | ROI assumptions in COMMERCIAL_PACKAGING. |  |
 | `PK-010` | `P1` | `READY_NOW` | Support | Map support SLA tiers to plans. | Trust moat: support promise matches revenue model. | SUPPORT_WORKFLOW and commercial packaging updated. |  |
