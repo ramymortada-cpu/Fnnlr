@@ -1,6 +1,6 @@
 # SaaS Moat Action Plan
 
-Generated: `2026-07-01T00:26:15.411Z`
+Generated: `2026-07-01T00:37:48.612Z`
 
 This is the execution board for turning fnnlr from a GateForge-blocked release candidate into a global SaaS with a defensible moat. It intentionally separates code-ready work from external hosted evidence so the team does not confuse local progress with GA approval.
 
@@ -80,7 +80,7 @@ fnnlr's moat is the combination of DB-per-tenant trust, Arabic-first revenue wor
 | `TR-009` | `P1` | `NEXT` | Engineering | Add audit log viewer backlog with acceptance criteria. | Trust moat: enterprise admins buy control and traceability. | Issue/backlog item with API, UI, export acceptance. |  |
 | `TR-010` | `P1` | `NEXT` | Engineering | Add data export UI readiness contract with acceptance criteria. | Trust moat: data portability reduces buyer risk. | Backlog item and readiness tests linked to export-tenant command. |  |
 | `TR-011` | `P1` | `NEXT` | Engineering | Add deletion request workflow readiness contract. | Trust moat: legal readiness becomes an operator workflow. | Backlog item and readiness tests linked to delete-tenant proof. |  |
-| `TR-012` | `P1` | `NEXT` | Engineering | Create incident response exercise checklist. | Trust moat: incident readiness becomes repeatable. | Incident drill template and owner. |  |
+| `TR-012` | `P1` | `NEXT` | Engineering | Create incident response exercise readiness contract. | Trust moat: incident readiness becomes repeatable. | Incident drill template, readiness tests, owner, and hosted proof gap. |  |
 
 ## SaaS packaging moat
 

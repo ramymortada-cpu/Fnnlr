@@ -34,7 +34,7 @@ id,phase,priority,status,owner,action,moat,evidence,command
 "TR-009","Trust moat","P1","NEXT","Engineering","Add audit log viewer backlog with acceptance criteria.","Trust moat: enterprise admins buy control and traceability.","Issue/backlog item with API, UI, export acceptance.",""
 "TR-010","Trust moat","P1","NEXT","Engineering","Add data export UI readiness contract with acceptance criteria.","Trust moat: data portability reduces buyer risk.","Backlog item and readiness tests linked to export-tenant command.",""
 "TR-011","Trust moat","P1","NEXT","Engineering","Add deletion request workflow readiness contract.","Trust moat: legal readiness becomes an operator workflow.","Backlog item and readiness tests linked to delete-tenant proof.",""
-"TR-012","Trust moat","P1","NEXT","Engineering","Create incident response exercise checklist.","Trust moat: incident readiness becomes repeatable.","Incident drill template and owner.",""
+"TR-012","Trust moat","P1","NEXT","Engineering","Create incident response exercise readiness contract.","Trust moat: incident readiness becomes repeatable.","Incident drill template, readiness tests, owner, and hosted proof gap.",""
 "PK-001","SaaS packaging moat","P1","READY_NOW","Product","Freeze positioning as Arabic-first AI Revenue Operations OS.","Category moat: avoids being boxed as a generic funnel builder.","COMPETITIVE_POSITIONING updated with category statement.",""
 "PK-002","SaaS packaging moat","P1","READY_NOW","Product","Define Starter plan limits.","Business moat: plan limits protect margin and simplify sales.","Pricing/limits matrix.",""
 "PK-003","SaaS packaging moat","P1","READY_NOW","Product","Define Growth plan limits.","Business moat: expansion path is explicit.","Pricing/limits matrix.",""

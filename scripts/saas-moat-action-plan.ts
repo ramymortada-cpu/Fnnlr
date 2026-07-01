@@ -71,7 +71,7 @@ const evidenceFilesByActionId: Record<string, string[]> = {
   'TR-009': ['docs/AUDIT_LOG_VIEWER_BACKLOG.md', 'modules/enterprise/src/audit-log-readiness.ts', 'tests/audit-log-readiness.test.ts'],
   'TR-010': ['docs/DATA_EXPORT_DELETE_UI_BACKLOG.md', 'modules/data-lifecycle/src/readiness.ts', 'tests/data-lifecycle-readiness.test.ts'],
   'TR-011': ['docs/DATA_EXPORT_DELETE_UI_BACKLOG.md', 'modules/data-lifecycle/src/readiness.ts', 'tests/data-lifecycle-readiness.test.ts'],
-  'TR-012': ['docs/INCIDENT_RESPONSE_EXERCISE.md'],
+  'TR-012': ['docs/INCIDENT_RESPONSE_EXERCISE.md', 'modules/operating-room/src/incident-readiness.ts', 'tests/incident-readiness.test.ts'],
   'PK-001': ['docs/COMPETITIVE_POSITIONING.md'],
   'PK-002': ['docs/PRICING_AND_LIMITS_MATRIX.md'],
   'PK-003': ['docs/PRICING_AND_LIMITS_MATRIX.md'],
@@ -180,7 +180,7 @@ function trustMoat(): Action[] {
     a('TR-009', 'Trust moat', 'P1', 'NEXT', 'Engineering', 'Add audit log viewer backlog with acceptance criteria.', 'Trust moat: enterprise admins buy control and traceability.', 'Issue/backlog item with API, UI, export acceptance.'),
     a('TR-010', 'Trust moat', 'P1', 'NEXT', 'Engineering', 'Add data export UI readiness contract with acceptance criteria.', 'Trust moat: data portability reduces buyer risk.', 'Backlog item and readiness tests linked to export-tenant command.'),
     a('TR-011', 'Trust moat', 'P1', 'NEXT', 'Engineering', 'Add deletion request workflow readiness contract.', 'Trust moat: legal readiness becomes an operator workflow.', 'Backlog item and readiness tests linked to delete-tenant proof.'),
-    a('TR-012', 'Trust moat', 'P1', 'NEXT', 'Engineering', 'Create incident response exercise checklist.', 'Trust moat: incident readiness becomes repeatable.', 'Incident drill template and owner.'),
+    a('TR-012', 'Trust moat', 'P1', 'NEXT', 'Engineering', 'Create incident response exercise readiness contract.', 'Trust moat: incident readiness becomes repeatable.', 'Incident drill template, readiness tests, owner, and hosted proof gap.'),
   ];
 }
 
