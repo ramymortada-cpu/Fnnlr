@@ -4,6 +4,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 const workflow = 'GateForge Hosted Staging Strict';
+const evidenceWorkflow = 'GateForge GA Evidence';
 const dryRun = process.argv.includes('--dry-run');
 const fromFileIndex = process.argv.indexOf('--from-file');
 const fromFile = fromFileIndex >= 0 ? process.argv[fromFileIndex + 1] : '';
@@ -66,11 +67,59 @@ if (dryRun) {
   writeReport('DRY_RUN_READY', [
     'Open P0 terminal runbook preflight passed.',
     'Secret-name audit passed for the provided input.',
+    'GA Evidence success preflight skipped because this is a dry run.',
     `Dry run only; workflow was not triggered. Command would be: gh workflow run "${workflow}"`,
   ]);
   console.log('GateForge hosted strict trigger: DRY_RUN_READY');
   console.log(`  command: gh workflow run "${workflow}"`);
   process.exit(0);
+}
+
+const currentHead = run('git', ['rev-parse', 'HEAD']);
+if (currentHead.status !== 0) {
+  writeReport('BLOCKED_BY_GIT_HEAD', [
+    'The strict hosted staging workflow was not triggered.',
+    'Could not resolve the current git HEAD before checking hosted evidence readiness.',
+    currentHead.output.trim() || 'No git output was returned.',
+  ]);
+  console.error('GateForge hosted strict trigger: BLOCKED_BY_GIT_HEAD');
+  process.exit(currentHead.status);
+}
+
+const gaEvidence = run('gh', [
+  'run',
+  'list',
+  '--workflow',
+  evidenceWorkflow,
+  '--commit',
+  currentHead.output.trim(),
+  '--limit',
+  '1',
+  '--json',
+  'conclusion,status,url,databaseId',
+]);
+if (gaEvidence.status !== 0) {
+  writeReport('BLOCKED_BY_GA_EVIDENCE_LOOKUP', [
+    'The strict hosted staging workflow was not triggered.',
+    `Could not inspect the latest \`${evidenceWorkflow}\` run for the current commit.`,
+    'Check GitHub CLI authentication, network availability, and Actions permissions.',
+  ]);
+  console.error('GateForge hosted strict trigger: BLOCKED_BY_GA_EVIDENCE_LOOKUP');
+  process.exit(gaEvidence.status);
+}
+
+const evidenceRun = parseLatestRun(gaEvidence.output);
+if (!evidenceRun || evidenceRun.status !== 'completed' || evidenceRun.conclusion !== 'success') {
+  writeReport('BLOCKED_BY_GA_EVIDENCE', [
+    'The strict hosted staging workflow was not triggered.',
+    `Current commit: \`${currentHead.output.trim()}\``,
+    evidenceRun
+      ? `Latest \`${evidenceWorkflow}\` run for this commit is \`${evidenceRun.status}/${evidenceRun.conclusion || 'none'}\`: ${evidenceRun.url || 'no URL'}`
+      : `No \`${evidenceWorkflow}\` run was found for the current commit.`,
+    `Wait for \`${evidenceWorkflow}\` to complete successfully, then rerun this trigger.`,
+  ]);
+  console.error('GateForge hosted strict trigger: BLOCKED_BY_GA_EVIDENCE');
+  process.exit(1);
 }
 
 const trigger = run('gh', ['workflow', 'run', workflow]);
@@ -87,10 +136,25 @@ if (trigger.status !== 0) {
 writeReport('TRIGGERED', [
   'Open P0 terminal runbook preflight passed.',
   'Secret-name audit passed.',
+  `GA Evidence preflight passed: ${evidenceRun.url || `run ${evidenceRun.databaseId || 'unknown'}`}`,
   `Triggered workflow: ${workflow}`,
   'Monitor with: gh run list --workflow "GateForge Hosted Staging Strict" --limit 1',
 ]);
 console.log('GateForge hosted strict trigger: TRIGGERED');
+
+function parseLatestRun(output: string): { status?: string; conclusion?: string; url?: string; databaseId?: number } | null {
+  try {
+    const parsed = JSON.parse(output) as Array<{
+      status?: string;
+      conclusion?: string;
+      url?: string;
+      databaseId?: number;
+    }>;
+    return parsed[0] || null;
+  } catch {
+    return null;
+  }
+}
 
 function writeReport(status: string, details: string[]) {
   fs.mkdirSync(path.dirname(reportPath), { recursive: true });
