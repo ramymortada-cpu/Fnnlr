@@ -8,6 +8,7 @@ Code evidence:
 
 - `modules/activation/src/recovery-readiness.ts` creates guarded recovery plans from activation metrics.
 - `tests/onboarding-recovery-readiness.test.ts` verifies email/support/operator recovery triggers, abandonment evidence, and guardrails.
+- Recovery plans are decision contracts: they create auditable next steps without claiming provider delivery until hosted email/support evidence exists.
 
 ## Triggers
 

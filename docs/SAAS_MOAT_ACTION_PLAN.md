@@ -1,6 +1,6 @@
 # SaaS Moat Action Plan
 
-Generated: `2026-07-01T08:34:26.707Z`
+Generated: `2026-07-01T08:38:27.040Z`
 
 This is the execution board for turning fnnlr from a GateForge-blocked release candidate into a global SaaS with a defensible moat. It intentionally separates code-ready work from external hosted evidence so the team does not confuse local progress with GA approval.
 
@@ -120,8 +120,8 @@ fnnlr's moat is the combination of DB-per-tenant trust, Arabic-first revenue wor
 | `AC-004` | `P1` | `NEXT` | Product | Define time-to-first-workflow metric. | Activation moat: onboarding quality becomes measurable. | Metric definition with event names. |  |
 | `AC-005` | `P1` | `NEXT` | Product | Define time-to-first-lead-action metric. | Revenue moat: activation is tied to customer work, not login. | Metric definition with event names. |  |
 | `AC-006` | `P1` | `READY_NOW` | Engineering | Aggregate onboarding abandonment reasons into cohort review actions. | Activation moat: every failed setup trains the system. | Cohort review exposes top abandonment step/reason inside Product and Support owner actions. |  |
-| `AC-007` | `P2` | `NEXT` | Product | Create onboarding recovery decision contract. | Distribution moat: reduces trial drop-off. | Recovery plan module with guarded email/support/operator triggers. |  |
-| `AC-008` | `P2` | `NEXT` | Support | Create evidence-gated admin onboarding checklist. | Support moat: handoff becomes repeatable. | Checklist readiness blocks closure until proof exists. |  |
+| `AC-007` | `P2` | `READY_NOW` | Product | Create onboarding recovery decision contract. | Distribution moat: reduces trial drop-off. | Recovery plan module and tests cover guarded email, support task, operator review, and abandonment triggers. |  |
+| `AC-008` | `P2` | `READY_NOW` | Support | Create evidence-gated admin onboarding checklist. | Support moat: handoff becomes repeatable. | Admin checklist readiness module and tests block closure until every proof item exists. |  |
 
 ## Distribution moat
 

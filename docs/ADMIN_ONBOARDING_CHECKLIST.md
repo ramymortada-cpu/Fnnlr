@@ -8,6 +8,7 @@ Code evidence:
 
 - `modules/activation/src/recovery-readiness.ts` exposes `adminOnboardingChecklistReadiness`.
 - `tests/onboarding-recovery-readiness.test.ts` proves the checklist cannot close while evidence items are missing.
+- Checklist completion is proof-gated: missing publish, tracked-link, smoke-signal, support-owner, or daily-check evidence keeps the setup incomplete.
 
 | Step | Evidence |
 | --- | --- |
