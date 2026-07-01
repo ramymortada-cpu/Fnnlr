@@ -1,11 +1,13 @@
 {
-  "generatedAt": "2026-07-01T12:58:47.245Z",
+  "generatedAt": "2026-07-01T13:05:44.242Z",
   "total": 165,
   "byState": {
+    "BLOCKED_BY_GITHUB_SECRET_READINESS": 1,
+    "BLOCKED_BY_HOSTED_ATTESTATION": 2,
+    "BLOCKED_BY_SECRET_READINESS": 2,
     "BLOCKED_EXTERNAL": 16,
-    "COMMAND_READY": 4,
     "EVIDENCE_FILE_PRESENT": 91,
-    "OWNER_OR_DOC_ACTION_READY": 54
+    "OWNER_OR_DOC_ACTION_READY": 53
   },
   "openP0": [
     {
@@ -106,31 +108,31 @@
     },
     {
       "id": "GF-017",
-      "state": "COMMAND_READY",
+      "state": "BLOCKED_BY_SECRET_READINESS",
       "action": "Run local secret replacement packet after operator values exist.",
       "evidence": "npm run gateforge:secret-replacement-packet PASS."
     },
     {
       "id": "GF-018",
-      "state": "COMMAND_READY",
+      "state": "BLOCKED_BY_HOSTED_ATTESTATION",
       "action": "Generate hosted staging attestation packet from real evidence only.",
       "evidence": "hosted-staging-attestation.json validates with external-check."
     },
     {
       "id": "GF-019",
-      "state": "COMMAND_READY",
+      "state": "BLOCKED_BY_HOSTED_ATTESTATION",
       "action": "Encode validated attestation as the preferred B64 secret.",
       "evidence": "npm run gateforge:attestation-secret-pack -- --write-b64 PASS."
     },
     {
       "id": "GF-021",
-      "state": "COMMAND_READY",
+      "state": "BLOCKED_BY_SECRET_READINESS",
       "action": "Upload local secret pack to GitHub Actions after validation.",
       "evidence": "GitHub secrets audit READY."
     },
     {
       "id": "GF-022",
-      "state": "OWNER_OR_DOC_ACTION_READY",
+      "state": "BLOCKED_BY_GITHUB_SECRET_READINESS",
       "action": "Trigger GateForge Hosted Staging Strict.",
       "evidence": "Hosted strict workflow success URL."
     }

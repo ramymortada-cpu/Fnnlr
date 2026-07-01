@@ -479,12 +479,47 @@ function referencedDocs(item: Action): string[] {
   return `${item.evidence} ${item.command ?? ''}`.match(/docs\/[A-Za-z0-9_./-]+\.md/g) ?? [];
 }
 
+function loadGateForgeStatus(): {
+  probes?: Record<string, { status?: string }>;
+  blockers?: { openRuntimeSecrets?: string[]; openAttestationSecrets?: string[] };
+} {
+  const statusPath = 'gateforge-audit/run-2026-06-23-1035/47_ga_unblock_status.json';
+  if (!fs.existsSync(statusPath)) return {};
+  return JSON.parse(fs.readFileSync(statusPath, 'utf8')) as {
+    probes?: Record<string, { status?: string }>;
+    blockers?: { openRuntimeSecrets?: string[]; openAttestationSecrets?: string[] };
+  };
+}
+
+function gateForgeDependencyState(item: Action): string | null {
+  if (!['GF-017', 'GF-018', 'GF-019', 'GF-021', 'GF-022'].includes(item.id)) return null;
+  const status = loadGateForgeStatus();
+  const openRuntime = status.blockers?.openRuntimeSecrets?.length ?? 0;
+  const openAttestation = status.blockers?.openAttestationSecrets?.length ?? 0;
+  const githubReady = status.probes?.githubSecrets?.status === 'PASS';
+  const attestationReady = status.probes?.attestationPack?.status === 'PASS';
+
+  if (['GF-017', 'GF-021'].includes(item.id) && (openRuntime > 0 || openAttestation > 0)) {
+    return 'BLOCKED_BY_SECRET_READINESS';
+  }
+  if (['GF-018', 'GF-019'].includes(item.id) && !attestationReady) {
+    return 'BLOCKED_BY_HOSTED_ATTESTATION';
+  }
+  if (item.id === 'GF-022' && !githubReady) {
+    return 'BLOCKED_BY_GITHUB_SECRET_READINESS';
+  }
+  if (item.id === 'GF-022') return 'COMMAND_READY';
+  return null;
+}
+
 function actionExecutionState(item: Action) {
   if (item.status === 'BLOCKED_EXTERNAL') return 'BLOCKED_EXTERNAL';
   const mappedDocs = evidenceFilesByActionId[item.id] ?? [];
   if (mappedDocs.length && mappedDocs.every((file) => fs.existsSync(file))) return 'EVIDENCE_FILE_PRESENT';
   const docs = referencedDocs(item);
   if (docs.length && docs.every((file) => fs.existsSync(file))) return 'EVIDENCE_FILE_PRESENT';
+  const dependencyState = gateForgeDependencyState(item);
+  if (dependencyState) return dependencyState;
   if (item.command) return 'COMMAND_READY';
   if (item.status === 'READY_NOW') return 'OWNER_OR_DOC_ACTION_READY';
   return item.status;
@@ -502,7 +537,8 @@ function renderStatus(items: Action[]) {
       const inPhase = rows.filter((item) => item.phase === phase);
       const done = inPhase.filter((item) => item.executionState === 'EVIDENCE_FILE_PRESENT').length;
       const blocked = inPhase.filter((item) => item.executionState === 'BLOCKED_EXTERNAL').length;
-      return `| ${phase} | ${inPhase.length} | ${done} | ${blocked} |`;
+      const dependencyBlocked = inPhase.filter((item) => item.executionState.startsWith('BLOCKED_BY_')).length;
+      return `| ${phase} | ${inPhase.length} | ${done} | ${blocked} | ${dependencyBlocked} |`;
     })
     .join('\n');
   const openP0 = rows
@@ -523,8 +559,8 @@ ${stateSummary}
 
 ## Summary By Phase
 
-| Phase | Actions | Evidence-file present | Externally blocked |
-| --- | ---: | ---: | ---: |
+| Phase | Actions | Evidence-file present | Externally blocked | Dependency blocked |
+| --- | ---: | ---: | ---: | ---: |
 ${phaseSummary}
 
 ## Open P0 Items

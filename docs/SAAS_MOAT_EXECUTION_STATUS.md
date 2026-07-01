@@ -1,6 +1,6 @@
 # SaaS Moat Execution Status
 
-Generated: `2026-07-01T12:58:47.245Z`
+Generated: `2026-07-01T13:05:44.242Z`
 
 This status is derived from the 165-point board. It treats hosted/operator-only work as blocked until real external evidence exists.
 
@@ -8,31 +8,33 @@ This status is derived from the 165-point board. It treats hosted/operator-only 
 
 | State | Count |
 | --- | ---: |
+| `BLOCKED_BY_GITHUB_SECRET_READINESS` | 1 |
+| `BLOCKED_BY_HOSTED_ATTESTATION` | 2 |
+| `BLOCKED_BY_SECRET_READINESS` | 2 |
 | `BLOCKED_EXTERNAL` | 16 |
-| `COMMAND_READY` | 4 |
 | `EVIDENCE_FILE_PRESENT` | 91 |
-| `OWNER_OR_DOC_ACTION_READY` | 54 |
+| `OWNER_OR_DOC_ACTION_READY` | 53 |
 
 ## Summary By Phase
 
-| Phase | Actions | Evidence-file present | Externally blocked |
-| --- | ---: | ---: | ---: |
-| GateForge GA unblock | 24 | 3 | 16 |
-| Trust moat | 12 | 12 | 0 |
-| SaaS packaging moat | 10 | 10 | 0 |
-| Workflow intelligence moat | 8 | 8 | 0 |
-| Activation moat | 8 | 8 | 0 |
-| Distribution moat | 10 | 10 | 0 |
-| Enterprise moat | 8 | 8 | 0 |
-| Operating cadence | 8 | 8 | 0 |
-| Trust center execution | 10 | 1 | 0 |
-| Commercial moat execution | 15 | 1 | 0 |
-| Industry template execution | 15 | 5 | 0 |
-| Activation execution | 8 | 2 | 0 |
-| AI intelligence execution | 8 | 1 | 0 |
-| Sales execution | 6 | 4 | 0 |
-| Enterprise execution | 8 | 3 | 0 |
-| Operating execution | 7 | 7 | 0 |
+| Phase | Actions | Evidence-file present | Externally blocked | Dependency blocked |
+| --- | ---: | ---: | ---: | ---: |
+| GateForge GA unblock | 24 | 3 | 16 | 5 |
+| Trust moat | 12 | 12 | 0 | 0 |
+| SaaS packaging moat | 10 | 10 | 0 | 0 |
+| Workflow intelligence moat | 8 | 8 | 0 | 0 |
+| Activation moat | 8 | 8 | 0 | 0 |
+| Distribution moat | 10 | 10 | 0 | 0 |
+| Enterprise moat | 8 | 8 | 0 | 0 |
+| Operating cadence | 8 | 8 | 0 | 0 |
+| Trust center execution | 10 | 1 | 0 | 0 |
+| Commercial moat execution | 15 | 1 | 0 | 0 |
+| Industry template execution | 15 | 5 | 0 | 0 |
+| Activation execution | 8 | 2 | 0 | 0 |
+| AI intelligence execution | 8 | 1 | 0 | 0 |
+| Sales execution | 6 | 4 | 0 | 0 |
+| Enterprise execution | 8 | 3 | 0 | 0 |
+| Operating execution | 7 | 7 | 0 | 0 |
 
 ## Open P0 Items
 
@@ -54,8 +56,8 @@ This status is derived from the 165-point board. It treats hosted/operator-only 
 | `GF-014` | `BLOCKED_EXTERNAL` | Verify sender domain and set EMAIL_FROM. | SPF/DKIM/DMARC evidence and provider verified sender. |
 | `GF-015` | `BLOCKED_EXTERNAL` | Set EMAIL_REPLY_TO. | Transactional provider config proof. |
 | `GF-016` | `BLOCKED_EXTERNAL` | Create capped Anthropic staging key. | ANTHROPIC_API_KEY present with provider-side cap proof. |
-| `GF-017` | `COMMAND_READY` | Run local secret replacement packet after operator values exist. | npm run gateforge:secret-replacement-packet PASS. |
-| `GF-018` | `COMMAND_READY` | Generate hosted staging attestation packet from real evidence only. | hosted-staging-attestation.json validates with external-check. |
-| `GF-019` | `COMMAND_READY` | Encode validated attestation as the preferred B64 secret. | npm run gateforge:attestation-secret-pack -- --write-b64 PASS. |
-| `GF-021` | `COMMAND_READY` | Upload local secret pack to GitHub Actions after validation. | GitHub secrets audit READY. |
-| `GF-022` | `OWNER_OR_DOC_ACTION_READY` | Trigger GateForge Hosted Staging Strict. | Hosted strict workflow success URL. |
+| `GF-017` | `BLOCKED_BY_SECRET_READINESS` | Run local secret replacement packet after operator values exist. | npm run gateforge:secret-replacement-packet PASS. |
+| `GF-018` | `BLOCKED_BY_HOSTED_ATTESTATION` | Generate hosted staging attestation packet from real evidence only. | hosted-staging-attestation.json validates with external-check. |
+| `GF-019` | `BLOCKED_BY_HOSTED_ATTESTATION` | Encode validated attestation as the preferred B64 secret. | npm run gateforge:attestation-secret-pack -- --write-b64 PASS. |
+| `GF-021` | `BLOCKED_BY_SECRET_READINESS` | Upload local secret pack to GitHub Actions after validation. | GitHub secrets audit READY. |
+| `GF-022` | `BLOCKED_BY_GITHUB_SECRET_READINESS` | Trigger GateForge Hosted Staging Strict. | Hosted strict workflow success URL. |
