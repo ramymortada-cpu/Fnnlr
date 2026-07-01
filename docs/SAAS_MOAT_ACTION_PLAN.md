@@ -1,6 +1,6 @@
 # SaaS Moat Action Plan
 
-Generated: `2026-07-01T03:01:03.829Z`
+Generated: `2026-07-01T07:46:35.409Z`
 
 This is the execution board for turning fnnlr from a GateForge-blocked release candidate into a global SaaS with a defensible moat. It intentionally separates code-ready work from external hosted evidence so the team does not confuse local progress with GA approval.
 
@@ -254,7 +254,7 @@ fnnlr's moat is the combination of DB-per-tenant trust, Arabic-first revenue wor
 | `EX-059` | `P1` | `READY_NOW` | Sales | Create pilot offer brief. | Distribution moat: first customers get a repeatable entry offer. | Pilot offer section in sales docs. |  |
 | `EX-060` | `P1` | `READY_NOW` | Sales | Create partner agency brief. | Channel moat: agencies can multiply distribution. | docs/PARTNER_AGENCY_PROGRAM.md. |  |
 | `EX-061` | `P1` | `READY_NOW` | Marketing | Create first case-study template. | Proof moat: customer evidence becomes structured. | docs/CASE_STUDY_TEMPLATE.md. |  |
-| `EX-062` | `P1` | `READY_NOW` | Marketing | Create outreach sequence for first ICP. | Distribution moat: GTM becomes testable. | docs/ICP_OUTREACH_SEQUENCE.md. |  |
+| `EX-062` | `P1` | `READY_NOW` | Marketing | Create evidence-gated outreach sequence for first ICP. | Distribution moat: GTM becomes testable without unsafe claims. | ICP outreach doc plus outreach readiness contract, compliance review gate, tracking requirement, and hosted evidence gap. |  |
 
 ## Enterprise execution
 

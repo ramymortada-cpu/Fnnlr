@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-07-01T03:01:03.843Z",
+  "generatedAt": "2026-07-01T07:46:35.573Z",
   "total": 165,
   "byState": {
     "BLOCKED_EXTERNAL": 16,
     "COMMAND_READY": 7,
-    "EVIDENCE_FILE_PRESENT": 89,
-    "OWNER_OR_DOC_ACTION_READY": 53
+    "EVIDENCE_FILE_PRESENT": 88,
+    "OWNER_OR_DOC_ACTION_READY": 54
   },
   "openP0": [
     {
