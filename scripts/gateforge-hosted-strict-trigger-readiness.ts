@@ -22,6 +22,7 @@ const secretsFromFileIndex = process.argv.indexOf('--secrets-from-file');
 const secretsFromFile = secretsFromFileIndex >= 0 ? process.argv[secretsFromFileIndex + 1] : '';
 const gaRunFromFileIndex = process.argv.indexOf('--ga-run-from-file');
 const gaRunFromFile = gaRunFromFileIndex >= 0 ? process.argv[gaRunFromFileIndex + 1] : '';
+const allowNotReady = process.argv.includes('--allow-not-ready');
 
 function run(command: string, args: string[]) {
   const result = spawnSync(command, args, {
@@ -181,4 +182,4 @@ console.log(`  blockers: ${blockers.length}`);
 console.log(`  wrote ${outPath}`);
 console.log(`  wrote ${jsonOutPath}`);
 
-if (decision !== 'READY_TO_TRIGGER') process.exit(1);
+if (decision !== 'READY_TO_TRIGGER' && !allowNotReady) process.exit(1);

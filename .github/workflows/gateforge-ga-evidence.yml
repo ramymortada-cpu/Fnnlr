@@ -138,9 +138,8 @@ jobs:
         run: npm run gateforge:open-p0-runbook
         if: always()
       - name: GateForge hosted strict trigger readiness
-        run: npm run gateforge:hosted-strict-trigger-readiness
+        run: npm run gateforge:hosted-strict-trigger-readiness -- --allow-not-ready
         if: always()
-        continue-on-error: true
         env:
           GH_TOKEN: ${{ github.token }}
       - name: GateForge CI artifact index smoke
