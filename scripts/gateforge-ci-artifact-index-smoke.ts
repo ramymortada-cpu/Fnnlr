@@ -41,6 +41,7 @@ const requiredArtifacts = [
   '56_hosted_strict_trigger_readiness.json',
   '57_secret_upload_attempt.md',
   '57_secret_upload_attempt.json',
+  '39_github_secrets_presence_audit.json',
 ];
 const hostedStrictArtifacts = [
   '24_ga_unblock_evidence_pack.md',

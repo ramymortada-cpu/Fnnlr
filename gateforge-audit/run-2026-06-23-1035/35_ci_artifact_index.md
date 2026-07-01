@@ -46,6 +46,7 @@ This index defines the expected contents of the `gateforge-ga-evidence` GitHub A
 - `56_hosted_strict_trigger_readiness.json`
 - `57_secret_upload_attempt.md`
 - `57_secret_upload_attempt.json`
+- `39_github_secrets_presence_audit.json`
 
 ## External Evidence Intake
 
