@@ -1,19 +1,19 @@
 # Hosted Readiness Doctor
 
-Generated: `2026-07-01T10:00:18.228Z`
+Generated: `2026-07-01T14:15:15.182Z`
 
 This doctor checks readiness without printing secret values.
 
 ## Decision
 
-- Status: `SCAFFOLD_LOCAL_SECRET_FILES`
-- Next command: `npm run gateforge:scaffold-local-secrets`
+- Status: `REPLACE_LOCAL_SECRET_PLACEHOLDERS`
+- Next command: `npm run gateforge:secret-replacement-packet, then replace the listed local secret values and rerun npm run gateforge:hosted-readiness-doctor.`
 
 ## Probes
 
 | Probe | Status | Detail |
 | --- | --- | --- |
-| Local secret files | `FAIL` | local secret files are missing |
+| Local secret files | `FAIL` | local secret files exist but placeholders remain |
 | Attestation secret pack | `FAIL` | attestation packet is not ready for B64 secret packaging |
 | Remaining external blocker closeout | `PASS` | 16 external blockers are mapped for operator closeout |
 | GitHub secret names | `FAIL` | GitHub secret names are missing |
@@ -66,96 +66,96 @@ This doctor checks readiness without printing secret values.
     {
       "name": "GATEFORGE_HOSTED_STAGING_ATTESTATION_B64",
       "kind": "attestation",
-      "status": "MISSING"
+      "status": "PLACEHOLDER"
     }
   ],
-  "runtimeReady": 0,
+  "runtimeReady": 6,
   "runtimeRequired": 17,
   "runtime": [
     {
       "name": "CONTROL_PLANE_DATABASE_URL",
       "kind": "runtime",
-      "status": "MISSING"
+      "status": "PLACEHOLDER"
     },
     {
       "name": "TENANT_DB_ADMIN_URL",
       "kind": "runtime",
-      "status": "MISSING"
+      "status": "PLACEHOLDER"
     },
     {
       "name": "TENANT_DB_HOST",
       "kind": "runtime",
-      "status": "MISSING"
+      "status": "PLACEHOLDER"
     },
     {
       "name": "TENANT_CREDENTIAL_ENCRYPTION_KEY",
       "kind": "runtime",
-      "status": "MISSING"
+      "status": "READY"
     },
     {
       "name": "INTEGRATION_ENCRYPTION_KEY",
       "kind": "runtime",
-      "status": "MISSING"
+      "status": "READY"
     },
     {
       "name": "FNNLR_CRON_SECRET",
       "kind": "runtime",
-      "status": "MISSING"
+      "status": "READY"
     },
     {
       "name": "AUTH_MFA_ENCRYPTION_KEY",
       "kind": "runtime",
-      "status": "MISSING"
+      "status": "READY"
     },
     {
       "name": "FNNLR_AI_TENANT_DAILY_USD_CAP",
       "kind": "runtime",
-      "status": "MISSING"
+      "status": "READY"
     },
     {
       "name": "FNNLR_AI_GLOBAL_DAILY_USD_CAP",
       "kind": "runtime",
-      "status": "MISSING"
+      "status": "READY"
     },
     {
       "name": "SENTRY_DSN",
       "kind": "runtime",
-      "status": "MISSING"
+      "status": "PLACEHOLDER"
     },
     {
       "name": "UPTIME_HEALTHCHECK_URL",
       "kind": "runtime",
-      "status": "MISSING"
+      "status": "PLACEHOLDER"
     },
     {
       "name": "ALERT_EMAIL_TO",
       "kind": "runtime",
-      "status": "MISSING"
+      "status": "PLACEHOLDER"
     },
     {
       "name": "ALERT_WEBHOOK_URL",
       "kind": "runtime",
-      "status": "MISSING"
+      "status": "PLACEHOLDER"
     },
     {
       "name": "RESEND_API_KEY",
       "kind": "runtime",
-      "status": "MISSING"
+      "status": "PLACEHOLDER"
     },
     {
       "name": "EMAIL_FROM",
       "kind": "runtime",
-      "status": "MISSING"
+      "status": "PLACEHOLDER"
     },
     {
       "name": "EMAIL_REPLY_TO",
       "kind": "runtime",
-      "status": "MISSING"
+      "status": "PLACEHOLDER"
     },
     {
       "name": "ANTHROPIC_API_KEY",
       "kind": "runtime",
-      "status": "MISSING"
+      "status": "PLACEHOLDER"
     }
   ]
 }
