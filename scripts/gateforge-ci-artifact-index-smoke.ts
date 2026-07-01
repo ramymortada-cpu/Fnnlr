@@ -38,6 +38,8 @@ const requiredArtifacts = [
   '55_open_p0_terminal_runbook.json',
   '56_hosted_strict_trigger_readiness.md',
   '56_hosted_strict_trigger_readiness.json',
+  '57_secret_upload_attempt.md',
+  '57_secret_upload_attempt.json',
 ];
 const hostedStrictArtifacts = [
   '24_ga_unblock_evidence_pack.md',
@@ -72,6 +74,8 @@ const hostedStrictArtifacts = [
   '55_open_p0_terminal_runbook.json',
   '56_hosted_strict_trigger_readiness.md',
   '56_hosted_strict_trigger_readiness.json',
+  '57_secret_upload_attempt.md',
+  '57_secret_upload_attempt.json',
 ];
 
 function fail(message: string): never {

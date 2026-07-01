@@ -43,6 +43,8 @@ This index defines the expected contents of the `gateforge-ga-evidence` GitHub A
 - `55_open_p0_terminal_runbook.json`
 - `56_hosted_strict_trigger_readiness.md`
 - `56_hosted_strict_trigger_readiness.json`
+- `57_secret_upload_attempt.md`
+- `57_secret_upload_attempt.json`
 
 ## External Evidence Intake
 

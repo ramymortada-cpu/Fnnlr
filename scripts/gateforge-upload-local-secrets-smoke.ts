@@ -50,20 +50,36 @@ function fail(message: string): never {
 }
 
 const missingDir = fs.mkdtempSync(path.join(os.tmpdir(), 'fnnlr-gateforge-upload-missing-'));
-const missing = run(['--dry-run', '--dir', missingDir]);
+const missingReport = path.join(os.tmpdir(), 'fnnlr-gateforge-upload-missing.md');
+const missingJson = path.join(os.tmpdir(), 'fnnlr-gateforge-upload-missing.json');
+const missing = run(['--dry-run', '--dir', missingDir, '--report-out', missingReport, '--json-out', missingJson]);
 if (missing.status === 0) fail('missing folder dry run unexpectedly passed');
 if (!missing.output.includes('upload was not attempted')) fail('missing case did not stop before upload');
 if (!missing.output.includes('No secret values were printed.')) fail('missing case did not include no-values assurance');
+if (!fs.readFileSync(missingReport, 'utf8').includes('Status: `BLOCKED_LOCAL_SECRET_VALIDATION`')) {
+  fail('missing case did not write blocked upload report');
+}
 
 const passingDir = fs.mkdtempSync(path.join(os.tmpdir(), 'fnnlr-gateforge-upload-pass-'));
 fs.writeFileSync(path.join(passingDir, attestationSecrets[1]), fixtureValueFor(attestationSecrets[1]));
 for (const name of runtimeSecrets) fs.writeFileSync(path.join(passingDir, name), fixtureValueFor(name));
 
-const passing = run(['--dry-run', '--dir', passingDir]);
+const passingReport = path.join(os.tmpdir(), 'fnnlr-gateforge-upload-pass.md');
+const passingJson = path.join(os.tmpdir(), 'fnnlr-gateforge-upload-pass.json');
+const passing = run(['--dry-run', '--dir', passingDir, '--report-out', passingReport, '--json-out', passingJson]);
 if (passing.status !== 0) fail(`passing dry run failed: ${passing.output}`);
 if (!passing.output.includes('GateForge upload local secrets: DRY_RUN')) fail('passing dry run did not print DRY_RUN');
 if (!passing.output.includes(`attestation selected: ${attestationSecrets[1]}`)) fail('passing dry run did not select B64 attestation');
 if (!passing.output.includes(`would upload: ${attestationSecrets[1]}`)) fail('passing dry run did not plan attestation upload');
 if (!passing.output.includes('would upload: CONTROL_PLANE_DATABASE_URL')) fail('passing dry run did not plan runtime upload');
+const passingReportText = fs.readFileSync(passingReport, 'utf8');
+const passingJsonText = fs.readFileSync(passingJson, 'utf8');
+if (!passingReportText.includes('Status: `DRY_RUN_READY`')) fail('passing report did not record DRY_RUN_READY');
+if (!passingReportText.includes('| `CONTROL_PLANE_DATABASE_URL` | runtime | `WOULD_UPLOAD` | `PASS` |')) {
+  fail('passing report did not include runtime upload row');
+}
+if (passingReportText.includes(fixtureValueFor('CONTROL_PLANE_DATABASE_URL')) || passingJsonText.includes(fixtureValueFor('CONTROL_PLANE_DATABASE_URL'))) {
+  fail('upload report leaked a fixture secret value');
+}
 
 console.log('GateForge upload local secrets smoke: PASS');
