@@ -162,6 +162,8 @@ test('activation cohort review turns weak cohorts into owner-driven rescue actio
   assert.ok(review.actions.some((action) => action.owner === 'Support'));
   assert.ok(review.actions.some((action) => action.owner === 'Engineering'));
   assert.ok(review.actions.some((action) => action.owner === 'Sales'));
+  assert.ok(review.actions.some((action) => action.action.includes('"integration"')));
+  assert.ok(review.actions.some((action) => action.evidenceRequired.includes('"missing WhatsApp account"')));
   assert.ok(review.actions.every((action) => action.evidenceRequired.length > 10));
 });
 

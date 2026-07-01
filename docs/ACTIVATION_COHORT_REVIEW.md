@@ -6,6 +6,7 @@ Code evidence:
 
 - `modules/activation/src/metrics.ts` computes time-to-value and missing evidence from observed activation events.
 - `modules/activation/src/cohort-review.ts` converts weekly cohort metrics into `HEALTHY`, `WATCH`, or `RESCUE` decisions.
+- `modules/activation/src/cohort-review.ts` includes the top abandonment step and reason inside owner actions so Product and Support can act on the highest-friction setup issue.
 - `tests/activation-metrics.test.ts` verifies healthy cohorts, weak cohort rescue actions, top abandonment step/reason aggregation, thresholds, and missing evidence behavior.
 
 Default thresholds:
@@ -60,3 +61,5 @@ Every rescue action must name:
 - owner
 - action
 - evidence required for next review
+
+Abandonment rescue actions must include the top repeated setup step and reason; unknown step/reason values stay explicit instead of being treated as a pass.

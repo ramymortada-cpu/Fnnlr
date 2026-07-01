@@ -74,7 +74,7 @@ export function createActivationCohortReview(
     topAbandonmentSteps: summary.topAbandonmentSteps,
     topAbandonmentReasons: summary.topAbandonmentReasons,
     blockers,
-    actions: activationCohortActions(blockers),
+    actions: activationCohortActions(blockers, summary.topAbandonmentSteps, summary.topAbandonmentReasons),
   };
 }
 
@@ -104,9 +104,15 @@ function activationCohortStatus(blockers: string[]): ActivationCohortStatus {
   return 'HEALTHY';
 }
 
-function activationCohortActions(blockers: string[]): ActivationCohortAction[] {
+function activationCohortActions(
+  blockers: string[],
+  topAbandonmentSteps: ActivationCohortReview['topAbandonmentSteps'],
+  topAbandonmentReasons: ActivationCohortReview['topAbandonmentReasons'],
+): ActivationCohortAction[] {
   const actions = new Map<string, ActivationCohortAction>();
   const add = (action: ActivationCohortAction) => actions.set(`${action.owner}:${action.action}`, action);
+  const topStep = topAbandonmentSteps[0]?.value ?? 'unknown onboarding step';
+  const topReason = topAbandonmentReasons[0]?.value ?? 'unknown reason';
 
   for (const blocker of blockers) {
     if (blocker.includes('workflow')) {
@@ -138,8 +144,13 @@ function activationCohortActions(blockers: string[]): ActivationCohortAction[] {
     if (blocker.includes('abandonment')) {
       add({
         owner: 'Product',
-        action: 'Review top abandonment step and remove the highest-friction setup question.',
-        evidenceRequired: 'Abandonment reason table and product/support decision.',
+        action: `Review top abandonment step "${topStep}" and remove the highest-friction setup question.`,
+        evidenceRequired: `Abandonment reason table naming "${topReason}" and product/support decision for next cohort.`,
+      });
+      add({
+        owner: 'Support',
+        action: `Create recovery outreach for customers stuck at "${topStep}".`,
+        evidenceRequired: `Support log references the top reason "${topReason}" and the follow-up outcome.`,
       });
     }
   }

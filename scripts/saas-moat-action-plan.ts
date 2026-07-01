@@ -231,7 +231,7 @@ function activationMoat(): Action[] {
     a('AC-003', 'Activation moat', 'P1', 'NEXT', 'Engineering', 'Add goal selection readiness contract and event evidence.', 'Activation moat: workflows map to customer outcomes.', 'Readiness module, metrics evidence, and goal mapping gap.'),
     a('AC-004', 'Activation moat', 'P1', 'NEXT', 'Product', 'Define time-to-first-workflow metric.', 'Activation moat: onboarding quality becomes measurable.', 'Metric definition with event names.'),
     a('AC-005', 'Activation moat', 'P1', 'NEXT', 'Product', 'Define time-to-first-lead-action metric.', 'Revenue moat: activation is tied to customer work, not login.', 'Metric definition with event names.'),
-    a('AC-006', 'Activation moat', 'P1', 'NEXT', 'Engineering', 'Aggregate onboarding abandonment reasons into cohort review actions.', 'Activation moat: every failed setup trains the system.', 'Cohort review exposes top abandonment step/reason with owner action.'),
+    a('AC-006', 'Activation moat', 'P1', 'READY_NOW', 'Engineering', 'Aggregate onboarding abandonment reasons into cohort review actions.', 'Activation moat: every failed setup trains the system.', 'Cohort review exposes top abandonment step/reason inside Product and Support owner actions.'),
     a('AC-007', 'Activation moat', 'P2', 'NEXT', 'Product', 'Create onboarding recovery decision contract.', 'Distribution moat: reduces trial drop-off.', 'Recovery plan module with guarded email/support/operator triggers.'),
     a('AC-008', 'Activation moat', 'P2', 'NEXT', 'Support', 'Create evidence-gated admin onboarding checklist.', 'Support moat: handoff becomes repeatable.', 'Checklist readiness blocks closure until proof exists.'),
   ];
