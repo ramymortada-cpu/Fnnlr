@@ -1,6 +1,15 @@
 # Data Export and Deletion Workflow Backlog
 
+Status: CONTRACT_READY_WITH_PRODUCT_GAPS
+
 Purpose: productize the existing export/delete commands into customer-operable lifecycle workflows.
+
+## Current Evidence
+
+- `scripts/export-tenant.ts` generates sanitized tenant export evidence with table counts and SHA-256 hash.
+- `scripts/delete-tenant.ts` drops the dedicated tenant database through the provisioning module.
+- `modules/data-lifecycle/src/readiness.ts` defines the customer workflow readiness gate.
+- `tests/data-lifecycle-readiness.test.ts` proves command readiness cannot be marketed as customer-operable export/delete readiness while request, approval, delivery, confirmation, and negative-auth evidence remain roadmap-only.
 
 ## Export Workflow
 
@@ -27,3 +36,7 @@ Purpose: productize the existing export/delete commands into customer-operable l
 - No self-service destructive deletion in GA v1.
 - No raw secrets in export bundles.
 - All lifecycle operations need audit evidence.
+
+## Claim Gate
+
+Do not claim "customer-operable data export/delete workflows are ready" until all required capabilities in `DATA_LIFECYCLE_WORKFLOW_BASELINE` are `READY` or `CONTRACT_READY` with evidence attached. Command-level evidence is useful, but it does not replace request, approval, delivery, confirmation, and negative-auth proof.

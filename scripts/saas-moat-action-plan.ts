@@ -69,8 +69,8 @@ const evidenceFilesByActionId: Record<string, string[]> = {
   'TR-007': ['docs/TRUST_CENTER_INDEX.md'],
   'TR-008': ['docs/BACKUP_RESTORE_RUNBOOK.md'],
   'TR-009': ['docs/AUDIT_LOG_VIEWER_BACKLOG.md', 'modules/enterprise/src/audit-log-readiness.ts', 'tests/audit-log-readiness.test.ts'],
-  'TR-010': ['docs/DATA_EXPORT_DELETE_UI_BACKLOG.md'],
-  'TR-011': ['docs/DATA_EXPORT_DELETE_UI_BACKLOG.md'],
+  'TR-010': ['docs/DATA_EXPORT_DELETE_UI_BACKLOG.md', 'modules/data-lifecycle/src/readiness.ts', 'tests/data-lifecycle-readiness.test.ts'],
+  'TR-011': ['docs/DATA_EXPORT_DELETE_UI_BACKLOG.md', 'modules/data-lifecycle/src/readiness.ts', 'tests/data-lifecycle-readiness.test.ts'],
   'TR-012': ['docs/INCIDENT_RESPONSE_EXERCISE.md'],
   'PK-001': ['docs/COMPETITIVE_POSITIONING.md'],
   'PK-002': ['docs/PRICING_AND_LIMITS_MATRIX.md'],
@@ -178,8 +178,8 @@ function trustMoat(): Action[] {
     a('TR-007', 'Trust moat', 'P1', 'READY_NOW', 'Engineering', 'Create trust center index linking security, privacy, DPA, retention, backup, incident response.', 'Trust moat: reduces sales friction with one proof packet.', 'docs/TRUST_CENTER_INDEX.md.'),
     a('TR-008', 'Trust moat', 'P1', 'READY_NOW', 'Engineering', 'Create public-safe backup and restore posture.', 'Reliability moat: proof of recoverability beats uptime claims.', 'BACKUP_RESTORE_RUNBOOK linked to hosted restore evidence.'),
     a('TR-009', 'Trust moat', 'P1', 'NEXT', 'Engineering', 'Add audit log viewer backlog with acceptance criteria.', 'Trust moat: enterprise admins buy control and traceability.', 'Issue/backlog item with API, UI, export acceptance.'),
-    a('TR-010', 'Trust moat', 'P1', 'NEXT', 'Engineering', 'Add data export UI backlog with acceptance criteria.', 'Trust moat: data portability reduces buyer risk.', 'Backlog item linked to export-tenant command.'),
-    a('TR-011', 'Trust moat', 'P1', 'NEXT', 'Engineering', 'Add deletion request workflow backlog.', 'Trust moat: legal readiness becomes an operator workflow.', 'Backlog item linked to delete-tenant proof.'),
+    a('TR-010', 'Trust moat', 'P1', 'NEXT', 'Engineering', 'Add data export UI readiness contract with acceptance criteria.', 'Trust moat: data portability reduces buyer risk.', 'Backlog item and readiness tests linked to export-tenant command.'),
+    a('TR-011', 'Trust moat', 'P1', 'NEXT', 'Engineering', 'Add deletion request workflow readiness contract.', 'Trust moat: legal readiness becomes an operator workflow.', 'Backlog item and readiness tests linked to delete-tenant proof.'),
     a('TR-012', 'Trust moat', 'P1', 'NEXT', 'Engineering', 'Create incident response exercise checklist.', 'Trust moat: incident readiness becomes repeatable.', 'Incident drill template and owner.'),
   ];
 }
