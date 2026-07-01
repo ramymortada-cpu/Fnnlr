@@ -16,8 +16,10 @@ const mdPath = `${runDir}/42_life_or_death_execution_plan.md`;
 const csvPath = `${runDir}/42_life_or_death_secret_collection.csv`;
 const commandPackPath = `${runDir}/43_operator_secret_command_pack.md`;
 const strictWorkflow = 'GateForge Hosted Staging Strict';
+const checkOnly = process.argv.includes('--check');
 const { attestationSecrets, runtimeSecrets } = loadHostedSecretsManifest();
 const requiredSecrets = [...attestationSecrets, ...runtimeSecrets];
+const generatedAt = new Date().toISOString();
 
 const secretPlans: Record<string, SecretPlan> = {
   GATEFORGE_HOSTED_STAGING_ATTESTATION_JSON: {
@@ -186,7 +188,7 @@ const csvRows = [
 
 const md = `# Life Or Death GA Execution Plan
 
-Generated: \`${new Date().toISOString()}\`
+Generated: \`${generatedAt}\`
 
 This is the no-drama path from the current GateForge block to a defensible \`CONDITIONAL_GO\`. It contains secret names, owners, sources, and validation commands only. It must never contain secret values.
 
@@ -261,7 +263,7 @@ npm run gateforge:final-report
 
 const operatorCommandPack = `# Operator Secret Command Pack
 
-Generated: \`${new Date().toISOString()}\`
+Generated: \`${generatedAt}\`
 
 This file is an execution helper for closing the current GateForge blocker. It contains commands and secret names only. Do not paste real secret values into this file or commit generated secret files.
 
@@ -368,6 +370,30 @@ If the trigger still says \`BLOCKED_BY_SECRET_AUDIT\`, rerun \`npm run gateforge
 `;
 
 fs.mkdirSync(runDir, { recursive: true });
+if (checkOnly) {
+  const errors: string[] = [];
+  const normalizeGeneratedAt = (value: string) => value.replace(/Generated: `[^`]+`/g, 'Generated: `<timestamp>`');
+  const expectedMd = normalizeGeneratedAt(md);
+  const expectedCommandPack = normalizeGeneratedAt(operatorCommandPack);
+  const expectedCsv = `${csvRows.join('\n')}\n`;
+  const currentMd = fs.existsSync(mdPath) ? normalizeGeneratedAt(fs.readFileSync(mdPath, 'utf8')) : '';
+  const currentCommandPack = fs.existsSync(commandPackPath) ? normalizeGeneratedAt(fs.readFileSync(commandPackPath, 'utf8')) : '';
+  const currentCsv = fs.existsSync(csvPath) ? fs.readFileSync(csvPath, 'utf8') : '';
+
+  if (currentMd !== expectedMd) errors.push(`stale generated execution plan: ${mdPath}`);
+  if (currentCsv !== expectedCsv) errors.push(`stale generated secret CSV: ${csvPath}`);
+  if (currentCommandPack !== expectedCommandPack) errors.push(`stale generated operator command pack: ${commandPackPath}`);
+  if (errors.length) {
+    console.error('GateForge life-or-death plan: FAIL');
+    errors.forEach((error) => console.error(`  - ${error}`));
+    console.error('Run: npm run gateforge:life-or-death-plan');
+    process.exit(1);
+  }
+  console.log('GateForge life-or-death plan: PASS');
+  console.log(`required secrets mapped: ${requiredSecrets.length}/${requiredSecrets.length}`);
+  process.exit(0);
+}
+
 fs.writeFileSync(mdPath, md);
 fs.writeFileSync(csvPath, `${csvRows.join('\n')}\n`);
 fs.writeFileSync(commandPackPath, operatorCommandPack);

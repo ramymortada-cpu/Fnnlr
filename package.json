@@ -101,6 +101,7 @@
     "gateforge:trigger-hosted-strict-smoke": "tsx scripts/gateforge-trigger-hosted-strict.ts --dry-run --from-file tests/fixtures/gateforge-gh-secrets-pass.json",
     "gateforge:hosted-setup-guide": "tsx scripts/gateforge-hosted-setup-guide.ts",
     "gateforge:life-or-death-plan": "tsx scripts/gateforge-life-or-death-plan.ts",
+    "gateforge:life-or-death-plan-check": "tsx scripts/gateforge-life-or-death-plan.ts --check",
     "gateforge:remaining-blockers-closeout": "tsx scripts/gateforge-remaining-blockers-closeout.ts",
     "gateforge:external-blocker-progress": "tsx scripts/gateforge-external-blocker-progress.ts",
     "gateforge:external-blocker-progress-smoke": "tsx scripts/gateforge-external-blocker-progress-smoke.ts",

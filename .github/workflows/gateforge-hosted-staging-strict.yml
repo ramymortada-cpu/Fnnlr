@@ -62,6 +62,9 @@ jobs:
       - name: GateForge life-or-death plan
         run: npm run gateforge:life-or-death-plan
         if: always()
+      - name: GateForge life-or-death plan check
+        run: npm run gateforge:life-or-death-plan-check
+        if: always()
       - name: GateForge final report
         run: npm run gateforge:final-report
         if: always()
