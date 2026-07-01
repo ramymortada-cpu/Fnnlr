@@ -10,6 +10,8 @@ const outIndex = process.argv.indexOf('--out');
 const outPath = outIndex >= 0 ? process.argv[outIndex + 1] : `${runDir}/45_secret_replacement_packet.md`;
 const csvIndex = process.argv.indexOf('--csv-out');
 const csvPath = csvIndex >= 0 ? process.argv[csvIndex + 1] : `${runDir}/45_secret_replacement_packet.csv`;
+const jsonIndex = process.argv.indexOf('--json-out');
+const jsonPath = jsonIndex >= 0 ? process.argv[jsonIndex + 1] : `${runDir}/45_secret_replacement_packet.json`;
 
 type SecretStatus = 'READY' | 'MISSING' | 'EMPTY' | 'PLACEHOLDER' | 'INVALID';
 type SecretKind = 'runtime' | 'attestation';
@@ -130,6 +132,26 @@ const runtimeReplacementCount = summary.runtime.filter((row) => row.status !== '
 const attestationSatisfied = summary.attestationReady >= summary.attestationRequired;
 const decision = summary.ok ? 'READY_FOR_UPLOAD' : 'REPLACE_LOCAL_SECRET_VALUES';
 const now = new Date().toISOString();
+const jsonReport = {
+  generatedAt: now,
+  decision,
+  localSecretDirectory: secretDir,
+  counts: {
+    runtimeReady: summary.runtimeReady,
+    runtimeRequired: summary.runtimeRequired,
+    runtimeReplacementsRemaining: runtimeReplacementCount,
+    attestationReady: summary.attestationReady,
+    attestationRequired: summary.attestationRequired,
+    attestationSatisfied,
+    openSecretRowsListed: replacementCount,
+  },
+  rows,
+  safety: {
+    secretValuesPrinted: false,
+    productionMutated: false,
+    sourceDumpsIncluded: false,
+  },
+};
 
 const table = rows
   .map(
@@ -198,10 +220,12 @@ const csvRows = rows.map((row) =>
 fs.mkdirSync(path.dirname(outPath), { recursive: true });
 fs.writeFileSync(outPath, body);
 fs.writeFileSync(csvPath, `${csvHeader.join(',')}\n${csvRows.join('\n')}\n`);
+fs.writeFileSync(jsonPath, `${JSON.stringify(jsonReport, null, 2)}\n`);
 
 console.log(`GateForge secret replacement packet: ${decision}`);
 console.log(`  wrote ${outPath}`);
 console.log(`  wrote ${csvPath}`);
+console.log(`  wrote ${jsonPath}`);
 console.log('  No secret values were printed.');
 
 if (!summary.ok) process.exit(1);

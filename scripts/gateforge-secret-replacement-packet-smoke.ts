@@ -52,27 +52,39 @@ function run(args: string[]) {
 const placeholderDir = fs.mkdtempSync(path.join(os.tmpdir(), 'fnnlr-gateforge-replacement-placeholder-'));
 const placeholderOut = path.join(os.tmpdir(), 'fnnlr-gateforge-replacement-placeholder.md');
 const placeholderCsv = path.join(os.tmpdir(), 'fnnlr-gateforge-replacement-placeholder.csv');
+const placeholderJson = path.join(os.tmpdir(), 'fnnlr-gateforge-replacement-placeholder.json');
 fs.writeFileSync(path.join(placeholderDir, attestationSecrets[1]), 'REPLACE_WITH_BASE64_HOSTED_STAGING_ATTESTATION');
 for (const name of runtimeSecrets) fs.writeFileSync(path.join(placeholderDir, name), fixtureValueFor(name));
 fs.writeFileSync(path.join(placeholderDir, 'CONTROL_PLANE_DATABASE_URL'), 'REPLACE_WITH_STAGING_CONTROL_PLANE_DATABASE_URL');
 
-const placeholder = run(['--dir', placeholderDir, '--out', placeholderOut, '--csv-out', placeholderCsv]);
+const placeholder = run(['--dir', placeholderDir, '--out', placeholderOut, '--csv-out', placeholderCsv, '--json-out', placeholderJson]);
 if (placeholder.status === 0) fail('placeholder case unexpectedly passed');
 const placeholderReport = fs.readFileSync(placeholderOut, 'utf8');
 const placeholderCsvBody = fs.readFileSync(placeholderCsv, 'utf8');
+const placeholderJsonBody = JSON.parse(fs.readFileSync(placeholderJson, 'utf8')) as {
+  decision?: string;
+  safety?: { secretValuesPrinted?: boolean };
+  rows?: { name?: string; status?: string }[];
+};
 if (!placeholderReport.includes('Status: `REPLACE_LOCAL_SECRET_VALUES`')) fail('placeholder report did not show replacement decision');
 if (!placeholderReport.includes('CONTROL_PLANE_DATABASE_URL')) fail('placeholder report did not include placeholder secret name');
 if (!placeholderReport.includes('No secret values were printed')) fail('placeholder output guarantee missing from report');
 if (placeholderReport.includes('value-for-CONTROL_PLANE_DATABASE_URL')) fail('placeholder report leaked a secret-like value');
 if (!placeholderCsvBody.startsWith('secret,kind,status,reason,source,required_action,validation,upload_phase')) fail('CSV header is wrong');
+if (placeholderJsonBody.decision !== 'REPLACE_LOCAL_SECRET_VALUES') fail('placeholder JSON did not record replacement decision');
+if (placeholderJsonBody.safety?.secretValuesPrinted !== false) fail('placeholder JSON safety flag is missing');
+if (!placeholderJsonBody.rows?.some((row) => row.name === 'CONTROL_PLANE_DATABASE_URL' && row.status === 'PLACEHOLDER')) {
+  fail('placeholder JSON did not include placeholder control DB row');
+}
 
 const invalidDir = fs.mkdtempSync(path.join(os.tmpdir(), 'fnnlr-gateforge-replacement-invalid-'));
 const invalidOut = path.join(os.tmpdir(), 'fnnlr-gateforge-replacement-invalid.md');
 const invalidCsv = path.join(os.tmpdir(), 'fnnlr-gateforge-replacement-invalid.csv');
+const invalidJson = path.join(os.tmpdir(), 'fnnlr-gateforge-replacement-invalid.json');
 fs.writeFileSync(path.join(invalidDir, attestationSecrets[1]), fixtureValueFor(attestationSecrets[1]));
 for (const name of runtimeSecrets) fs.writeFileSync(path.join(invalidDir, name), fixtureValueFor(name));
 fs.writeFileSync(path.join(invalidDir, 'TENANT_DB_HOST'), 'postgres://user:pass@db.staging.example.com');
-const invalid = run(['--dir', invalidDir, '--out', invalidOut, '--csv-out', invalidCsv]);
+const invalid = run(['--dir', invalidDir, '--out', invalidOut, '--csv-out', invalidCsv, '--json-out', invalidJson]);
 if (invalid.status === 0) fail('invalid case unexpectedly passed');
 const invalidReport = fs.readFileSync(invalidOut, 'utf8');
 if (!invalidReport.includes('`TENANT_DB_HOST` | `runtime` | `INVALID`')) fail('invalid report did not mark TENANT_DB_HOST invalid');
@@ -81,14 +93,17 @@ if (!invalidReport.includes('must be a host only')) fail('invalid report did not
 const passingDir = fs.mkdtempSync(path.join(os.tmpdir(), 'fnnlr-gateforge-replacement-pass-'));
 const passOut = path.join(os.tmpdir(), 'fnnlr-gateforge-replacement-pass.md');
 const passCsv = path.join(os.tmpdir(), 'fnnlr-gateforge-replacement-pass.csv');
+const passJson = path.join(os.tmpdir(), 'fnnlr-gateforge-replacement-pass.json');
 fs.writeFileSync(path.join(passingDir, attestationSecrets[1]), fixtureValueFor(attestationSecrets[1]));
 for (const name of runtimeSecrets) fs.writeFileSync(path.join(passingDir, name), fixtureValueFor(name));
 
-const passing = run(['--dir', passingDir, '--out', passOut, '--csv-out', passCsv]);
+const passing = run(['--dir', passingDir, '--out', passOut, '--csv-out', passCsv, '--json-out', passJson]);
 if (passing.status !== 0) fail(`passing case failed: ${passing.output}`);
 const passingReport = fs.readFileSync(passOut, 'utf8');
+const passingJson = fs.readFileSync(passJson, 'utf8');
 if (!passingReport.includes('Status: `READY_FOR_UPLOAD`')) fail('passing report did not show upload-ready decision');
 if (!passingReport.includes(`Runtime ready: \`${runtimeSecrets.length}/${runtimeSecrets.length}\``)) fail('passing report did not include runtime count');
 if (passingReport.includes('sk-ant-fixture') || passingReport.includes('postgres://')) fail('passing report leaked a secret-like value');
+if (passingJson.includes('sk-ant-fixture') || passingJson.includes('postgres://')) fail('passing JSON leaked a secret-like value');
 
 console.log('GateForge secret replacement packet smoke: PASS');

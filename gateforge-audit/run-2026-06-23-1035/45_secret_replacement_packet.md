@@ -1,6 +1,6 @@
 # GateForge Secret Replacement Packet
 
-Generated: `2026-07-01T17:36:58.048Z`
+Generated: `2026-07-01T23:12:54.082Z`
 
 This packet is sanitized. It reports secret file names and readiness states only. No secret values were printed or copied.
 

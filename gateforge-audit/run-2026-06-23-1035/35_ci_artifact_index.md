@@ -18,6 +18,7 @@ This index defines the expected contents of the `gateforge-ga-evidence` GitHub A
 - `33_final_gate_evaluator.md`
 - `34_final_gate_current_decision.md`
 - `35_ci_artifact_index.md`
+- `45_secret_replacement_packet.json`
 - `46_attestation_secret_pack.md`
 - `49_local_secret_env_template.env`
 - `49_local_secret_env_template.md`
