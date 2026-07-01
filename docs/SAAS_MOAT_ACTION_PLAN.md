@@ -1,6 +1,6 @@
 # SaaS Moat Action Plan
 
-Generated: `2026-07-01T02:54:19.055Z`
+Generated: `2026-07-01T03:01:03.829Z`
 
 This is the execution board for turning fnnlr from a GateForge-blocked release candidate into a global SaaS with a defensible moat. It intentionally separates code-ready work from external hosted evidence so the team does not confuse local progress with GA approval.
 
@@ -135,8 +135,8 @@ fnnlr's moat is the combination of DB-per-tenant trust, Arabic-first revenue wor
 | `DT-006` | `P1` | `READY_NOW` | Marketing | Create ecommerce template brief. | Distribution moat: abandoned lead/order workflows are measurable. | Industry template brief. |  |
 | `DT-007` | `P1` | `NEXT` | Sales | Create founder-led demo readiness contract. | Distribution moat: demos become consistent and measurable. | Demo readiness review with CTA proof gap. |  |
 | `DT-008` | `P1` | `NEXT` | Sales | Create objection handling readiness contract. | Distribution moat: Arabic buyer objections become reusable data. | Objection coverage blocks unsafe demo claims. |  |
-| `DT-009` | `P2` | `NEXT` | Sales | Create partner agency program brief. | Channel moat: agencies multiply distribution. | Partner brief and qualification criteria. |  |
-| `DT-010` | `P2` | `NEXT` | Marketing | Create first case-study template. | Proof moat: customer evidence becomes repeatable. | CUSTOMER_PROOF_PACK updated. |  |
+| `DT-009` | `P2` | `NEXT` | Sales | Create partner agency readiness contract. | Channel moat: agencies multiply distribution without unsafe claims. | Partner brief, qualification criteria, GTM proof readiness contract, and hosted pilot evidence gap. |  |
+| `DT-010` | `P2` | `NEXT` | Marketing | Create customer proof readiness contract. | Proof moat: customer evidence becomes repeatable without fake ROI. | Case-study template, customer proof pack, GTM proof readiness contract, approval gate, and hosted metric evidence gap. |  |
 
 ## Enterprise moat
 

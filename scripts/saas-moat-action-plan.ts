@@ -106,8 +106,8 @@ const evidenceFilesByActionId: Record<string, string[]> = {
   'DT-006': ['docs/industry-templates/ecommerce.md'],
   'DT-007': ['docs/FOUNDER_LED_DEMO_SCRIPT.md', 'modules/sales-ops/src/demo-readiness.ts', 'tests/sales-ops.test.ts'],
   'DT-008': ['docs/OBJECTION_HANDLING_LIBRARY.md', 'modules/sales-ops/src/demo-readiness.ts', 'tests/sales-ops.test.ts'],
-  'DT-009': ['docs/PARTNER_AGENCY_PROGRAM.md'],
-  'DT-010': ['docs/CASE_STUDY_TEMPLATE.md'],
+  'DT-009': ['docs/PARTNER_AGENCY_PROGRAM.md', 'modules/proof/src/gtm-readiness.ts', 'tests/gtm-proof-readiness.test.ts'],
+  'DT-010': ['docs/CASE_STUDY_TEMPLATE.md', 'docs/CUSTOMER_PROOF_PACK.md', 'modules/proof/src/gtm-readiness.ts', 'tests/gtm-proof-readiness.test.ts'],
   'EN-001': ['docs/ENTERPRISE_READINESS_BACKLOG.md', 'modules/enterprise/src/readiness.ts', 'modules/enterprise/src/governance-readiness.ts', 'tests/enterprise-readiness.test.ts', 'tests/enterprise-governance-readiness.test.ts'],
   'EN-002': ['docs/ENTERPRISE_READINESS_BACKLOG.md', 'modules/enterprise/src/readiness.ts', 'modules/enterprise/src/governance-readiness.ts', 'tests/enterprise-readiness.test.ts', 'tests/enterprise-governance-readiness.test.ts'],
   'EN-003': ['docs/ENTERPRISE_READINESS_BACKLOG.md', 'docs/AUDIT_LOG_VIEWER_BACKLOG.md', 'modules/enterprise/src/readiness.ts', 'modules/enterprise/src/audit-log-readiness.ts', 'tests/enterprise-readiness.test.ts', 'tests/audit-log-readiness.test.ts'],
@@ -235,8 +235,8 @@ function distributionMoat(): Action[] {
     a('DT-006', 'Distribution moat', 'P1', 'READY_NOW', 'Marketing', 'Create ecommerce template brief.', 'Distribution moat: abandoned lead/order workflows are measurable.', 'Industry template brief.'),
     a('DT-007', 'Distribution moat', 'P1', 'NEXT', 'Sales', 'Create founder-led demo readiness contract.', 'Distribution moat: demos become consistent and measurable.', 'Demo readiness review with CTA proof gap.'),
     a('DT-008', 'Distribution moat', 'P1', 'NEXT', 'Sales', 'Create objection handling readiness contract.', 'Distribution moat: Arabic buyer objections become reusable data.', 'Objection coverage blocks unsafe demo claims.'),
-    a('DT-009', 'Distribution moat', 'P2', 'NEXT', 'Sales', 'Create partner agency program brief.', 'Channel moat: agencies multiply distribution.', 'Partner brief and qualification criteria.'),
-    a('DT-010', 'Distribution moat', 'P2', 'NEXT', 'Marketing', 'Create first case-study template.', 'Proof moat: customer evidence becomes repeatable.', 'CUSTOMER_PROOF_PACK updated.'),
+    a('DT-009', 'Distribution moat', 'P2', 'NEXT', 'Sales', 'Create partner agency readiness contract.', 'Channel moat: agencies multiply distribution without unsafe claims.', 'Partner brief, qualification criteria, GTM proof readiness contract, and hosted pilot evidence gap.'),
+    a('DT-010', 'Distribution moat', 'P2', 'NEXT', 'Marketing', 'Create customer proof readiness contract.', 'Proof moat: customer evidence becomes repeatable without fake ROI.', 'Case-study template, customer proof pack, GTM proof readiness contract, approval gate, and hosted metric evidence gap.'),
   ];
 }
 

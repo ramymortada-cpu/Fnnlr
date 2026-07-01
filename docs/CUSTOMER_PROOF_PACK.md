@@ -48,6 +48,16 @@ tenant, idempotent setup, and a smoke for one customer never touching another.
 This is proven by an automated repeatability check on a real database, not
 asserted.
 
+## GTM proof readiness
+Partner and case-study proof are evidence-gated. Partner distribution remains
+`CONTRACT_READY_WITH_HOSTED_GAPS` until a real partner pilot is attached. Case
+studies remain `HUMAN_ATTESTATION_REQUIRED` until customer approval, privacy
+approval, and hosted metric evidence exist.
+
+Code evidence:
+- `modules/proof/src/gtm-readiness.ts`
+- `tests/gtm-proof-readiness.test.ts`
+
 ## FAQ
 See `COMMERCIAL_FAQ.md` — auto-send, payments, guarantees, traffic, team, Arabic,
 EG+Gulf, BSP, AI, and what happens with thin data.
