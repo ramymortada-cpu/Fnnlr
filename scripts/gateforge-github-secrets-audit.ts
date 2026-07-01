@@ -20,6 +20,9 @@ const remediationPath = remediationOutIndex >= 0 ? process.argv[remediationOutIn
 const jsonOutIndex = process.argv.indexOf('--json-out');
 const jsonPath =
   jsonOutIndex >= 0 ? process.argv[jsonOutIndex + 1] : reportPath.replace(/\.md$/, '.json');
+const remediationJsonOutIndex = process.argv.indexOf('--remediation-json-out');
+const remediationJsonPath =
+  remediationJsonOutIndex >= 0 ? process.argv[remediationJsonOutIndex + 1] : remediationPath.replace(/\.md$/, '.json');
 const checkMode = process.argv.includes('--check');
 const { attestationSecrets, runtimeSecrets } = loadHostedSecretsManifest();
 const knownSecretNames = [...attestationSecrets, ...runtimeSecrets];
@@ -109,6 +112,39 @@ ${status === 'READY' ? 'Trigger `GateForge Hosted Staging Strict`.' : 'Set every
 `;
 
 const remediationBody = renderRemediation(missingRuntime, missingAttestationAlternatives, knownSecretNames.length, now);
+const remediationJsonBody = `${JSON.stringify(
+  {
+    generatedAt: now,
+    status: missingRuntime.length || missingAttestationAlternatives.length ? 'ACTION_REQUIRED' : 'READY',
+    source: sourceLabel,
+    counts: {
+      knownSecretNames: knownSecretNames.length,
+      requiredRuntimeSecrets: runtimeSecrets.length,
+      requiredAttestationSecrets: `1 of ${attestationSecrets.length}`,
+      missingRuntimeSecrets: missingRuntime.length,
+      missingAttestationRequirement: missingAttestationAlternatives.length > 0,
+    },
+    commands: {
+      attestation: missingAttestationAlternatives
+        .slice()
+        .sort((a, b) => (a.endsWith('_B64') ? -1 : b.endsWith('_B64') ? 1 : a.localeCompare(b)))
+        .map((name) => `gh secret set ${name}`),
+      runtime: missingRuntime.map((name) => `gh secret set ${name}`),
+      verification: ['npm run gateforge:github-secrets-audit', 'npm run gateforge:trigger-hosted-strict'],
+    },
+    missing: {
+      runtime: missingRuntime,
+      attestationAlternatives: missingAttestationAlternatives,
+    },
+    safety: {
+      secretValuesRead: false,
+      secretValuesPrinted: false,
+      productionMutated: false,
+    },
+  },
+  null,
+  2,
+)}\n`;
 const jsonBody = `${JSON.stringify(
   {
     generatedAt: now,
@@ -146,11 +182,13 @@ if (checkMode) {
   assertFresh(reportPath, body);
   assertFresh(remediationPath, remediationBody);
   assertFresh(jsonPath, jsonBody);
+  assertFresh(remediationJsonPath, remediationJsonBody);
   console.log('GateForge GitHub secrets remediation check: PASS');
   console.log(`  status baseline: ${status}`);
   console.log(`  checked ${reportPath}`);
   console.log(`  checked ${remediationPath}`);
   console.log(`  checked ${jsonPath}`);
+  console.log(`  checked ${remediationJsonPath}`);
   process.exit(0);
 }
 
@@ -160,6 +198,8 @@ fs.mkdirSync(path.dirname(remediationPath), { recursive: true });
 fs.writeFileSync(remediationPath, remediationBody);
 fs.mkdirSync(path.dirname(jsonPath), { recursive: true });
 fs.writeFileSync(jsonPath, jsonBody);
+fs.mkdirSync(path.dirname(remediationJsonPath), { recursive: true });
+fs.writeFileSync(remediationJsonPath, remediationJsonBody);
 
 if (status !== 'READY') {
   console.error('GateForge GitHub secrets audit: MISSING_SECRETS');
@@ -167,6 +207,8 @@ if (status !== 'READY') {
   missingRuntime.forEach((name) => console.error(`  - ${name}`));
   console.error(`wrote ${reportPath}`);
   console.error(`wrote ${jsonPath}`);
+  console.error(`wrote ${remediationPath}`);
+  console.error(`wrote ${remediationJsonPath}`);
   process.exit(1);
 }
 
@@ -175,6 +217,8 @@ console.log(`  runtime secrets present: ${runtimeSecrets.length}/${runtimeSecret
 console.log(`  attestation secret present: yes`);
 console.log(`  wrote ${reportPath}`);
 console.log(`  wrote ${jsonPath}`);
+console.log(`  wrote ${remediationPath}`);
+console.log(`  wrote ${remediationJsonPath}`);
 
 function renderRemediation(
   missingRuntimeSecrets: string[],
