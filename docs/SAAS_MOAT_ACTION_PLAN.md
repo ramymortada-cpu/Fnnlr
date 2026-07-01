@@ -1,6 +1,6 @@
 # SaaS Moat Action Plan
 
-Generated: `2026-07-01T08:58:20.453Z`
+Generated: `2026-07-01T08:59:50.616Z`
 
 This is the execution board for turning fnnlr from a GateForge-blocked release candidate into a global SaaS with a defensible moat. It intentionally separates code-ready work from external hosted evidence so the team does not confuse local progress with GA approval.
 
@@ -158,11 +158,11 @@ fnnlr's moat is the combination of DB-per-tenant trust, Arabic-first revenue wor
 | `OP-001` | `P0` | `READY_NOW` | Engineering | Run GateForge status after every evidence-changing change. | Operating moat: the launch gate stays current. | 47_ga_unblock_status updated. | `npm run gateforge:ga-unblock-status` |
 | `OP-002` | `P1` | `READY_NOW` | Engineering | Run moat action plan check in CI. | Execution moat: roadmap quality is enforced. | npm run moat:check PASS. | `npm run moat:check` |
 | `OP-003` | `P1` | `READY_NOW` | Leadership | Review P0/P1 moat board weekly. | Operating moat: leadership attention follows blockers, not noise. | Meeting note with changed statuses. |  |
-| `OP-004` | `P1` | `NEXT` | Support | Create customer health operating readiness gate. | Retention moat: support sees risk early. | Health score plus hosted issue-log evidence gap. |  |
-| `OP-005` | `P1` | `NEXT` | Support | Create support triage operating readiness gate. | Support moat: support issues become product intelligence. | Support triage readiness plus P0/P1 ownership proof. |  |
-| `OP-006` | `P1` | `NEXT` | Product | Create activation cohort review template. | Activation moat: cohorts reveal what is repeatable. | Template linked from operating docs. |  |
-| `OP-007` | `P2` | `NEXT` | Finance/ops | Create monthly AI spend review. | Margin moat: AI cost is managed like COGS. | Monthly report template. |  |
-| `OP-008` | `P2` | `NEXT` | Product | Create template performance readiness gate. | Workflow moat: templates improve from observed outcomes. | Template-loop readiness plus hosted cohort evidence gap. |  |
+| `OP-004` | `P1` | `READY_NOW` | Support | Create customer health operating readiness gate. | Retention moat: support sees risk early. | Customer health spec, scoring module, portfolio review, operating readiness gate, and tests define owner actions while hosted issue-log evidence remains pending. |  |
+| `OP-005` | `P1` | `READY_NOW` | Support | Create support triage operating readiness gate. | Support moat: support issues become product intelligence. | Support triage taxonomy, support workflow tests, and operating readiness gate require P0/P1 owner, next action, due date, and evidence link before operating claims. |  |
+| `OP-006` | `P1` | `READY_NOW` | Product | Create activation cohort review template. | Activation moat: cohorts reveal what is repeatable. | Activation cohort review doc, cohort module, and tests measure thresholds, abandonment, owner actions, and missing evidence without treating weak cohorts as pass. |  |
+| `OP-007` | `P2` | `READY_NOW` | Finance/ops | Create monthly AI spend review. | Margin moat: AI cost is managed like COGS. | AI spend review template, spend review module, cap-change forecast, and tests classify budget/watch/rescue actions from observed AI usage evidence. |  |
+| `OP-008` | `P2` | `READY_NOW` | Product | Create template performance readiness gate. | Workflow moat: templates improve from observed outcomes. | Template performance review doc, module, and tests define promote/keep/revise/retire decisions while hosted cohort proof remains gap-labeled. |  |
 
 ## Trust center execution
 
