@@ -22,6 +22,30 @@ export type CustomerHealthScore = {
   nextAction: string | null;
 };
 
+export type CustomerHealthPortfolioInput = {
+  customerId: string;
+  customerName: string;
+  segment?: string;
+  signal: CustomerHealthSignal;
+};
+
+export type CustomerHealthPortfolioReview = {
+  totalCustomers: number;
+  statusCounts: Record<CustomerHealthStatus, number>;
+  blockedCustomers: Array<CustomerHealthPortfolioInput & { health: CustomerHealthScore }>;
+  atRiskCustomers: Array<CustomerHealthPortfolioInput & { health: CustomerHealthScore }>;
+  watchCustomers: Array<CustomerHealthPortfolioInput & { health: CustomerHealthScore }>;
+  expansionReadyCustomers: Array<CustomerHealthPortfolioInput & { health: CustomerHealthScore }>;
+  actions: Array<{
+    customerId: string;
+    customerName: string;
+    owner: Exclude<CustomerHealthScore['owner'], 'none'>;
+    priority: 'P0' | 'P1' | 'P2';
+    action: string;
+    evidenceRequired: string;
+  }>;
+};
+
 export function scoreCustomerHealth(signal: CustomerHealthSignal): CustomerHealthScore {
   const positiveSignals: string[] = [];
   const riskSignals: string[] = [];
@@ -94,11 +118,62 @@ export function scoreCustomerHealth(signal: CustomerHealthSignal): CustomerHealt
   };
 }
 
+export function reviewCustomerHealthPortfolio(
+  customers: CustomerHealthPortfolioInput[],
+): CustomerHealthPortfolioReview {
+  const scored = customers.map((customer) => ({
+    ...customer,
+    health: scoreCustomerHealth(customer.signal),
+  }));
+
+  const statusCounts: Record<CustomerHealthStatus, number> = {
+    healthy: 0,
+    watch: 0,
+    at_risk: 0,
+    blocked: 0,
+  };
+  for (const customer of scored) statusCounts[customer.health.status] += 1;
+
+  return {
+    totalCustomers: scored.length,
+    statusCounts,
+    blockedCustomers: scored.filter((customer) => customer.health.status === 'blocked'),
+    atRiskCustomers: scored.filter((customer) => customer.health.status === 'at_risk'),
+    watchCustomers: scored.filter((customer) => customer.health.status === 'watch'),
+    expansionReadyCustomers: scored.filter(isExpansionReady),
+    actions: scored
+      .filter((customer) => customer.health.status !== 'healthy' && customer.health.owner !== 'none')
+      .map((customer) => ({
+        customerId: customer.customerId,
+        customerName: customer.customerName,
+        owner: customer.health.owner as Exclude<CustomerHealthScore['owner'], 'none'>,
+        priority: priorityFor(customer.health.status),
+        action: customer.health.nextAction ?? 'Review customer health and assign an owner action.',
+        evidenceRequired: 'Attach customer health score, issue/support evidence, due date, and next review date.',
+      })),
+  };
+}
+
 function classifyHealth(score: number, signal: CustomerHealthSignal): CustomerHealthStatus {
   if (signal.unresolvedCriticalIssues > 0 || signal.supportP0P1Overdue > 0) return 'blocked';
   if (score >= 75) return 'healthy';
   if (score >= 55) return 'watch';
   return 'at_risk';
+}
+
+function isExpansionReady(customer: CustomerHealthPortfolioInput & { health: CustomerHealthScore }) {
+  return customer.health.status === 'healthy'
+    && customer.signal.weeklyWorkflowActivity >= 3
+    && customer.signal.liveSignals >= 3
+    && customer.signal.recommendationsCompleted >= 2
+    && !customer.signal.aiCapExceeded
+    && customer.signal.aiDegradedEvents === 0;
+}
+
+function priorityFor(status: CustomerHealthStatus): 'P0' | 'P1' | 'P2' {
+  if (status === 'blocked') return 'P0';
+  if (status === 'at_risk') return 'P1';
+  return 'P2';
 }
 
 function ownerFor(status: CustomerHealthStatus, signal: CustomerHealthSignal): CustomerHealthScore['owner'] {

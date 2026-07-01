@@ -7,8 +7,9 @@ Status: `CONTRACT_READY`
 Code evidence:
 
 - `modules/operating-room/src/health-score.ts` computes health from activation, usage, signal, recommendation, support, and AI degradation evidence.
+- `modules/operating-room/src/health-score.ts` also summarizes a customer portfolio into blocked, at-risk, watch, and expansion-ready groups.
 - `modules/operating-room/src/readiness.ts` reviews customer health and support cadence readiness without overstating hosted operating proof.
-- `tests/customer-health-score.test.ts` proves healthy, watch, at-risk, and blocked behavior.
+- `tests/customer-health-score.test.ts` proves healthy, watch, at-risk, blocked, portfolio grouping, owner action, and expansion-readiness behavior.
 - `tests/operating-cadence-readiness.test.ts` proves hosted issue-log evidence remains a gap before claiming the operating cadence is live-ready.
 - Non-healthy scores always return an owner and a next action.
 
@@ -29,6 +30,20 @@ Code evidence:
 - `blocked`
 
 Every non-healthy score needs an owner and next action.
+
+## Portfolio Review Contract
+
+Weekly customer health review must produce:
+
+- Total customer count.
+- Status counts for `healthy`, `watch`, `at_risk`, and `blocked`.
+- Blocked customer list with `P0` owner action.
+- At-risk customer list with `P1` owner action.
+- Watch customer list with `P2` owner action.
+- Expansion-ready customer list only when the customer is healthy, active, instrumented, using recommendations, and not in AI degradation.
+- Evidence requirement for every non-healthy action: customer health score, issue/support evidence, due date, and next review date.
+
+Expansion is not allowed from a merely positive score. The customer must have weekly workflow activity, live signals, completed recommendations, no AI cap breach, and no degraded events.
 
 ## Scoring Contract
 
