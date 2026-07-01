@@ -1,5 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import path from 'node:path';
 import {
   PLAN_LIMITS,
   canConsumePlanResource,
@@ -8,6 +10,34 @@ import {
   normalizePlan,
   planLimitRows,
 } from '../modules/commercial/src/limits.js';
+
+function pricingMatrixRows() {
+  const markdown = fs.readFileSync(path.join(process.cwd(), 'docs', 'PRICING_AND_LIMITS_MATRIX.md'), 'utf8');
+  return markdown
+    .split('\n')
+    .filter((line) => line.startsWith('| ') && !line.includes('---') && !line.startsWith('| Plan |'))
+    .map((line) => line.split('|').slice(1, -1).map((cell) => cell.trim()))
+    .filter((cells) => ['Starter', 'Growth', 'Scale', 'Enterprise'].includes(cells[0]))
+    .map(([label, target, seats, activeWorkflows, contacts, integrations, aiBudgetPosture, support]) => ({
+      label,
+      target,
+      seats,
+      activeWorkflows,
+      contacts,
+      integrations,
+      aiBudgetPosture,
+      support,
+    }));
+}
+
+function numericCell(value: string) {
+  return Number(value.replace(/,/g, ''));
+}
+
+function budgetUsdCell(value: string) {
+  const match = value.match(/\$(\d+)\/mo/);
+  return match ? Number(match[1]) : /custom|contracted/i.test(value) ? 'custom' : undefined;
+}
 
 test('commercial plan limits match the public packaging matrix', () => {
   assert.equal(getPlanLimit('starter', 'seats'), 2);
@@ -24,6 +54,32 @@ test('commercial plan limits match the public packaging matrix', () => {
   assert.equal(getPlanLimit('scale', 'activeWorkflows'), 50);
   assert.equal(getPlanLimit('scale', 'contacts'), 100_000);
   assert.equal(getPlanLimit('scale', 'integrations'), 8);
+});
+
+test('public pricing matrix stays synchronized with coded plan limits', () => {
+  const rows = pricingMatrixRows();
+
+  assert.equal(rows.length, 4);
+
+  for (const row of rows) {
+    const plan = normalizePlan(row.label);
+    const coded = PLAN_LIMITS[plan];
+    assert.equal(row.support, coded.supportTier);
+    assert.equal(row.target.length > 0, true);
+    if (plan === 'enterprise') {
+      assert.equal(row.seats, 'Custom');
+      assert.equal(row.activeWorkflows, 'Custom');
+      assert.equal(row.contacts, 'Custom');
+      assert.equal(row.integrations, 'Custom');
+      assert.equal(budgetUsdCell(row.aiBudgetPosture), 'custom');
+      continue;
+    }
+    assert.equal(numericCell(row.seats), coded.limits.seats);
+    assert.equal(numericCell(row.activeWorkflows), coded.limits.activeWorkflows);
+    assert.equal(numericCell(row.contacts), coded.limits.contacts);
+    assert.equal(numericCell(row.integrations), coded.limits.integrations);
+    assert.equal(budgetUsdCell(row.aiBudgetPosture), coded.limits.aiBudgetUsdMonthly);
+  }
 });
 
 test('limit decisions allow usage within the plan cap and expose remaining capacity', () => {

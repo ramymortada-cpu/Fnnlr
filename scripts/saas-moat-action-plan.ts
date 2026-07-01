@@ -153,6 +153,18 @@ const evidenceFilesByActionId: Record<string, string[]> = {
   'EX-008': ['docs/TRUST_CENTER_INDEX.md', 'docs/BACKUP_RESTORE_RUNBOOK.md', 'tests/trust-center-readiness.test.ts'],
   'EX-009': ['docs/TRUST_CENTER_INDEX.md', 'docs/INCIDENT_RESPONSE_EXERCISE.md', 'docs/OBSERVABILITY_GA_RUNBOOK.md', 'tests/trust-center-readiness.test.ts'],
   'EX-010': ['docs/TRUST_CENTER_INDEX.md', 'docs/SUPPORT_WORKFLOW.md', 'docs/SUPPORT_TRIAGE_TAXONOMY.md', 'tests/trust-center-readiness.test.ts'],
+  'EX-012': ['docs/PRICING_AND_LIMITS_MATRIX.md', 'modules/commercial/src/limits.ts', 'tests/commercial-limits.test.ts'],
+  'EX-013': ['docs/PRICING_AND_LIMITS_MATRIX.md', 'modules/commercial/src/limits.ts', 'tests/commercial-limits.test.ts'],
+  'EX-014': ['docs/PRICING_AND_LIMITS_MATRIX.md', 'modules/commercial/src/limits.ts', 'tests/commercial-limits.test.ts'],
+  'EX-015': ['docs/PRICING_AND_LIMITS_MATRIX.md', 'modules/commercial/src/limits.ts', 'tests/commercial-limits.test.ts'],
+  'EX-016': ['docs/PRICING_AND_LIMITS_MATRIX.md', 'modules/commercial/src/limits.ts', 'tests/commercial-limits.test.ts'],
+  'EX-017': ['docs/PRICING_AND_LIMITS_MATRIX.md', 'modules/commercial/src/limits.ts', 'tests/commercial-limits.test.ts'],
+  'EX-018': ['docs/PRICING_AND_LIMITS_MATRIX.md', 'modules/commercial/src/limits.ts', 'tests/commercial-limits.test.ts'],
+  'EX-019': ['docs/PRICING_AND_LIMITS_MATRIX.md', 'modules/commercial/src/limits.ts', 'tests/commercial-limits.test.ts'],
+  'EX-020': ['docs/PRICING_AND_LIMITS_MATRIX.md', 'modules/commercial/src/limits.ts', 'tests/commercial-limits.test.ts'],
+  'EX-021': ['docs/PRICING_AND_LIMITS_MATRIX.md', 'modules/commercial/src/limits.ts', 'tests/commercial-limits.test.ts'],
+  'EX-022': ['docs/PRICING_AND_LIMITS_MATRIX.md', 'modules/commercial/src/limits.ts', 'tests/commercial-limits.test.ts'],
+  'EX-023': ['docs/PRICING_AND_LIMITS_MATRIX.md', 'modules/commercial/src/limits.ts', 'tests/commercial-limits.test.ts'],
 };
 
 const actions: Action[] = [
