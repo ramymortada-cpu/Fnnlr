@@ -54,6 +54,7 @@ passes.
 | Operating cadence | `modules/operating-room/src/readiness.ts` | `tests/operating-cadence-readiness.test.ts` | Customer health/support cadence remains hosted-gap-labeled |
 | Commercial limits | `modules/commercial/src/enforcement-readiness.ts` | `tests/commercial-enforcement-readiness.test.ts` | Limit source is contract-ready; route-level proof remains explicit |
 | Enterprise readiness | `modules/enterprise/src/readiness.ts` | `tests/enterprise-readiness.test.ts` | Enterprise posture is limited/roadmap until evidence closes |
+| Trust center | `modules/proof/src/trust-center-readiness.ts` | `tests/trust-center-readiness.test.ts` | Buyer trust packet is shareable only when proof links and gap labels are present |
 | Evidence index | `modules/proof/src/evidence-index-readiness.ts` | `tests/evidence-index-readiness.test.ts` | This index must expose the active readiness contracts |
 
 ## What is NOT claimed

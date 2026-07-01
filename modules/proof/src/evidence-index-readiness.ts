@@ -8,6 +8,7 @@ export type EvidenceIndexRequirementId =
   | 'operating_cadence_readiness'
   | 'commercial_limit_readiness'
   | 'enterprise_readiness'
+  | 'trust_center_readiness'
   | 'hosted_gap_language';
 
 export type EvidenceIndexReview = {
@@ -36,6 +37,7 @@ export const EVIDENCE_INDEX_REQUIREMENTS: Array<{
   req('operating_cadence_readiness', ['modules/operating-room/src/readiness.ts', 'tests/operating-cadence-readiness.test.ts'], 'Support'),
   req('commercial_limit_readiness', ['modules/commercial/src/enforcement-readiness.ts', 'tests/commercial-enforcement-readiness.test.ts'], 'Product'),
   req('enterprise_readiness', ['modules/enterprise/src/readiness.ts', 'tests/enterprise-readiness.test.ts'], 'Engineering'),
+  req('trust_center_readiness', ['modules/proof/src/trust-center-readiness.ts', 'tests/trust-center-readiness.test.ts'], 'Engineering'),
   req('hosted_gap_language', ['HOSTED_PROOF_PENDING', 'HUMAN_ATTESTATION_REQUIRED'], 'Engineering'),
 ];
 
