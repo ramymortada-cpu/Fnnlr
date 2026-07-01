@@ -1,0 +1,127 @@
+{
+  "generatedAt": "2026-07-01T19:17:18.629Z",
+  "decision": "PASS",
+  "source": "docs/SAAS_MOAT_EXECUTION_STATUS.json",
+  "totalMoatActions": 165,
+  "dependencyGateCount": 5,
+  "chain": [
+    {
+      "id": "GF-017",
+      "order": 1,
+      "sourceAction": "Run local secret replacement packet after operator values exist.",
+      "command": "npm run gateforge:secret-replacement-packet",
+      "prerequisites": [
+        "GF-001..GF-016 provider/runtime values have been created outside git.",
+        "Local secret scaffold exists under the configured secure local secret directory."
+      ],
+      "evidenceRequired": [
+        "45_secret_replacement_packet.md lists every runtime and attestation secret without values.",
+        "Local secret files check reports every runtime secret READY and at least one attestation option READY."
+      ],
+      "outputEvidence": [
+        "gateforge-audit/run-2026-06-23-1035/45_secret_replacement_packet.md",
+        "gateforge-audit/run-2026-06-23-1035/45_secret_replacement_packet.csv"
+      ],
+      "downstream": [
+        "GF-018",
+        "GF-021"
+      ],
+      "failureMode": "BLOCKED_BY_SECRET_READINESS"
+    },
+    {
+      "id": "GF-018",
+      "order": 2,
+      "sourceAction": "Generate hosted staging attestation packet from real evidence only.",
+      "command": "npm run gateforge:external-check -- gateforge-audit/external-attestations/hosted-staging-attestation.json",
+      "prerequisites": [
+        "Hosted staging evidence packet exists and contains sanitized provider/runtime proof.",
+        "No local-only command output is treated as hosted proof."
+      ],
+      "evidenceRequired": [
+        "hosted-staging-attestation.json validates with external-check.",
+        "Attestation references live hosted evidence for DB, observability, email, AI cap, and smoke checks."
+      ],
+      "outputEvidence": [
+        "gateforge-audit/external-attestations/hosted-staging-attestation.json",
+        "gateforge-audit/external-attestations/HOSTED_STAGING_WAR_ROOM.md"
+      ],
+      "downstream": [
+        "GF-019",
+        "GF-022"
+      ],
+      "failureMode": "BLOCKED_BY_HOSTED_ATTESTATION"
+    },
+    {
+      "id": "GF-019",
+      "order": 3,
+      "sourceAction": "Encode validated attestation as the preferred B64 secret.",
+      "command": "npm run gateforge:attestation-secret-pack -- --write-b64",
+      "prerequisites": [
+        "GF-018 validated the hosted attestation packet.",
+        "Operator chose one attestation secret strategy: B64 preferred or JSON alternative."
+      ],
+      "evidenceRequired": [
+        "46_attestation_secret_pack.md reports READY without printing the packet value.",
+        "At least one attestation local secret file is READY."
+      ],
+      "outputEvidence": [
+        "gateforge-audit/run-2026-06-23-1035/46_attestation_secret_pack.md"
+      ],
+      "downstream": [
+        "GF-021"
+      ],
+      "failureMode": "BLOCKED_BY_HOSTED_ATTESTATION"
+    },
+    {
+      "id": "GF-021",
+      "order": 4,
+      "sourceAction": "Upload local secret pack to GitHub Actions after validation.",
+      "command": "npm run gateforge:hosted-unblock -- --apply --prepare-attestation",
+      "prerequisites": [
+        "GF-017 local runtime secrets are READY.",
+        "GF-019 attestation secret is READY.",
+        "GitHub CLI is authenticated for the target repository."
+      ],
+      "evidenceRequired": [
+        "39_github_secrets_presence_audit.md reports READY.",
+        "40_missing_github_secrets_remediation.md reports READY or no missing runtime/attestation secrets."
+      ],
+      "outputEvidence": [
+        "gateforge-audit/run-2026-06-23-1035/39_github_secrets_presence_audit.md",
+        "gateforge-audit/run-2026-06-23-1035/40_missing_github_secrets_remediation.md"
+      ],
+      "downstream": [
+        "GF-022"
+      ],
+      "failureMode": "BLOCKED_BY_SECRET_READINESS"
+    },
+    {
+      "id": "GF-022",
+      "order": 5,
+      "sourceAction": "Trigger GateForge Hosted Staging Strict.",
+      "command": "npm run gateforge:trigger-hosted-strict",
+      "prerequisites": [
+        "GF-021 confirms GitHub secret names are present.",
+        "GateForge Hosted Staging Strict workflow exists and is dispatchable."
+      ],
+      "evidenceRequired": [
+        "41_hosted_strict_trigger_attempt.md reports TRIGGERED or dry-run readiness in smoke.",
+        "Hosted Staging Strict GitHub workflow completes successfully with sanitized artifact upload."
+      ],
+      "outputEvidence": [
+        "gateforge-audit/run-2026-06-23-1035/41_hosted_strict_trigger_attempt.md",
+        "GitHub Actions artifact: gateforge-hosted-staging-strict"
+      ],
+      "downstream": [
+        "GF-023",
+        "GF-024"
+      ],
+      "failureMode": "BLOCKED_BY_GITHUB_SECRET_READINESS"
+    }
+  ],
+  "safety": {
+    "secretValuesPrinted": false,
+    "productionMutated": false,
+    "sourceDumpsIncluded": false
+  }
+}
