@@ -65,6 +65,12 @@ jobs:
       - name: GateForge final report
         run: npm run gateforge:final-report
         if: always()
+      - name: GateForge external closeout validator
+        run: npm run gateforge:external-closeout-validator
+        if: always()
+      - name: GateForge hosted dependency chain
+        run: npm run gateforge:hosted-dependency-chain
+        if: always()
       - name: GateForge final gate
         run: npm run gateforge:final-gate
       - name: Upload hosted staging evidence
@@ -100,6 +106,10 @@ jobs:
             gateforge-audit/run-*/50_operator_execution_packet.md
             gateforge-audit/run-*/50_operator_execution_packet.csv
             gateforge-audit/run-*/50_operator_execution_packet.json
+            gateforge-audit/run-*/52_external_closeout_validator.md
+            gateforge-audit/run-*/52_external_closeout_validator.json
+            gateforge-audit/run-*/53_hosted_dependency_chain.md
+            gateforge-audit/run-*/53_hosted_dependency_chain.json
             gateforge-audit/external-attestations/HOSTED_STAGING_WAR_ROOM.md
             gateforge-audit/external-attestations/hosted-staging-secrets.manifest.json
             gateforge-audit/external-attestations/hosted-staging-attestation.json

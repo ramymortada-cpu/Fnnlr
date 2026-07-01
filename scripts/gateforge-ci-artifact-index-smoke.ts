@@ -54,6 +54,10 @@ const hostedStrictArtifacts = [
   '50_operator_execution_packet.md',
   '50_operator_execution_packet.csv',
   '50_operator_execution_packet.json',
+  '52_external_closeout_validator.md',
+  '52_external_closeout_validator.json',
+  '53_hosted_dependency_chain.md',
+  '53_hosted_dependency_chain.json',
 ];
 
 function fail(message: string): never {
