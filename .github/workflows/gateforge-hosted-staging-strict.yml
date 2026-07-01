@@ -3,6 +3,10 @@ name: GateForge Hosted Staging Strict
 on:
   workflow_dispatch:
 
+permissions:
+  actions: read
+  contents: read
+
 jobs:
   hosted-staging-strict:
     runs-on: ubuntu-latest
@@ -80,6 +84,11 @@ jobs:
       - name: GateForge open P0 runbook
         run: npm run gateforge:open-p0-runbook
         if: always()
+      - name: GateForge hosted strict trigger readiness
+        run: npm run gateforge:hosted-strict-trigger-readiness
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
       - name: GateForge final gate
         run: npm run gateforge:final-gate
       - name: Upload hosted staging evidence
@@ -124,6 +133,8 @@ jobs:
             gateforge-audit/run-*/54_hosted_readiness_contract.json
             gateforge-audit/run-*/55_open_p0_terminal_runbook.md
             gateforge-audit/run-*/55_open_p0_terminal_runbook.json
+            gateforge-audit/run-*/56_hosted_strict_trigger_readiness.md
+            gateforge-audit/run-*/56_hosted_strict_trigger_readiness.json
             gateforge-audit/external-attestations/HOSTED_STAGING_WAR_ROOM.md
             gateforge-audit/external-attestations/hosted-staging-secrets.manifest.json
             gateforge-audit/external-attestations/hosted-staging-attestation.json

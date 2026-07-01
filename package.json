@@ -100,6 +100,8 @@
     "gateforge:github-secrets-remediation-check": "tsx scripts/gateforge-github-secrets-audit.ts --from-file tests/fixtures/gateforge-gh-secrets-empty.json --source-label \"gh secret list --json name\" --check",
     "gateforge:trigger-hosted-strict": "tsx scripts/gateforge-trigger-hosted-strict.ts",
     "gateforge:trigger-hosted-strict-smoke": "tsx scripts/gateforge-trigger-hosted-strict.ts --dry-run --from-file tests/fixtures/gateforge-gh-secrets-pass.json",
+    "gateforge:hosted-strict-trigger-readiness": "tsx scripts/gateforge-hosted-strict-trigger-readiness.ts",
+    "gateforge:hosted-strict-trigger-readiness-smoke": "tsx scripts/gateforge-hosted-strict-trigger-readiness.ts --secrets-from-file tests/fixtures/gateforge-gh-secrets-pass.json --ga-run-from-file tests/fixtures/gateforge-ga-evidence-run-pass.json --out /tmp/fnnlr-gateforge-hosted-strict-trigger-readiness.md --json-out /tmp/fnnlr-gateforge-hosted-strict-trigger-readiness.json",
     "gateforge:hosted-setup-guide": "tsx scripts/gateforge-hosted-setup-guide.ts",
     "gateforge:life-or-death-plan": "tsx scripts/gateforge-life-or-death-plan.ts",
     "gateforge:life-or-death-plan-check": "tsx scripts/gateforge-life-or-death-plan.ts --check",

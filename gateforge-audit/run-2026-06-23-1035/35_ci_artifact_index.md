@@ -41,6 +41,8 @@ This index defines the expected contents of the `gateforge-ga-evidence` GitHub A
 - `54_hosted_readiness_contract.json`
 - `55_open_p0_terminal_runbook.md`
 - `55_open_p0_terminal_runbook.json`
+- `56_hosted_strict_trigger_readiness.md`
+- `56_hosted_strict_trigger_readiness.json`
 
 ## External Evidence Intake
 
