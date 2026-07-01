@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-01T12:37:05.315Z",
+  "generatedAt": "2026-07-01T14:22:31.206Z",
   "total": 16,
   "counts": {
     "LOCAL_SECRET_PENDING": 16,
@@ -17,6 +17,18 @@
       "secretCount": 1,
       "localReady": 0,
       "githubReady": 0,
+      "localStatuses": [
+        {
+          "name": "CONTROL_PLANE_DATABASE_URL",
+          "status": "PLACEHOLDER"
+        }
+      ],
+      "githubStatuses": [
+        {
+          "name": "CONTROL_PLANE_DATABASE_URL",
+          "present": false
+        }
+      ],
       "status": "LOCAL_SECRET_PENDING",
       "evidenceRequired": [
         "Provider database identifier and sanitized successful hosted health gate output."
@@ -38,6 +50,18 @@
       "secretCount": 1,
       "localReady": 0,
       "githubReady": 0,
+      "localStatuses": [
+        {
+          "name": "TENANT_DB_ADMIN_URL",
+          "status": "PLACEHOLDER"
+        }
+      ],
+      "githubStatuses": [
+        {
+          "name": "TENANT_DB_ADMIN_URL",
+          "present": false
+        }
+      ],
       "status": "LOCAL_SECRET_PENDING",
       "evidenceRequired": [
         "Hosted tenant provision/delete test output and sanitized DB-per-tenant proof."
@@ -59,6 +83,18 @@
       "secretCount": 1,
       "localReady": 0,
       "githubReady": 0,
+      "localStatuses": [
+        {
+          "name": "CONTROL_PLANE_DATABASE_URL",
+          "status": "PLACEHOLDER"
+        }
+      ],
+      "githubStatuses": [
+        {
+          "name": "CONTROL_PLANE_DATABASE_URL",
+          "present": false
+        }
+      ],
       "status": "LOCAL_SECRET_PENDING",
       "evidenceRequired": [
         "Local secret files check PASS and GitHub secret name present."
@@ -80,6 +116,18 @@
       "secretCount": 1,
       "localReady": 0,
       "githubReady": 0,
+      "localStatuses": [
+        {
+          "name": "TENANT_DB_ADMIN_URL",
+          "status": "PLACEHOLDER"
+        }
+      ],
+      "githubStatuses": [
+        {
+          "name": "TENANT_DB_ADMIN_URL",
+          "present": false
+        }
+      ],
       "status": "LOCAL_SECRET_PENDING",
       "evidenceRequired": [
         "Hosted strict live DB tests PASS."
@@ -102,6 +150,18 @@
       "secretCount": 1,
       "localReady": 0,
       "githubReady": 0,
+      "localStatuses": [
+        {
+          "name": "TENANT_DB_HOST",
+          "status": "PLACEHOLDER"
+        }
+      ],
+      "githubStatuses": [
+        {
+          "name": "TENANT_DB_HOST",
+          "present": false
+        }
+      ],
       "status": "LOCAL_SECRET_PENDING",
       "evidenceRequired": [
         "Local secret files check READY and hosted tenant routing proof."
@@ -123,6 +183,18 @@
       "secretCount": 1,
       "localReady": 0,
       "githubReady": 0,
+      "localStatuses": [
+        {
+          "name": "SENTRY_DSN",
+          "status": "PLACEHOLDER"
+        }
+      ],
+      "githubStatuses": [
+        {
+          "name": "SENTRY_DSN",
+          "present": false
+        }
+      ],
       "status": "LOCAL_SECRET_PENDING",
       "evidenceRequired": [
         "Sanitized project reference and alert proof attached to hosted attestation."
@@ -143,6 +215,18 @@
       "secretCount": 1,
       "localReady": 0,
       "githubReady": 0,
+      "localStatuses": [
+        {
+          "name": "SENTRY_DSN",
+          "status": "PLACEHOLDER"
+        }
+      ],
+      "githubStatuses": [
+        {
+          "name": "SENTRY_DSN",
+          "present": false
+        }
+      ],
       "status": "LOCAL_SECRET_PENDING",
       "evidenceRequired": [
         "Hosted strict monitoring item PASS."
@@ -165,6 +249,18 @@
       "secretCount": 1,
       "localReady": 0,
       "githubReady": 0,
+      "localStatuses": [
+        {
+          "name": "UPTIME_HEALTHCHECK_URL",
+          "status": "PLACEHOLDER"
+        }
+      ],
+      "githubStatuses": [
+        {
+          "name": "UPTIME_HEALTHCHECK_URL",
+          "present": false
+        }
+      ],
       "status": "LOCAL_SECRET_PENDING",
       "evidenceRequired": [
         "Monitor URL, screenshot/log reference, and successful health gate."
@@ -185,6 +281,18 @@
       "secretCount": 1,
       "localReady": 0,
       "githubReady": 0,
+      "localStatuses": [
+        {
+          "name": "UPTIME_HEALTHCHECK_URL",
+          "status": "PLACEHOLDER"
+        }
+      ],
+      "githubStatuses": [
+        {
+          "name": "UPTIME_HEALTHCHECK_URL",
+          "present": false
+        }
+      ],
       "status": "LOCAL_SECRET_PENDING",
       "evidenceRequired": [
         "GateForge secret check READY and hosted attestation item PASS."
@@ -207,6 +315,18 @@
       "secretCount": 1,
       "localReady": 0,
       "githubReady": 0,
+      "localStatuses": [
+        {
+          "name": "ALERT_EMAIL_TO",
+          "status": "PLACEHOLDER"
+        }
+      ],
+      "githubStatuses": [
+        {
+          "name": "ALERT_EMAIL_TO",
+          "present": false
+        }
+      ],
       "status": "LOCAL_SECRET_PENDING",
       "evidenceRequired": [
         "Alert delivery proof in hosted evidence packet."
@@ -227,6 +347,18 @@
       "secretCount": 1,
       "localReady": 0,
       "githubReady": 0,
+      "localStatuses": [
+        {
+          "name": "ALERT_WEBHOOK_URL",
+          "status": "PLACEHOLDER"
+        }
+      ],
+      "githubStatuses": [
+        {
+          "name": "ALERT_WEBHOOK_URL",
+          "present": false
+        }
+      ],
       "status": "LOCAL_SECRET_PENDING",
       "evidenceRequired": [
         "Cron/webhook failure alert proof."
@@ -247,6 +379,18 @@
       "secretCount": 1,
       "localReady": 0,
       "githubReady": 0,
+      "localStatuses": [
+        {
+          "name": "RESEND_API_KEY",
+          "status": "PLACEHOLDER"
+        }
+      ],
+      "githubStatuses": [
+        {
+          "name": "RESEND_API_KEY",
+          "present": false
+        }
+      ],
       "status": "LOCAL_SECRET_PENDING",
       "evidenceRequired": [
         "Provider test send and DNS posture evidence."
@@ -267,6 +411,18 @@
       "secretCount": 1,
       "localReady": 0,
       "githubReady": 0,
+      "localStatuses": [
+        {
+          "name": "RESEND_API_KEY",
+          "status": "PLACEHOLDER"
+        }
+      ],
+      "githubStatuses": [
+        {
+          "name": "RESEND_API_KEY",
+          "present": false
+        }
+      ],
       "status": "LOCAL_SECRET_PENDING",
       "evidenceRequired": [
         "Hosted strict email readiness evidence."
@@ -289,6 +445,18 @@
       "secretCount": 1,
       "localReady": 0,
       "githubReady": 0,
+      "localStatuses": [
+        {
+          "name": "EMAIL_FROM",
+          "status": "PLACEHOLDER"
+        }
+      ],
+      "githubStatuses": [
+        {
+          "name": "EMAIL_FROM",
+          "present": false
+        }
+      ],
       "status": "LOCAL_SECRET_PENDING",
       "evidenceRequired": [
         "SPF/DKIM/DMARC evidence and provider verified sender."
@@ -309,6 +477,18 @@
       "secretCount": 1,
       "localReady": 0,
       "githubReady": 0,
+      "localStatuses": [
+        {
+          "name": "EMAIL_REPLY_TO",
+          "status": "PLACEHOLDER"
+        }
+      ],
+      "githubStatuses": [
+        {
+          "name": "EMAIL_REPLY_TO",
+          "present": false
+        }
+      ],
       "status": "LOCAL_SECRET_PENDING",
       "evidenceRequired": [
         "Transactional provider config proof."
@@ -329,6 +509,18 @@
       "secretCount": 1,
       "localReady": 0,
       "githubReady": 0,
+      "localStatuses": [
+        {
+          "name": "ANTHROPIC_API_KEY",
+          "status": "PLACEHOLDER"
+        }
+      ],
+      "githubStatuses": [
+        {
+          "name": "ANTHROPIC_API_KEY",
+          "present": false
+        }
+      ],
       "status": "LOCAL_SECRET_PENDING",
       "evidenceRequired": [
         "Provider-side cap proof and AI gateway hosted smoke evidence."

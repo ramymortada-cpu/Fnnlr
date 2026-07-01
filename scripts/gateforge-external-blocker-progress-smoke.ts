@@ -80,6 +80,8 @@ if (readyParsed.counts?.HOSTED_EVIDENCE_PENDING !== 16) fail('ready fixture shou
 if (readyReport.includes('postgres://') || readyReport.includes('sk-ant-fixture') || readyReport.includes(fixtureValueFor(attestationSecrets[1]))) {
   fail('ready report leaked fixture secret values');
 }
+if (!readyReport.includes('`CONTROL_PLANE_DATABASE_URL`: `READY`')) fail('ready report did not show local secret status');
+if (!readyReport.includes('`CONTROL_PLANE_DATABASE_URL`: `PRESENT`')) fail('ready report did not show GitHub secret status');
 if (readyParsed.safety?.secretValuesPrinted !== false) fail('ready JSON did not assert secret safety');
 
 const missingMd = path.join(os.tmpdir(), 'fnnlr-gateforge-progress-missing.md');
@@ -99,5 +101,7 @@ const missingParsed = JSON.parse(fs.readFileSync(missingJson, 'utf8')) as {
   counts?: { LOCAL_SECRET_PENDING?: number };
 };
 if (missingParsed.counts?.LOCAL_SECRET_PENDING !== 16) fail('missing fixture should keep all blockers local-secret pending');
+const missingReport = fs.readFileSync(missingMd, 'utf8');
+if (!missingReport.includes('`CONTROL_PLANE_DATABASE_URL`: `MISSING`')) fail('missing report did not show local missing status');
 
 console.log('GateForge external blocker progress smoke: PASS');

@@ -1,6 +1,6 @@
 # GateForge External Blocker Progress
 
-Generated: `2026-07-01T12:37:05.315Z`
+Generated: `2026-07-01T14:22:31.206Z`
 
 This progress board converts the 16 remaining external blockers into executable status. It uses secret names and readiness states only; no secret values are printed.
 
@@ -16,24 +16,24 @@ This progress board converts the 16 remaining external blockers into executable 
 
 ## Progress Matrix
 
-| ID | Status | Action | Secret names | Local ready | GitHub ready | Next action |
+| ID | Status | Action | Secret names | Local status | GitHub status | Next action |
 | --- | --- | --- | --- | --- | --- | --- |
-| `GF-001` | `LOCAL_SECRET_PENDING` | Provision hosted staging control-plane Postgres. | `CONTROL_PLANE_DATABASE_URL` | 0/1 | 0/1 | Create or replace local staging secret files, then run npm run gateforge:local-secret-files-check. |
-| `GF-002` | `LOCAL_SECRET_PENDING` | Provision tenant database admin access for staging. | `TENANT_DB_ADMIN_URL` | 0/1 | 0/1 | Create or replace local staging secret files, then run npm run gateforge:local-secret-files-check. |
-| `GF-003` | `LOCAL_SECRET_PENDING` | Set CONTROL_PLANE_DATABASE_URL in local secret pack and GitHub Actions. | `CONTROL_PLANE_DATABASE_URL` | 0/1 | 0/1 | Create or replace local staging secret files, then run npm run gateforge:local-secret-files-check. |
-| `GF-004` | `LOCAL_SECRET_PENDING` | Set TENANT_DB_ADMIN_URL in local secret pack and GitHub Actions. | `TENANT_DB_ADMIN_URL` | 0/1 | 0/1 | Create or replace local staging secret files, then run npm run gateforge:local-secret-files-check. |
-| `GF-005` | `LOCAL_SECRET_PENDING` | Set TENANT_DB_HOST in local secret pack and GitHub Actions. | `TENANT_DB_HOST` | 0/1 | 0/1 | Create or replace local staging secret files, then run npm run gateforge:local-secret-files-check. |
-| `GF-006` | `LOCAL_SECRET_PENDING` | Create staging Sentry or equivalent error-monitoring project. | `SENTRY_DSN` | 0/1 | 0/1 | Create or replace local staging secret files, then run npm run gateforge:local-secret-files-check. |
-| `GF-007` | `LOCAL_SECRET_PENDING` | Set SENTRY_DSN for staging. | `SENTRY_DSN` | 0/1 | 0/1 | Create or replace local staging secret files, then run npm run gateforge:local-secret-files-check. |
-| `GF-008` | `LOCAL_SECRET_PENDING` | Create uptime monitor for /health. | `UPTIME_HEALTHCHECK_URL` | 0/1 | 0/1 | Create or replace local staging secret files, then run npm run gateforge:local-secret-files-check. |
-| `GF-009` | `LOCAL_SECRET_PENDING` | Set UPTIME_HEALTHCHECK_URL. | `UPTIME_HEALTHCHECK_URL` | 0/1 | 0/1 | Create or replace local staging secret files, then run npm run gateforge:local-secret-files-check. |
-| `GF-010` | `LOCAL_SECRET_PENDING` | Set ALERT_EMAIL_TO for staging operations. | `ALERT_EMAIL_TO` | 0/1 | 0/1 | Create or replace local staging secret files, then run npm run gateforge:local-secret-files-check. |
-| `GF-011` | `LOCAL_SECRET_PENDING` | Set ALERT_WEBHOOK_URL for staging alerts. | `ALERT_WEBHOOK_URL` | 0/1 | 0/1 | Create or replace local staging secret files, then run npm run gateforge:local-secret-files-check. |
-| `GF-012` | `LOCAL_SECRET_PENDING` | Create Resend staging key or approved transactional email provider key. | `RESEND_API_KEY` | 0/1 | 0/1 | Create or replace local staging secret files, then run npm run gateforge:local-secret-files-check. |
-| `GF-013` | `LOCAL_SECRET_PENDING` | Set RESEND_API_KEY. | `RESEND_API_KEY` | 0/1 | 0/1 | Create or replace local staging secret files, then run npm run gateforge:local-secret-files-check. |
-| `GF-014` | `LOCAL_SECRET_PENDING` | Verify sender domain and set EMAIL_FROM. | `EMAIL_FROM` | 0/1 | 0/1 | Create or replace local staging secret files, then run npm run gateforge:local-secret-files-check. |
-| `GF-015` | `LOCAL_SECRET_PENDING` | Set EMAIL_REPLY_TO. | `EMAIL_REPLY_TO` | 0/1 | 0/1 | Create or replace local staging secret files, then run npm run gateforge:local-secret-files-check. |
-| `GF-016` | `LOCAL_SECRET_PENDING` | Create capped Anthropic staging key. | `ANTHROPIC_API_KEY` | 0/1 | 0/1 | Create or replace local staging secret files, then run npm run gateforge:local-secret-files-check. |
+| `GF-001` | `LOCAL_SECRET_PENDING` | Provision hosted staging control-plane Postgres. | `CONTROL_PLANE_DATABASE_URL` | `CONTROL_PLANE_DATABASE_URL`: `PLACEHOLDER` | `CONTROL_PLANE_DATABASE_URL`: `MISSING` | Create or replace local staging secret files, then run npm run gateforge:local-secret-files-check. |
+| `GF-002` | `LOCAL_SECRET_PENDING` | Provision tenant database admin access for staging. | `TENANT_DB_ADMIN_URL` | `TENANT_DB_ADMIN_URL`: `PLACEHOLDER` | `TENANT_DB_ADMIN_URL`: `MISSING` | Create or replace local staging secret files, then run npm run gateforge:local-secret-files-check. |
+| `GF-003` | `LOCAL_SECRET_PENDING` | Set CONTROL_PLANE_DATABASE_URL in local secret pack and GitHub Actions. | `CONTROL_PLANE_DATABASE_URL` | `CONTROL_PLANE_DATABASE_URL`: `PLACEHOLDER` | `CONTROL_PLANE_DATABASE_URL`: `MISSING` | Create or replace local staging secret files, then run npm run gateforge:local-secret-files-check. |
+| `GF-004` | `LOCAL_SECRET_PENDING` | Set TENANT_DB_ADMIN_URL in local secret pack and GitHub Actions. | `TENANT_DB_ADMIN_URL` | `TENANT_DB_ADMIN_URL`: `PLACEHOLDER` | `TENANT_DB_ADMIN_URL`: `MISSING` | Create or replace local staging secret files, then run npm run gateforge:local-secret-files-check. |
+| `GF-005` | `LOCAL_SECRET_PENDING` | Set TENANT_DB_HOST in local secret pack and GitHub Actions. | `TENANT_DB_HOST` | `TENANT_DB_HOST`: `PLACEHOLDER` | `TENANT_DB_HOST`: `MISSING` | Create or replace local staging secret files, then run npm run gateforge:local-secret-files-check. |
+| `GF-006` | `LOCAL_SECRET_PENDING` | Create staging Sentry or equivalent error-monitoring project. | `SENTRY_DSN` | `SENTRY_DSN`: `PLACEHOLDER` | `SENTRY_DSN`: `MISSING` | Create or replace local staging secret files, then run npm run gateforge:local-secret-files-check. |
+| `GF-007` | `LOCAL_SECRET_PENDING` | Set SENTRY_DSN for staging. | `SENTRY_DSN` | `SENTRY_DSN`: `PLACEHOLDER` | `SENTRY_DSN`: `MISSING` | Create or replace local staging secret files, then run npm run gateforge:local-secret-files-check. |
+| `GF-008` | `LOCAL_SECRET_PENDING` | Create uptime monitor for /health. | `UPTIME_HEALTHCHECK_URL` | `UPTIME_HEALTHCHECK_URL`: `PLACEHOLDER` | `UPTIME_HEALTHCHECK_URL`: `MISSING` | Create or replace local staging secret files, then run npm run gateforge:local-secret-files-check. |
+| `GF-009` | `LOCAL_SECRET_PENDING` | Set UPTIME_HEALTHCHECK_URL. | `UPTIME_HEALTHCHECK_URL` | `UPTIME_HEALTHCHECK_URL`: `PLACEHOLDER` | `UPTIME_HEALTHCHECK_URL`: `MISSING` | Create or replace local staging secret files, then run npm run gateforge:local-secret-files-check. |
+| `GF-010` | `LOCAL_SECRET_PENDING` | Set ALERT_EMAIL_TO for staging operations. | `ALERT_EMAIL_TO` | `ALERT_EMAIL_TO`: `PLACEHOLDER` | `ALERT_EMAIL_TO`: `MISSING` | Create or replace local staging secret files, then run npm run gateforge:local-secret-files-check. |
+| `GF-011` | `LOCAL_SECRET_PENDING` | Set ALERT_WEBHOOK_URL for staging alerts. | `ALERT_WEBHOOK_URL` | `ALERT_WEBHOOK_URL`: `PLACEHOLDER` | `ALERT_WEBHOOK_URL`: `MISSING` | Create or replace local staging secret files, then run npm run gateforge:local-secret-files-check. |
+| `GF-012` | `LOCAL_SECRET_PENDING` | Create Resend staging key or approved transactional email provider key. | `RESEND_API_KEY` | `RESEND_API_KEY`: `PLACEHOLDER` | `RESEND_API_KEY`: `MISSING` | Create or replace local staging secret files, then run npm run gateforge:local-secret-files-check. |
+| `GF-013` | `LOCAL_SECRET_PENDING` | Set RESEND_API_KEY. | `RESEND_API_KEY` | `RESEND_API_KEY`: `PLACEHOLDER` | `RESEND_API_KEY`: `MISSING` | Create or replace local staging secret files, then run npm run gateforge:local-secret-files-check. |
+| `GF-014` | `LOCAL_SECRET_PENDING` | Verify sender domain and set EMAIL_FROM. | `EMAIL_FROM` | `EMAIL_FROM`: `PLACEHOLDER` | `EMAIL_FROM`: `MISSING` | Create or replace local staging secret files, then run npm run gateforge:local-secret-files-check. |
+| `GF-015` | `LOCAL_SECRET_PENDING` | Set EMAIL_REPLY_TO. | `EMAIL_REPLY_TO` | `EMAIL_REPLY_TO`: `PLACEHOLDER` | `EMAIL_REPLY_TO`: `MISSING` | Create or replace local staging secret files, then run npm run gateforge:local-secret-files-check. |
+| `GF-016` | `LOCAL_SECRET_PENDING` | Create capped Anthropic staging key. | `ANTHROPIC_API_KEY` | `ANTHROPIC_API_KEY`: `PLACEHOLDER` | `ANTHROPIC_API_KEY`: `MISSING` | Create or replace local staging secret files, then run npm run gateforge:local-secret-files-check. |
 
 ## Interpretation
 

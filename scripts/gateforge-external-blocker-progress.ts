@@ -109,7 +109,7 @@ function nextActionFor(status: BlockerStatus) {
 function renderMarkdown(generatedAt: string, rows: ReturnType<typeof buildRows>) {
   const counts = countStatuses(rows);
   const table = rows
-    .map((row) => `| \`${row.id}\` | \`${row.status}\` | ${row.action} | ${row.secrets.map((secret) => `\`${secret}\``).join('<br>')} | ${row.localReady}/${row.secretCount} | ${row.githubReady}/${row.secretCount} | ${row.nextAction} |`)
+    .map((row) => `| \`${row.id}\` | \`${row.status}\` | ${row.action} | ${row.secrets.map((secret) => `\`${secret}\``).join('<br>')} | ${row.localStatuses.map((entry) => `\`${entry.name}\`: \`${entry.status}\``).join('<br>')} | ${row.githubStatuses.map((entry) => `\`${entry.name}\`: \`${entry.present ? 'PRESENT' : 'MISSING'}\``).join('<br>')} | ${row.nextAction} |`)
     .join('\n');
   return `# GateForge External Blocker Progress
 
@@ -129,7 +129,7 @@ This progress board converts the 16 remaining external blockers into executable 
 
 ## Progress Matrix
 
-| ID | Status | Action | Secret names | Local ready | GitHub ready | Next action |
+| ID | Status | Action | Secret names | Local status | GitHub status | Next action |
 | --- | --- | --- | --- | --- | --- | --- |
 ${table}
 
@@ -160,6 +160,14 @@ function buildRows(closeout: CloseoutJson, localStatuses: Map<string, SecretStat
       secretCount: blocker.secrets.length,
       localReady,
       githubReady,
+      localStatuses: blocker.secrets.map((secret) => ({
+        name: secret,
+        status: localStatuses.get(secret) ?? 'MISSING',
+      })),
+      githubStatuses: blocker.secrets.map((secret) => ({
+        name: secret,
+        present: githubNames.has(secret),
+      })),
       status,
       evidenceRequired: blocker.evidenceRequired,
       validationCommands: blocker.validationCommands,
