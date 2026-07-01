@@ -98,6 +98,8 @@ jobs:
         run: npm run gateforge:hosted-dependency-chain-smoke
       - name: GateForge hosted readiness contract smoke
         run: npm run gateforge:hosted-readiness-contract-smoke
+      - name: GateForge open P0 runbook smoke
+        run: npm run gateforge:open-p0-runbook-smoke
       - name: GateForge GA unblock evidence
         run: |
           npm run gateforge:ga-unblock || echo "::notice title=GateForge GA evidence remains blocked::Local evidence artifact generation completed with CANNOT_APPROVE because hosted staging/runtime evidence is still missing."
@@ -129,6 +131,9 @@ jobs:
         if: always()
       - name: GateForge hosted readiness contract
         run: npm run gateforge:hosted-readiness-contract
+        if: always()
+      - name: GateForge open P0 runbook
+        run: npm run gateforge:open-p0-runbook
         if: always()
       - name: GateForge CI artifact index smoke
         run: npm run gateforge:ci-artifact-index-smoke
@@ -191,6 +196,8 @@ jobs:
             gateforge-audit/run-*/53_hosted_dependency_chain.json
             gateforge-audit/run-*/54_hosted_readiness_contract.md
             gateforge-audit/run-*/54_hosted_readiness_contract.json
+            gateforge-audit/run-*/55_open_p0_terminal_runbook.md
+            gateforge-audit/run-*/55_open_p0_terminal_runbook.json
             gateforge-audit/external-attestations/HOSTED_STAGING_WAR_ROOM.md
             gateforge-audit/external-attestations/*.md
             gateforge-audit/external-attestations/*.json

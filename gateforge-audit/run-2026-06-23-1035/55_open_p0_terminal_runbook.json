@@ -1,0 +1,345 @@
+{
+  "generatedAt": "2026-07-01T20:06:59.827Z",
+  "decision": "PASS",
+  "currentGate": {
+    "state": "CANNOT_APPROVE_LOCAL_EVIDENCE",
+    "scoreBand": "65-70/100",
+    "doctorDecision": "REPLACE_LOCAL_SECRET_PLACEHOLDERS",
+    "nextCommand": "npm run gateforge:secret-replacement-packet, then replace the listed local secret values and rerun npm run gateforge:hosted-readiness-doctor."
+  },
+  "source": {
+    "moatPath": "docs/SAAS_MOAT_EXECUTION_STATUS.json",
+    "operatorPath": "gateforge-audit/run-2026-06-23-1035/50_operator_execution_packet.json",
+    "dependencyPath": "gateforge-audit/run-2026-06-23-1035/53_hosted_dependency_chain.json",
+    "contractPath": "gateforge-audit/run-2026-06-23-1035/54_hosted_readiness_contract.json"
+  },
+  "counts": {
+    "totalMoatActions": 165,
+    "evidenceFilePresent": 144,
+    "openP0": 21,
+    "externalBlockers": 16,
+    "dependencyGates": 5
+  },
+  "commandOrder": [
+    "npm run gateforge:local-secrets-env-template",
+    "npm run gateforge:import-local-secrets -- --env-file /secure/path/fnnlr-staging.env --require-all",
+    "npm run gateforge:local-secret-files-check",
+    "npm run gateforge:hosted-readiness-doctor",
+    "npm run gateforge:hosted-unblock -- --dry-run --prepare-attestation",
+    "npm run gateforge:hosted-unblock -- --apply --prepare-attestation",
+    "npm run gateforge:trigger-hosted-strict",
+    "npm run gateforge:final-gate",
+    "npm run gateforge:final-report"
+  ],
+  "steps": [
+    {
+      "order": 1,
+      "id": "GF-001",
+      "state": "BLOCKED_EXTERNAL",
+      "action": "Provision hosted staging control-plane Postgres.",
+      "command": "npm run gateforge:operator-execution-packet",
+      "evidenceRequired": [
+        "Provider database identifier and sanitized successful hosted health gate output."
+      ],
+      "unblockEvidence": "Real provider/staging evidence listed in 50_operator_execution_packet.md.",
+      "source": "gateforge-audit/run-2026-06-23-1035/50_operator_execution_packet.json"
+    },
+    {
+      "order": 2,
+      "id": "GF-002",
+      "state": "BLOCKED_EXTERNAL",
+      "action": "Provision tenant database admin access for staging.",
+      "command": "npm run gateforge:operator-execution-packet",
+      "evidenceRequired": [
+        "Hosted tenant provision/delete test output and sanitized DB-per-tenant proof."
+      ],
+      "unblockEvidence": "Real provider/staging evidence listed in 50_operator_execution_packet.md.",
+      "source": "gateforge-audit/run-2026-06-23-1035/50_operator_execution_packet.json"
+    },
+    {
+      "order": 3,
+      "id": "GF-003",
+      "state": "BLOCKED_EXTERNAL",
+      "action": "Set CONTROL_PLANE_DATABASE_URL in the local secret pack and GitHub Actions.",
+      "command": "npm run gateforge:operator-execution-packet",
+      "evidenceRequired": [
+        "Local secret files check PASS and GitHub secret name present."
+      ],
+      "unblockEvidence": "Real provider/staging evidence listed in 50_operator_execution_packet.md.",
+      "source": "gateforge-audit/run-2026-06-23-1035/50_operator_execution_packet.json"
+    },
+    {
+      "order": 4,
+      "id": "GF-004",
+      "state": "BLOCKED_EXTERNAL",
+      "action": "Set TENANT_DB_ADMIN_URL in the local secret pack and GitHub Actions.",
+      "command": "npm run gateforge:operator-execution-packet",
+      "evidenceRequired": [
+        "Hosted strict live DB tests PASS."
+      ],
+      "unblockEvidence": "Real provider/staging evidence listed in 50_operator_execution_packet.md.",
+      "source": "gateforge-audit/run-2026-06-23-1035/50_operator_execution_packet.json"
+    },
+    {
+      "order": 5,
+      "id": "GF-005",
+      "state": "BLOCKED_EXTERNAL",
+      "action": "Set TENANT_DB_HOST in the local secret pack and GitHub Actions.",
+      "command": "npm run gateforge:operator-execution-packet",
+      "evidenceRequired": [
+        "Local secret files check READY and hosted tenant routing proof."
+      ],
+      "unblockEvidence": "Real provider/staging evidence listed in 50_operator_execution_packet.md.",
+      "source": "gateforge-audit/run-2026-06-23-1035/50_operator_execution_packet.json"
+    },
+    {
+      "order": 6,
+      "id": "GF-006",
+      "state": "BLOCKED_EXTERNAL",
+      "action": "Create staging Sentry or equivalent error-monitoring project.",
+      "command": "npm run gateforge:operator-execution-packet",
+      "evidenceRequired": [
+        "Sanitized project reference and alert proof attached to hosted attestation."
+      ],
+      "unblockEvidence": "Real provider/staging evidence listed in 50_operator_execution_packet.md.",
+      "source": "gateforge-audit/run-2026-06-23-1035/50_operator_execution_packet.json"
+    },
+    {
+      "order": 7,
+      "id": "GF-007",
+      "state": "BLOCKED_EXTERNAL",
+      "action": "Set SENTRY_DSN for staging.",
+      "command": "npm run gateforge:operator-execution-packet",
+      "evidenceRequired": [
+        "Hosted strict monitoring item PASS."
+      ],
+      "unblockEvidence": "Real provider/staging evidence listed in 50_operator_execution_packet.md.",
+      "source": "gateforge-audit/run-2026-06-23-1035/50_operator_execution_packet.json"
+    },
+    {
+      "order": 8,
+      "id": "GF-008",
+      "state": "BLOCKED_EXTERNAL",
+      "action": "Create uptime monitor for /health.",
+      "command": "npm run gateforge:operator-execution-packet",
+      "evidenceRequired": [
+        "Monitor URL, screenshot/log reference, and successful health gate."
+      ],
+      "unblockEvidence": "Real provider/staging evidence listed in 50_operator_execution_packet.md.",
+      "source": "gateforge-audit/run-2026-06-23-1035/50_operator_execution_packet.json"
+    },
+    {
+      "order": 9,
+      "id": "GF-009",
+      "state": "BLOCKED_EXTERNAL",
+      "action": "Set UPTIME_HEALTHCHECK_URL.",
+      "command": "npm run gateforge:operator-execution-packet",
+      "evidenceRequired": [
+        "GateForge secret check READY and hosted attestation item PASS."
+      ],
+      "unblockEvidence": "Real provider/staging evidence listed in 50_operator_execution_packet.md.",
+      "source": "gateforge-audit/run-2026-06-23-1035/50_operator_execution_packet.json"
+    },
+    {
+      "order": 10,
+      "id": "GF-010",
+      "state": "BLOCKED_EXTERNAL",
+      "action": "Set ALERT_EMAIL_TO for staging operations.",
+      "command": "npm run gateforge:operator-execution-packet",
+      "evidenceRequired": [
+        "Alert delivery proof in hosted evidence packet."
+      ],
+      "unblockEvidence": "Real provider/staging evidence listed in 50_operator_execution_packet.md.",
+      "source": "gateforge-audit/run-2026-06-23-1035/50_operator_execution_packet.json"
+    },
+    {
+      "order": 11,
+      "id": "GF-011",
+      "state": "BLOCKED_EXTERNAL",
+      "action": "Set ALERT_WEBHOOK_URL for staging alerts.",
+      "command": "npm run gateforge:operator-execution-packet",
+      "evidenceRequired": [
+        "Cron/webhook failure alert proof."
+      ],
+      "unblockEvidence": "Real provider/staging evidence listed in 50_operator_execution_packet.md.",
+      "source": "gateforge-audit/run-2026-06-23-1035/50_operator_execution_packet.json"
+    },
+    {
+      "order": 12,
+      "id": "GF-012",
+      "state": "BLOCKED_EXTERNAL",
+      "action": "Create Resend staging key or approved transactional email provider key.",
+      "command": "npm run gateforge:operator-execution-packet",
+      "evidenceRequired": [
+        "Provider test send and DNS posture evidence."
+      ],
+      "unblockEvidence": "Real provider/staging evidence listed in 50_operator_execution_packet.md.",
+      "source": "gateforge-audit/run-2026-06-23-1035/50_operator_execution_packet.json"
+    },
+    {
+      "order": 13,
+      "id": "GF-013",
+      "state": "BLOCKED_EXTERNAL",
+      "action": "Set RESEND_API_KEY.",
+      "command": "npm run gateforge:operator-execution-packet",
+      "evidenceRequired": [
+        "Hosted strict email readiness evidence."
+      ],
+      "unblockEvidence": "Real provider/staging evidence listed in 50_operator_execution_packet.md.",
+      "source": "gateforge-audit/run-2026-06-23-1035/50_operator_execution_packet.json"
+    },
+    {
+      "order": 14,
+      "id": "GF-014",
+      "state": "BLOCKED_EXTERNAL",
+      "action": "Verify sender domain and set EMAIL_FROM.",
+      "command": "npm run gateforge:operator-execution-packet",
+      "evidenceRequired": [
+        "SPF/DKIM/DMARC evidence and provider verified sender."
+      ],
+      "unblockEvidence": "Real provider/staging evidence listed in 50_operator_execution_packet.md.",
+      "source": "gateforge-audit/run-2026-06-23-1035/50_operator_execution_packet.json"
+    },
+    {
+      "order": 15,
+      "id": "GF-015",
+      "state": "BLOCKED_EXTERNAL",
+      "action": "Set EMAIL_REPLY_TO.",
+      "command": "npm run gateforge:operator-execution-packet",
+      "evidenceRequired": [
+        "Transactional provider config proof."
+      ],
+      "unblockEvidence": "Real provider/staging evidence listed in 50_operator_execution_packet.md.",
+      "source": "gateforge-audit/run-2026-06-23-1035/50_operator_execution_packet.json"
+    },
+    {
+      "order": 16,
+      "id": "GF-016",
+      "state": "BLOCKED_EXTERNAL",
+      "action": "Create capped Anthropic staging key.",
+      "command": "npm run gateforge:operator-execution-packet",
+      "evidenceRequired": [
+        "Provider-side cap proof and AI gateway hosted smoke evidence."
+      ],
+      "unblockEvidence": "Real provider/staging evidence listed in 50_operator_execution_packet.md.",
+      "source": "gateforge-audit/run-2026-06-23-1035/50_operator_execution_packet.json"
+    },
+    {
+      "order": 17,
+      "id": "GF-017",
+      "state": "BLOCKED_BY_SECRET_READINESS",
+      "action": "Run local secret replacement packet after operator values exist.",
+      "command": "npm run gateforge:secret-replacement-packet",
+      "evidenceRequired": [
+        "45_secret_replacement_packet.md lists every runtime and attestation secret without values.",
+        "Local secret files check reports every runtime secret READY and at least one attestation option READY."
+      ],
+      "unblockEvidence": "All runtime secret files and one attestation option are READY without printing values.",
+      "source": "gateforge-audit/run-2026-06-23-1035/53_hosted_dependency_chain.json"
+    },
+    {
+      "order": 18,
+      "id": "GF-018",
+      "state": "BLOCKED_BY_HOSTED_ATTESTATION",
+      "action": "Generate hosted staging attestation packet from real evidence only.",
+      "command": "npm run gateforge:external-check -- gateforge-audit/external-attestations/hosted-staging-attestation.json",
+      "evidenceRequired": [
+        "hosted-staging-attestation.json validates with external-check.",
+        "Attestation references live hosted evidence for DB, observability, email, AI cap, and smoke checks."
+      ],
+      "unblockEvidence": "Hosted staging attestation packet exists, is sanitized, and validates.",
+      "source": "gateforge-audit/run-2026-06-23-1035/53_hosted_dependency_chain.json"
+    },
+    {
+      "order": 19,
+      "id": "GF-019",
+      "state": "BLOCKED_BY_HOSTED_ATTESTATION",
+      "action": "Encode validated attestation as the preferred B64 secret.",
+      "command": "npm run gateforge:attestation-secret-pack -- --write-b64",
+      "evidenceRequired": [
+        "46_attestation_secret_pack.md reports READY without printing the packet value.",
+        "At least one attestation local secret file is READY."
+      ],
+      "unblockEvidence": "Hosted staging attestation packet exists, is sanitized, and validates.",
+      "source": "gateforge-audit/run-2026-06-23-1035/53_hosted_dependency_chain.json"
+    },
+    {
+      "order": 20,
+      "id": "GF-021",
+      "state": "BLOCKED_BY_SECRET_READINESS",
+      "action": "Upload local secret pack to GitHub Actions after validation.",
+      "command": "npm run gateforge:hosted-unblock -- --apply --prepare-attestation",
+      "evidenceRequired": [
+        "39_github_secrets_presence_audit.md reports READY.",
+        "40_missing_github_secrets_remediation.md reports READY or no missing runtime/attestation secrets."
+      ],
+      "unblockEvidence": "All runtime secret files and one attestation option are READY without printing values.",
+      "source": "gateforge-audit/run-2026-06-23-1035/53_hosted_dependency_chain.json"
+    },
+    {
+      "order": 21,
+      "id": "GF-022",
+      "state": "BLOCKED_BY_GITHUB_SECRET_READINESS",
+      "action": "Trigger GateForge Hosted Staging Strict.",
+      "command": "npm run gateforge:trigger-hosted-strict",
+      "evidenceRequired": [
+        "41_hosted_strict_trigger_attempt.md reports TRIGGERED or dry-run readiness in smoke.",
+        "Hosted Staging Strict GitHub workflow completes successfully with sanitized artifact upload."
+      ],
+      "unblockEvidence": "GitHub Actions has all runtime secrets and one hosted attestation secret.",
+      "source": "gateforge-audit/run-2026-06-23-1035/53_hosted_dependency_chain.json"
+    }
+  ],
+  "results": [
+    {
+      "id": "MOAT-TOTAL",
+      "status": "PASS",
+      "evidence": "The moat board still tracks 165 actions."
+    },
+    {
+      "id": "OPEN-P0-SCOPE",
+      "status": "PASS",
+      "evidence": "Open P0 scope is exactly GF-001..GF-016 plus GF-017, GF-018, GF-019, GF-021, GF-022."
+    },
+    {
+      "id": "OPEN-P0-STATE-COUNTS",
+      "status": "PASS",
+      "evidence": "Open state counts match the current 144/21 split."
+    },
+    {
+      "id": "OPERATOR-PACKET-COVERS-EXTERNAL",
+      "status": "PASS",
+      "evidence": "Operator packet covers all 16 external blockers at LOCAL_SECRET_PENDING."
+    },
+    {
+      "id": "EXTERNAL-ROWS-COMPLETE",
+      "status": "PASS",
+      "evidence": "Every external blocker has secrets, validation commands, evidence requirements, and next action."
+    },
+    {
+      "id": "DEPENDENCY-CHAIN-COVERS-GATES",
+      "status": "PASS",
+      "evidence": "Dependency chain covers the five remaining hosted-secret gates."
+    },
+    {
+      "id": "READINESS-CONTRACT-HONEST",
+      "status": "PASS",
+      "evidence": "Readiness contract confirms local-only approval is not allowed."
+    },
+    {
+      "id": "SOURCE-SAFETY",
+      "status": "PASS",
+      "evidence": "Source artifacts confirm no secrets printed, no production mutation, and no source dumps."
+    },
+    {
+      "id": "RUNBOOK-COVERS-21-P0",
+      "status": "PASS",
+      "evidence": "Terminal runbook has one ordered row for every open P0 blocker."
+    }
+  ],
+  "safety": {
+    "secretValuesPrinted": false,
+    "productionMutated": false,
+    "sourceDumpsIncluded": false
+  }
+}

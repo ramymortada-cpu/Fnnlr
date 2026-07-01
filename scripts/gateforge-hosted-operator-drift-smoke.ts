@@ -35,6 +35,7 @@ for (const command of [
   'npm run gateforge:external-closeout-validator',
   'npm run gateforge:hosted-dependency-chain',
   'npm run gateforge:hosted-readiness-contract',
+  'npm run gateforge:open-p0-runbook',
   'npm run gateforge:final-gate',
 ]) {
   requireContains(workflowPath, workflow, command);
@@ -62,6 +63,8 @@ for (const artifact of [
   '53_hosted_dependency_chain.json',
   '54_hosted_readiness_contract.md',
   '54_hosted_readiness_contract.json',
+  '55_open_p0_terminal_runbook.md',
+  '55_open_p0_terminal_runbook.json',
 ]) {
   requireContains(workflowPath, workflow, artifact);
   requireContains(gaEvidenceWorkflowPath, gaEvidenceWorkflow, artifact);
@@ -77,6 +80,7 @@ for (const phrase of [
   'GateForge external closeout validator',
   'GateForge hosted dependency chain',
   'GateForge hosted readiness contract',
+  'GateForge open P0 terminal runbook',
   'GateForge final gate',
 ]) {
   requireContains(guidePath, guide, phrase);
