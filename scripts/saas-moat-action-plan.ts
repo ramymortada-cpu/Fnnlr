@@ -322,11 +322,11 @@ function enterpriseMoat(): Action[] {
     a('EN-001', 'Enterprise moat', 'P2', 'READY_NOW', 'Engineering', 'Create RBAC expansion readiness contract.', 'Enterprise moat: admins need granular control.', 'Enterprise backlog, governance readiness gate, and tests define role inventory, permission catalog, route policy mapping, and negative-test gaps without claiming RBAC feature readiness.'),
     a('EN-002', 'Enterprise moat', 'P2', 'READY_NOW', 'Engineering', 'Create workspace policy readiness contract.', 'Enterprise moat: workspace governance supports larger accounts.', 'Enterprise backlog, governance readiness gate, and tests define workspace policy catalog, enforcement hooks, admin UI, and audit gaps as roadmap evidence.'),
     a('EN-003', 'Enterprise moat', 'P2', 'READY_NOW', 'Engineering', 'Create audit export backlog.', 'Trust moat: enterprise security teams need exportable logs.', 'Audit log viewer backlog, enterprise readiness gate, audit readiness tests, and export acceptance criteria keep audit export roadmap-labeled until route/UI proof exists.'),
-    a('EN-004', 'Enterprise moat', 'P2', 'LATER', 'Engineering', 'Create SSO/OIDC readiness plan.', 'Enterprise moat: procurement path for larger buyers.', 'SSO readiness doc.'),
-    a('EN-005', 'Enterprise moat', 'P2', 'LATER', 'Engineering', 'Create SAML backlog.', 'Enterprise moat: supports traditional enterprise identity.', 'SAML acceptance criteria.'),
+    a('EN-004', 'Enterprise moat', 'P2', 'READY_NOW', 'Engineering', 'Create SSO/OIDC readiness plan.', 'Enterprise moat: procurement path for larger buyers.', 'SSO/OIDC readiness doc, identity readiness module, and tests define roadmap-safe requirements without claiming customer-ready SSO.'),
+    a('EN-005', 'Enterprise moat', 'P2', 'READY_NOW', 'Engineering', 'Create SAML backlog.', 'Enterprise moat: supports traditional enterprise identity.', 'SSO/OIDC readiness doc, identity readiness module, and tests define SAML metadata, mapping, and rotation acceptance criteria while keeping SAML roadmap-labeled.'),
     a('EN-006', 'Enterprise moat', 'P2', 'READY_NOW', 'Product', 'Define data residency position.', 'Enterprise moat: MENA/global readiness needs a clear answer.', 'Security/trust docs updated.'),
     a('EN-007', 'Enterprise moat', 'P2', 'READY_NOW', 'Sales', 'Create procurement checklist.', 'Enterprise moat: sales can answer security reviews faster.', 'Enterprise procurement packet.'),
-    a('EN-008', 'Enterprise moat', 'P3', 'LATER', 'Engineering', 'Create SOC2 readiness roadmap.', 'Trust moat: long-term enterprise credibility.', 'SOC2 roadmap with controls and evidence owners.'),
+    a('EN-008', 'Enterprise moat', 'P3', 'READY_NOW', 'Engineering', 'Create SOC2 readiness roadmap.', 'Trust moat: long-term enterprise credibility.', 'SOC2 readiness outline, control-readiness module, and tests define evidence owners while blocking unsupported SOC2 claims.'),
   ];
 }
 

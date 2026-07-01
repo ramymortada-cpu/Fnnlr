@@ -1,6 +1,6 @@
 # SaaS Moat Action Plan
 
-Generated: `2026-07-01T08:59:50.616Z`
+Generated: `2026-07-01T19:03:42.875Z`
 
 This is the execution board for turning fnnlr from a GateForge-blocked release candidate into a global SaaS with a defensible moat. It intentionally separates code-ready work from external hosted evidence so the team does not confuse local progress with GA approval.
 
@@ -145,11 +145,11 @@ fnnlr's moat is the combination of DB-per-tenant trust, Arabic-first revenue wor
 | `EN-001` | `P2` | `READY_NOW` | Engineering | Create RBAC expansion readiness contract. | Enterprise moat: admins need granular control. | Enterprise backlog, governance readiness gate, and tests define role inventory, permission catalog, route policy mapping, and negative-test gaps without claiming RBAC feature readiness. |  |
 | `EN-002` | `P2` | `READY_NOW` | Engineering | Create workspace policy readiness contract. | Enterprise moat: workspace governance supports larger accounts. | Enterprise backlog, governance readiness gate, and tests define workspace policy catalog, enforcement hooks, admin UI, and audit gaps as roadmap evidence. |  |
 | `EN-003` | `P2` | `READY_NOW` | Engineering | Create audit export backlog. | Trust moat: enterprise security teams need exportable logs. | Audit log viewer backlog, enterprise readiness gate, audit readiness tests, and export acceptance criteria keep audit export roadmap-labeled until route/UI proof exists. |  |
-| `EN-004` | `P2` | `LATER` | Engineering | Create SSO/OIDC readiness plan. | Enterprise moat: procurement path for larger buyers. | SSO readiness doc. |  |
-| `EN-005` | `P2` | `LATER` | Engineering | Create SAML backlog. | Enterprise moat: supports traditional enterprise identity. | SAML acceptance criteria. |  |
+| `EN-004` | `P2` | `READY_NOW` | Engineering | Create SSO/OIDC readiness plan. | Enterprise moat: procurement path for larger buyers. | SSO/OIDC readiness doc, identity readiness module, and tests define roadmap-safe requirements without claiming customer-ready SSO. |  |
+| `EN-005` | `P2` | `READY_NOW` | Engineering | Create SAML backlog. | Enterprise moat: supports traditional enterprise identity. | SSO/OIDC readiness doc, identity readiness module, and tests define SAML metadata, mapping, and rotation acceptance criteria while keeping SAML roadmap-labeled. |  |
 | `EN-006` | `P2` | `READY_NOW` | Product | Define data residency position. | Enterprise moat: MENA/global readiness needs a clear answer. | Security/trust docs updated. |  |
 | `EN-007` | `P2` | `READY_NOW` | Sales | Create procurement checklist. | Enterprise moat: sales can answer security reviews faster. | Enterprise procurement packet. |  |
-| `EN-008` | `P3` | `LATER` | Engineering | Create SOC2 readiness roadmap. | Trust moat: long-term enterprise credibility. | SOC2 roadmap with controls and evidence owners. |  |
+| `EN-008` | `P3` | `READY_NOW` | Engineering | Create SOC2 readiness roadmap. | Trust moat: long-term enterprise credibility. | SOC2 readiness outline, control-readiness module, and tests define evidence owners while blocking unsupported SOC2 claims. |  |
 
 ## Operating cadence
 

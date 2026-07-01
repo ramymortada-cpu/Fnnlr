@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-01T14:15:41.160Z",
+  "generatedAt": "2026-07-01T19:03:36.688Z",
   "total": 165,
   "byState": {
     "BLOCKED_BY_GITHUB_SECRET_READINESS": 1,
@@ -1063,29 +1063,29 @@
       "id": "EN-004",
       "phase": "Enterprise moat",
       "priority": "P2",
-      "status": "LATER",
+      "status": "READY_NOW",
       "executionState": "EVIDENCE_FILE_PRESENT",
       "owner": "Engineering",
       "action": "Create SSO/OIDC readiness plan.",
       "moat": "Enterprise moat: procurement path for larger buyers.",
-      "evidence": "SSO readiness doc.",
+      "evidence": "SSO/OIDC readiness doc, identity readiness module, and tests define roadmap-safe requirements without claiming customer-ready SSO.",
       "command": "",
       "nextCommand": "OWNER_ACTION_REQUIRED",
-      "unblockEvidence": "SSO readiness doc."
+      "unblockEvidence": "SSO/OIDC readiness doc, identity readiness module, and tests define roadmap-safe requirements without claiming customer-ready SSO."
     },
     {
       "id": "EN-005",
       "phase": "Enterprise moat",
       "priority": "P2",
-      "status": "LATER",
+      "status": "READY_NOW",
       "executionState": "EVIDENCE_FILE_PRESENT",
       "owner": "Engineering",
       "action": "Create SAML backlog.",
       "moat": "Enterprise moat: supports traditional enterprise identity.",
-      "evidence": "SAML acceptance criteria.",
+      "evidence": "SSO/OIDC readiness doc, identity readiness module, and tests define SAML metadata, mapping, and rotation acceptance criteria while keeping SAML roadmap-labeled.",
       "command": "",
       "nextCommand": "OWNER_ACTION_REQUIRED",
-      "unblockEvidence": "SAML acceptance criteria."
+      "unblockEvidence": "SSO/OIDC readiness doc, identity readiness module, and tests define SAML metadata, mapping, and rotation acceptance criteria while keeping SAML roadmap-labeled."
     },
     {
       "id": "EN-006",
@@ -1119,15 +1119,15 @@
       "id": "EN-008",
       "phase": "Enterprise moat",
       "priority": "P3",
-      "status": "LATER",
+      "status": "READY_NOW",
       "executionState": "EVIDENCE_FILE_PRESENT",
       "owner": "Engineering",
       "action": "Create SOC2 readiness roadmap.",
       "moat": "Trust moat: long-term enterprise credibility.",
-      "evidence": "SOC2 roadmap with controls and evidence owners.",
+      "evidence": "SOC2 readiness outline, control-readiness module, and tests define evidence owners while blocking unsupported SOC2 claims.",
       "command": "",
       "nextCommand": "OWNER_ACTION_REQUIRED",
-      "unblockEvidence": "SOC2 roadmap with controls and evidence owners."
+      "unblockEvidence": "SOC2 readiness outline, control-readiness module, and tests define evidence owners while blocking unsupported SOC2 claims."
     },
     {
       "id": "OP-001",
