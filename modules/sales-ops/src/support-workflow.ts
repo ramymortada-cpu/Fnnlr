@@ -34,6 +34,33 @@ export interface SupportRecord {
   status: 'open';
 }
 
+export interface SupportOperatingReview {
+  decision: 'SUPPORT_OPERATING_READY' | 'SUPPORT_OPERATING_HAS_BLOCKERS' | 'SUPPORT_OPERATING_NEEDS_EVIDENCE';
+  counts: Record<string, number>;
+  categoryCounts: Record<SupportCategory, number>;
+  openBlockers: {
+    severity: string;
+    category: SupportCategory | 'uncategorized';
+    nextAction: string;
+    owner: string;
+    dueDate: string | null;
+    evidenceLink: string | null;
+  }[];
+  allCriticalOwned: boolean;
+  hotspotCategories: SupportCategory[];
+  productIntelligenceActions: Array<{
+    category: SupportCategory;
+    owner: 'platform' | 'support';
+    action: string;
+    evidenceRequired: string;
+  }>;
+  escalationActions: Array<{
+    owner: SupportOwner;
+    action: string;
+    evidenceRequired: string;
+  }>;
+}
+
 export type SupportCategory =
   | 'tenant_isolation'
   | 'auth_mfa'
@@ -170,6 +197,39 @@ export function reviewSupport(issues: { severity: string; status: string; nextAc
   return { counts, categoryCounts, openBlockers, allCriticalOwned };
 }
 
+export function reviewSupportOperatingReadiness(
+  issues: { severity: string; status: string; nextAction: string; owner: string; source: string; category?: SupportCategory; dueDate?: string | null; evidenceLink?: string | null }[],
+  options: { hotspotThreshold?: number } = {},
+): SupportOperatingReview {
+  const base = reviewSupport(issues);
+  const hotspotThreshold = options.hotspotThreshold ?? 3;
+  const hotspotCategories = (Object.entries(base.categoryCounts) as Array<[SupportCategory, number]>)
+    .filter(([, count]) => count >= hotspotThreshold)
+    .map(([category]) => category);
+  const hasOpenCritical = base.openBlockers.length > 0;
+  const missingCriticalEvidence = hasOpenCritical && !base.allCriticalOwned;
+
+  return {
+    decision: supportOperatingDecision(hasOpenCritical, missingCriticalEvidence),
+    counts: base.counts,
+    categoryCounts: base.categoryCounts,
+    openBlockers: base.openBlockers,
+    allCriticalOwned: base.allCriticalOwned,
+    hotspotCategories,
+    productIntelligenceActions: hotspotCategories.map((category) => ({
+      category,
+      owner: SUPPORT_TRIAGE_CATALOG[category].escalationOwner === 'platform' ? 'platform' : 'support',
+      action: `Review repeated ${SUPPORT_TRIAGE_CATALOG[category].label} support pattern and convert it into a product/support improvement.`,
+      evidenceRequired: 'Weekly support review, affected customer count, sample evidence links, owner, due date, and follow-up decision.',
+    })),
+    escalationActions: base.openBlockers.map((blocker) => ({
+      owner: blocker.category === 'uncategorized' ? 'support' : SUPPORT_TRIAGE_CATALOG[blocker.category].escalationOwner,
+      action: `Escalate unresolved ${blocker.severity} ${blocker.category} blocker: ${blocker.nextAction}`,
+      evidenceRequired: 'Owner, due date, evidence link, current customer impact, and next review timestamp.',
+    })),
+  };
+}
+
 export function inferSupportCategory(summary: string): SupportCategory {
   const text = summary.toLowerCase();
   if (/tenant|cross-tenant|isolation/.test(text)) return 'tenant_isolation';
@@ -181,4 +241,13 @@ export function inferSupportCategory(summary: string): SupportCategory {
   if (/export|delete|deletion|retention|data lifecycle/.test(text)) return 'data_lifecycle';
   if (/billing|commercial|plan|agreement|payment state/.test(text)) return 'billing_commercial';
   return 'workflow_blocked';
+}
+
+function supportOperatingDecision(
+  hasOpenCritical: boolean,
+  missingCriticalEvidence: boolean,
+): SupportOperatingReview['decision'] {
+  if (missingCriticalEvidence) return 'SUPPORT_OPERATING_NEEDS_EVIDENCE';
+  if (hasOpenCritical) return 'SUPPORT_OPERATING_HAS_BLOCKERS';
+  return 'SUPPORT_OPERATING_READY';
 }

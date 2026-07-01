@@ -18,6 +18,20 @@
 6. **Review** — `support:review` summarizes counts by severity and the open P0/P1
    blockers by category; this feeds `customer:week1-review`.
 
+## Operating review contract
+
+`reviewSupportOperatingReadiness` turns the weekly support review into an operating gate:
+
+- `SUPPORT_OPERATING_READY` when no P0/P1 blockers remain open.
+- `SUPPORT_OPERATING_HAS_BLOCKERS` when P0/P1 blockers exist but each has owner,
+  next action, due date, and evidence link.
+- `SUPPORT_OPERATING_NEEDS_EVIDENCE` when any P0/P1 blocker is missing owner,
+  next action, due date, or evidence link.
+
+Repeated categories become product-intelligence actions. A hotspot must include
+affected customer count, sample evidence links, owner, due date, and follow-up
+decision before it can be treated as a learning loop.
+
 ## Severity guide
 - **P0**: security / availability / data-corruption risk → safe rollback/disable
   option required.

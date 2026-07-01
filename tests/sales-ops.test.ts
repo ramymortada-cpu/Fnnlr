@@ -4,7 +4,13 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { scoreFit, type SalesLeadIntake } from '../modules/sales-ops/src/fit.js';
 import { proposalReadiness, buildHandoffPack, checkOwnership } from '../modules/sales-ops/src/proposal.js';
-import { SUPPORT_TRIAGE_CATALOG, inferSupportCategory, intakeSupportIssue, reviewSupport } from '../modules/sales-ops/src/support-workflow.js';
+import {
+  SUPPORT_TRIAGE_CATALOG,
+  inferSupportCategory,
+  intakeSupportIssue,
+  reviewSupport,
+  reviewSupportOperatingReadiness,
+} from '../modules/sales-ops/src/support-workflow.js';
 import {
   FOUNDER_LED_DEMO_BASELINE,
   reviewFounderLedDemoReadiness,
@@ -166,6 +172,77 @@ test('support review reports category counts and rejects incomplete P0/P1 blocke
   assert.equal(review.categoryCounts.tenant_isolation, 1);
   assert.equal(review.openBlockers.length, 2);
   assert.equal(review.allCriticalOwned, false);
+});
+
+test('support operating review is ready when no open P0/P1 blockers remain', () => {
+  const review = reviewSupportOperatingReadiness([
+    {
+      severity: 'P2',
+      status: 'open',
+      nextAction: 'Monitor degraded email provider',
+      owner: 'support',
+      source: 'weekly-review',
+      category: 'email_deliverability',
+    },
+  ]);
+
+  assert.equal(review.decision, 'SUPPORT_OPERATING_READY');
+  assert.deepEqual(review.openBlockers, []);
+  assert.deepEqual(review.escalationActions, []);
+});
+
+test('support operating review escalates owned critical blockers', () => {
+  const review = reviewSupportOperatingReadiness([
+    {
+      severity: 'P1',
+      status: 'open',
+      nextAction: 'Repair webhook signature mapping',
+      owner: 'platform',
+      source: 'customer',
+      category: 'webhook_failure',
+      dueDate: '2026-07-02',
+      evidenceLink: 'gateforge-audit/support/webhook-001.md',
+    },
+  ]);
+
+  assert.equal(review.decision, 'SUPPORT_OPERATING_HAS_BLOCKERS');
+  assert.equal(review.allCriticalOwned, true);
+  assert.equal(review.escalationActions[0].owner, 'platform');
+  assert.match(review.escalationActions[0].evidenceRequired, /customer impact/);
+});
+
+test('support operating review requires evidence for incomplete critical blockers', () => {
+  const review = reviewSupportOperatingReadiness([
+    {
+      severity: 'P0',
+      status: 'open',
+      nextAction: 'Investigate tenant isolation alert',
+      owner: 'platform',
+      source: 'monitoring',
+      category: 'tenant_isolation',
+    },
+  ]);
+
+  assert.equal(review.decision, 'SUPPORT_OPERATING_NEEDS_EVIDENCE');
+  assert.equal(review.allCriticalOwned, false);
+  assert.equal(review.escalationActions[0].owner, 'platform');
+});
+
+test('support operating review turns repeated categories into product intelligence actions', () => {
+  const issues = Array.from({ length: 3 }, (_, index) => ({
+    severity: 'P2',
+    status: 'open',
+    nextAction: `Review AI degraded case ${index + 1}`,
+    owner: 'support',
+    source: 'weekly-review',
+    category: 'ai_degraded' as const,
+  }));
+
+  const review = reviewSupportOperatingReadiness(issues, { hotspotThreshold: 3 });
+
+  assert.deepEqual(review.hotspotCategories, ['ai_degraded']);
+  assert.equal(review.productIntelligenceActions[0].owner, 'platform');
+  assert.match(review.productIntelligenceActions[0].evidenceRequired, /affected customer count/);
 });
 
 test('founder-led demo readiness is contract-ready with CTA proof gap', () => {
