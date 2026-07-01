@@ -38,6 +38,24 @@ process payments, and makes no guaranteed-revenue claim.
 - `WORKFLOW_INTELLIGENCE_SPEC.md` — AI/workflow data moat plan.
 - `LEGAL_APPROVAL_TRACKER.md` and `SUBPROCESSORS.md` — legal/compliance execution trackers.
 
+## Readiness Contract Index
+
+These contracts keep sales, proof, activation, and enterprise claims evidence-gated.
+`HOSTED_PROOF_PENDING` and `HUMAN_ATTESTATION_REQUIRED` remain honest gaps, not
+passes.
+
+| Area | Contract | Test | Current claim posture |
+| --- | --- | --- | --- |
+| GTM proof | `modules/proof/src/gtm-readiness.ts` | `tests/gtm-proof-readiness.test.ts` | Partner/case-study public claims require hosted proof and customer approval |
+| Pilot offer | `modules/sales-ops/src/pilot-offer-readiness.ts` | `tests/pilot-offer-readiness.test.ts` | Pilot is contract-ready; repeatability requires hosted pilot evidence |
+| ICP outreach | `modules/sales-ops/src/outreach-readiness.ts` | `tests/outreach-readiness.test.ts` | Outreach requires compliance review and hosted tracking evidence |
+| Industry templates | `modules/activation/src/industry-template-readiness.ts` | `tests/industry-template-readiness.test.ts` | Template docs are ready; promotion/repeatability requires hosted cohort evidence |
+| Template performance | `modules/activation/src/template-performance.ts` | `tests/template-performance.test.ts` | Template loop remains hosted-gap-labeled until real cohort proof exists |
+| Operating cadence | `modules/operating-room/src/readiness.ts` | `tests/operating-cadence-readiness.test.ts` | Customer health/support cadence remains hosted-gap-labeled |
+| Commercial limits | `modules/commercial/src/enforcement-readiness.ts` | `tests/commercial-enforcement-readiness.test.ts` | Limit source is contract-ready; route-level proof remains explicit |
+| Enterprise readiness | `modules/enterprise/src/readiness.ts` | `tests/enterprise-readiness.test.ts` | Enterprise posture is limited/roadmap until evidence closes |
+| Evidence index | `modules/proof/src/evidence-index-readiness.ts` | `tests/evidence-index-readiness.test.ts` | This index must expose the active readiness contracts |
+
 ## What is NOT claimed
 No guaranteed revenue. No auto-send. No payment processing. No unconditional
 enterprise-readiness. No market traction is claimed — there is no real customer
