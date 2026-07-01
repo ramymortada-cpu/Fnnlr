@@ -53,6 +53,8 @@ for (const artifact of ['49_local_secret_env_template.env', '49_local_secret_env
 }
 
 for (const artifact of [
+  '44_hosted_readiness_doctor.md',
+  '44_hosted_readiness_doctor.json',
   '52_external_closeout_validator.md',
   '52_external_closeout_validator.json',
   '53_hosted_dependency_chain.md',

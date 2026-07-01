@@ -80,6 +80,7 @@ npm run gateforge:hosted-readiness-doctor
 The generated env template contains placeholders only. Fill the copied file outside git, then import it so every row validates before any local secret file is written.
 
 Reference the sanitized template guide at \`gateforge-audit/run-2026-06-23-1035/49_local_secret_env_template.md\`.
+The readiness doctor also writes machine-readable status to \`gateforge-audit/run-2026-06-23-1035/44_hosted_readiness_doctor.json\`.
 
 Set these repository secrets with safe staging values:
 
@@ -117,6 +118,8 @@ The strict workflow must complete these steps:
 
 The strict artifact must include:
 
+- \`gateforge-audit/run-*/44_hosted_readiness_doctor.md\`
+- \`gateforge-audit/run-*/44_hosted_readiness_doctor.json\`
 - \`gateforge-audit/run-*/52_external_closeout_validator.md\`
 - \`gateforge-audit/run-*/52_external_closeout_validator.json\`
 - \`gateforge-audit/run-*/53_hosted_dependency_chain.md\`
