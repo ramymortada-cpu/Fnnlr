@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-24T16:23:57.315Z",
+  "generatedAt": "2026-07-01T09:52:48.768Z",
   "decision": {
     "state": "CANNOT_APPROVE_LOCAL_EVIDENCE",
     "scoreBand": "65-70/100",
@@ -9,11 +9,15 @@
   "probes": {
     "localSecrets": {
       "status": "FAIL",
-      "detail": "runtime 6/17, attestation 0/1; open runtime 11"
+      "detail": "runtime 0/17, attestation 0/1; open runtime 17"
     },
     "attestationPack": {
       "status": "FAIL",
       "detail": "attestation packet is blocked until real hosted evidence exists"
+    },
+    "remainingExternalBlockerCloseout": {
+      "status": "PASS",
+      "detail": "16 BLOCKED_EXTERNAL items mapped in 48_remaining_external_blocker_closeout.json"
     },
     "githubSecrets": {
       "status": "FAIL",
@@ -25,8 +29,8 @@
     },
     "gaEvidenceWorkflow": {
       "status": "PASS",
-      "detail": "28111216039 completed/success f8f409bc2604cbad77a70fbbd634d29d15ce2f5b",
-      "url": "https://github.com/ramymortada-cpu/Fnnlr/actions/runs/28111216039"
+      "detail": "28508784539 completed/success d1aa90a5b341f48fbacd671266b5c92d03130bc4",
+      "url": "https://github.com/ramymortada-cpu/Fnnlr/actions/runs/28508784539"
     }
   },
   "blockers": {
@@ -34,6 +38,12 @@
       "CONTROL_PLANE_DATABASE_URL",
       "TENANT_DB_ADMIN_URL",
       "TENANT_DB_HOST",
+      "TENANT_CREDENTIAL_ENCRYPTION_KEY",
+      "INTEGRATION_ENCRYPTION_KEY",
+      "FNNLR_CRON_SECRET",
+      "AUTH_MFA_ENCRYPTION_KEY",
+      "FNNLR_AI_TENANT_DAILY_USD_CAP",
+      "FNNLR_AI_GLOBAL_DAILY_USD_CAP",
       "SENTRY_DSN",
       "UPTIME_HEALTHCHECK_URL",
       "ALERT_EMAIL_TO",
@@ -46,6 +56,24 @@
     "openAttestationSecrets": [
       "GATEFORGE_HOSTED_STAGING_ATTESTATION_JSON",
       "GATEFORGE_HOSTED_STAGING_ATTESTATION_B64"
+    ],
+    "openExternalBlockers": [
+      "GF-001",
+      "GF-002",
+      "GF-003",
+      "GF-004",
+      "GF-005",
+      "GF-006",
+      "GF-007",
+      "GF-008",
+      "GF-009",
+      "GF-010",
+      "GF-011",
+      "GF-012",
+      "GF-013",
+      "GF-014",
+      "GF-015",
+      "GF-016"
     ]
   },
   "safety": {

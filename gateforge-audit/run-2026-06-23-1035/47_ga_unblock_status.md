@@ -1,6 +1,6 @@
 # GateForge GA Unblock Status
 
-Generated: `2026-06-24T16:23:57.315Z`
+Generated: `2026-07-01T09:52:48.768Z`
 
 This status file is the single operator dashboard for the GA unblock path. It contains secret names and readiness states only; no secret values are printed.
 
@@ -15,17 +15,24 @@ This status file is the single operator dashboard for the GA unblock path. It co
 
 | Probe | Status | Detail |
 | --- | --- | --- |
-| Local secret values | `FAIL` | runtime 6/17, attestation 0/1; open runtime 11 |
+| Local secret values | `FAIL` | runtime 0/17, attestation 0/1; open runtime 17 |
 | Attestation secret pack | `FAIL` | attestation packet is blocked until real hosted evidence exists |
+| Remaining external blocker closeout | `PASS` | 16 BLOCKED_EXTERNAL items mapped in 48_remaining_external_blocker_closeout.json |
 | GitHub Actions secret names | `FAIL` | required GitHub secret names are missing |
 | Hosted strict workflow | `UNKNOWN` | no GateForge Hosted Staging Strict run found |
-| GA evidence workflow | `PASS` | 28111216039 completed/success f8f409bc2604cbad77a70fbbd634d29d15ce2f5b (https://github.com/ramymortada-cpu/Fnnlr/actions/runs/28111216039) |
+| GA evidence workflow | `PASS` | 28508784539 completed/success d1aa90a5b341f48fbacd671266b5c92d03130bc4 (https://github.com/ramymortada-cpu/Fnnlr/actions/runs/28508784539) |
 
 ## Open Runtime Secret Names
 
 - `CONTROL_PLANE_DATABASE_URL`
 - `TENANT_DB_ADMIN_URL`
 - `TENANT_DB_HOST`
+- `TENANT_CREDENTIAL_ENCRYPTION_KEY`
+- `INTEGRATION_ENCRYPTION_KEY`
+- `FNNLR_CRON_SECRET`
+- `AUTH_MFA_ENCRYPTION_KEY`
+- `FNNLR_AI_TENANT_DAILY_USD_CAP`
+- `FNNLR_AI_GLOBAL_DAILY_USD_CAP`
 - `SENTRY_DSN`
 - `UPTIME_HEALTHCHECK_URL`
 - `ALERT_EMAIL_TO`
@@ -39,6 +46,25 @@ This status file is the single operator dashboard for the GA unblock path. It co
 
 - `GATEFORGE_HOSTED_STAGING_ATTESTATION_JSON`
 - `GATEFORGE_HOSTED_STAGING_ATTESTATION_B64`
+
+## Remaining External Blocker IDs
+
+- `GF-001`
+- `GF-002`
+- `GF-003`
+- `GF-004`
+- `GF-005`
+- `GF-006`
+- `GF-007`
+- `GF-008`
+- `GF-009`
+- `GF-010`
+- `GF-011`
+- `GF-012`
+- `GF-013`
+- `GF-014`
+- `GF-015`
+- `GF-016`
 
 ## Score Translation
 

@@ -12,6 +12,7 @@ const outIndex = process.argv.indexOf('--out');
 const outPath = outIndex >= 0 ? process.argv[outIndex + 1] : `${runDir}/47_ga_unblock_status.md`;
 const jsonOutIndex = process.argv.indexOf('--json-out');
 const jsonOutPath = jsonOutIndex >= 0 ? process.argv[jsonOutIndex + 1] : `${runDir}/47_ga_unblock_status.json`;
+const closeoutPath = `${runDir}/48_remaining_external_blocker_closeout.json`;
 const strictWorkflow = 'GateForge Hosted Staging Strict';
 const gaWorkflow = 'GateForge GA Evidence';
 
@@ -37,6 +38,16 @@ type Probe = {
   status: CheckStatus;
   detail: string;
   url?: string;
+};
+type CloseoutJson = {
+  status?: string;
+  count?: number;
+  blockerIds?: string[];
+  safety?: {
+    secretValuesPrinted?: boolean;
+    productionMutated?: boolean;
+    sourceDumpsIncluded?: boolean;
+  };
 };
 
 function run(command: string, args: string[]) {
@@ -124,6 +135,50 @@ function probeWorkflow(workflow: string): Probe {
   };
 }
 
+function probeRemainingCloseout(): { probe: Probe; openExternalBlockers: string[] } {
+  if (!fs.existsSync(closeoutPath)) {
+    return {
+      probe: { status: 'FAIL', detail: `remaining blocker closeout is missing: ${closeoutPath}` },
+      openExternalBlockers: [],
+    };
+  }
+  let parsed: CloseoutJson;
+  try {
+    parsed = JSON.parse(fs.readFileSync(closeoutPath, 'utf8')) as CloseoutJson;
+  } catch {
+    return {
+      probe: { status: 'FAIL', detail: 'remaining blocker closeout JSON could not be parsed' },
+      openExternalBlockers: [],
+    };
+  }
+
+  const expectedIds = Array.from({ length: 16 }, (_, index) => `GF-${String(index + 1).padStart(3, '0')}`);
+  const ids = parsed.blockerIds || [];
+  const missingIds = expectedIds.filter((id) => !ids.includes(id));
+  const extraIds = ids.filter((id) => !expectedIds.includes(id));
+  const safe =
+    parsed.safety?.secretValuesPrinted === false &&
+    parsed.safety?.productionMutated === false &&
+    parsed.safety?.sourceDumpsIncluded === false;
+  const errors = [
+    parsed.status === 'BLOCKED_EXTERNAL' ? '' : `status ${parsed.status || 'missing'}`,
+    parsed.count === 16 ? '' : `count ${parsed.count ?? 'missing'}`,
+    missingIds.length ? `missing ${missingIds.join(', ')}` : '',
+    extraIds.length ? `extra ${extraIds.join(', ')}` : '',
+    safe ? '' : 'safety flags are not all false',
+  ].filter(Boolean);
+
+  return {
+    probe: {
+      status: errors.length ? 'FAIL' : 'PASS',
+      detail: errors.length
+        ? errors.join('; ')
+        : `${parsed.count} BLOCKED_EXTERNAL items mapped in 48_remaining_external_blocker_closeout.json`,
+    },
+    openExternalBlockers: ids,
+  };
+}
+
 function decisionFor(local: Probe, github: Probe, strict: Probe) {
   if (local.status !== 'PASS') {
     return {
@@ -164,6 +219,7 @@ function mdList(values: string[]) {
 const localSecrets = probeLocalSecrets();
 const githubSecrets = probeGithubSecrets();
 const attestationPack = probeAttestationPack();
+const remainingCloseout = probeRemainingCloseout();
 const strictRun = probeWorkflow(strictWorkflow);
 const gaEvidenceRun = probeWorkflow(gaWorkflow);
 const decision = decisionFor(localSecrets.probe, githubSecrets, strictRun);
@@ -175,6 +231,7 @@ const json = {
   probes: {
     localSecrets: localSecrets.probe,
     attestationPack,
+    remainingExternalBlockerCloseout: remainingCloseout.probe,
     githubSecrets,
     hostedStrictWorkflow: strictRun,
     gaEvidenceWorkflow: gaEvidenceRun,
@@ -182,6 +239,7 @@ const json = {
   blockers: {
     openRuntimeSecrets: localSecrets.openRuntime,
     openAttestationSecrets: localSecrets.openAttestation,
+    openExternalBlockers: remainingCloseout.openExternalBlockers,
   },
   safety: {
     secretValuesPrinted: false,
@@ -209,6 +267,7 @@ This status file is the single operator dashboard for the GA unblock path. It co
 | --- | --- | --- |
 | Local secret values | \`${localSecrets.probe.status}\` | ${localSecrets.probe.detail} |
 | Attestation secret pack | \`${attestationPack.status}\` | ${attestationPack.detail} |
+| Remaining external blocker closeout | \`${remainingCloseout.probe.status}\` | ${remainingCloseout.probe.detail} |
 | GitHub Actions secret names | \`${githubSecrets.status}\` | ${githubSecrets.detail} |
 | Hosted strict workflow | \`${strictRun.status}\` | ${strictRun.detail}${strictRun.url ? ` (${strictRun.url})` : ''} |
 | GA evidence workflow | \`${gaEvidenceRun.status}\` | ${gaEvidenceRun.detail}${gaEvidenceRun.url ? ` (${gaEvidenceRun.url})` : ''} |
@@ -220,6 +279,10 @@ ${mdList(localSecrets.openRuntime)}
 ## Open Attestation Requirement
 
 ${mdList(localSecrets.openAttestation)}
+
+## Remaining External Blocker IDs
+
+${mdList(remainingCloseout.openExternalBlockers)}
 
 ## Score Translation
 

@@ -91,9 +91,18 @@ if (!ready.output.includes('GateForge GA unblock status: READY_TO_TRIGGER_HOSTED
 }
 
 const report = fs.readFileSync(readyOut, 'utf8');
-const parsed = JSON.parse(fs.readFileSync(readyJson, 'utf8')) as { decision?: { state?: string }; safety?: { secretValuesPrinted?: boolean } };
+const parsed = JSON.parse(fs.readFileSync(readyJson, 'utf8')) as {
+  decision?: { state?: string };
+  probes?: { remainingExternalBlockerCloseout?: { status?: string } };
+  blockers?: { openExternalBlockers?: string[] };
+  safety?: { secretValuesPrinted?: boolean };
+};
 if (!report.includes('Defensible score band: `74-78/100`')) fail('ready report did not include expected score band');
+if (!report.includes('Remaining external blocker closeout')) fail('ready report did not include closeout probe');
+if (!report.includes('## Remaining External Blocker IDs')) fail('ready report did not include external blocker IDs');
 if (parsed.decision?.state !== 'READY_TO_TRIGGER_HOSTED_STRICT') fail('ready JSON did not include expected state');
+if (parsed.probes?.remainingExternalBlockerCloseout?.status !== 'PASS') fail('ready JSON did not include passing closeout probe');
+if (parsed.blockers?.openExternalBlockers?.length !== 16) fail('ready JSON did not include 16 external blockers');
 if (parsed.safety?.secretValuesPrinted !== false) fail('ready JSON did not state secret safety');
 if (report.includes('postgres://') || report.includes('sk-ant-fixture') || report.includes(fixtureValueFor(attestationSecrets[1]))) {
   fail('status report leaked fixture secret values');
