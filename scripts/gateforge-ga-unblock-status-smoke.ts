@@ -95,14 +95,26 @@ const parsed = JSON.parse(fs.readFileSync(readyJson, 'utf8')) as {
   decision?: { state?: string };
   probes?: { remainingExternalBlockerCloseout?: { status?: string } };
   blockers?: { openExternalBlockers?: string[] };
+  evidenceScope?: {
+    localSecretDirectoryMode?: string;
+    githubSecretSource?: string;
+    localSecretReadinessIsGaEvidence?: boolean;
+    hostedStrictWorkflowRequiredForGa?: boolean;
+  };
   safety?: { secretValuesPrinted?: boolean };
 };
 if (!report.includes('Defensible score band: `74-78/100`')) fail('ready report did not include expected score band');
 if (!report.includes('Remaining external blocker closeout')) fail('ready report did not include closeout probe');
 if (!report.includes('## Remaining External Blocker IDs')) fail('ready report did not include external blocker IDs');
+if (!report.includes('## Evidence Scope')) fail('ready report did not include evidence scope');
+if (!report.includes('Local secret readiness is GA evidence: `NO`')) fail('ready report did not distinguish local readiness from GA evidence');
 if (parsed.decision?.state !== 'READY_TO_TRIGGER_HOSTED_STRICT') fail('ready JSON did not include expected state');
 if (parsed.probes?.remainingExternalBlockerCloseout?.status !== 'PASS') fail('ready JSON did not include passing closeout probe');
 if (parsed.blockers?.openExternalBlockers?.length !== 16) fail('ready JSON did not include 16 external blockers');
+if (parsed.evidenceScope?.localSecretDirectoryMode !== 'explicit-dir') fail('ready JSON did not include explicit local secret directory mode');
+if (parsed.evidenceScope?.githubSecretSource !== 'fixture-file') fail('ready JSON did not include fixture GitHub secret source');
+if (parsed.evidenceScope?.localSecretReadinessIsGaEvidence !== false) fail('ready JSON did not state local secret readiness is not GA evidence');
+if (parsed.evidenceScope?.hostedStrictWorkflowRequiredForGa !== true) fail('ready JSON did not require hosted strict workflow for GA');
 if (parsed.safety?.secretValuesPrinted !== false) fail('ready JSON did not state secret safety');
 if (report.includes('postgres://') || report.includes('sk-ant-fixture') || report.includes(fixtureValueFor(attestationSecrets[1]))) {
   fail('status report leaked fixture secret values');

@@ -6,8 +6,10 @@ import path from 'node:path';
 const runDir = 'gateforge-audit/run-2026-06-23-1035';
 const dirIndex = process.argv.indexOf('--dir');
 const secretDir = dirIndex >= 0 ? process.argv[dirIndex + 1] : '/tmp/fnnlr-gateforge-secrets';
+const secretDirMode = dirIndex >= 0 ? 'explicit-dir' : 'default-local-dir';
 const fromFileIndex = process.argv.indexOf('--from-file');
 const fromFile = fromFileIndex >= 0 ? process.argv[fromFileIndex + 1] : '';
+const githubSecretSource = fromFile ? 'fixture-file' : 'live-github';
 const outIndex = process.argv.indexOf('--out');
 const outPath = outIndex >= 0 ? process.argv[outIndex + 1] : `${runDir}/47_ga_unblock_status.md`;
 const jsonOutIndex = process.argv.indexOf('--json-out');
@@ -359,6 +361,13 @@ const json = {
     openExternalBlockers: remainingCloseout.openExternalBlockers,
     externalBlockerProgressCounts: externalProgress.counts,
   },
+  evidenceScope: {
+    localSecretDirectory: secretDir,
+    localSecretDirectoryMode: secretDirMode,
+    githubSecretSource,
+    localSecretReadinessIsGaEvidence: false,
+    hostedStrictWorkflowRequiredForGa: true,
+  },
   safety: {
     secretValuesPrinted: false,
     productionMutated: false,
@@ -411,6 +420,14 @@ ${mdList(remainingCloseout.openExternalBlockers)}
 - Hosted/provider evidence pending: \`${externalProgress.counts.HOSTED_EVIDENCE_PENDING}\`
 - Source: \`${progressPath}\`
 - Operator packet: \`${operatorPacketPath}\`
+
+## Evidence Scope
+
+- Local secret directory mode: \`${secretDirMode}\`
+- Local secret directory: \`${secretDir}\`
+- GitHub secret source: \`${githubSecretSource}\`
+- Local secret readiness is GA evidence: \`NO\`
+- Hosted strict workflow required for GA: \`YES\`
 
 ## Score Translation
 
