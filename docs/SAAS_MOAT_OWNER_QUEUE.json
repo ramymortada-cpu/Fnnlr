@@ -1,34 +1,22 @@
 {
-  "generatedAt": "2026-07-01T13:56:14.684Z",
+  "generatedAt": "2026-07-01T14:02:40.312Z",
   "source": "docs/SAAS_MOAT_EXECUTION_STATUS.json",
   "executionState": "OWNER_OR_DOC_ACTION_READY",
-  "total": 21,
+  "total": 14,
   "byOwner": {
-    "Engineering": 6,
     "Founder/legal": 4,
     "Marketing": 1,
-    "Product": 6,
     "Sales": 3,
-    "Support": 1
+    "Support": 1,
+    "Engineering": 5
   },
   "byPriority": {
-    "P1": 16,
+    "P1": 9,
     "P2": 5
   },
   "rows": [
     {
       "rank": 1,
-      "id": "EX-056",
-      "priority": "P1",
-      "owner": "Engineering",
-      "phase": "AI intelligence execution",
-      "action": "Create implementation backlog for workflow id on AI usage events.",
-      "evidence": "Spec includes engineering backlog row.",
-      "nextCommand": "OWNER_ACTION_REQUIRED",
-      "unblockEvidence": "Spec includes engineering backlog row."
-    },
-    {
-      "rank": 2,
       "id": "EX-003",
       "priority": "P1",
       "owner": "Founder/legal",
@@ -39,7 +27,7 @@
       "unblockEvidence": "Legal tracker shows owner, state, and evidence."
     },
     {
-      "rank": 3,
+      "rank": 2,
       "id": "EX-004",
       "priority": "P1",
       "owner": "Founder/legal",
@@ -50,7 +38,7 @@
       "unblockEvidence": "Legal tracker shows owner, state, and evidence."
     },
     {
-      "rank": 4,
+      "rank": 3,
       "id": "EX-005",
       "priority": "P1",
       "owner": "Founder/legal",
@@ -61,7 +49,7 @@
       "unblockEvidence": "Legal tracker shows owner, state, and evidence."
     },
     {
-      "rank": 5,
+      "rank": 4,
       "id": "EX-006",
       "priority": "P1",
       "owner": "Founder/legal",
@@ -72,7 +60,7 @@
       "unblockEvidence": "Subprocessor row exists with evidence owner."
     },
     {
-      "rank": 6,
+      "rank": 5,
       "id": "EX-062",
       "priority": "P1",
       "owner": "Marketing",
@@ -83,73 +71,7 @@
       "unblockEvidence": "ICP outreach doc plus outreach readiness contract, compliance review gate, tracking requirement, and hosted evidence gap."
     },
     {
-      "rank": 7,
-      "id": "EX-050",
-      "priority": "P1",
-      "owner": "Product",
-      "phase": "AI intelligence execution",
-      "action": "Define cost_per_workflow metric.",
-      "evidence": "Workflow intelligence spec includes metric formula.",
-      "nextCommand": "OWNER_ACTION_REQUIRED",
-      "unblockEvidence": "Workflow intelligence spec includes metric formula."
-    },
-    {
-      "rank": 8,
-      "id": "EX-051",
-      "priority": "P1",
-      "owner": "Product",
-      "phase": "AI intelligence execution",
-      "action": "Define cost_per_successful_action metric.",
-      "evidence": "Workflow intelligence spec includes metric formula.",
-      "nextCommand": "OWNER_ACTION_REQUIRED",
-      "unblockEvidence": "Workflow intelligence spec includes metric formula."
-    },
-    {
-      "rank": 9,
-      "id": "EX-052",
-      "priority": "P1",
-      "owner": "Product",
-      "phase": "AI intelligence execution",
-      "action": "Define degraded_fallback_rate metric.",
-      "evidence": "Workflow intelligence spec includes metric formula.",
-      "nextCommand": "OWNER_ACTION_REQUIRED",
-      "unblockEvidence": "Workflow intelligence spec includes metric formula."
-    },
-    {
-      "rank": 10,
-      "id": "EX-053",
-      "priority": "P1",
-      "owner": "Product",
-      "phase": "AI intelligence execution",
-      "action": "Define next_best_action v1 rules.",
-      "evidence": "Workflow intelligence spec includes rule table.",
-      "nextCommand": "OWNER_ACTION_REQUIRED",
-      "unblockEvidence": "Workflow intelligence spec includes rule table."
-    },
-    {
-      "rank": 11,
-      "id": "EX-054",
-      "priority": "P1",
-      "owner": "Product",
-      "phase": "AI intelligence execution",
-      "action": "Define follow_up_quality_score rubric.",
-      "evidence": "Workflow intelligence spec includes rubric.",
-      "nextCommand": "OWNER_ACTION_REQUIRED",
-      "unblockEvidence": "Workflow intelligence spec includes rubric."
-    },
-    {
-      "rank": 12,
-      "id": "EX-055",
-      "priority": "P1",
-      "owner": "Product",
-      "phase": "AI intelligence execution",
-      "action": "Define lead_qualification_confidence rubric.",
-      "evidence": "Workflow intelligence spec includes rubric.",
-      "nextCommand": "OWNER_ACTION_REQUIRED",
-      "unblockEvidence": "Workflow intelligence spec includes rubric."
-    },
-    {
-      "rank": 13,
+      "rank": 6,
       "id": "EX-024",
       "priority": "P1",
       "owner": "Sales",
@@ -160,7 +82,7 @@
       "unblockEvidence": "Enterprise row lists security, legal, SLA, and procurement proof."
     },
     {
-      "rank": 14,
+      "rank": 7,
       "id": "EX-025",
       "priority": "P1",
       "owner": "Sales",
@@ -171,7 +93,7 @@
       "unblockEvidence": "Pricing matrix includes onboarding package."
     },
     {
-      "rank": 15,
+      "rank": 8,
       "id": "EX-059",
       "priority": "P1",
       "owner": "Sales",
@@ -182,7 +104,7 @@
       "unblockEvidence": "Pilot offer brief, pilot readiness contract, fit gate, owner model, success criteria, and hosted pilot evidence gap."
     },
     {
-      "rank": 16,
+      "rank": 9,
       "id": "EX-048",
       "priority": "P1",
       "owner": "Support",
@@ -193,7 +115,7 @@
       "unblockEvidence": "Checklist includes owners and triggers."
     },
     {
-      "rank": 17,
+      "rank": 10,
       "id": "EX-064",
       "priority": "P2",
       "owner": "Engineering",
@@ -204,7 +126,7 @@
       "unblockEvidence": "Enterprise backlog includes RBAC row."
     },
     {
-      "rank": 18,
+      "rank": 11,
       "id": "EX-065",
       "priority": "P2",
       "owner": "Engineering",
@@ -215,7 +137,7 @@
       "unblockEvidence": "Enterprise backlog includes workspace policy row."
     },
     {
-      "rank": 19,
+      "rank": 12,
       "id": "EX-066",
       "priority": "P2",
       "owner": "Engineering",
@@ -226,7 +148,7 @@
       "unblockEvidence": "Enterprise backlog includes audit export row."
     },
     {
-      "rank": 20,
+      "rank": 13,
       "id": "EX-067",
       "priority": "P2",
       "owner": "Engineering",
@@ -237,7 +159,7 @@
       "unblockEvidence": "Enterprise backlog includes SSO row."
     },
     {
-      "rank": 21,
+      "rank": 14,
       "id": "EX-068",
       "priority": "P2",
       "owner": "Engineering",

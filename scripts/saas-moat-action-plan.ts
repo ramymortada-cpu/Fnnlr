@@ -180,6 +180,13 @@ const evidenceFilesByActionId: Record<string, string[]> = {
   'EX-044': ['docs/ACTIVATION_METRICS_SPEC.md', 'modules/activation/src/metrics.ts', 'tests/activation-metrics.test.ts'],
   'EX-045': ['docs/ACTIVATION_METRICS_SPEC.md', 'modules/activation/src/metrics.ts', 'tests/activation-metrics.test.ts'],
   'EX-046': ['docs/ACTIVATION_METRICS_SPEC.md', 'modules/activation/src/metrics.ts', 'tests/activation-metrics.test.ts'],
+  'EX-050': ['docs/WORKFLOW_INTELLIGENCE_SPEC.md', 'modules/ai-ops/src/workflow-intelligence.ts', 'tests/workflow-intelligence.test.ts'],
+  'EX-051': ['docs/WORKFLOW_INTELLIGENCE_SPEC.md', 'modules/ai-ops/src/workflow-intelligence.ts', 'tests/workflow-intelligence.test.ts'],
+  'EX-052': ['docs/WORKFLOW_INTELLIGENCE_SPEC.md', 'modules/ai-ops/src/workflow-intelligence.ts', 'tests/workflow-intelligence.test.ts'],
+  'EX-053': ['docs/WORKFLOW_INTELLIGENCE_SPEC.md', 'modules/ai-ops/src/workflow-intelligence.ts', 'tests/workflow-intelligence.test.ts'],
+  'EX-054': ['docs/WORKFLOW_INTELLIGENCE_SPEC.md', 'modules/ai-ops/src/workflow-intelligence.ts', 'tests/workflow-intelligence.test.ts'],
+  'EX-055': ['docs/WORKFLOW_INTELLIGENCE_SPEC.md', 'modules/ai-ops/src/workflow-intelligence.ts', 'tests/workflow-intelligence.test.ts'],
+  'EX-056': ['docs/WORKFLOW_INTELLIGENCE_SPEC.md', 'modules/ai-ops/src/workflow-intelligence.ts', 'tests/workflow-intelligence.test.ts'],
 };
 
 const actions: Action[] = [

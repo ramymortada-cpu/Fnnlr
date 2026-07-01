@@ -1,5 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import path from 'node:path';
 import {
   computeWorkflowIntelligenceMetrics,
   rankNextBestActions,
@@ -25,6 +27,24 @@ const base = {
   brain: 'command',
   status: 'allowed' as const,
 };
+
+const workflowIntelligenceContractNames = [
+  'cost_per_workflow',
+  'cost_per_successful_action',
+  'degraded_fallback_rate',
+  'Next Best Action v1 Rules',
+  'Follow-Up Quality Score',
+  'Lead Qualification Confidence',
+  'Wire workflow ids',
+] as const;
+
+test('workflow intelligence spec names the owner-queue contracts', () => {
+  const spec = fs.readFileSync(path.join(process.cwd(), 'docs', 'WORKFLOW_INTELLIGENCE_SPEC.md'), 'utf8');
+
+  for (const name of workflowIntelligenceContractNames) {
+    assert.ok(spec.includes(name), `${name} is documented in workflow intelligence spec`);
+  }
+});
 
 test('workflow intelligence computes AI margin and resilience metrics', () => {
   const events: WorkflowIntelligenceEvent[] = [

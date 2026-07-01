@@ -1,6 +1,6 @@
 # SaaS Moat Owner Execution Queue
 
-Generated: `2026-07-01T13:56:14.684Z`
+Generated: `2026-07-01T14:02:40.312Z`
 
 This queue is derived from `SAAS_MOAT_EXECUTION_STATUS.json` and includes only actions in `OWNER_OR_DOC_ACTION_READY`. It is intentionally separate from P0 hosted blockers: external/runtime proof still gates GA, while this queue gives Product, Sales, Support, Legal, Marketing, Leadership, and Finance the next non-code actions that strengthen the global SaaS moat.
 
@@ -8,10 +8,9 @@ This queue is derived from `SAAS_MOAT_EXECUTION_STATUS.json` and includes only a
 
 | Owner | Actions |
 | --- | ---: |
-| Engineering | 6 |
+| Engineering | 5 |
 | Founder/legal | 4 |
 | Marketing | 1 |
-| Product | 6 |
 | Sales | 3 |
 | Support | 1 |
 
@@ -19,31 +18,24 @@ This queue is derived from `SAAS_MOAT_EXECUTION_STATUS.json` and includes only a
 
 | Priority | Actions |
 | --- | ---: |
-| `P1` | 16 |
+| `P1` | 9 |
 | `P2` | 5 |
 
 ## Execution Queue
 
 | # | ID | Priority | Owner | Phase | Action | Evidence required | Next command |
 | ---: | --- | --- | --- | --- | --- | --- | --- |
-| 1 | `EX-056` | `P1` | Engineering | AI intelligence execution | Create implementation backlog for workflow id on AI usage events. | Spec includes engineering backlog row. | `OWNER_ACTION_REQUIRED` |
-| 2 | `EX-003` | `P1` | Founder/legal | Trust center execution | Add legal approval tracker row for Terms. | Legal tracker shows owner, state, and evidence. | `OWNER_ACTION_REQUIRED` |
-| 3 | `EX-004` | `P1` | Founder/legal | Trust center execution | Add legal approval tracker row for Privacy. | Legal tracker shows owner, state, and evidence. | `OWNER_ACTION_REQUIRED` |
-| 4 | `EX-005` | `P1` | Founder/legal | Trust center execution | Add legal approval tracker row for DPA. | Legal tracker shows owner, state, and evidence. | `OWNER_ACTION_REQUIRED` |
-| 5 | `EX-006` | `P1` | Founder/legal | Trust center execution | Add legal approval tracker row for subprocessors. | Subprocessor row exists with evidence owner. | `OWNER_ACTION_REQUIRED` |
-| 6 | `EX-062` | `P1` | Marketing | Sales execution | Create evidence-gated outreach sequence for first ICP. | ICP outreach doc plus outreach readiness contract, compliance review gate, tracking requirement, and hosted evidence gap. | `OWNER_ACTION_REQUIRED` |
-| 7 | `EX-050` | `P1` | Product | AI intelligence execution | Define cost_per_workflow metric. | Workflow intelligence spec includes metric formula. | `OWNER_ACTION_REQUIRED` |
-| 8 | `EX-051` | `P1` | Product | AI intelligence execution | Define cost_per_successful_action metric. | Workflow intelligence spec includes metric formula. | `OWNER_ACTION_REQUIRED` |
-| 9 | `EX-052` | `P1` | Product | AI intelligence execution | Define degraded_fallback_rate metric. | Workflow intelligence spec includes metric formula. | `OWNER_ACTION_REQUIRED` |
-| 10 | `EX-053` | `P1` | Product | AI intelligence execution | Define next_best_action v1 rules. | Workflow intelligence spec includes rule table. | `OWNER_ACTION_REQUIRED` |
-| 11 | `EX-054` | `P1` | Product | AI intelligence execution | Define follow_up_quality_score rubric. | Workflow intelligence spec includes rubric. | `OWNER_ACTION_REQUIRED` |
-| 12 | `EX-055` | `P1` | Product | AI intelligence execution | Define lead_qualification_confidence rubric. | Workflow intelligence spec includes rubric. | `OWNER_ACTION_REQUIRED` |
-| 13 | `EX-024` | `P1` | Sales | Commercial moat execution | Define Enterprise proof requirements. | Enterprise row lists security, legal, SLA, and procurement proof. | `OWNER_ACTION_REQUIRED` |
-| 14 | `EX-025` | `P1` | Sales | Commercial moat execution | Define paid onboarding package. | Pricing matrix includes onboarding package. | `OWNER_ACTION_REQUIRED` |
-| 15 | `EX-059` | `P1` | Sales | Sales execution | Create evidence-gated pilot offer brief. | Pilot offer brief, pilot readiness contract, fit gate, owner model, success criteria, and hosted pilot evidence gap. | `OWNER_ACTION_REQUIRED` |
-| 16 | `EX-048` | `P1` | Support | Activation execution | Create onboarding failure recovery checklist. | Checklist includes owners and triggers. | `OWNER_ACTION_REQUIRED` |
-| 17 | `EX-064` | `P2` | Engineering | Enterprise execution | Define RBAC expansion requirements. | Enterprise backlog includes RBAC row. | `OWNER_ACTION_REQUIRED` |
-| 18 | `EX-065` | `P2` | Engineering | Enterprise execution | Define workspace policy requirements. | Enterprise backlog includes workspace policy row. | `OWNER_ACTION_REQUIRED` |
-| 19 | `EX-066` | `P2` | Engineering | Enterprise execution | Define audit export requirements. | Enterprise backlog includes audit export row. | `OWNER_ACTION_REQUIRED` |
-| 20 | `EX-067` | `P2` | Engineering | Enterprise execution | Define SSO/OIDC requirements. | Enterprise backlog includes SSO row. | `OWNER_ACTION_REQUIRED` |
-| 21 | `EX-068` | `P2` | Engineering | Enterprise execution | Define data residency position. | Enterprise backlog includes data residency row. | `OWNER_ACTION_REQUIRED` |
+| 1 | `EX-003` | `P1` | Founder/legal | Trust center execution | Add legal approval tracker row for Terms. | Legal tracker shows owner, state, and evidence. | `OWNER_ACTION_REQUIRED` |
+| 2 | `EX-004` | `P1` | Founder/legal | Trust center execution | Add legal approval tracker row for Privacy. | Legal tracker shows owner, state, and evidence. | `OWNER_ACTION_REQUIRED` |
+| 3 | `EX-005` | `P1` | Founder/legal | Trust center execution | Add legal approval tracker row for DPA. | Legal tracker shows owner, state, and evidence. | `OWNER_ACTION_REQUIRED` |
+| 4 | `EX-006` | `P1` | Founder/legal | Trust center execution | Add legal approval tracker row for subprocessors. | Subprocessor row exists with evidence owner. | `OWNER_ACTION_REQUIRED` |
+| 5 | `EX-062` | `P1` | Marketing | Sales execution | Create evidence-gated outreach sequence for first ICP. | ICP outreach doc plus outreach readiness contract, compliance review gate, tracking requirement, and hosted evidence gap. | `OWNER_ACTION_REQUIRED` |
+| 6 | `EX-024` | `P1` | Sales | Commercial moat execution | Define Enterprise proof requirements. | Enterprise row lists security, legal, SLA, and procurement proof. | `OWNER_ACTION_REQUIRED` |
+| 7 | `EX-025` | `P1` | Sales | Commercial moat execution | Define paid onboarding package. | Pricing matrix includes onboarding package. | `OWNER_ACTION_REQUIRED` |
+| 8 | `EX-059` | `P1` | Sales | Sales execution | Create evidence-gated pilot offer brief. | Pilot offer brief, pilot readiness contract, fit gate, owner model, success criteria, and hosted pilot evidence gap. | `OWNER_ACTION_REQUIRED` |
+| 9 | `EX-048` | `P1` | Support | Activation execution | Create onboarding failure recovery checklist. | Checklist includes owners and triggers. | `OWNER_ACTION_REQUIRED` |
+| 10 | `EX-064` | `P2` | Engineering | Enterprise execution | Define RBAC expansion requirements. | Enterprise backlog includes RBAC row. | `OWNER_ACTION_REQUIRED` |
+| 11 | `EX-065` | `P2` | Engineering | Enterprise execution | Define workspace policy requirements. | Enterprise backlog includes workspace policy row. | `OWNER_ACTION_REQUIRED` |
+| 12 | `EX-066` | `P2` | Engineering | Enterprise execution | Define audit export requirements. | Enterprise backlog includes audit export row. | `OWNER_ACTION_REQUIRED` |
+| 13 | `EX-067` | `P2` | Engineering | Enterprise execution | Define SSO/OIDC requirements. | Enterprise backlog includes SSO row. | `OWNER_ACTION_REQUIRED` |
+| 14 | `EX-068` | `P2` | Engineering | Enterprise execution | Define data residency position. | Enterprise backlog includes data residency row. | `OWNER_ACTION_REQUIRED` |

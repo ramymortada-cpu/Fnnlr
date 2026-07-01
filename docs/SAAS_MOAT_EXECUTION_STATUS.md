@@ -1,6 +1,6 @@
 # SaaS Moat Execution Status
 
-Generated: `2026-07-01T13:56:14.684Z`
+Generated: `2026-07-01T14:02:40.312Z`
 
 This status is derived from the 165-point board. It treats hosted/operator-only work as blocked until real external evidence exists.
 
@@ -12,8 +12,8 @@ This status is derived from the 165-point board. It treats hosted/operator-only 
 | `BLOCKED_BY_HOSTED_ATTESTATION` | 2 |
 | `BLOCKED_BY_SECRET_READINESS` | 2 |
 | `BLOCKED_EXTERNAL` | 16 |
-| `EVIDENCE_FILE_PRESENT` | 123 |
-| `OWNER_OR_DOC_ACTION_READY` | 21 |
+| `EVIDENCE_FILE_PRESENT` | 130 |
+| `OWNER_OR_DOC_ACTION_READY` | 14 |
 
 ## Summary By Phase
 
@@ -31,7 +31,7 @@ This status is derived from the 165-point board. It treats hosted/operator-only 
 | Commercial moat execution | 15 | 13 | 0 | 0 |
 | Industry template execution | 15 | 15 | 0 | 0 |
 | Activation execution | 8 | 7 | 0 | 0 |
-| AI intelligence execution | 8 | 1 | 0 | 0 |
+| AI intelligence execution | 8 | 8 | 0 | 0 |
 | Sales execution | 6 | 4 | 0 | 0 |
 | Enterprise execution | 8 | 3 | 0 | 0 |
 | Operating execution | 7 | 7 | 0 | 0 |
