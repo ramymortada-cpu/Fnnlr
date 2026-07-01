@@ -29,6 +29,7 @@ const outIndex = process.argv.indexOf('--out');
 const outPath = outIndex >= 0 ? process.argv[outIndex + 1] : `${runDir}/51_ga_evidence_run_audit.md`;
 const jsonOutIndex = process.argv.indexOf('--json-out');
 const jsonOutPath = jsonOutIndex >= 0 ? process.argv[jsonOutIndex + 1] : `${runDir}/51_ga_evidence_run_audit.json`;
+const allowFailures = process.argv.includes('--allow-failures');
 
 function run(command: string, args: string[]) {
   const result = spawnSync(command, args, {
@@ -161,4 +162,4 @@ console.log(`  failure annotations: ${failureAnnotations.length}`);
 console.log(`  wrote ${outPath}`);
 console.log(`  wrote ${jsonOutPath}`);
 
-if (decision !== 'PASS') process.exit(1);
+if (decision !== 'PASS' && !allowFailures) process.exit(1);

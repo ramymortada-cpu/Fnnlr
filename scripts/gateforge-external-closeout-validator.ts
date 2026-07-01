@@ -85,6 +85,7 @@ const outPath = outIndex >= 0 ? process.argv[outIndex + 1] : `${runDir}/52_exter
 const jsonOutIndex = process.argv.indexOf('--json-out');
 const jsonOutPath = jsonOutIndex >= 0 ? process.argv[jsonOutIndex + 1] : `${runDir}/52_external_closeout_validator.json`;
 const checkOnly = process.argv.includes('--check');
+const allowFailures = process.argv.includes('--allow-failures');
 
 function fail(message: string): never {
   console.error(`GateForge external closeout validator: FAIL - ${message}`);
@@ -332,4 +333,4 @@ fs.writeFileSync(jsonOutPath, json);
 console.log(`GateForge external closeout validator: ${report.decision}`);
 console.log(`  wrote ${outPath}`);
 console.log(`  wrote ${jsonOutPath}`);
-if (report.decision !== 'PASS') process.exit(1);
+if (report.decision !== 'PASS' && !allowFailures) process.exit(1);
