@@ -23,6 +23,9 @@ This index defines the expected contents of the `gateforge-ga-evidence` GitHub A
 - `48_remaining_external_blocker_closeout.json`
 - `49_external_blocker_progress.md`
 - `49_external_blocker_progress.json`
+- `50_operator_execution_packet.md`
+- `50_operator_execution_packet.csv`
+- `50_operator_execution_packet.json`
 
 ## External Evidence Intake
 

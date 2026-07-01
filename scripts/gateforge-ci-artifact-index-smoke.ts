@@ -17,6 +17,9 @@ const requiredArtifacts = [
   '48_remaining_external_blocker_closeout.json',
   '49_external_blocker_progress.md',
   '49_external_blocker_progress.json',
+  '50_operator_execution_packet.md',
+  '50_operator_execution_packet.csv',
+  '50_operator_execution_packet.json',
 ];
 
 function fail(message: string): never {

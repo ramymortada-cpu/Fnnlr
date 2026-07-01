@@ -14,6 +14,7 @@ const jsonOutIndex = process.argv.indexOf('--json-out');
 const jsonOutPath = jsonOutIndex >= 0 ? process.argv[jsonOutIndex + 1] : `${runDir}/47_ga_unblock_status.json`;
 const closeoutPath = `${runDir}/48_remaining_external_blocker_closeout.json`;
 const progressPath = `${runDir}/49_external_blocker_progress.json`;
+const operatorPacketPath = `${runDir}/50_operator_execution_packet.json`;
 const strictWorkflow = 'GateForge Hosted Staging Strict';
 const gaWorkflow = 'GateForge GA Evidence';
 
@@ -57,6 +58,20 @@ type ExternalProgressJson = {
     GITHUB_SECRET_PENDING?: number;
     HOSTED_EVIDENCE_PENDING?: number;
   };
+  safety?: {
+    secretValuesPrinted?: boolean;
+    productionMutated?: boolean;
+    sourceDumpsIncluded?: boolean;
+  };
+};
+type OperatorPacketJson = {
+  total?: number;
+  counts?: {
+    LOCAL_SECRET_PENDING?: number;
+    GITHUB_SECRET_PENDING?: number;
+    HOSTED_EVIDENCE_PENDING?: number;
+  };
+  secrets?: unknown[];
   safety?: {
     secretValuesPrinted?: boolean;
     productionMutated?: boolean;
@@ -243,6 +258,40 @@ function probeExternalProgress(): { probe: Probe; counts: Required<NonNullable<E
   };
 }
 
+function probeOperatorPacket(): Probe {
+  if (!fs.existsSync(operatorPacketPath)) {
+    return { status: 'FAIL', detail: `operator execution packet is missing: ${operatorPacketPath}` };
+  }
+
+  let parsed: OperatorPacketJson;
+  try {
+    parsed = JSON.parse(fs.readFileSync(operatorPacketPath, 'utf8')) as OperatorPacketJson;
+  } catch {
+    return { status: 'FAIL', detail: 'operator execution packet JSON could not be parsed' };
+  }
+
+  const countsTotal =
+    (parsed.counts?.LOCAL_SECRET_PENDING ?? 0) +
+    (parsed.counts?.GITHUB_SECRET_PENDING ?? 0) +
+    (parsed.counts?.HOSTED_EVIDENCE_PENDING ?? 0);
+  const safe =
+    parsed.safety?.secretValuesPrinted === false &&
+    parsed.safety?.productionMutated === false &&
+    parsed.safety?.sourceDumpsIncluded === false;
+  const secretCount = Array.isArray(parsed.secrets) ? parsed.secrets.length : 0;
+  const errors = [
+    parsed.total === 16 ? '' : `total ${parsed.total ?? 'missing'}`,
+    countsTotal === 16 ? '' : `status counts sum to ${countsTotal}`,
+    secretCount >= 19 ? '' : `secret matrix has ${secretCount} entries`,
+    safe ? '' : 'safety flags are not all false',
+  ].filter(Boolean);
+
+  return {
+    status: errors.length ? 'FAIL' : 'PASS',
+    detail: errors.length ? errors.join('; ') : `16 blockers mapped with ${secretCount} hosted secret file options`,
+  };
+}
+
 function decisionFor(local: Probe, github: Probe, strict: Probe) {
   if (local.status !== 'PASS') {
     return {
@@ -285,6 +334,7 @@ const githubSecrets = probeGithubSecrets();
 const attestationPack = probeAttestationPack();
 const remainingCloseout = probeRemainingCloseout();
 const externalProgress = probeExternalProgress();
+const operatorPacket = probeOperatorPacket();
 const strictRun = probeWorkflow(strictWorkflow);
 const gaEvidenceRun = probeWorkflow(gaWorkflow);
 const decision = decisionFor(localSecrets.probe, githubSecrets, strictRun);
@@ -298,6 +348,7 @@ const json = {
     attestationPack,
     remainingExternalBlockerCloseout: remainingCloseout.probe,
     externalBlockerProgress: externalProgress.probe,
+    operatorExecutionPacket: operatorPacket,
     githubSecrets,
     hostedStrictWorkflow: strictRun,
     gaEvidenceWorkflow: gaEvidenceRun,
@@ -336,6 +387,7 @@ This status file is the single operator dashboard for the GA unblock path. It co
 | Attestation secret pack | \`${attestationPack.status}\` | ${attestationPack.detail} |
 | Remaining external blocker closeout | \`${remainingCloseout.probe.status}\` | ${remainingCloseout.probe.detail} |
 | External blocker progress | \`${externalProgress.probe.status}\` | ${externalProgress.probe.detail} |
+| Operator execution packet | \`${operatorPacket.status}\` | ${operatorPacket.detail} |
 | GitHub Actions secret names | \`${githubSecrets.status}\` | ${githubSecrets.detail} |
 | Hosted strict workflow | \`${strictRun.status}\` | ${strictRun.detail}${strictRun.url ? ` (${strictRun.url})` : ''} |
 | GA evidence workflow | \`${gaEvidenceRun.status}\` | ${gaEvidenceRun.detail}${gaEvidenceRun.url ? ` (${gaEvidenceRun.url})` : ''} |
@@ -358,6 +410,7 @@ ${mdList(remainingCloseout.openExternalBlockers)}
 - GitHub secret pending: \`${externalProgress.counts.GITHUB_SECRET_PENDING}\`
 - Hosted/provider evidence pending: \`${externalProgress.counts.HOSTED_EVIDENCE_PENDING}\`
 - Source: \`${progressPath}\`
+- Operator packet: \`${operatorPacketPath}\`
 
 ## Score Translation
 

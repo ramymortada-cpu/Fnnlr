@@ -96,6 +96,8 @@
     "gateforge:remaining-blockers-closeout": "tsx scripts/gateforge-remaining-blockers-closeout.ts",
     "gateforge:external-blocker-progress": "tsx scripts/gateforge-external-blocker-progress.ts",
     "gateforge:external-blocker-progress-smoke": "tsx scripts/gateforge-external-blocker-progress-smoke.ts",
+    "gateforge:operator-execution-packet": "tsx scripts/gateforge-operator-execution-packet.ts",
+    "gateforge:operator-execution-packet-smoke": "tsx scripts/gateforge-operator-execution-packet-smoke.ts",
     "gateforge:ci-artifact-index-smoke": "tsx scripts/gateforge-ci-artifact-index-smoke.ts",
     "gateforge:external-smoke": "tsx scripts/gateforge-external-smoke.ts",
     "gateforge:final-gate": "tsx scripts/gateforge-final-gate.ts",

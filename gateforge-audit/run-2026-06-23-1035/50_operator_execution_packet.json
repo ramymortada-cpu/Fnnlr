@@ -1,0 +1,579 @@
+{
+  "generatedAt": "2026-07-01T12:50:47.004Z",
+  "total": 16,
+  "source": {
+    "closeoutPath": "gateforge-audit/run-2026-06-23-1035/48_remaining_external_blocker_closeout.json",
+    "progressPath": "gateforge-audit/run-2026-06-23-1035/49_external_blocker_progress.json"
+  },
+  "counts": {
+    "LOCAL_SECRET_PENDING": 16,
+    "GITHUB_SECRET_PENDING": 0,
+    "HOSTED_EVIDENCE_PENDING": 0
+  },
+  "secrets": [
+    {
+      "secret": "CONTROL_PLANE_DATABASE_URL",
+      "blockers": [
+        "GF-001",
+        "GF-003"
+      ],
+      "statuses": [
+        "LOCAL_SECRET_PENDING"
+      ]
+    },
+    {
+      "secret": "TENANT_DB_ADMIN_URL",
+      "blockers": [
+        "GF-002",
+        "GF-004"
+      ],
+      "statuses": [
+        "LOCAL_SECRET_PENDING"
+      ]
+    },
+    {
+      "secret": "TENANT_DB_HOST",
+      "blockers": [
+        "GF-005"
+      ],
+      "statuses": [
+        "LOCAL_SECRET_PENDING"
+      ]
+    },
+    {
+      "secret": "TENANT_CREDENTIAL_ENCRYPTION_KEY",
+      "blockers": [
+        "HOSTED-RUNTIME"
+      ],
+      "statuses": [
+        "LOCAL_SECRET_PENDING"
+      ]
+    },
+    {
+      "secret": "INTEGRATION_ENCRYPTION_KEY",
+      "blockers": [
+        "HOSTED-RUNTIME"
+      ],
+      "statuses": [
+        "LOCAL_SECRET_PENDING"
+      ]
+    },
+    {
+      "secret": "FNNLR_CRON_SECRET",
+      "blockers": [
+        "HOSTED-RUNTIME"
+      ],
+      "statuses": [
+        "LOCAL_SECRET_PENDING"
+      ]
+    },
+    {
+      "secret": "AUTH_MFA_ENCRYPTION_KEY",
+      "blockers": [
+        "HOSTED-RUNTIME"
+      ],
+      "statuses": [
+        "LOCAL_SECRET_PENDING"
+      ]
+    },
+    {
+      "secret": "FNNLR_AI_TENANT_DAILY_USD_CAP",
+      "blockers": [
+        "HOSTED-RUNTIME"
+      ],
+      "statuses": [
+        "LOCAL_SECRET_PENDING"
+      ]
+    },
+    {
+      "secret": "FNNLR_AI_GLOBAL_DAILY_USD_CAP",
+      "blockers": [
+        "HOSTED-RUNTIME"
+      ],
+      "statuses": [
+        "LOCAL_SECRET_PENDING"
+      ]
+    },
+    {
+      "secret": "SENTRY_DSN",
+      "blockers": [
+        "GF-006",
+        "GF-007"
+      ],
+      "statuses": [
+        "LOCAL_SECRET_PENDING"
+      ]
+    },
+    {
+      "secret": "UPTIME_HEALTHCHECK_URL",
+      "blockers": [
+        "GF-008",
+        "GF-009"
+      ],
+      "statuses": [
+        "LOCAL_SECRET_PENDING"
+      ]
+    },
+    {
+      "secret": "ALERT_EMAIL_TO",
+      "blockers": [
+        "GF-010"
+      ],
+      "statuses": [
+        "LOCAL_SECRET_PENDING"
+      ]
+    },
+    {
+      "secret": "ALERT_WEBHOOK_URL",
+      "blockers": [
+        "GF-011"
+      ],
+      "statuses": [
+        "LOCAL_SECRET_PENDING"
+      ]
+    },
+    {
+      "secret": "RESEND_API_KEY",
+      "blockers": [
+        "GF-012",
+        "GF-013"
+      ],
+      "statuses": [
+        "LOCAL_SECRET_PENDING"
+      ]
+    },
+    {
+      "secret": "EMAIL_FROM",
+      "blockers": [
+        "GF-014"
+      ],
+      "statuses": [
+        "LOCAL_SECRET_PENDING"
+      ]
+    },
+    {
+      "secret": "EMAIL_REPLY_TO",
+      "blockers": [
+        "GF-015"
+      ],
+      "statuses": [
+        "LOCAL_SECRET_PENDING"
+      ]
+    },
+    {
+      "secret": "ANTHROPIC_API_KEY",
+      "blockers": [
+        "GF-016"
+      ],
+      "statuses": [
+        "LOCAL_SECRET_PENDING"
+      ]
+    },
+    {
+      "secret": "GATEFORGE_HOSTED_STAGING_ATTESTATION_JSON",
+      "blockers": [
+        "HOSTED-ATTESTATION"
+      ],
+      "statuses": [
+        "LOCAL_SECRET_PENDING"
+      ]
+    },
+    {
+      "secret": "GATEFORGE_HOSTED_STAGING_ATTESTATION_B64",
+      "blockers": [
+        "HOSTED-ATTESTATION"
+      ],
+      "statuses": [
+        "LOCAL_SECRET_PENDING"
+      ]
+    }
+  ],
+  "rows": [
+    {
+      "id": "GF-001",
+      "owner": "Operator",
+      "action": "Provision hosted staging control-plane Postgres.",
+      "secrets": [
+        "CONTROL_PLANE_DATABASE_URL"
+      ],
+      "providerSetup": [
+        "Create a hosted staging Postgres database dedicated to the control plane."
+      ],
+      "evidenceRequired": [
+        "Provider database identifier and sanitized successful hosted health gate output."
+      ],
+      "validationCommands": [
+        "npm run ci:live",
+        "npm run deploy:health-gate"
+      ],
+      "exitCriteria": "Hosted control-plane database is reachable from GitHub Actions without local-only evidence.",
+      "secretCount": 1,
+      "localReady": 0,
+      "githubReady": 0,
+      "status": "LOCAL_SECRET_PENDING",
+      "nextAction": "Create or replace local staging secret files, then run npm run gateforge:local-secret-files-check."
+    },
+    {
+      "id": "GF-002",
+      "owner": "Operator",
+      "action": "Provision tenant database admin access for staging.",
+      "secrets": [
+        "TENANT_DB_ADMIN_URL"
+      ],
+      "providerSetup": [
+        "Create a hosted staging admin connection that can create/drop tenant databases."
+      ],
+      "evidenceRequired": [
+        "Hosted tenant provision/delete test output and sanitized DB-per-tenant proof."
+      ],
+      "validationCommands": [
+        "npm run test:pg",
+        "npm run deploy:verify-restore"
+      ],
+      "exitCriteria": "Tenant DB creation, deletion, and isolation pass in hosted staging.",
+      "secretCount": 1,
+      "localReady": 0,
+      "githubReady": 0,
+      "status": "LOCAL_SECRET_PENDING",
+      "nextAction": "Create or replace local staging secret files, then run npm run gateforge:local-secret-files-check."
+    },
+    {
+      "id": "GF-003",
+      "owner": "Operator",
+      "action": "Set CONTROL_PLANE_DATABASE_URL in local secret pack and GitHub Actions.",
+      "secrets": [
+        "CONTROL_PLANE_DATABASE_URL"
+      ],
+      "providerSetup": [
+        "Write the staging control-plane URL to the local secret file, then upload by secret name only."
+      ],
+      "evidenceRequired": [
+        "Local secret files check PASS and GitHub secret name present."
+      ],
+      "validationCommands": [
+        "npm run gateforge:local-secret-files-check",
+        "npm run gateforge:github-secrets-audit"
+      ],
+      "exitCriteria": "Secret exists locally and in GitHub without printing the value.",
+      "secretCount": 1,
+      "localReady": 0,
+      "githubReady": 0,
+      "status": "LOCAL_SECRET_PENDING",
+      "nextAction": "Create or replace local staging secret files, then run npm run gateforge:local-secret-files-check."
+    },
+    {
+      "id": "GF-004",
+      "owner": "Operator",
+      "action": "Set TENANT_DB_ADMIN_URL in local secret pack and GitHub Actions.",
+      "secrets": [
+        "TENANT_DB_ADMIN_URL"
+      ],
+      "providerSetup": [
+        "Write the staging tenant admin URL to the local secret file, then upload by secret name only."
+      ],
+      "evidenceRequired": [
+        "Hosted strict live DB tests PASS."
+      ],
+      "validationCommands": [
+        "npm run gateforge:local-secret-files-check",
+        "npm run gateforge:github-secrets-audit",
+        "npm run test:pg"
+      ],
+      "exitCriteria": "Tenant admin secret is available to hosted strict checks.",
+      "secretCount": 1,
+      "localReady": 0,
+      "githubReady": 0,
+      "status": "LOCAL_SECRET_PENDING",
+      "nextAction": "Create or replace local staging secret files, then run npm run gateforge:local-secret-files-check."
+    },
+    {
+      "id": "GF-005",
+      "owner": "Operator",
+      "action": "Set TENANT_DB_HOST in local secret pack and GitHub Actions.",
+      "secrets": [
+        "TENANT_DB_HOST"
+      ],
+      "providerSetup": [
+        "Extract the staging tenant DB host from the provider without credentials."
+      ],
+      "evidenceRequired": [
+        "Local secret files check READY and hosted tenant routing proof."
+      ],
+      "validationCommands": [
+        "npm run gateforge:local-secret-files-check",
+        "npm run test:pg"
+      ],
+      "exitCriteria": "Tenant DB host is present and matches the hosted tenant admin target.",
+      "secretCount": 1,
+      "localReady": 0,
+      "githubReady": 0,
+      "status": "LOCAL_SECRET_PENDING",
+      "nextAction": "Create or replace local staging secret files, then run npm run gateforge:local-secret-files-check."
+    },
+    {
+      "id": "GF-006",
+      "owner": "Operator",
+      "action": "Create staging Sentry or equivalent error-monitoring project.",
+      "secrets": [
+        "SENTRY_DSN"
+      ],
+      "providerSetup": [
+        "Create a staging error-monitoring project with alert routing enabled."
+      ],
+      "evidenceRequired": [
+        "Sanitized project reference and alert proof attached to hosted attestation."
+      ],
+      "validationCommands": [
+        "npm run deploy:health-gate"
+      ],
+      "exitCriteria": "Error monitoring is a real hosted service, not a doc-only claim.",
+      "secretCount": 1,
+      "localReady": 0,
+      "githubReady": 0,
+      "status": "LOCAL_SECRET_PENDING",
+      "nextAction": "Create or replace local staging secret files, then run npm run gateforge:local-secret-files-check."
+    },
+    {
+      "id": "GF-007",
+      "owner": "Operator",
+      "action": "Set SENTRY_DSN for staging.",
+      "secrets": [
+        "SENTRY_DSN"
+      ],
+      "providerSetup": [
+        "Write the staging DSN to the local secret file, then upload it to GitHub Actions."
+      ],
+      "evidenceRequired": [
+        "Hosted strict monitoring item PASS."
+      ],
+      "validationCommands": [
+        "npm run gateforge:local-secret-files-check",
+        "npm run gateforge:github-secrets-audit",
+        "npm run deploy:health-gate"
+      ],
+      "exitCriteria": "Hosted runtime can initialize observability without exposing the DSN.",
+      "secretCount": 1,
+      "localReady": 0,
+      "githubReady": 0,
+      "status": "LOCAL_SECRET_PENDING",
+      "nextAction": "Create or replace local staging secret files, then run npm run gateforge:local-secret-files-check."
+    },
+    {
+      "id": "GF-008",
+      "owner": "Operator",
+      "action": "Create uptime monitor for /health.",
+      "secrets": [
+        "UPTIME_HEALTHCHECK_URL"
+      ],
+      "providerSetup": [
+        "Create an external uptime monitor pointed at the hosted staging /health endpoint."
+      ],
+      "evidenceRequired": [
+        "Monitor URL, screenshot/log reference, and successful health gate."
+      ],
+      "validationCommands": [
+        "npm run deploy:health-gate"
+      ],
+      "exitCriteria": "External uptime evidence exists outside local tests.",
+      "secretCount": 1,
+      "localReady": 0,
+      "githubReady": 0,
+      "status": "LOCAL_SECRET_PENDING",
+      "nextAction": "Create or replace local staging secret files, then run npm run gateforge:local-secret-files-check."
+    },
+    {
+      "id": "GF-009",
+      "owner": "Operator",
+      "action": "Set UPTIME_HEALTHCHECK_URL.",
+      "secrets": [
+        "UPTIME_HEALTHCHECK_URL"
+      ],
+      "providerSetup": [
+        "Write the uptime monitor URL to the local secret file, then upload it to GitHub Actions."
+      ],
+      "evidenceRequired": [
+        "GateForge secret check READY and hosted attestation item PASS."
+      ],
+      "validationCommands": [
+        "npm run gateforge:local-secret-files-check",
+        "npm run gateforge:github-secrets-audit",
+        "npm run deploy:health-gate"
+      ],
+      "exitCriteria": "Hosted gate can prove the configured uptime monitor.",
+      "secretCount": 1,
+      "localReady": 0,
+      "githubReady": 0,
+      "status": "LOCAL_SECRET_PENDING",
+      "nextAction": "Create or replace local staging secret files, then run npm run gateforge:local-secret-files-check."
+    },
+    {
+      "id": "GF-010",
+      "owner": "Operator",
+      "action": "Set ALERT_EMAIL_TO for staging operations.",
+      "secrets": [
+        "ALERT_EMAIL_TO"
+      ],
+      "providerSetup": [
+        "Choose a monitored staging operations inbox."
+      ],
+      "evidenceRequired": [
+        "Alert delivery proof in hosted evidence packet."
+      ],
+      "validationCommands": [
+        "npm run deploy:health-gate"
+      ],
+      "exitCriteria": "Operational alerts have a human recipient.",
+      "secretCount": 1,
+      "localReady": 0,
+      "githubReady": 0,
+      "status": "LOCAL_SECRET_PENDING",
+      "nextAction": "Create or replace local staging secret files, then run npm run gateforge:local-secret-files-check."
+    },
+    {
+      "id": "GF-011",
+      "owner": "Operator",
+      "action": "Set ALERT_WEBHOOK_URL for staging alerts.",
+      "secrets": [
+        "ALERT_WEBHOOK_URL"
+      ],
+      "providerSetup": [
+        "Create a staging alert webhook destination in the team response channel."
+      ],
+      "evidenceRequired": [
+        "Cron/webhook failure alert proof."
+      ],
+      "validationCommands": [
+        "npm run deploy:health-gate"
+      ],
+      "exitCriteria": "Machine-readable alert delivery proof exists.",
+      "secretCount": 1,
+      "localReady": 0,
+      "githubReady": 0,
+      "status": "LOCAL_SECRET_PENDING",
+      "nextAction": "Create or replace local staging secret files, then run npm run gateforge:local-secret-files-check."
+    },
+    {
+      "id": "GF-012",
+      "owner": "Operator",
+      "action": "Create Resend staging key or approved transactional email provider key.",
+      "secrets": [
+        "RESEND_API_KEY"
+      ],
+      "providerSetup": [
+        "Create a staging transactional email provider key with limited scope."
+      ],
+      "evidenceRequired": [
+        "Provider test send and DNS posture evidence."
+      ],
+      "validationCommands": [
+        "npm run deploy:smoke"
+      ],
+      "exitCriteria": "Transactional email provider is real and testable in staging.",
+      "secretCount": 1,
+      "localReady": 0,
+      "githubReady": 0,
+      "status": "LOCAL_SECRET_PENDING",
+      "nextAction": "Create or replace local staging secret files, then run npm run gateforge:local-secret-files-check."
+    },
+    {
+      "id": "GF-013",
+      "owner": "Operator",
+      "action": "Set RESEND_API_KEY.",
+      "secrets": [
+        "RESEND_API_KEY"
+      ],
+      "providerSetup": [
+        "Write the staging provider key to the local secret file, then upload it to GitHub Actions."
+      ],
+      "evidenceRequired": [
+        "Hosted strict email readiness evidence."
+      ],
+      "validationCommands": [
+        "npm run gateforge:local-secret-files-check",
+        "npm run gateforge:github-secrets-audit",
+        "npm run deploy:smoke"
+      ],
+      "exitCriteria": "Hosted smoke can send or validate transactional email readiness.",
+      "secretCount": 1,
+      "localReady": 0,
+      "githubReady": 0,
+      "status": "LOCAL_SECRET_PENDING",
+      "nextAction": "Create or replace local staging secret files, then run npm run gateforge:local-secret-files-check."
+    },
+    {
+      "id": "GF-014",
+      "owner": "Operator",
+      "action": "Verify sender domain and set EMAIL_FROM.",
+      "secrets": [
+        "EMAIL_FROM"
+      ],
+      "providerSetup": [
+        "Verify the sender domain/address with SPF, DKIM, and DMARC evidence."
+      ],
+      "evidenceRequired": [
+        "SPF/DKIM/DMARC evidence and provider verified sender."
+      ],
+      "validationCommands": [
+        "npm run deploy:smoke"
+      ],
+      "exitCriteria": "Outbound transactional messages use a verified sender.",
+      "secretCount": 1,
+      "localReady": 0,
+      "githubReady": 0,
+      "status": "LOCAL_SECRET_PENDING",
+      "nextAction": "Create or replace local staging secret files, then run npm run gateforge:local-secret-files-check."
+    },
+    {
+      "id": "GF-015",
+      "owner": "Operator",
+      "action": "Set EMAIL_REPLY_TO.",
+      "secrets": [
+        "EMAIL_REPLY_TO"
+      ],
+      "providerSetup": [
+        "Choose a monitored support or founder reply-to address."
+      ],
+      "evidenceRequired": [
+        "Transactional provider config proof."
+      ],
+      "validationCommands": [
+        "npm run deploy:smoke"
+      ],
+      "exitCriteria": "Customer replies route to a monitored inbox.",
+      "secretCount": 1,
+      "localReady": 0,
+      "githubReady": 0,
+      "status": "LOCAL_SECRET_PENDING",
+      "nextAction": "Create or replace local staging secret files, then run npm run gateforge:local-secret-files-check."
+    },
+    {
+      "id": "GF-016",
+      "owner": "Operator",
+      "action": "Create capped Anthropic staging key.",
+      "secrets": [
+        "ANTHROPIC_API_KEY"
+      ],
+      "providerSetup": [
+        "Create a staging AI provider key with provider-side spend limits."
+      ],
+      "evidenceRequired": [
+        "Provider-side cap proof and AI gateway hosted smoke evidence."
+      ],
+      "validationCommands": [
+        "npm run verify:production-safety",
+        "npm run ci:live"
+      ],
+      "exitCriteria": "AI provider access is capped and audited before GA.",
+      "secretCount": 1,
+      "localReady": 0,
+      "githubReady": 0,
+      "status": "LOCAL_SECRET_PENDING",
+      "nextAction": "Create or replace local staging secret files, then run npm run gateforge:local-secret-files-check."
+    }
+  ],
+  "safety": {
+    "secretValuesPrinted": false,
+    "productionMutated": false,
+    "sourceDumpsIncluded": false
+  }
+}
