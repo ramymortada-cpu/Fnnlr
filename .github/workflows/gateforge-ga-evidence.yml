@@ -104,6 +104,8 @@ jobs:
       - name: GateForge operator execution packet
         run: npm run gateforge:operator-execution-packet
         continue-on-error: true
+      - name: GateForge operator execution packet freshness check
+        run: npm run gateforge:operator-execution-packet-check
       - name: GateForge external closeout validator smoke
         run: npm run gateforge:external-closeout-validator-smoke
       - name: GateForge hosted dependency chain smoke

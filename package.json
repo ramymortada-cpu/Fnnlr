@@ -115,6 +115,7 @@
     "gateforge:external-blocker-progress-check": "tsx scripts/gateforge-external-blocker-progress.ts --check",
     "gateforge:external-blocker-progress-smoke": "tsx scripts/gateforge-external-blocker-progress-smoke.ts",
     "gateforge:operator-execution-packet": "tsx scripts/gateforge-operator-execution-packet.ts",
+    "gateforge:operator-execution-packet-check": "tsx scripts/gateforge-operator-execution-packet.ts --check",
     "gateforge:operator-execution-packet-smoke": "tsx scripts/gateforge-operator-execution-packet-smoke.ts",
     "gateforge:external-closeout-validator": "tsx scripts/gateforge-external-closeout-validator.ts",
     "gateforge:external-closeout-validator-check": "tsx scripts/gateforge-external-closeout-validator.ts --check",
