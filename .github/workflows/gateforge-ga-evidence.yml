@@ -165,6 +165,11 @@ jobs:
         if: always()
         env:
           GH_TOKEN: ${{ github.token }}
+      - name: GateForge current-head GA proof freshness check
+        run: npm run gateforge:current-head-ga-proof-check
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
       - name: GateForge CI artifact index smoke
         run: npm run gateforge:ci-artifact-index-smoke
         if: always()

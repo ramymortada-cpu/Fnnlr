@@ -91,6 +91,7 @@
     "gateforge:ga-evidence-run-audit": "tsx scripts/gateforge-ga-evidence-run-audit.ts",
     "gateforge:ga-evidence-run-audit-smoke": "tsx scripts/gateforge-ga-evidence-run-audit-smoke.ts",
     "gateforge:current-head-ga-proof": "tsx scripts/gateforge-current-head-ga-proof.ts",
+    "gateforge:current-head-ga-proof-check": "tsx scripts/gateforge-current-head-ga-proof.ts --check --allow-not-ready",
     "gateforge:current-head-ga-proof-smoke": "tsx scripts/gateforge-current-head-ga-proof-smoke.ts",
     "gateforge:hosted-readiness-doctor": "tsx scripts/gateforge-hosted-readiness-doctor.ts",
     "gateforge:hosted-readiness-doctor-smoke": "tsx scripts/gateforge-hosted-readiness-doctor-smoke.ts",

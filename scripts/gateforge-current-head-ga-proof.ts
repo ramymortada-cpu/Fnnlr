@@ -24,6 +24,7 @@ const jsonOutIndex = process.argv.indexOf('--json-out');
 const jsonOutPath =
   jsonOutIndex >= 0 ? process.argv[jsonOutIndex + 1] : `${runDir}/58_current_head_ga_evidence_proof.json`;
 const allowNotReady = process.argv.includes('--allow-not-ready');
+const checkOnly = process.argv.includes('--check');
 
 function run(command: string, args: string[]) {
   const result = spawnSync(command, args, {
@@ -93,6 +94,25 @@ function loadRuns(headSha: string) {
 
 function mdList(values: string[]) {
   return values.length ? values.map((value) => `- ${value}`).join('\n') : '- None';
+}
+
+function fail(message: string): never {
+  console.error(`GateForge current-head GA evidence proof: FAIL - ${message}`);
+  process.exit(1);
+}
+
+function normalizeGenerated(text: string): string {
+  return text
+    .replace(/^Generated: `[^`]+`$/gm, 'Generated: `<normalized>`')
+    .replace(/"generatedAt": "[^"]+"/g, '"generatedAt": "<normalized>"');
+}
+
+function assertFresh(filePath: string, expected: string): void {
+  if (!fs.existsSync(filePath)) fail(`${filePath} is missing`);
+  const actual = fs.readFileSync(filePath, 'utf8');
+  if (normalizeGenerated(actual) !== normalizeGenerated(expected)) {
+    fail(`${filePath} is stale; rerun npm run gateforge:current-head-ga-proof -- --allow-not-ready`);
+  }
 }
 
 const generatedAt = new Date().toISOString();
@@ -167,8 +187,19 @@ ${mdList(blockers.map((blocker) => `\`${blocker}\``))}
 `;
 
 fs.mkdirSync(path.dirname(outPath), { recursive: true });
+const jsonBody = `${JSON.stringify(json, null, 2)}\n`;
+
+if (checkOnly) {
+  assertFresh(outPath, body);
+  assertFresh(jsonOutPath, jsonBody);
+  console.log(`GateForge current-head GA evidence proof: PASS (${decision})`);
+  console.log(`  checked ${outPath}`);
+  console.log(`  checked ${jsonOutPath}`);
+  process.exit(0);
+}
+
 fs.writeFileSync(outPath, body);
-fs.writeFileSync(jsonOutPath, `${JSON.stringify(json, null, 2)}\n`);
+fs.writeFileSync(jsonOutPath, jsonBody);
 
 console.log(`GateForge current-head GA evidence proof: ${decision}`);
 console.log(`  head: ${head.headSha || 'UNKNOWN'}`);
