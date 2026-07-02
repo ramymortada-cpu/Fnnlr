@@ -12,6 +12,7 @@ const csvIndex = process.argv.indexOf('--csv-out');
 const csvPath = csvIndex >= 0 ? process.argv[csvIndex + 1] : `${runDir}/45_secret_replacement_packet.csv`;
 const jsonIndex = process.argv.indexOf('--json-out');
 const jsonPath = jsonIndex >= 0 ? process.argv[jsonIndex + 1] : `${runDir}/45_secret_replacement_packet.json`;
+const checkOnly = process.argv.includes('--check');
 
 type SecretStatus = 'READY' | 'MISSING' | 'EMPTY' | 'PLACEHOLDER' | 'INVALID';
 type SecretKind = 'runtime' | 'attestation';
@@ -132,26 +133,29 @@ const runtimeReplacementCount = summary.runtime.filter((row) => row.status !== '
 const attestationSatisfied = summary.attestationReady >= summary.attestationRequired;
 const decision = summary.ok ? 'READY_FOR_UPLOAD' : 'REPLACE_LOCAL_SECRET_VALUES';
 const now = new Date().toISOString();
-const jsonReport = {
-  generatedAt: now,
-  decision,
-  localSecretDirectory: secretDir,
-  counts: {
-    runtimeReady: summary.runtimeReady,
-    runtimeRequired: summary.runtimeRequired,
-    runtimeReplacementsRemaining: runtimeReplacementCount,
-    attestationReady: summary.attestationReady,
-    attestationRequired: summary.attestationRequired,
-    attestationSatisfied,
-    openSecretRowsListed: replacementCount,
-  },
-  rows,
-  safety: {
-    secretValuesPrinted: false,
-    productionMutated: false,
-    sourceDumpsIncluded: false,
-  },
-};
+
+function renderJson(generatedAt: string) {
+  return {
+    generatedAt,
+    decision,
+    localSecretDirectory: secretDir,
+    counts: {
+      runtimeReady: summary.runtimeReady,
+      runtimeRequired: summary.runtimeRequired,
+      runtimeReplacementsRemaining: runtimeReplacementCount,
+      attestationReady: summary.attestationReady,
+      attestationRequired: summary.attestationRequired,
+      attestationSatisfied,
+      openSecretRowsListed: replacementCount,
+    },
+    rows,
+    safety: {
+      secretValuesPrinted: false,
+      productionMutated: false,
+      sourceDumpsIncluded: false,
+    },
+  };
+}
 
 const table = rows
   .map(
@@ -160,9 +164,10 @@ const table = rows
   )
   .join('\n');
 
-const body = `# GateForge Secret Replacement Packet
+function renderMarkdown(generatedAt: string) {
+  return `# GateForge Secret Replacement Packet
 
-Generated: \`${now}\`
+Generated: \`${generatedAt}\`
 
 This packet is sanitized. It reports secret file names and readiness states only. No secret values were printed or copied.
 
@@ -211,11 +216,47 @@ ${table}
 - Do not paste secret values into reports, Git commits, issues, or chat.
 - If a provider value does not exist yet, keep the item open instead of using fake data.
 `;
+}
+
+const jsonReport = renderJson(now);
+const body = renderMarkdown(now);
 
 const csvHeader = ['secret', 'kind', 'status', 'reason', 'source', 'required_action', 'validation', 'upload_phase'];
 const csvRows = rows.map((row) =>
   [row.name, row.kind, row.status, row.reason ?? '', row.source, row.requiredAction, row.validation, row.uploadPhase].map(csvEscape).join(','),
 );
+
+if (checkOnly) {
+  const expectedGeneratedAt = 'CHECK_TIMESTAMP';
+  const expectedMd = renderMarkdown(expectedGeneratedAt);
+  const expectedCsv = `${csvHeader.join(',')}\n${csvRows.join('\n')}\n`;
+  const expectedJson = `${JSON.stringify(renderJson(expectedGeneratedAt), null, 2)}\n`;
+  const errors: string[] = [];
+  const currentMd = fs.existsSync(outPath)
+    ? fs.readFileSync(outPath, 'utf8').replace(/Generated: `[^`]+`/, `Generated: \`${expectedGeneratedAt}\``)
+    : '';
+  const currentCsv = fs.existsSync(csvPath) ? fs.readFileSync(csvPath, 'utf8') : '';
+  const currentJson = fs.existsSync(jsonPath)
+    ? `${JSON.stringify({ ...JSON.parse(fs.readFileSync(jsonPath, 'utf8')), generatedAt: expectedGeneratedAt }, null, 2)}\n`
+    : '';
+
+  if (!currentMd) errors.push(`missing generated markdown: ${outPath}`);
+  else if (currentMd !== expectedMd) errors.push(`stale generated markdown: ${outPath}`);
+  if (!currentCsv) errors.push(`missing generated csv: ${csvPath}`);
+  else if (currentCsv !== expectedCsv) errors.push(`stale generated csv: ${csvPath}`);
+  if (!currentJson) errors.push(`missing generated json: ${jsonPath}`);
+  else if (currentJson !== expectedJson) errors.push(`stale generated json: ${jsonPath}`);
+
+  if (errors.length) {
+    console.error('GateForge secret replacement packet: FAIL');
+    errors.forEach((error) => console.error(`  - ${error}`));
+    console.error('Run: npm run gateforge:secret-replacement-packet');
+    process.exit(1);
+  }
+
+  console.log(`GateForge secret replacement packet: PASS (${decision})`);
+  process.exit(0);
+}
 
 fs.mkdirSync(path.dirname(outPath), { recursive: true });
 fs.writeFileSync(outPath, body);

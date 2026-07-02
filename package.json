@@ -74,6 +74,7 @@
     "gateforge:local-secret-files-check": "tsx scripts/gateforge-local-secret-files-check.ts",
     "gateforge:local-secret-files-check-smoke": "tsx scripts/gateforge-local-secret-files-check-smoke.ts",
     "gateforge:secret-replacement-packet": "tsx scripts/gateforge-secret-replacement-packet.ts",
+    "gateforge:secret-replacement-packet-check": "tsx scripts/gateforge-secret-replacement-packet.ts --check",
     "gateforge:secret-replacement-packet-smoke": "tsx scripts/gateforge-secret-replacement-packet-smoke.ts",
     "gateforge:local-secrets-env-template": "tsx scripts/gateforge-local-secrets-env-template.ts",
     "gateforge:local-secrets-env-template-smoke": "tsx scripts/gateforge-local-secrets-env-template-smoke.ts",
