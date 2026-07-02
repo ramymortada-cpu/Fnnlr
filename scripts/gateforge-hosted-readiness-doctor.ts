@@ -116,16 +116,20 @@ function probeAttestationPack(): Probe {
 }
 
 function probeGithubSecrets(): Probe {
-  const args = ['tsx', 'scripts/gateforge-github-secrets-audit.ts'];
+  const args = [
+    'tsx',
+    'scripts/gateforge-github-secrets-audit.ts',
+    '--out',
+    '/tmp/fnnlr-gateforge-doctor-gh-secrets.md',
+    '--remediation-out',
+    '/tmp/fnnlr-gateforge-doctor-remediation.md',
+    '--json-out',
+    '/tmp/fnnlr-gateforge-doctor-gh-secrets.json',
+    '--remediation-json-out',
+    '/tmp/fnnlr-gateforge-doctor-remediation.json',
+  ];
   if (fromFile) {
-    args.push(
-      '--from-file',
-      fromFile,
-      '--out',
-      '/tmp/fnnlr-gateforge-doctor-gh-secrets.md',
-      '--remediation-out',
-      '/tmp/fnnlr-gateforge-doctor-remediation.md',
-    );
+    args.push('--from-file', fromFile);
   }
   const result = run('npx', args);
   return {
