@@ -1,8 +1,12 @@
 # Hosted Staging Strict Dispatch
 
-Generated: `2026-06-23T12:10:00.000Z`
+Generated: `2026-07-02T12:38:14.102Z`
 
-Status: `READY_FOR_SECRETS`
+Status: `BLOCKED`
+
+## Details
+
+- missing hosted attestation secret
 
 ## Purpose
 
@@ -25,7 +29,9 @@ Set one of these GitHub Actions secrets:
 - `GATEFORGE_HOSTED_STAGING_ATTESTATION_JSON`
 - `GATEFORGE_HOSTED_STAGING_ATTESTATION_B64`
 
-The value must be the sanitized external packet that validates as:
+The value must be the sanitized JSON packet for `gateforge-audit/external-attestations/hosted-staging-attestation.json`. Do not include raw secrets, tokens, database URLs, private keys, customer PII, or provider payloads.
+
+The packet must validate as:
 
 ```bash
 npm run gateforge:external-check

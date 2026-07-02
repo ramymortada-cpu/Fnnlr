@@ -36,6 +36,11 @@ jobs:
         run: npm run gateforge:final-gate-smoke
       - name: GateForge attestation secret pack smoke
         run: npm run gateforge:attestation-secret-pack-smoke
+      - name: GateForge hosted attestation dispatch
+        run: |
+          npm run gateforge:prepare-hosted-attestation || echo "::notice title=GateForge hosted attestation remains blocked::Hosted staging attestation secret is missing or incomplete."
+      - name: GateForge hosted attestation dispatch freshness check
+        run: npm run gateforge:prepare-hosted-attestation-check
       - name: GateForge attestation secret pack
         run: |
           npm run gateforge:attestation-secret-pack || echo "::notice title=GateForge attestation pack remains blocked::Hosted staging attestation packet is still missing or incomplete."
@@ -249,6 +254,8 @@ jobs:
             gateforge-audit/run-*/34_final_gate_current_decision.md
             gateforge-audit/run-*/35_ci_artifact_index.md
             gateforge-audit/run-*/36_life_or_death_war_room.md
+            gateforge-audit/run-*/37_hosted_staging_strict_dispatch.md
+            gateforge-audit/run-*/37_hosted_staging_strict_dispatch.json
             gateforge-audit/run-*/38_hosted_staging_operator_setup.md
             gateforge-audit/run-*/39_github_secrets_presence_audit.md
             gateforge-audit/run-*/39_github_secrets_presence_audit.json

@@ -1,0 +1,13 @@
+{
+  "generatedAt": "2026-07-02T12:38:14.102Z",
+  "status": "BLOCKED",
+  "outputPath": "gateforge-audit/external-attestations/hosted-staging-attestation.json",
+  "details": [
+    "missing hosted attestation secret"
+  ],
+  "safety": {
+    "secretValuesPrinted": false,
+    "productionMutated": false,
+    "sourceDumpsIncluded": false
+  }
+}
