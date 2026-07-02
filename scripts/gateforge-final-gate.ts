@@ -1,5 +1,6 @@
 #!/usr/bin/env tsx
 import fs from 'node:fs';
+import { spawnSync } from 'node:child_process';
 
 type GateSummary = {
   evidenceContext?: string;
@@ -10,7 +11,7 @@ type GateSummary = {
 type ExternalPacket = {
   environment: string;
   decisionRequested: string;
-  items: { id: string; status: string; evidenceRefs: string[]; owner: string }[];
+  items: { id: string; status: string; evidenceRefs: string[]; owner: string; blockerIdsClosed?: string[] }[];
 };
 
 const defaultSummaryPath = 'gateforge-audit/run-2026-06-23-1035/ga-unblock-evidence/summary.json';
@@ -23,10 +24,12 @@ const requiredExternalIds = [
   'provider_webhook_replay_idempotency',
   'monitoring_alerting_proof',
   'hosted_restore_drill',
+  'email_deliverability_runtime_proof',
   'legal_commercial_final_approval',
   'admin_mfa_runtime_proof',
   'ai_budget_runtime_proof',
 ];
+const requiredBlockerIds = Array.from({ length: 16 }, (_, index) => `GF-${String(index + 1).padStart(3, '0')}`);
 
 function readJson<T>(file: string): T | null {
   if (!fs.existsSync(file)) return null;
@@ -51,6 +54,17 @@ if (runtimeFailures.length) {
 const external = readJson<ExternalPacket>(externalPath);
 if (!external) printBlocked('external attestation packet missing', [externalPath]);
 
+const externalContract = spawnSync('npx', ['tsx', 'scripts/gateforge-external-check.ts', externalPath], {
+  encoding: 'utf8',
+  maxBuffer: 1024 * 1024,
+  stdio: ['ignore', 'pipe', 'pipe'],
+});
+if (externalContract.status !== 0) {
+  printBlocked('external attestation contract failed', [
+    'run npm run gateforge:external-check with the hosted staging packet and fix the listed evidence contract gaps',
+  ]);
+}
+
 if (external.decisionRequested !== 'CONDITIONAL_GO' && external.decisionRequested !== 'GO') {
   printBlocked('external attestation decision is unsupported', [`decisionRequested=${external.decisionRequested}`]);
 }
@@ -70,8 +84,19 @@ for (const id of requiredExternalIds) {
 
 if (externalFailures.length) printBlocked('external attestations incomplete', externalFailures);
 
+const closedBlockerIds = new Set(
+  external.items
+    .filter((item) => item.status === 'PASS')
+    .flatMap((item) => item.blockerIdsClosed ?? []),
+);
+const missingBlockerClosures = requiredBlockerIds.filter((id) => !closedBlockerIds.has(id));
+if (missingBlockerClosures.length) {
+  printBlocked('external blocker closure mapping incomplete', missingBlockerClosures);
+}
+
 console.log('GateForge final gate: CONDITIONAL_GO');
 console.log(`runtime context: ${summary.evidenceContext || 'UNKNOWN'}`);
 console.log(`score: ${summary.score || 'NOT_RECOMPUTED'}`);
 console.log(`external environment: ${external.environment}`);
 console.log(`external evidence items: ${external.items.length}`);
+console.log(`external blockers explicitly closed: ${closedBlockerIds.size}/${requiredBlockerIds.length}`);
