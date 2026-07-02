@@ -40,23 +40,23 @@ function fixtureValueFor(name: string): string {
   if (name === 'GATEFORGE_HOSTED_STAGING_ATTESTATION_B64') return fixtureAttestationB64();
   const values: Record<string, string> = {
     GATEFORGE_HOSTED_STAGING_ATTESTATION_B64: 'eyJnZW5lcmF0ZWRBdCI6IjIwMjYtMDYtMjRUMDA6MDA6MDAuMDAwWiIsImVudmlyb25tZW50IjoiSE9TVEVEX1NUQUdJTkciLCJkZWNpc2lvblJlcXVlc3RlZCI6IkNPTkRJVElPTkFMX0dPIiwiaXRlbXMiOlt7ImlkIjoiaG9zdGVkX3N0YWdpbmdfZ2F0ZWZvcmdlX3J1biIsInRpdGxlIjoiaG9zdGVkX3N0YWdpbmdfZ2F0ZWZvcmdlX3J1biIsInN0YXR1cyI6IlBBU1MiLCJldmlkZW5jZVJlZnMiOlsiYXJ0aWZhY3Q6Zml4dHVyZSJdLCJvd25lciI6IkZpeHR1cmUifSx7ImlkIjoicHJvdmlkZXJfd2ViaG9va19yZXBsYXlfaWRlbXBvdGVuY3kiLCJ0aXRsZSI6InByb3ZpZGVyX3dlYmhvb2tfcmVwbGF5X2lkZW1wb3RlbmN5Iiwic3RhdHVzIjoiUEFTUyIsImV2aWRlbmNlUmVmcyI6WyJhcnRpZmFjdDpmaXh0dXJlIl0sIm93bmVyIjoiRml4dHVyZSJ9LHsiaWQiOiJtb25pdG9yaW5nX2FsZXJ0aW5nX3Byb29mIiwidGl0bGUiOiJtb25pdG9yaW5nX2FsZXJ0aW5nX3Byb29mIiwic3RhdHVzIjoiUEFTUyIsImV2aWRlbmNlUmVmcyI6WyJhcnRpZmFjdDpmaXh0dXJlIl0sIm93bmVyIjoiRml4dHVyZSJ9LHsiaWQiOiJob3N0ZWRfcmVzdG9yZV9kcmlsbCIsInRpdGxlIjoiaG9zdGVkX3Jlc3RvcmVfZHJpbGwiLCJzdGF0dXMiOiJQQVNTIiwiZXZpZGVuY2VSZWZzIjpbImFydGlmYWN0OmZpeHR1cmUiXSwib3duZXIiOiJGaXh0dXJlIn0seyJpZCI6ImxlZ2FsX2NvbW1lcmNpYWxfZmluYWxfYXBwcm92YWwiLCJ0aXRsZSI6ImxlZ2FsX2NvbW1lcmNpYWxfZmluYWxfYXBwcm92YWwiLCJzdGF0dXMiOiJQQVNTIiwiZXZpZGVuY2VSZWZzIjpbImFydGlmYWN0OmZpeHR1cmUiXSwib3duZXIiOiJGaXh0dXJlIn0seyJpZCI6ImFkbWluX21mYV9ydW50aW1lX3Byb29mIiwidGl0bGUiOiJhZG1pbl9tZmFfcnVudGltZV9wcm9vZiIsInN0YXR1cyI6IlBBU1MiLCJldmlkZW5jZVJlZnMiOlsiYXJ0aWZhY3Q6Zml4dHVyZSJdLCJvd25lciI6IkZpeHR1cmUifSx7ImlkIjoiYWlfYnVkZ2V0X3J1bnRpbWVfcHJvb2YiLCJ0aXRsZSI6ImFpX2J1ZGdldF9ydW50aW1lX3Byb29mIiwic3RhdHVzIjoiUEFTUyIsImV2aWRlbmNlUmVmcyI6WyJhcnRpZmFjdDpmaXh0dXJlIl0sIm93bmVyIjoiRml4dHVyZSJ9XX0=',
-    CONTROL_PLANE_DATABASE_URL: 'postgres://control_user:control_password@db.staging.example.com:5432/fnnlr_control?sslmode=require',
-    TENANT_DB_ADMIN_URL: 'postgres://tenant_admin:tenant_password@db.staging.example.com:5432/postgres?sslmode=require',
-    TENANT_DB_HOST: 'db.staging.example.com',
-    TENANT_CREDENTIAL_ENCRYPTION_KEY: 'tenant-credential-key-fixture-32',
-    INTEGRATION_ENCRYPTION_KEY: 'integration-key-fixture-32chars',
-    FNNLR_CRON_SECRET: 'cron-secret-fixture-32-characters',
-    AUTH_MFA_ENCRYPTION_KEY: 'mfa-encryption-key-fixture-32',
+    CONTROL_PLANE_DATABASE_URL: 'postgres://control_user:control_password@db.staging.fnnlr.ai:5432/fnnlr_control?sslmode=require',
+    TENANT_DB_ADMIN_URL: 'postgres://tenant_admin:tenant_password@db.staging.fnnlr.ai:5432/postgres?sslmode=require',
+    TENANT_DB_HOST: 'db.staging.fnnlr.ai',
+    TENANT_CREDENTIAL_ENCRYPTION_KEY: 'tenant-credential-key-fixture-32-plus',
+    INTEGRATION_ENCRYPTION_KEY: 'integration-key-fixture-32chars-plus',
+    FNNLR_CRON_SECRET: 'cron-secret-fixture-32-characters-plus',
+    AUTH_MFA_ENCRYPTION_KEY: 'mfa-encryption-key-fixture-32-plus',
     FNNLR_AI_TENANT_DAILY_USD_CAP: '1',
     FNNLR_AI_GLOBAL_DAILY_USD_CAP: '5',
-    SENTRY_DSN: 'https://public@sentry.example.com/1',
-    UPTIME_HEALTHCHECK_URL: 'https://staging.example.com/health',
-    ALERT_EMAIL_TO: 'ops@example.com',
-    ALERT_WEBHOOK_URL: 'https://hooks.example.com/fnnlr-alerts',
-    RESEND_API_KEY: 're_fixture_key_123456',
-    EMAIL_FROM: 'noreply@example.com',
-    EMAIL_REPLY_TO: 'support@example.com',
-    ANTHROPIC_API_KEY: 'sk-ant-fixture-key-123456',
+    SENTRY_DSN: 'https://publickey@o123456.ingest.sentry.io/123456',
+    UPTIME_HEALTHCHECK_URL: 'https://staging.fnnlr.ai/health',
+    ALERT_EMAIL_TO: 'ops@fnnlr.ai',
+    ALERT_WEBHOOK_URL: 'https://hooks.fnnlr.ai/fnnlr-alerts',
+    RESEND_API_KEY: 're_fixture_key_1234567890',
+    EMAIL_FROM: 'noreply@fnnlr.ai',
+    EMAIL_REPLY_TO: 'support@fnnlr.ai',
+    ANTHROPIC_API_KEY: 'sk-ant-fixture-key-1234567890abcdef',
   };
   const value = values[name];
   if (!value) throw new Error(`missing fixture value for ${name}`);
@@ -113,7 +113,7 @@ const invalidCsv = path.join(os.tmpdir(), 'fnnlr-gateforge-replacement-invalid.c
 const invalidJson = path.join(os.tmpdir(), 'fnnlr-gateforge-replacement-invalid.json');
 fs.writeFileSync(path.join(invalidDir, attestationSecrets[1]), fixtureValueFor(attestationSecrets[1]));
 for (const name of runtimeSecrets) fs.writeFileSync(path.join(invalidDir, name), fixtureValueFor(name));
-fs.writeFileSync(path.join(invalidDir, 'TENANT_DB_HOST'), 'postgres://user:pass@db.staging.example.com');
+fs.writeFileSync(path.join(invalidDir, 'TENANT_DB_HOST'), 'postgres://user:pass@db.staging.fnnlr.ai');
 const invalid = run(['--dir', invalidDir, '--out', invalidOut, '--csv-out', invalidCsv, '--json-out', invalidJson]);
 if (invalid.status === 0) fail('invalid case unexpectedly passed');
 const invalidReport = fs.readFileSync(invalidOut, 'utf8');
