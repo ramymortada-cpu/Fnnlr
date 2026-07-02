@@ -1,6 +1,6 @@
 # Hosted Staging War Room
 
-Generated: `2026-07-02T11:41:22.213Z`
+Generated: `2026-07-02T19:36:58.418Z`
 
 Purpose: close the remaining GateForge external evidence blockers without weakening the gate.
 
@@ -24,6 +24,7 @@ Do not mark an item `PASS` unless it has a safe evidence reference. Missing evid
 | `provider_webhook_replay_idempotency` | `ABSENT` | Engineering/operator | Signed provider event accepted once, duplicate handled idempotently, stale/replay event rejected. | `+1 to +2` |
 | `monitoring_alerting_proof` | `ABSENT` | Engineering/operator | Sentry or equivalent alert, uptime health check, cron failure alert, and webhook failure alert references. | `+1 to +2` |
 | `hosted_restore_drill` | `ABSENT` | Engineering/operator | Backup, restore into disposable hosted restore DB, and restore verification PASS. | `+2 to +3` |
+| `email_deliverability_runtime_proof` | `ABSENT` | Engineering/operator | Transactional provider test plus SPF, DKIM, and DMARC verified sender evidence. | `+1 to +2` |
 | `legal_commercial_final_approval` | `ABSENT` | Founder/legal | Terms, Privacy, DPA, subprocessors, retention policy, and security contact final approved or signed off. | `+1 to +2` |
 | `admin_mfa_runtime_proof` | `ABSENT` | Engineering/operator | Hosted admin setup/verify evidence plus admin-sensitive route rejects non-MFA session. | `+1 to +2` |
 | `ai_budget_runtime_proof` | `ABSENT` | Engineering/operator | Allowed AI call, cap-blocked call, kill-switch blocked call, and tenant-scoped ai_usage_events evidence. | `+1 to +2` |
@@ -61,4 +62,4 @@ npm run gateforge:final-report
 
 ## Final Gate
 
-The target is `CONDITIONAL_GO`. The final gate must still fail closed until all seven external items are `PASS`.
+The target is `CONDITIONAL_GO`. The final gate must still fail closed until all eight external items are `PASS`.

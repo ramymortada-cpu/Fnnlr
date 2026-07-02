@@ -25,7 +25,7 @@ const secretPlans: Record<string, SecretPlan> = {
   GATEFORGE_HOSTED_STAGING_ATTESTATION_JSON: {
     owner: 'Operator + founder/legal',
     valueSource: 'Sanitized hosted staging attestation JSON packet.',
-    purpose: 'Provides the seven external evidence decisions to the hosted gate.',
+    purpose: 'Provides the eight external evidence decisions to the hosted gate.',
     validation: 'npm run gateforge:external-check',
     blockerIfMissing: 'External evidence packet cannot be evaluated.',
   },

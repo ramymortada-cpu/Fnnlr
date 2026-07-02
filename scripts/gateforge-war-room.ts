@@ -54,6 +54,13 @@ const requiredItems = [
     scoreLift: '+2 to +3',
   },
   {
+    id: 'email_deliverability_runtime_proof',
+    owner: 'Engineering/operator',
+    acceptance: 'Transactional provider test plus SPF, DKIM, and DMARC verified sender evidence.',
+    command: 'npm run deploy:smoke',
+    scoreLift: '+1 to +2',
+  },
+  {
     id: 'legal_commercial_final_approval',
     owner: 'Founder/legal',
     acceptance: 'Terms, Privacy, DPA, subprocessors, retention policy, and security contact final approved or signed off.',
@@ -174,7 +181,7 @@ npm run gateforge:final-report
 
 ## Final Gate
 
-The target is \`CONDITIONAL_GO\`. The final gate must still fail closed until all seven external items are \`PASS\`.
+The target is \`CONDITIONAL_GO\`. The final gate must still fail closed until all eight external items are \`PASS\`.
 `;
 }
 
@@ -218,7 +225,7 @@ npm run gateforge:final-report
 ## Expected Movement
 
 - Current defensible score: \`${summary?.score || '78-84/100 pending legal/provider attestation'}\`
-- With all seven external items PASS: \`CONDITIONAL_GO\`
+- With all eight external items PASS: \`CONDITIONAL_GO\`
 - Do not claim \`GO\` until production/live legal, monitoring, provider, and restore evidence is complete.
 
 See \`${runbookPath}\` for the operator runbook.

@@ -1,6 +1,7 @@
 #!/usr/bin/env tsx
 import fs from 'node:fs';
 import path from 'node:path';
+import { spawnSync } from 'node:child_process';
 
 type GateSummary = {
   evidenceContext?: string;
@@ -11,7 +12,7 @@ type GateSummary = {
 type ExternalPacket = {
   environment?: string;
   decisionRequested?: string;
-  items?: { id: string; status: string; evidenceRefs: string[]; owner: string }[];
+  items?: { id: string; status: string; evidenceRefs: string[]; owner: string; blockerIdsClosed?: string[] }[];
 };
 
 const runDir = 'gateforge-audit/run-2026-06-23-1035';
@@ -26,10 +27,12 @@ const requiredExternalIds = [
   'provider_webhook_replay_idempotency',
   'monitoring_alerting_proof',
   'hosted_restore_drill',
+  'email_deliverability_runtime_proof',
   'legal_commercial_final_approval',
   'admin_mfa_runtime_proof',
   'ai_budget_runtime_proof',
 ];
+const requiredBlockerIds = Array.from({ length: 16 }, (_, index) => `GF-${String(index + 1).padStart(3, '0')}`);
 
 function readJson<T>(file: string): T | null {
   if (!fs.existsSync(file)) return null;
@@ -51,6 +54,14 @@ for (const failure of runtimeFailures) reasons.push(`runtime ${failure.name}: ${
 if (!external) {
   reasons.push(`external attestation packet missing: ${externalPath}`);
 } else {
+  const externalContract = spawnSync('npx', ['tsx', 'scripts/gateforge-external-check.ts', externalPath], {
+    encoding: 'utf8',
+    maxBuffer: 1024 * 1024,
+    stdio: ['ignore', 'pipe', 'pipe'],
+  });
+  if (externalContract.status !== 0) {
+    reasons.push('external attestation contract failed; run npm run gateforge:external-check with the hosted staging packet');
+  }
   const byId = new Map((external.items || []).map((item) => [item.id, item]));
   for (const id of requiredExternalIds) {
     const item = byId.get(id);
@@ -61,6 +72,14 @@ if (!external) {
     if (item.status !== 'PASS') reasons.push(`external ${id}: ${item.status}`);
     if (!item.evidenceRefs?.length) reasons.push(`external ${id}: missing evidenceRefs`);
     if (!item.owner?.trim()) reasons.push(`external ${id}: missing owner`);
+  }
+  const closedBlockerIds = new Set(
+    (external.items || [])
+      .filter((item) => item.status === 'PASS')
+      .flatMap((item) => item.blockerIdsClosed ?? []),
+  );
+  for (const id of requiredBlockerIds) {
+    if (!closedBlockerIds.has(id)) reasons.push(`external ${id}: missing explicit blocker closure mapping`);
   }
 }
 
