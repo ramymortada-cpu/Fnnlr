@@ -13,6 +13,7 @@ export type TrustCenterRequirementId =
   | 'support_workflow'
   | 'procurement_packet'
   | 'evidence_index'
+  | 'gateforge_terminal_closeout'
   | 'buyer_safe_proof_summaries'
   | 'hosted_gap_language'
   | 'human_attestation_language'
@@ -49,6 +50,11 @@ export const TRUST_CENTER_REQUIREMENTS: Array<{
   req('support_workflow', ['SUPPORT_WORKFLOW.md'], 'Support'),
   req('procurement_packet', ['PROCUREMENT_CHECKLIST.md'], 'Sales'),
   req('evidence_index', ['EVIDENCE_INDEX.md'], 'Engineering'),
+  req('gateforge_terminal_closeout', [
+    '53_hosted_dependency_chain.md',
+    '55_open_p0_terminal_runbook.md',
+    '60_hosted_secret_acceptance_matrix.md',
+  ], 'Engineering'),
   req('buyer_safe_proof_summaries', [
     'Buyer-Safe Proof Summaries',
     'Security overview',

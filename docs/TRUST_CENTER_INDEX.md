@@ -36,6 +36,11 @@ fnnlr is an Arabic-first AI Revenue Operations OS. Its trust posture is built ar
 | GateForge external blocker closeout | `../gateforge-audit/run-2026-06-23-1035/48_remaining_external_blocker_closeout.md` | Exact remaining hosted/operator blocker map plus the 5 terminal dependency gates |
 | GateForge external blocker progress | `../gateforge-audit/run-2026-06-23-1035/49_external_blocker_progress.md` | Per-blocker readiness across local secrets, GitHub secrets, and hosted evidence |
 | GateForge operator execution packet | `../gateforge-audit/run-2026-06-23-1035/50_operator_execution_packet.md` | Command path, provider setup, and validation matrix for closing the 16 external provider/runtime blockers |
+| GateForge hosted dependency chain | `../gateforge-audit/run-2026-06-23-1035/53_hosted_dependency_chain.md` | Ordered dependency path for the 5 terminal hosted-secret gates |
+| GateForge hosted readiness contract | `../gateforge-audit/run-2026-06-23-1035/54_hosted_readiness_contract.md` | Evidence-gated contract proving local-only evidence cannot approve GA |
+| GateForge open P0 terminal runbook | `../gateforge-audit/run-2026-06-23-1035/55_open_p0_terminal_runbook.md` | 21-item terminal operator runbook for the 16 external blockers plus 5 dependency gates |
+| GateForge hosted strict trigger readiness | `../gateforge-audit/run-2026-06-23-1035/56_hosted_strict_trigger_readiness.md` | Trigger-readiness proof for hosted strict validation once prerequisites exist |
+| GateForge hosted secret acceptance matrix | `../gateforge-audit/run-2026-06-23-1035/60_hosted_secret_acceptance_matrix.md` | Secret-name-only acceptance contract for runtime and attestation readiness |
 | SaaS moat board | `SAAS_MOAT_ACTION_PLAN.md` | 165 execution actions |
 
 ## Buyer-Safe Proof Summaries

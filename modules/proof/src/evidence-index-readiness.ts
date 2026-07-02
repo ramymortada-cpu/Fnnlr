@@ -9,6 +9,7 @@ export type EvidenceIndexRequirementId =
   | 'commercial_limit_readiness'
   | 'enterprise_readiness'
   | 'trust_center_readiness'
+  | 'gateforge_terminal_closeout'
   | 'hosted_gap_language';
 
 export type EvidenceIndexReview = {
@@ -38,6 +39,11 @@ export const EVIDENCE_INDEX_REQUIREMENTS: Array<{
   req('commercial_limit_readiness', ['modules/commercial/src/enforcement-readiness.ts', 'tests/commercial-enforcement-readiness.test.ts'], 'Product'),
   req('enterprise_readiness', ['modules/enterprise/src/readiness.ts', 'tests/enterprise-readiness.test.ts'], 'Engineering'),
   req('trust_center_readiness', ['modules/proof/src/trust-center-readiness.ts', 'tests/trust-center-readiness.test.ts'], 'Engineering'),
+  req('gateforge_terminal_closeout', [
+    'gateforge-audit/run-2026-06-23-1035/53_hosted_dependency_chain.md',
+    'gateforge-audit/run-2026-06-23-1035/55_open_p0_terminal_runbook.md',
+    'gateforge-audit/run-2026-06-23-1035/60_hosted_secret_acceptance_matrix.md',
+  ], 'Engineering'),
   req('hosted_gap_language', ['HOSTED_PROOF_PENDING', 'HUMAN_ATTESTATION_REQUIRED'], 'Engineering'),
 ];
 

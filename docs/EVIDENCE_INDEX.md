@@ -45,6 +45,11 @@ process payments, and makes no guaranteed-revenue claim.
 - `gateforge-audit/run-2026-06-23-1035/49_external_blocker_progress.json` — machine-readable status counts for `LOCAL_SECRET_PENDING`, `GITHUB_SECRET_PENDING`, and `HOSTED_EVIDENCE_PENDING`.
 - `gateforge-audit/run-2026-06-23-1035/50_operator_execution_packet.md` — operator-ready command path, provider setup, and validation matrix for closing the 16 external provider/runtime blockers before the 5 dependency gates can close.
 - `gateforge-audit/run-2026-06-23-1035/50_operator_execution_packet.csv` and `.json` — machine-readable operator execution packet with secret names only.
+- `gateforge-audit/run-2026-06-23-1035/53_hosted_dependency_chain.md` and `.json` — ordered dependency chain for `GF-017`, `GF-018`, `GF-019`, `GF-021`, and `GF-022`.
+- `gateforge-audit/run-2026-06-23-1035/54_hosted_readiness_contract.md` and `.json` — current gate contract proving local evidence cannot approve GA without hosted proof.
+- `gateforge-audit/run-2026-06-23-1035/55_open_p0_terminal_runbook.md` and `.json` — terminal 21-item open P0 runbook combining the 16 external blockers and 5 dependency gates.
+- `gateforge-audit/run-2026-06-23-1035/56_hosted_strict_trigger_readiness.md` and `.json` — readiness proof for triggering hosted strict validation once secrets and attestation exist.
+- `gateforge-audit/run-2026-06-23-1035/60_hosted_secret_acceptance_matrix.md` and `.json` — secret-name-only acceptance matrix for hosted runtime and attestation readiness.
 
 ## Readiness Contract Index
 
