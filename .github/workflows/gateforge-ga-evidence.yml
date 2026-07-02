@@ -140,6 +140,9 @@ jobs:
       - name: GateForge hosted readiness contract
         run: npm run gateforge:hosted-readiness-contract
         if: always()
+      - name: GateForge hosted readiness contract freshness check
+        run: npm run gateforge:hosted-readiness-contract-check
+        if: always()
       - name: GateForge open P0 runbook
         run: npm run gateforge:open-p0-runbook
         if: always()

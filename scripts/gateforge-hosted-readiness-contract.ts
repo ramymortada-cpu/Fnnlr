@@ -47,10 +47,23 @@ type GateStatus = {
   blockers?: {
     openExternalBlockers?: string[];
     externalBlockerProgressCounts?: Record<string, number>;
+    externalBlockerReadiness?: {
+      localUnreadySecretNames?: string[];
+      githubMissingSecretNames?: string[];
+    };
   };
   evidenceScope?: {
     localSecretReadinessIsGaEvidence?: boolean;
     hostedStrictWorkflowRequiredForGa?: boolean;
+  };
+  safety?: Safety;
+};
+type ExternalBlockerProgress = {
+  total?: number;
+  counts?: Record<string, number>;
+  readiness?: {
+    localUnreadySecretNames?: string[];
+    githubMissingSecretNames?: string[];
   };
   safety?: Safety;
 };
@@ -70,6 +83,7 @@ const runDir = 'gateforge-audit/run-2026-06-23-1035';
 const moatPath = 'docs/SAAS_MOAT_EXECUTION_STATUS.json';
 const doctorPath = `${runDir}/44_hosted_readiness_doctor.json`;
 const gatePath = `${runDir}/47_ga_unblock_status.json`;
+const progressPath = `${runDir}/49_external_blocker_progress.json`;
 const operatorPath = `${runDir}/50_operator_execution_packet.json`;
 const outIndex = process.argv.indexOf('--out');
 const outPath = outIndex >= 0 ? process.argv[outIndex + 1] : `${runDir}/54_hosted_readiness_contract.md`;
@@ -109,10 +123,15 @@ function sameSet(actual: string[] | undefined, expected: string[]): boolean {
   return JSON.stringify([...(actual ?? [])].sort()) === JSON.stringify([...expected].sort());
 }
 
+function sameNames(actual: string[] | undefined, expected: string[] | undefined): boolean {
+  return JSON.stringify([...(actual ?? [])].sort()) === JSON.stringify([...(expected ?? [])].sort());
+}
+
 function evaluate() {
   const moat = readJson<MoatStatus>(moatPath);
   const doctor = readJson<DoctorJson>(doctorPath);
   const gate = readJson<GateStatus>(gatePath);
+  const progress = readJson<ExternalBlockerProgress>(progressPath);
   const operator = readJson<OperatorPacket>(operatorPath);
   const expectedExternalIds = ids(1, 16);
   const rows = moat.rows ?? [];
@@ -185,6 +204,11 @@ function evaluate() {
       ? pass('DOCTOR-SAFETY', 'Doctor JSON safety flags confirm no secret values printed and no production mutation.')
       : failResult('DOCTOR-SAFETY', 'doctor safety flags are not safe.'),
   );
+  results.push(
+    safe(progress.safety)
+      ? pass('PROGRESS-SAFETY', 'External blocker progress safety flags confirm no secret values printed, no production mutation, and no source dump.')
+      : failResult('PROGRESS-SAFETY', 'external blocker progress safety flags are not safe.'),
+  );
 
   results.push(
     gate.decision?.state === 'CANNOT_APPROVE_LOCAL_EVIDENCE' &&
@@ -198,6 +222,30 @@ function evaluate() {
       gate.blockers?.externalBlockerProgressCounts?.LOCAL_SECRET_PENDING === 16
       ? pass('GATE-BLOCKER-ALIGNMENT', 'Gate status aligns with 16 local-secret-pending external blockers.')
       : failResult('GATE-BLOCKER-ALIGNMENT', `gate blockers/counts=${JSON.stringify(gate.blockers ?? {})}`),
+  );
+  results.push(
+    progress.total === 16 &&
+      progress.counts?.LOCAL_SECRET_PENDING === 16 &&
+      progress.counts.GITHUB_SECRET_PENDING === 0 &&
+      progress.counts.HOSTED_EVIDENCE_PENDING === 0
+      ? pass('PROGRESS-BLOCKER-COUNTS', 'External blocker progress still has 16 blockers at LOCAL_SECRET_PENDING.')
+      : failResult('PROGRESS-BLOCKER-COUNTS', `progress counts=${JSON.stringify(progress.counts ?? {})}`),
+  );
+  results.push(
+    progress.readiness?.localUnreadySecretNames?.length === 11 &&
+      progress.readiness.githubMissingSecretNames?.length === 11 &&
+      sameNames(progress.readiness.localUnreadySecretNames, progress.readiness.githubMissingSecretNames)
+      ? pass('PROGRESS-UNIQUE-SECRET-READINESS', 'Progress board reports the same 11 unique secret names missing locally and on GitHub.')
+      : failResult('PROGRESS-UNIQUE-SECRET-READINESS', `progress readiness=${JSON.stringify(progress.readiness ?? {})}`),
+  );
+  results.push(
+    sameNames(gate.blockers?.externalBlockerReadiness?.localUnreadySecretNames, progress.readiness?.localUnreadySecretNames) &&
+      sameNames(gate.blockers?.externalBlockerReadiness?.githubMissingSecretNames, progress.readiness?.githubMissingSecretNames)
+      ? pass('GATE-PROGRESS-READINESS-ALIGNMENT', 'Gate status and external blocker progress agree on unique missing secret names.')
+      : failResult(
+          'GATE-PROGRESS-READINESS-ALIGNMENT',
+          `gate=${JSON.stringify(gate.blockers?.externalBlockerReadiness ?? {})} progress=${JSON.stringify(progress.readiness ?? {})}`,
+        ),
   );
 
   results.push(
@@ -218,7 +266,7 @@ function evaluate() {
   return {
     generatedAt: new Date().toISOString(),
     decision: results.every((result) => result.status === 'PASS') ? 'PASS' : 'FAIL',
-    source: { moatPath, doctorPath, gatePath, operatorPath },
+    source: { moatPath, doctorPath, gatePath, progressPath, operatorPath },
     currentGate: {
       state: gate.decision?.state ?? 'UNKNOWN',
       scoreBand: gate.decision?.scoreBand ?? 'UNKNOWN',
@@ -230,6 +278,8 @@ function evaluate() {
       evidenceFilePresent: moat.byState?.EVIDENCE_FILE_PRESENT ?? 0,
       externalBlockers: moat.byState?.BLOCKED_EXTERNAL ?? 0,
       localSecretPending: operator.counts?.LOCAL_SECRET_PENDING ?? 0,
+      uniqueLocalSecretsNotReady: progress.readiness?.localUnreadySecretNames?.length ?? 0,
+      uniqueGithubSecretsMissing: progress.readiness?.githubMissingSecretNames?.length ?? 0,
     },
     results,
     safety: {
@@ -275,6 +325,8 @@ This contract verifies that the hosted readiness doctor, the 165-item moat board
 - Evidence-file present: \`${report.counts.evidenceFilePresent}\`
 - External blockers: \`${report.counts.externalBlockers}\`
 - Local secret pending: \`${report.counts.localSecretPending}\`
+- Unique local secret names not ready: \`${report.counts.uniqueLocalSecretsNotReady}\`
+- Unique GitHub secret names missing: \`${report.counts.uniqueGithubSecretsMissing}\`
 
 ## Results
 

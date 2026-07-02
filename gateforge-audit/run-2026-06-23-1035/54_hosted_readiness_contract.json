@@ -1,10 +1,11 @@
 {
-  "generatedAt": "2026-07-02T10:41:12.327Z",
+  "generatedAt": "2026-07-02T10:52:55.761Z",
   "decision": "PASS",
   "source": {
     "moatPath": "docs/SAAS_MOAT_EXECUTION_STATUS.json",
     "doctorPath": "gateforge-audit/run-2026-06-23-1035/44_hosted_readiness_doctor.json",
     "gatePath": "gateforge-audit/run-2026-06-23-1035/47_ga_unblock_status.json",
+    "progressPath": "gateforge-audit/run-2026-06-23-1035/49_external_blocker_progress.json",
     "operatorPath": "gateforge-audit/run-2026-06-23-1035/50_operator_execution_packet.json"
   },
   "currentGate": {
@@ -17,7 +18,9 @@
     "totalMoatActions": 165,
     "evidenceFilePresent": 144,
     "externalBlockers": 16,
-    "localSecretPending": 16
+    "localSecretPending": 16,
+    "uniqueLocalSecretsNotReady": 11,
+    "uniqueGithubSecretsMissing": 11
   },
   "results": [
     {
@@ -71,6 +74,11 @@
       "evidence": "Doctor JSON safety flags confirm no secret values printed and no production mutation."
     },
     {
+      "id": "PROGRESS-SAFETY",
+      "status": "PASS",
+      "evidence": "External blocker progress safety flags confirm no secret values printed, no production mutation, and no source dump."
+    },
+    {
       "id": "GATE-HONESTY",
       "status": "PASS",
       "evidence": "Gate status still requires hosted strict evidence and refuses local-only approval."
@@ -79,6 +87,21 @@
       "id": "GATE-BLOCKER-ALIGNMENT",
       "status": "PASS",
       "evidence": "Gate status aligns with 16 local-secret-pending external blockers."
+    },
+    {
+      "id": "PROGRESS-BLOCKER-COUNTS",
+      "status": "PASS",
+      "evidence": "External blocker progress still has 16 blockers at LOCAL_SECRET_PENDING."
+    },
+    {
+      "id": "PROGRESS-UNIQUE-SECRET-READINESS",
+      "status": "PASS",
+      "evidence": "Progress board reports the same 11 unique secret names missing locally and on GitHub."
+    },
+    {
+      "id": "GATE-PROGRESS-READINESS-ALIGNMENT",
+      "status": "PASS",
+      "evidence": "Gate status and external blocker progress agree on unique missing secret names."
     },
     {
       "id": "OPERATOR-PACKET-ALIGNMENT",
