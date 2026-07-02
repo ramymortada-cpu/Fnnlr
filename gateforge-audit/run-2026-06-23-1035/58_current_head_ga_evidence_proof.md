@@ -1,6 +1,6 @@
 # Current-Head GA Evidence Proof
 
-Generated: `2026-07-02T11:11:50.403Z`
+Generated: `2026-07-02T20:22:20.905Z`
 
 Decision: `PASS`
 
@@ -8,16 +8,16 @@ This report verifies whether the current repository HEAD has a successful comple
 
 ## Current Head
 
-- HEAD: `480fd39f3b4ed26c4cdb13a1726fa13daef8cb64`
-- Lookup source: `gh run list --workflow "GateForge GA Evidence" --commit 480fd39f3b4ed26c4cdb13a1726fa13daef8cb64`
+- HEAD: `1140d38e03d7f6271b154e09b1f8d23847464085`
+- Lookup source: `gh run list --workflow "GateForge GA Evidence" --commit 1140d38e03d7f6271b154e09b1f8d23847464085`
 - Runs found for HEAD: `1`
 
 ## Successful Run
 
-- Run ID: `28585365030`
+- Run ID: `28618920902`
 - Status: `completed`
 - Conclusion: `success`
-- URL: https://github.com/ramymortada-cpu/Fnnlr/actions/runs/28585365030
+- URL: https://github.com/ramymortada-cpu/Fnnlr/actions/runs/28618920902
 
 ## In-Progress Run
 

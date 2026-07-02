@@ -1,6 +1,6 @@
 # GateForge GA Evidence Run Audit
 
-Generated: `2026-07-01T18:59:55.963Z`
+Generated: `2026-07-02T20:22:20.565Z`
 
 This audit checks the latest successful completed `GateForge GA Evidence` run status and annotations. It validates workflow evidence quality only; it does not read or print secret values.
 
@@ -9,16 +9,16 @@ This audit checks the latest successful completed `GateForge GA Evidence` run st
 - Audit decision: `PASS`
 - Run status: `completed`
 - Run conclusion: `success`
-- Run ID: `28540665084`
-- Head SHA: `5b615b257bd2a914eab61425340fc82212de98da`
-- URL: https://github.com/ramymortada-cpu/Fnnlr/actions/runs/28540665084
+- Run ID: `28618920902`
+- Head SHA: `1140d38e03d7f6271b154e09b1f8d23847464085`
+- URL: https://github.com/ramymortada-cpu/Fnnlr/actions/runs/28618920902
 
 ## Annotation Summary
 
 - Failure annotations: `0`
 - Warning annotations: `0`
-- Notice annotations: `1`
-- Total annotations: `1`
+- Notice annotations: `7`
+- Total annotations: `7`
 
 ## Failure Annotations
 

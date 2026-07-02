@@ -1,17 +1,17 @@
 {
-  "generatedAt": "2026-07-02T11:11:50.403Z",
+  "generatedAt": "2026-07-02T20:22:20.905Z",
   "workflow": "GateForge GA Evidence",
   "decision": "PASS",
-  "currentHead": "480fd39f3b4ed26c4cdb13a1726fa13daef8cb64",
-  "source": "gh run list --workflow \"GateForge GA Evidence\" --commit 480fd39f3b4ed26c4cdb13a1726fa13daef8cb64",
+  "currentHead": "1140d38e03d7f6271b154e09b1f8d23847464085",
+  "source": "gh run list --workflow \"GateForge GA Evidence\" --commit 1140d38e03d7f6271b154e09b1f8d23847464085",
   "runsFoundForHead": 1,
   "successfulRun": {
     "conclusion": "success",
-    "createdAt": "2026-07-02T11:06:55Z",
-    "databaseId": 28585365030,
-    "headSha": "480fd39f3b4ed26c4cdb13a1726fa13daef8cb64",
+    "createdAt": "2026-07-02T20:17:57Z",
+    "databaseId": 28618920902,
+    "headSha": "1140d38e03d7f6271b154e09b1f8d23847464085",
     "status": "completed",
-    "url": "https://github.com/ramymortada-cpu/Fnnlr/actions/runs/28585365030"
+    "url": "https://github.com/ramymortada-cpu/Fnnlr/actions/runs/28618920902"
   },
   "inProgressRun": null,
   "failedCompletedRun": null,
