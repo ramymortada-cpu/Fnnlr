@@ -78,6 +78,11 @@ jobs:
         run: npm run gateforge:hosted-unblock-smoke
       - name: GateForge GA unblock status smoke
         run: npm run gateforge:ga-unblock-status-smoke
+      - name: GateForge GA unblock status
+        run: |
+          npm run gateforge:ga-unblock-status || echo "::notice title=GateForge GA unblock status remains blocked::Status artifact generated with current blockers; hosted evidence is still required."
+      - name: GateForge GA unblock status freshness check
+        run: npm run gateforge:ga-unblock-status-check
       - name: GateForge GA evidence run audit smoke
         run: npm run gateforge:ga-evidence-run-audit-smoke
       - name: GateForge current-head GA proof smoke

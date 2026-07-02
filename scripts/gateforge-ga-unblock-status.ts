@@ -14,6 +14,7 @@ const outIndex = process.argv.indexOf('--out');
 const outPath = outIndex >= 0 ? process.argv[outIndex + 1] : `${runDir}/47_ga_unblock_status.md`;
 const jsonOutIndex = process.argv.indexOf('--json-out');
 const jsonOutPath = jsonOutIndex >= 0 ? process.argv[jsonOutIndex + 1] : `${runDir}/47_ga_unblock_status.json`;
+const checkOnly = process.argv.includes('--check');
 const closeoutPath = `${runDir}/48_remaining_external_blocker_closeout.json`;
 const progressPath = `${runDir}/49_external_blocker_progress.json`;
 const operatorPacketPath = `${runDir}/50_operator_execution_packet.json`;
@@ -361,43 +362,46 @@ const gaEvidenceRun = probeWorkflow(gaWorkflow);
 const decision = decisionFor(localSecrets.probe, githubSecrets, strictRun);
 const generatedAt = new Date().toISOString();
 
-const json = {
-  generatedAt,
-  decision,
-  probes: {
-    localSecrets: localSecrets.probe,
-    attestationPack,
-    remainingExternalBlockerCloseout: remainingCloseout.probe,
-    externalBlockerProgress: externalProgress.probe,
-    operatorExecutionPacket: operatorPacket,
-    githubSecrets,
-    hostedStrictWorkflow: strictRun,
-    gaEvidenceWorkflow: gaEvidenceRun,
-  },
-  blockers: {
-    openRuntimeSecrets: localSecrets.openRuntime,
-    openAttestationSecrets: localSecrets.openAttestation,
-    openExternalBlockers: remainingCloseout.openExternalBlockers,
-    externalBlockerProgressCounts: externalProgress.counts,
-    externalBlockerReadiness: externalProgress.readiness,
-  },
-  evidenceScope: {
-    localSecretDirectory: secretDir,
-    localSecretDirectoryMode: secretDirMode,
-    githubSecretSource,
-    localSecretReadinessIsGaEvidence: false,
-    hostedStrictWorkflowRequiredForGa: true,
-  },
-  safety: {
-    secretValuesPrinted: false,
-    productionMutated: false,
-    sourceCodeFixesAppliedByThisCommand: false,
-  },
-};
+function renderJson(renderedAt: string) {
+  return {
+    generatedAt: renderedAt,
+    decision,
+    probes: {
+      localSecrets: localSecrets.probe,
+      attestationPack,
+      remainingExternalBlockerCloseout: remainingCloseout.probe,
+      externalBlockerProgress: externalProgress.probe,
+      operatorExecutionPacket: operatorPacket,
+      githubSecrets,
+      hostedStrictWorkflow: strictRun,
+      gaEvidenceWorkflow: gaEvidenceRun,
+    },
+    blockers: {
+      openRuntimeSecrets: localSecrets.openRuntime,
+      openAttestationSecrets: localSecrets.openAttestation,
+      openExternalBlockers: remainingCloseout.openExternalBlockers,
+      externalBlockerProgressCounts: externalProgress.counts,
+      externalBlockerReadiness: externalProgress.readiness,
+    },
+    evidenceScope: {
+      localSecretDirectory: secretDir,
+      localSecretDirectoryMode: secretDirMode,
+      githubSecretSource,
+      localSecretReadinessIsGaEvidence: false,
+      hostedStrictWorkflowRequiredForGa: true,
+    },
+    safety: {
+      secretValuesPrinted: false,
+      productionMutated: false,
+      sourceCodeFixesAppliedByThisCommand: false,
+    },
+  };
+}
 
-const body = `# GateForge GA Unblock Status
+function renderMarkdown(renderedAt: string) {
+  return `# GateForge GA Unblock Status
 
-Generated: \`${generatedAt}\`
+Generated: \`${renderedAt}\`
 
 This status file is the single operator dashboard for the GA unblock path. It contains secret names and readiness states only; no secret values are printed.
 
@@ -464,6 +468,38 @@ ${mdList(remainingCloseout.openExternalBlockers)}
 - Production mutated: \`NO\`
 - Source fixes applied by this command: \`NO\`
 `;
+}
+
+const json = renderJson(generatedAt);
+const body = renderMarkdown(generatedAt);
+
+if (checkOnly) {
+  const expectedGeneratedAt = 'CHECK_TIMESTAMP';
+  const expectedMd = renderMarkdown(expectedGeneratedAt);
+  const expectedJson = `${JSON.stringify(renderJson(expectedGeneratedAt), null, 2)}\n`;
+  const currentMd = fs.existsSync(outPath)
+    ? fs.readFileSync(outPath, 'utf8').replace(/Generated: `[^`]+`/, `Generated: \`${expectedGeneratedAt}\``)
+    : '';
+  const currentJson = fs.existsSync(jsonOutPath)
+    ? `${JSON.stringify({ ...JSON.parse(fs.readFileSync(jsonOutPath, 'utf8')), generatedAt: expectedGeneratedAt }, null, 2)}\n`
+    : '';
+  const errors: string[] = [];
+
+  if (!currentMd) errors.push(`missing generated markdown: ${outPath}`);
+  else if (currentMd !== expectedMd) errors.push(`stale generated markdown: ${outPath}`);
+  if (!currentJson) errors.push(`missing generated json: ${jsonOutPath}`);
+  else if (currentJson !== expectedJson) errors.push(`stale generated json: ${jsonOutPath}`);
+
+  if (errors.length) {
+    console.error('GateForge GA unblock status: FAIL');
+    errors.forEach((error) => console.error(`  - ${error}`));
+    console.error('Run: npm run gateforge:ga-unblock-status');
+    process.exit(1);
+  }
+
+  console.log(`GateForge GA unblock status: PASS (${decision.state})`);
+  process.exit(0);
+}
 
 fs.mkdirSync(path.dirname(outPath), { recursive: true });
 fs.writeFileSync(outPath, body);
