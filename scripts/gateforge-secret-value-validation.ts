@@ -34,7 +34,7 @@ export function invalidGateForgeSecretReason(name: string, value: string): strin
   if (name === 'UPTIME_HEALTHCHECK_URL' || name === 'ALERT_WEBHOOK_URL') return invalidHttpsUrlReason(value, 'must be an https URL');
   if (name === 'ALERT_EMAIL_TO' || name === 'EMAIL_FROM' || name === 'EMAIL_REPLY_TO') return invalidEmailReason(value);
   if (name === 'RESEND_API_KEY') return value.length < 12 ? 'must be a non-trivial provider API key' : null;
-  if (name === 'ANTHROPIC_API_KEY') return value.length < 12 ? 'must be a non-trivial provider API key' : null;
+  if (name === 'ANTHROPIC_API_KEY') return invalidAnthropicApiKeyReason(value);
   if (name.endsWith('ENCRYPTION_KEY') || name === 'FNNLR_CRON_SECRET') return value.length < 24 ? 'must be at least 24 characters' : null;
   return null;
 }
@@ -79,6 +79,7 @@ function invalidAttestationPacketReason(packet: unknown): string | null {
     'provider_webhook_replay_idempotency',
     'monitoring_alerting_proof',
     'hosted_restore_drill',
+    'email_deliverability_runtime_proof',
     'legal_commercial_final_approval',
     'admin_mfa_runtime_proof',
     'ai_budget_runtime_proof',
@@ -105,6 +106,8 @@ function invalidPostgresUrlReason(value: string): string | null {
   }
   if (!['postgres:', 'postgresql:'].includes(parsed.protocol)) return 'must use postgres/postgresql protocol';
   if (!parsed.username || !parsed.password || !parsed.hostname) return 'must include username, password, and host';
+  if (isLocalHostname(parsed.hostname)) return 'must target hosted staging, not localhost';
+  if (parsed.searchParams.get('sslmode') !== 'require') return 'must require TLS with sslmode=require';
   return null;
 }
 
@@ -112,6 +115,7 @@ function invalidHostReason(value: string): string | null {
   if (value.includes('://') || value.includes('@') || value.includes('/')) return 'must be a host only, without protocol, credentials, or path';
   if (!/^[a-zA-Z0-9.-]+$/.test(value)) return 'must contain only host-safe characters';
   if (!value.includes('.')) return 'must look like a real staging host';
+  if (isLocalHostname(value)) return 'must target hosted staging, not localhost';
   return null;
 }
 
@@ -130,10 +134,24 @@ function invalidHttpsUrlReason(value: string, reason: string): string | null {
   }
   if (parsed.protocol !== 'https:') return reason;
   if (!parsed.hostname.includes('.')) return reason;
+  if (isLocalHostname(parsed.hostname)) return reason;
   return null;
 }
 
 function invalidEmailReason(value: string): string | null {
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) return 'must be a valid email address';
+  const angleMatch = value.match(/^.+<([^<>]+)>$/);
+  const address = (angleMatch ? angleMatch[1] : value).trim();
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(address)) return 'must be a valid email address';
   return null;
+}
+
+function invalidAnthropicApiKeyReason(value: string): string | null {
+  if (!value.startsWith('sk-ant-')) return 'must use an Anthropic API key prefix';
+  if (value.length < 20) return 'must be a non-trivial provider API key';
+  return null;
+}
+
+function isLocalHostname(hostname: string): boolean {
+  const normalized = hostname.toLowerCase();
+  return normalized === 'localhost' || normalized === '127.0.0.1' || normalized === '0.0.0.0' || normalized === '::1';
 }
