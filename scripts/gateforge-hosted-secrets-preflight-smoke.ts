@@ -34,23 +34,23 @@ function fixtureValueFor(name: string): string {
   const values: Record<string, string> = {
     GATEFORGE_HOSTED_STAGING_ATTESTATION_JSON: fixtureAttestationJson(),
     GATEFORGE_HOSTED_STAGING_ATTESTATION_B64: Buffer.from(fixtureAttestationJson(), 'utf8').toString('base64'),
-    CONTROL_PLANE_DATABASE_URL: 'postgres://control_user:control_password@db.staging.example.com:5432/fnnlr_control?sslmode=require',
-    TENANT_DB_ADMIN_URL: 'postgres://tenant_admin:tenant_password@db.staging.example.com:5432/postgres?sslmode=require',
-    TENANT_DB_HOST: 'db.staging.example.com',
-    TENANT_CREDENTIAL_ENCRYPTION_KEY: 'tenant-credential-key-fixture-32',
-    INTEGRATION_ENCRYPTION_KEY: 'integration-key-fixture-32chars',
-    FNNLR_CRON_SECRET: 'cron-secret-fixture-32-characters',
-    AUTH_MFA_ENCRYPTION_KEY: 'mfa-encryption-key-fixture-32',
+    CONTROL_PLANE_DATABASE_URL: 'postgres://control_user:control_password@db.staging.fnnlr.ai:5432/fnnlr_control?sslmode=require',
+    TENANT_DB_ADMIN_URL: 'postgres://tenant_admin:tenant_password@db.staging.fnnlr.ai:5432/postgres?sslmode=require',
+    TENANT_DB_HOST: 'db.staging.fnnlr.ai',
+    TENANT_CREDENTIAL_ENCRYPTION_KEY: 'tenant-credential-key-fixture-32-plus',
+    INTEGRATION_ENCRYPTION_KEY: 'integration-key-fixture-32chars-plus',
+    FNNLR_CRON_SECRET: 'cron-secret-fixture-32-characters-plus',
+    AUTH_MFA_ENCRYPTION_KEY: 'mfa-encryption-key-fixture-32-plus',
     FNNLR_AI_TENANT_DAILY_USD_CAP: '1',
     FNNLR_AI_GLOBAL_DAILY_USD_CAP: '5',
-    SENTRY_DSN: 'https://public@sentry.example.com/1',
-    UPTIME_HEALTHCHECK_URL: 'https://staging.example.com/health',
-    ALERT_EMAIL_TO: 'ops@example.com',
-    ALERT_WEBHOOK_URL: 'https://hooks.example.com/fnnlr-alerts',
-    RESEND_API_KEY: 're_fixture_key_123456',
-    EMAIL_FROM: 'Fnnlr Staging <noreply@example.com>',
-    EMAIL_REPLY_TO: 'support@example.com',
-    ANTHROPIC_API_KEY: 'sk-ant-fixture-key-123456',
+    SENTRY_DSN: 'https://publickey@o123456.ingest.sentry.io/123456',
+    UPTIME_HEALTHCHECK_URL: 'https://staging.fnnlr.ai/health',
+    ALERT_EMAIL_TO: 'ops@fnnlr.ai',
+    ALERT_WEBHOOK_URL: 'https://hooks.fnnlr.ai/fnnlr-alerts',
+    RESEND_API_KEY: 're_fixture_key_1234567890',
+    EMAIL_FROM: 'Fnnlr Staging <noreply@fnnlr.ai>',
+    EMAIL_REPLY_TO: 'support@fnnlr.ai',
+    ANTHROPIC_API_KEY: 'sk-ant-fixture-key-1234567890abcdef',
   };
   const value = values[name];
   if (!value) throw new Error(`missing fixture value for ${name}`);
@@ -99,7 +99,7 @@ if (passing.output.includes('postgres://') || passing.output.includes('sk-ant-fi
 
 const invalidEnv = {
   ...passEnv,
-  CONTROL_PLANE_DATABASE_URL: 'https://wrong-protocol.example.com',
+  CONTROL_PLANE_DATABASE_URL: 'https://wrong-protocol.fnnlr.ai',
   GATEFORGE_HOSTED_STAGING_ATTESTATION_JSON: 'not-json',
 };
 const invalid = run(invalidEnv);
@@ -116,7 +116,7 @@ if (invalid.output.includes('https://wrong-protocol.example.com') || invalid.out
 
 const invalidShapeEnv = {
   ...passEnv,
-  CONTROL_PLANE_DATABASE_URL: 'postgres://control_user:control_password@db.staging.example.com:5432/fnnlr_control',
+  CONTROL_PLANE_DATABASE_URL: 'postgres://control_user:control_password@db.staging.fnnlr.ai:5432/fnnlr_control',
   TENANT_DB_HOST: 'localhost',
   ANTHROPIC_API_KEY: 'fixture-key-without-provider-prefix',
 };
