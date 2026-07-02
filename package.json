@@ -109,6 +109,7 @@
     "gateforge:hosted-strict-trigger-readiness-check": "tsx scripts/gateforge-hosted-strict-trigger-readiness.ts --check --allow-not-ready",
     "gateforge:hosted-strict-trigger-readiness-smoke": "tsx scripts/gateforge-hosted-strict-trigger-readiness.ts --secrets-from-file tests/fixtures/gateforge-gh-secrets-pass.json --ga-run-from-file tests/fixtures/gateforge-ga-evidence-run-pass.json --out /tmp/fnnlr-gateforge-hosted-strict-trigger-readiness.md --json-out /tmp/fnnlr-gateforge-hosted-strict-trigger-readiness.json",
     "gateforge:hosted-setup-guide": "tsx scripts/gateforge-hosted-setup-guide.ts",
+    "gateforge:hosted-setup-guide-check": "tsx scripts/gateforge-hosted-setup-guide.ts --check",
     "gateforge:life-or-death-plan": "tsx scripts/gateforge-life-or-death-plan.ts",
     "gateforge:life-or-death-plan-check": "tsx scripts/gateforge-life-or-death-plan.ts --check",
     "gateforge:remaining-blockers-closeout": "tsx scripts/gateforge-remaining-blockers-closeout.ts",

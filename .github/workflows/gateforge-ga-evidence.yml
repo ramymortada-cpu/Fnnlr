@@ -126,6 +126,9 @@ jobs:
       - name: GateForge hosted setup guide
         run: npm run gateforge:hosted-setup-guide
         if: always()
+      - name: GateForge hosted setup guide freshness check
+        run: npm run gateforge:hosted-setup-guide-check
+        if: always()
       - name: GateForge life-or-death plan
         run: npm run gateforge:life-or-death-plan
         if: always()

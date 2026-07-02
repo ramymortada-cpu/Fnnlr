@@ -6,12 +6,15 @@ import { loadHostedSecretsManifest } from './gateforge-hosted-secrets-manifest.j
 const outPath = 'gateforge-audit/run-2026-06-23-1035/38_hosted_staging_operator_setup.md';
 const workflow = 'GateForge Hosted Staging Strict';
 const { attestationSecrets, runtimeSecrets } = loadHostedSecretsManifest();
+const checkOnly = process.argv.includes('--check');
 
 const secretCommands = runtimeSecrets.map((name) => `gh secret set ${name}`).join('\n');
 const now = new Date().toISOString();
-const body = `# Hosted Staging Operator Setup
 
-Generated: \`${now}\`
+function renderGuide(generatedAt: string) {
+  return `# Hosted Staging Operator Setup
+
+Generated: \`${generatedAt}\`
 
 This is the operator checklist for converting GateForge from \`CANNOT_APPROVE\` to a defensible \`CONDITIONAL_GO\`. It does not contain secret values.
 
@@ -143,6 +146,28 @@ The strict artifact must include:
 
 Do not mark items \`PASS\` unless the evidence exists and is safe to reference.
 `;
+}
+
+const body = renderGuide(now);
+
+if (checkOnly) {
+  const expectedGeneratedAt = 'CHECK_TIMESTAMP';
+  const expected = renderGuide(expectedGeneratedAt);
+  const current = fs.existsSync(outPath)
+    ? fs.readFileSync(outPath, 'utf8').replace(/Generated: `[^`]+`/, `Generated: \`${expectedGeneratedAt}\``)
+    : '';
+
+  if (current !== expected) {
+    console.error('GateForge hosted setup guide: FAIL');
+    if (!current) console.error(`  - missing generated guide: ${outPath}`);
+    else console.error(`  - stale generated guide: ${outPath}`);
+    console.error('Run: npm run gateforge:hosted-setup-guide');
+    process.exit(1);
+  }
+
+  console.log('GateForge hosted setup guide: PASS');
+  process.exit(0);
+}
 
 fs.mkdirSync(path.dirname(outPath), { recursive: true });
 fs.writeFileSync(outPath, body);
