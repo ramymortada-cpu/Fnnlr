@@ -1,13 +1,16 @@
 # GateForge Remaining External Blocker Closeout
 
-Generated: `2026-07-01T09:32:59.202Z`
+Generated: `2026-07-02T20:28:32.238Z`
 
 This is the execution checklist for the only remaining SaaS moat blockers after the local 165-point board was reduced to externally blocked GA evidence. It contains secret names, provider setup requirements, evidence requirements, and validation commands only. Do not paste secret values into this file.
 
 ## Current Truth
 
 - Remaining blockers: `16`
+- Dependency gates: `5`
+- Total open P0 closeout path: `21`
 - Scope: `GF-001..GF-016`
+- Dependency gate scope: `GF-017, GF-018, GF-019, GF-021, GF-022`
 - Status: `BLOCKED_EXTERNAL`
 - Target after closure: hosted strict evidence, then final GateForge gate review.
 - Safety: no production mutation, no secret values, no source dump.
@@ -32,6 +35,18 @@ This is the execution checklist for the only remaining SaaS moat blockers after 
 | `GF-014` | Operator | Verify sender domain and set EMAIL_FROM. | `EMAIL_FROM` | `npm run deploy:smoke` |
 | `GF-015` | Operator | Set EMAIL_REPLY_TO. | `EMAIL_REPLY_TO` | `npm run deploy:smoke` |
 | `GF-016` | Operator | Create capped Anthropic staging key. | `ANTHROPIC_API_KEY` | `npm run verify:production-safety`<br>`npm run ci:live` |
+
+## Dependency Gates
+
+These five gates are not provider setup items themselves; they are the terminal proof chain that converts the 16 external blockers into hosted GA evidence.
+
+| ID | Owner | State | Action | Depends on | Command |
+| --- | --- | --- | --- | --- | --- |
+| `GF-017` | Engineering | `BLOCKED_BY_SECRET_READINESS` | Run local secret replacement packet after operator values exist. | `GF-001..GF-016` | `npm run gateforge:secret-replacement-packet` |
+| `GF-018` | Engineering | `BLOCKED_BY_HOSTED_ATTESTATION` | Generate hosted staging attestation packet from real evidence only. | `GF-017`<br>`hosted strict staging artifacts` | `npm run gateforge:external-check -- gateforge-audit/external-attestations/hosted-staging-attestation.json` |
+| `GF-019` | Engineering | `BLOCKED_BY_HOSTED_ATTESTATION` | Encode validated attestation as the preferred B64 secret. | `GF-018` | `npm run gateforge:attestation-secret-pack -- --write-b64` |
+| `GF-021` | Engineering | `BLOCKED_BY_SECRET_READINESS` | Upload local secret pack to GitHub Actions after validation. | `GF-017`<br>`GF-019` | `npm run gateforge:hosted-unblock -- --apply --prepare-attestation` |
+| `GF-022` | Engineering | `BLOCKED_BY_GITHUB_SECRET_READINESS` | Trigger GateForge Hosted Staging Strict. | `GF-021` | `npm run gateforge:trigger-hosted-strict` |
 
 ## Closeout Steps
 
@@ -346,3 +361,93 @@ Validation commands:
 - `npm run ci:live`
 
 Exit criteria: AI provider access is capped and audited before GA.
+
+
+## Dependency Gate Details
+
+### GF-017 - Run local secret replacement packet after operator values exist.
+
+Owner: Engineering
+
+State: `BLOCKED_BY_SECRET_READINESS`
+
+Depends on:
+- `GF-001..GF-016`
+
+Command:
+- `npm run gateforge:secret-replacement-packet`
+
+Evidence required:
+- Local secret replacement packet shows all runtime secrets and one attestation option are READY without printing values.
+
+Exit criteria: Local runtime secret files are real, non-placeholder, non-empty, and provider-valid.
+
+### GF-018 - Generate hosted staging attestation packet from real evidence only.
+
+Owner: Engineering
+
+State: `BLOCKED_BY_HOSTED_ATTESTATION`
+
+Depends on:
+- `GF-017`
+- `hosted strict staging artifacts`
+
+Command:
+- `npm run gateforge:external-check -- gateforge-audit/external-attestations/hosted-staging-attestation.json`
+
+Evidence required:
+- External attestation contract validates PASS items, evidence refs, supported blocker IDs, and successful hosted run URLs.
+
+Exit criteria: Hosted staging attestation JSON passes strict external validation.
+
+### GF-019 - Encode validated attestation as the preferred B64 secret.
+
+Owner: Engineering
+
+State: `BLOCKED_BY_HOSTED_ATTESTATION`
+
+Depends on:
+- `GF-018`
+
+Command:
+- `npm run gateforge:attestation-secret-pack -- --write-b64`
+
+Evidence required:
+- B64 attestation packet is generated from validated hosted evidence without exposing raw secret values.
+
+Exit criteria: One hosted attestation secret option is ready for GitHub Actions.
+
+### GF-021 - Upload local secret pack to GitHub Actions after validation.
+
+Owner: Engineering
+
+State: `BLOCKED_BY_SECRET_READINESS`
+
+Depends on:
+- `GF-017`
+- `GF-019`
+
+Command:
+- `npm run gateforge:hosted-unblock -- --apply --prepare-attestation`
+
+Evidence required:
+- GitHub secret name audit shows all required runtime secrets and one attestation option present.
+
+Exit criteria: GitHub Actions has every required secret name, verified without printing values.
+
+### GF-022 - Trigger GateForge Hosted Staging Strict.
+
+Owner: Engineering
+
+State: `BLOCKED_BY_GITHUB_SECRET_READINESS`
+
+Depends on:
+- `GF-021`
+
+Command:
+- `npm run gateforge:trigger-hosted-strict`
+
+Evidence required:
+- Hosted strict workflow success URL and sanitized artifacts for live DB, monitoring, email, AI, restore, and attestation checks.
+
+Exit criteria: Hosted strict workflow succeeds on current HEAD and final GateForge review can consume the artifacts.

@@ -12,6 +12,16 @@ type Blocker = {
   validationCommands: string[];
   exitCriteria: string;
 };
+type DependencyGate = {
+  id: string;
+  owner: string;
+  state: string;
+  action: string;
+  dependsOn: string[];
+  command: string;
+  evidenceRequired: string[];
+  exitCriteria: string;
+};
 
 const runDir = 'gateforge-audit/run-2026-06-23-1035';
 const outIndex = process.argv.indexOf('--out');
@@ -38,6 +48,58 @@ const blockers: Blocker[] = [
   b('GF-015', 'Operator', 'Set EMAIL_REPLY_TO.', ['EMAIL_REPLY_TO'], ['Choose a monitored support or founder reply-to address.'], ['Transactional provider config proof.'], ['npm run deploy:smoke'], 'Customer replies route to a monitored inbox.'),
   b('GF-016', 'Operator', 'Create capped Anthropic staging key.', ['ANTHROPIC_API_KEY'], ['Create a staging AI provider key with provider-side spend limits.'], ['Provider-side cap proof and AI gateway hosted smoke evidence.'], ['npm run verify:production-safety', 'npm run ci:live'], 'AI provider access is capped and audited before GA.'),
 ];
+const dependencyGates: DependencyGate[] = [
+  d(
+    'GF-017',
+    'Engineering',
+    'BLOCKED_BY_SECRET_READINESS',
+    'Run local secret replacement packet after operator values exist.',
+    ['GF-001..GF-016'],
+    'npm run gateforge:secret-replacement-packet',
+    ['Local secret replacement packet shows all runtime secrets and one attestation option are READY without printing values.'],
+    'Local runtime secret files are real, non-placeholder, non-empty, and provider-valid.',
+  ),
+  d(
+    'GF-018',
+    'Engineering',
+    'BLOCKED_BY_HOSTED_ATTESTATION',
+    'Generate hosted staging attestation packet from real evidence only.',
+    ['GF-017', 'hosted strict staging artifacts'],
+    'npm run gateforge:external-check -- gateforge-audit/external-attestations/hosted-staging-attestation.json',
+    ['External attestation contract validates PASS items, evidence refs, supported blocker IDs, and successful hosted run URLs.'],
+    'Hosted staging attestation JSON passes strict external validation.',
+  ),
+  d(
+    'GF-019',
+    'Engineering',
+    'BLOCKED_BY_HOSTED_ATTESTATION',
+    'Encode validated attestation as the preferred B64 secret.',
+    ['GF-018'],
+    'npm run gateforge:attestation-secret-pack -- --write-b64',
+    ['B64 attestation packet is generated from validated hosted evidence without exposing raw secret values.'],
+    'One hosted attestation secret option is ready for GitHub Actions.',
+  ),
+  d(
+    'GF-021',
+    'Engineering',
+    'BLOCKED_BY_SECRET_READINESS',
+    'Upload local secret pack to GitHub Actions after validation.',
+    ['GF-017', 'GF-019'],
+    'npm run gateforge:hosted-unblock -- --apply --prepare-attestation',
+    ['GitHub secret name audit shows all required runtime secrets and one attestation option present.'],
+    'GitHub Actions has every required secret name, verified without printing values.',
+  ),
+  d(
+    'GF-022',
+    'Engineering',
+    'BLOCKED_BY_GITHUB_SECRET_READINESS',
+    'Trigger GateForge Hosted Staging Strict.',
+    ['GF-021'],
+    'npm run gateforge:trigger-hosted-strict',
+    ['Hosted strict workflow success URL and sanitized artifacts for live DB, monitoring, email, AI, restore, and attestation checks.'],
+    'Hosted strict workflow succeeds on current HEAD and final GateForge review can consume the artifacts.',
+  ),
+];
 
 function b(
   id: string,
@@ -50,6 +112,19 @@ function b(
   exitCriteria: string,
 ): Blocker {
   return { id, owner, action, secrets, providerSetup, evidenceRequired, validationCommands, exitCriteria };
+}
+
+function d(
+  id: string,
+  owner: string,
+  state: string,
+  action: string,
+  dependsOn: string[],
+  command: string,
+  evidenceRequired: string[],
+  exitCriteria: string,
+): DependencyGate {
+  return { id, owner, state, action, dependsOn, command, evidenceRequired, exitCriteria };
 }
 
 function validate() {
@@ -65,6 +140,17 @@ function validate() {
     if (!blocker.exitCriteria.trim()) errors.push(`${blocker.id} missing exit criteria`);
   }
   if (blockers.length !== 16) errors.push(`expected 16 blockers, found ${blockers.length}`);
+  const expectedDependencyIds = ['GF-017', 'GF-018', 'GF-019', 'GF-021', 'GF-022'];
+  const actualDependencyIds = dependencyGates.map((gate) => gate.id);
+  if (JSON.stringify(actualDependencyIds) !== JSON.stringify(expectedDependencyIds)) {
+    errors.push(`expected dependency gates ${expectedDependencyIds.join(',')}, found ${actualDependencyIds.join(',')}`);
+  }
+  for (const gate of dependencyGates) {
+    if (!gate.dependsOn.length) errors.push(`${gate.id} missing dependency mapping`);
+    if (!gate.command.trim()) errors.push(`${gate.id} missing command`);
+    if (!gate.evidenceRequired.length) errors.push(`${gate.id} missing evidence requirement`);
+    if (!gate.exitCriteria.trim()) errors.push(`${gate.id} missing exit criteria`);
+  }
   if (errors.length) {
     console.error('GateForge remaining blocker closeout: FAIL');
     errors.forEach((error) => console.error(`  - ${error}`));
@@ -79,6 +165,9 @@ function list(values: string[]) {
 function renderMarkdown(generatedAt: string) {
   const rows = blockers
     .map((blocker) => `| \`${blocker.id}\` | ${blocker.owner} | ${blocker.action} | ${blocker.secrets.map((secret) => `\`${secret}\``).join('<br>')} | ${blocker.validationCommands.map((command) => `\`${command}\``).join('<br>')} |`)
+    .join('\n');
+  const dependencyRows = dependencyGates
+    .map((gate) => `| \`${gate.id}\` | ${gate.owner} | \`${gate.state}\` | ${gate.action} | ${gate.dependsOn.map((dependency) => `\`${dependency}\``).join('<br>')} | \`${gate.command}\` |`)
     .join('\n');
   const sections = blockers
     .map((blocker) => `### ${blocker.id} - ${blocker.action}
@@ -100,6 +189,25 @@ ${list(blocker.validationCommands.map((command) => `\`${command}\``))}
 Exit criteria: ${blocker.exitCriteria}
 `)
     .join('\n');
+  const dependencySections = dependencyGates
+    .map((gate) => `### ${gate.id} - ${gate.action}
+
+Owner: ${gate.owner}
+
+State: \`${gate.state}\`
+
+Depends on:
+${list(gate.dependsOn.map((dependency) => `\`${dependency}\``))}
+
+Command:
+- \`${gate.command}\`
+
+Evidence required:
+${list(gate.evidenceRequired)}
+
+Exit criteria: ${gate.exitCriteria}
+`)
+    .join('\n');
 
   return `# GateForge Remaining External Blocker Closeout
 
@@ -110,7 +218,10 @@ This is the execution checklist for the only remaining SaaS moat blockers after 
 ## Current Truth
 
 - Remaining blockers: \`${blockers.length}\`
+- Dependency gates: \`${dependencyGates.length}\`
+- Total open P0 closeout path: \`${blockers.length + dependencyGates.length}\`
 - Scope: \`GF-001..GF-016\`
+- Dependency gate scope: \`GF-017, GF-018, GF-019, GF-021, GF-022\`
 - Status: \`BLOCKED_EXTERNAL\`
 - Target after closure: hosted strict evidence, then final GateForge gate review.
 - Safety: no production mutation, no secret values, no source dump.
@@ -120,6 +231,14 @@ This is the execution checklist for the only remaining SaaS moat blockers after 
 | ID | Owner | Action | Secret names | Validation |
 | --- | --- | --- | --- | --- |
 ${rows}
+
+## Dependency Gates
+
+These five gates are not provider setup items themselves; they are the terminal proof chain that converts the 16 external blockers into hosted GA evidence.
+
+| ID | Owner | State | Action | Depends on | Command |
+| --- | --- | --- | --- | --- | --- |
+${dependencyRows}
 
 ## Closeout Steps
 
@@ -135,6 +254,10 @@ ${rows}
 ## Blocker Details
 
 ${sections}
+
+## Dependency Gate Details
+
+${dependencySections}
 `;
 }
 
@@ -143,8 +266,12 @@ function renderJson(generatedAt: string) {
     generatedAt,
     status: 'BLOCKED_EXTERNAL',
     count: blockers.length,
+    dependencyGateCount: dependencyGates.length,
+    totalOpenP0Closeout: blockers.length + dependencyGates.length,
     blockerIds: blockers.map((blocker) => blocker.id),
+    dependencyGateIds: dependencyGates.map((gate) => gate.id),
     blockers,
+    dependencyGates,
     safety: {
       secretValuesPrinted: false,
       productionMutated: false,

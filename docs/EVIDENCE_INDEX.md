@@ -39,11 +39,11 @@ process payments, and makes no guaranteed-revenue claim.
 - `ACTIVATION_COHORT_REVIEW.md` — cohort review template.
 - `WORKFLOW_INTELLIGENCE_SPEC.md` — AI/workflow data moat plan.
 - `LEGAL_APPROVAL_TRACKER.md` and `SUBPROCESSORS.md` — legal/compliance execution trackers.
-- `gateforge-audit/run-2026-06-23-1035/48_remaining_external_blocker_closeout.md` — exact closeout checklist for the 16 remaining externally blocked GA evidence items.
-- `gateforge-audit/run-2026-06-23-1035/48_remaining_external_blocker_closeout.json` — machine-readable owner/action/secret/evidence/validation map for the same 16 blockers.
+- `gateforge-audit/run-2026-06-23-1035/48_remaining_external_blocker_closeout.md` — exact closeout checklist for the 16 remaining externally blocked GA evidence items plus the 5 terminal dependency gates.
+- `gateforge-audit/run-2026-06-23-1035/48_remaining_external_blocker_closeout.json` — machine-readable owner/action/secret/evidence/validation map for the same 16 blockers, with separate dependency gate metadata for the full 21-item open P0 path.
 - `gateforge-audit/run-2026-06-23-1035/49_external_blocker_progress.md` — current per-blocker progress board across local secrets, GitHub secret names, and hosted evidence.
 - `gateforge-audit/run-2026-06-23-1035/49_external_blocker_progress.json` — machine-readable status counts for `LOCAL_SECRET_PENDING`, `GITHUB_SECRET_PENDING`, and `HOSTED_EVIDENCE_PENDING`.
-- `gateforge-audit/run-2026-06-23-1035/50_operator_execution_packet.md` — operator-ready command path, provider setup, and validation matrix for closing the remaining 16 blockers.
+- `gateforge-audit/run-2026-06-23-1035/50_operator_execution_packet.md` — operator-ready command path, provider setup, and validation matrix for closing the 16 external provider/runtime blockers before the 5 dependency gates can close.
 - `gateforge-audit/run-2026-06-23-1035/50_operator_execution_packet.csv` and `.json` — machine-readable operator execution packet with secret names only.
 
 ## Readiness Contract Index

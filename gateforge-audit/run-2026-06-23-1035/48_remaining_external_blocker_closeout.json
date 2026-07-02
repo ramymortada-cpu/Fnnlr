@@ -1,7 +1,9 @@
 {
-  "generatedAt": "2026-07-01T09:32:59.202Z",
+  "generatedAt": "2026-07-02T20:28:32.238Z",
   "status": "BLOCKED_EXTERNAL",
   "count": 16,
+  "dependencyGateCount": 5,
+  "totalOpenP0Closeout": 21,
   "blockerIds": [
     "GF-001",
     "GF-002",
@@ -19,6 +21,13 @@
     "GF-014",
     "GF-015",
     "GF-016"
+  ],
+  "dependencyGateIds": [
+    "GF-017",
+    "GF-018",
+    "GF-019",
+    "GF-021",
+    "GF-022"
   ],
   "blockers": [
     {
@@ -321,6 +330,80 @@
         "npm run ci:live"
       ],
       "exitCriteria": "AI provider access is capped and audited before GA."
+    }
+  ],
+  "dependencyGates": [
+    {
+      "id": "GF-017",
+      "owner": "Engineering",
+      "state": "BLOCKED_BY_SECRET_READINESS",
+      "action": "Run local secret replacement packet after operator values exist.",
+      "dependsOn": [
+        "GF-001..GF-016"
+      ],
+      "command": "npm run gateforge:secret-replacement-packet",
+      "evidenceRequired": [
+        "Local secret replacement packet shows all runtime secrets and one attestation option are READY without printing values."
+      ],
+      "exitCriteria": "Local runtime secret files are real, non-placeholder, non-empty, and provider-valid."
+    },
+    {
+      "id": "GF-018",
+      "owner": "Engineering",
+      "state": "BLOCKED_BY_HOSTED_ATTESTATION",
+      "action": "Generate hosted staging attestation packet from real evidence only.",
+      "dependsOn": [
+        "GF-017",
+        "hosted strict staging artifacts"
+      ],
+      "command": "npm run gateforge:external-check -- gateforge-audit/external-attestations/hosted-staging-attestation.json",
+      "evidenceRequired": [
+        "External attestation contract validates PASS items, evidence refs, supported blocker IDs, and successful hosted run URLs."
+      ],
+      "exitCriteria": "Hosted staging attestation JSON passes strict external validation."
+    },
+    {
+      "id": "GF-019",
+      "owner": "Engineering",
+      "state": "BLOCKED_BY_HOSTED_ATTESTATION",
+      "action": "Encode validated attestation as the preferred B64 secret.",
+      "dependsOn": [
+        "GF-018"
+      ],
+      "command": "npm run gateforge:attestation-secret-pack -- --write-b64",
+      "evidenceRequired": [
+        "B64 attestation packet is generated from validated hosted evidence without exposing raw secret values."
+      ],
+      "exitCriteria": "One hosted attestation secret option is ready for GitHub Actions."
+    },
+    {
+      "id": "GF-021",
+      "owner": "Engineering",
+      "state": "BLOCKED_BY_SECRET_READINESS",
+      "action": "Upload local secret pack to GitHub Actions after validation.",
+      "dependsOn": [
+        "GF-017",
+        "GF-019"
+      ],
+      "command": "npm run gateforge:hosted-unblock -- --apply --prepare-attestation",
+      "evidenceRequired": [
+        "GitHub secret name audit shows all required runtime secrets and one attestation option present."
+      ],
+      "exitCriteria": "GitHub Actions has every required secret name, verified without printing values."
+    },
+    {
+      "id": "GF-022",
+      "owner": "Engineering",
+      "state": "BLOCKED_BY_GITHUB_SECRET_READINESS",
+      "action": "Trigger GateForge Hosted Staging Strict.",
+      "dependsOn": [
+        "GF-021"
+      ],
+      "command": "npm run gateforge:trigger-hosted-strict",
+      "evidenceRequired": [
+        "Hosted strict workflow success URL and sanitized artifacts for live DB, monitoring, email, AI, restore, and attestation checks."
+      ],
+      "exitCriteria": "Hosted strict workflow succeeds on current HEAD and final GateForge review can consume the artifacts."
     }
   ],
   "safety": {

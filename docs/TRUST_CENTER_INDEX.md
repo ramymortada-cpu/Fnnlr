@@ -33,9 +33,9 @@ fnnlr is an Arabic-first AI Revenue Operations OS. Its trust posture is built ar
 | SSO/OIDC | `SSO_OIDC_READINESS.md` | Roadmap |
 | SOC2 | `SOC2_READINESS_OUTLINE.md` | Roadmap |
 | GateForge status | `../gateforge-audit/run-2026-06-23-1035/47_ga_unblock_status.md` | Current launch decision |
-| GateForge external blocker closeout | `../gateforge-audit/run-2026-06-23-1035/48_remaining_external_blocker_closeout.md` | Exact remaining hosted/operator blocker map |
+| GateForge external blocker closeout | `../gateforge-audit/run-2026-06-23-1035/48_remaining_external_blocker_closeout.md` | Exact remaining hosted/operator blocker map plus the 5 terminal dependency gates |
 | GateForge external blocker progress | `../gateforge-audit/run-2026-06-23-1035/49_external_blocker_progress.md` | Per-blocker readiness across local secrets, GitHub secrets, and hosted evidence |
-| GateForge operator execution packet | `../gateforge-audit/run-2026-06-23-1035/50_operator_execution_packet.md` | Command path, provider setup, and validation matrix for closing the remaining 16 blockers |
+| GateForge operator execution packet | `../gateforge-audit/run-2026-06-23-1035/50_operator_execution_packet.md` | Command path, provider setup, and validation matrix for closing the 16 external provider/runtime blockers |
 | SaaS moat board | `SAAS_MOAT_ACTION_PLAN.md` | 165 execution actions |
 
 ## Buyer-Safe Proof Summaries
