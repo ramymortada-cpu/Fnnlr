@@ -59,6 +59,10 @@ jobs:
         run: npm run gateforge:upload-local-secrets-check
       - name: GateForge local secrets env template smoke
         run: npm run gateforge:local-secrets-env-template-smoke
+      - name: GateForge local secrets env template
+        run: npm run gateforge:local-secrets-env-template
+      - name: GateForge local secrets env template freshness check
+        run: npm run gateforge:local-secrets-env-template-check
       - name: GateForge import local secrets smoke
         run: npm run gateforge:import-local-secrets-smoke
       - name: GateForge write local secret smoke

@@ -1,6 +1,6 @@
 # GateForge Local Secret Env Template
 
-Generated: `2026-07-01T17:38:49.413Z`
+Generated: `2026-07-02T12:01:13.044Z`
 
 This is a sanitized operator template. It contains placeholders only and is safe to commit as evidence of the required staging inputs.
 

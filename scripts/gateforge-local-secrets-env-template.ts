@@ -9,6 +9,7 @@ const outPath = outIndex >= 0 ? process.argv[outIndex + 1] : `${runDir}/49_local
 const markdownOutIndex = process.argv.indexOf('--md-out');
 const markdownOutPath =
   markdownOutIndex >= 0 ? process.argv[markdownOutIndex + 1] : `${runDir}/49_local_secret_env_template.md`;
+const checkOnly = process.argv.includes('--check');
 
 type SecretDoc = {
   purpose: string;
@@ -136,23 +137,27 @@ function mdRow(name: string, required: boolean) {
 
 const { attestationSecrets, runtimeSecrets } = loadHostedSecretsManifest();
 const now = new Date().toISOString();
-const envBody = [
-  '# GateForge local secret import template',
-  `# Generated: ${now}`,
-  '# Fill this file outside git, then run:',
-  '# npm run gateforge:import-local-secrets -- --env-file /secure/path/fnnlr-staging.env --require-all',
-  '# Do not commit a filled copy of this file.',
-  '',
-  '# Attestation options: at least one must be real and valid.',
-  ...attestationSecrets.map((name) => envBlock(name, false)),
-  '',
-  '# Runtime secrets: every runtime secret is required for hosted GA evidence.',
-  ...runtimeSecrets.map((name) => envBlock(name, true)),
-].join('\n\n') + '\n';
 
-const mdBody = `# GateForge Local Secret Env Template
+function renderEnv(generatedAt: string) {
+  return [
+    '# GateForge local secret import template',
+    `# Generated: ${generatedAt}`,
+    '# Fill this file outside git, then run:',
+    '# npm run gateforge:import-local-secrets -- --env-file /secure/path/fnnlr-staging.env --require-all',
+    '# Do not commit a filled copy of this file.',
+    '',
+    '# Attestation options: at least one must be real and valid.',
+    ...attestationSecrets.map((name) => envBlock(name, false)),
+    '',
+    '# Runtime secrets: every runtime secret is required for hosted GA evidence.',
+    ...runtimeSecrets.map((name) => envBlock(name, true)),
+  ].join('\n\n') + '\n';
+}
 
-Generated: \`${now}\`
+function renderMarkdown(generatedAt: string) {
+  return `# GateForge Local Secret Env Template
+
+Generated: \`${generatedAt}\`
 
 This is a sanitized operator template. It contains placeholders only and is safe to commit as evidence of the required staging inputs.
 
@@ -177,6 +182,38 @@ ${[...attestationSecrets.map((name) => mdRow(name, false)), ...runtimeSecrets.ma
 - Use \`gateforge:import-local-secrets\` so all rows validate before any local secret file is written.
 - Use \`gateforge:hosted-unblock -- --apply\` only after the readiness doctor says \`UPLOAD_GITHUB_SECRETS\`.
 `;
+}
+
+const envBody = renderEnv(now);
+const mdBody = renderMarkdown(now);
+
+if (checkOnly) {
+  const expectedGeneratedAt = 'CHECK_TIMESTAMP';
+  const expectedEnv = renderEnv(expectedGeneratedAt);
+  const expectedMd = renderMarkdown(expectedGeneratedAt);
+  const currentEnv = fs.existsSync(outPath)
+    ? fs.readFileSync(outPath, 'utf8').replace(/^# Generated: .+$/m, `# Generated: ${expectedGeneratedAt}`)
+    : '';
+  const currentMd = fs.existsSync(markdownOutPath)
+    ? fs.readFileSync(markdownOutPath, 'utf8').replace(/Generated: `[^`]+`/, `Generated: \`${expectedGeneratedAt}\``)
+    : '';
+  const errors: string[] = [];
+
+  if (!currentEnv) errors.push(`missing generated env template: ${outPath}`);
+  else if (currentEnv !== expectedEnv) errors.push(`stale generated env template: ${outPath}`);
+  if (!currentMd) errors.push(`missing generated markdown template: ${markdownOutPath}`);
+  else if (currentMd !== expectedMd) errors.push(`stale generated markdown template: ${markdownOutPath}`);
+
+  if (errors.length) {
+    console.error('GateForge local secret env template: FAIL');
+    errors.forEach((error) => console.error(`  - ${error}`));
+    console.error('Run: npm run gateforge:local-secrets-env-template');
+    process.exit(1);
+  }
+
+  console.log('GateForge local secret env template: PASS');
+  process.exit(0);
+}
 
 fs.mkdirSync(path.dirname(outPath), { recursive: true });
 fs.writeFileSync(outPath, envBody);
