@@ -120,6 +120,9 @@ jobs:
       - name: GateForge war room
         run: npm run gateforge:war-room
         if: always()
+      - name: GateForge war room freshness check
+        run: npm run gateforge:war-room-check
+        if: always()
       - name: GateForge hosted setup guide
         run: npm run gateforge:hosted-setup-guide
         if: always()

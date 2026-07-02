@@ -22,6 +22,7 @@ const externalPath = 'gateforge-audit/external-attestations/hosted-staging-attes
 const templatePath = 'gateforge-audit/external-attestations/hosted-staging-attestation.template.json';
 const runbookPath = 'gateforge-audit/external-attestations/HOSTED_STAGING_WAR_ROOM.md';
 const reportPath = `${runDir}/36_life_or_death_war_room.md`;
+const checkOnly = process.argv.includes('--check');
 
 const requiredItems = [
   {
@@ -115,9 +116,10 @@ const table = externalRows
   )
   .join('\n');
 
-const runbook = `# Hosted Staging War Room
+function renderRunbook(generatedAt: string) {
+  return `# Hosted Staging War Room
 
-Generated: \`${now}\`
+Generated: \`${generatedAt}\`
 
 Purpose: close the remaining GateForge external evidence blockers without weakening the gate.
 
@@ -174,10 +176,12 @@ npm run gateforge:final-report
 
 The target is \`CONDITIONAL_GO\`. The final gate must still fail closed until all seven external items are \`PASS\`.
 `;
+}
 
-const report = `# Life or Death GateForge War Room
+function renderReport(generatedAt: string) {
+  return `# Life or Death GateForge War Room
 
-Generated: \`${now}\`
+Generated: \`${generatedAt}\`
 
 ## Situation
 
@@ -219,6 +223,38 @@ npm run gateforge:final-report
 
 See \`${runbookPath}\` for the operator runbook.
 `;
+}
+
+const runbook = renderRunbook(now);
+const report = renderReport(now);
+
+if (checkOnly) {
+  const expectedGeneratedAt = 'CHECK_TIMESTAMP';
+  const expectedRunbook = renderRunbook(expectedGeneratedAt);
+  const expectedReport = renderReport(expectedGeneratedAt);
+  const errors: string[] = [];
+  const currentRunbook = fs.existsSync(runbookPath)
+    ? fs.readFileSync(runbookPath, 'utf8').replace(/Generated: `[^`]+`/, `Generated: \`${expectedGeneratedAt}\``)
+    : '';
+  const currentReport = fs.existsSync(reportPath)
+    ? fs.readFileSync(reportPath, 'utf8').replace(/Generated: `[^`]+`/, `Generated: \`${expectedGeneratedAt}\``)
+    : '';
+
+  if (!currentRunbook) errors.push(`missing generated runbook: ${runbookPath}`);
+  else if (currentRunbook !== expectedRunbook) errors.push(`stale generated runbook: ${runbookPath}`);
+  if (!currentReport) errors.push(`missing generated report: ${reportPath}`);
+  else if (currentReport !== expectedReport) errors.push(`stale generated report: ${reportPath}`);
+
+  if (errors.length) {
+    console.error('GateForge war room: FAIL');
+    errors.forEach((error) => console.error(`  - ${error}`));
+    console.error('Run: npm run gateforge:war-room');
+    process.exit(1);
+  }
+
+  console.log(`GateForge war room: PASS (${decision})`);
+  process.exit(0);
+}
 
 fs.mkdirSync(path.dirname(runbookPath), { recursive: true });
 fs.mkdirSync(path.dirname(reportPath), { recursive: true });

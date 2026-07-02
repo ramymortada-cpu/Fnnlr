@@ -137,6 +137,7 @@
     "gateforge:final-report": "tsx scripts/gateforge-final-report.ts",
     "gateforge:final-report-check": "tsx scripts/gateforge-final-report.ts --check",
     "gateforge:war-room": "tsx scripts/gateforge-war-room.ts",
+    "gateforge:war-room-check": "tsx scripts/gateforge-war-room.ts --check",
     "moat:plan": "tsx scripts/saas-moat-action-plan.ts",
     "moat:check": "tsx scripts/saas-moat-action-plan.ts --check",
     "moat:status-consistency-smoke": "tsx scripts/saas-moat-status-consistency-smoke.ts",

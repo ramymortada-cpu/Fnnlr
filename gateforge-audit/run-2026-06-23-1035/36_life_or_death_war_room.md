@@ -1,6 +1,6 @@
 # Life or Death GateForge War Room
 
-Generated: `2026-06-23T11:57:41.188Z`
+Generated: `2026-07-02T11:41:22.213Z`
 
 ## Situation
 

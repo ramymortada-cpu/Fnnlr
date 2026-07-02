@@ -1,6 +1,6 @@
 # Hosted Staging War Room
 
-Generated: `2026-06-23T11:57:41.188Z`
+Generated: `2026-07-02T11:41:22.213Z`
 
 Purpose: close the remaining GateForge external evidence blockers without weakening the gate.
 
@@ -55,7 +55,6 @@ npm run deploy:verify-restore
 
 ```bash
 npm run gateforge:external-check
-npm run gateforge:attestation-secret-pack -- --write-b64
 npm run gateforge:final-gate
 npm run gateforge:final-report
 ```
