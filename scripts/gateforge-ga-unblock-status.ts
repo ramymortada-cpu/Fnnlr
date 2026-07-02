@@ -10,6 +10,11 @@ const secretDirMode = dirIndex >= 0 ? 'explicit-dir' : 'default-local-dir';
 const fromFileIndex = process.argv.indexOf('--from-file');
 const fromFile = fromFileIndex >= 0 ? process.argv[fromFileIndex + 1] : '';
 const githubSecretSource = fromFile ? 'fixture-file' : 'live-github';
+const externalFileIndex = process.argv.indexOf('--external-file');
+const externalPath =
+  externalFileIndex >= 0
+    ? process.argv[externalFileIndex + 1]
+    : 'gateforge-audit/external-attestations/hosted-staging-attestation.json';
 const outIndex = process.argv.indexOf('--out');
 const outPath = outIndex >= 0 ? process.argv[outIndex + 1] : `${runDir}/47_ga_unblock_status.md`;
 const jsonOutIndex = process.argv.indexOf('--json-out');
@@ -150,6 +155,17 @@ function probeAttestationPack(): Probe {
   if (report.includes('Decision: `READY`')) return { status: 'PASS', detail: 'attestation packet is ready for safe B64 packaging' };
   if (report.includes('Decision: `BLOCKED`')) return { status: 'FAIL', detail: 'attestation packet is blocked until real hosted evidence exists' };
   return { status: 'UNKNOWN', detail: 'attestation secret pack decision could not be parsed' };
+}
+
+function probeExternalAttestationContract(): Probe {
+  const result = run('npx', ['tsx', 'scripts/gateforge-external-check.ts', externalPath]);
+  return {
+    status: result.status === 0 ? 'PASS' : 'FAIL',
+    detail:
+      result.status === 0
+        ? `external attestation packet validates: ${externalPath}`
+        : `external attestation packet is missing, incomplete, or invalid: ${externalPath}`,
+  };
 }
 
 function probeWorkflow(workflow: string): Probe {
@@ -314,13 +330,21 @@ function probeOperatorPacket(): Probe {
   };
 }
 
-function decisionFor(local: Probe, github: Probe, strict: Probe) {
+function decisionFor(local: Probe, externalContract: Probe, github: Probe, strict: Probe) {
   if (local.status !== 'PASS') {
     return {
       state: 'CANNOT_APPROVE_LOCAL_EVIDENCE',
       scoreBand: '65-70/100',
       nextAction: 'Replace local runtime secrets and create a valid hosted staging attestation packet, then run npm run gateforge:hosted-readiness-doctor.',
       rationale: 'Code controls are materially stronger, but GA evidence is still local/incomplete.',
+    };
+  }
+  if (externalContract.status !== 'PASS') {
+    return {
+      state: 'CANNOT_APPROVE_LOCAL_EVIDENCE',
+      scoreBand: '65-70/100',
+      nextAction: 'Complete gateforge-audit/external-attestations/hosted-staging-attestation.json with real hosted evidence, then run npm run gateforge:external-check.',
+      rationale: 'Local secret files are ready, but the external attestation contract is not valid enough to support hosted GA evidence.',
     };
   }
   if (github.status !== 'PASS') {
@@ -354,12 +378,13 @@ function mdList(values: string[]) {
 const localSecrets = probeLocalSecrets();
 const githubSecrets = probeGithubSecrets();
 const attestationPack = probeAttestationPack();
+const externalAttestationContract = probeExternalAttestationContract();
 const remainingCloseout = probeRemainingCloseout();
 const externalProgress = probeExternalProgress();
 const operatorPacket = probeOperatorPacket();
 const strictRun = probeWorkflow(strictWorkflow);
 const gaEvidenceRun = probeWorkflow(gaWorkflow);
-const decision = decisionFor(localSecrets.probe, githubSecrets, strictRun);
+const decision = decisionFor(localSecrets.probe, externalAttestationContract, githubSecrets, strictRun);
 const generatedAt = new Date().toISOString();
 
 function renderJson(renderedAt: string) {
@@ -369,6 +394,7 @@ function renderJson(renderedAt: string) {
     probes: {
       localSecrets: localSecrets.probe,
       attestationPack,
+      externalAttestationContract,
       remainingExternalBlockerCloseout: remainingCloseout.probe,
       externalBlockerProgress: externalProgress.probe,
       operatorExecutionPacket: operatorPacket,
@@ -387,6 +413,8 @@ function renderJson(renderedAt: string) {
       localSecretDirectory: secretDir,
       localSecretDirectoryMode: secretDirMode,
       githubSecretSource,
+      externalAttestationPacket: externalPath,
+      externalAttestationContractRequiredForHostedTrigger: true,
       localSecretReadinessIsGaEvidence: false,
       hostedStrictWorkflowRequiredForGa: true,
     },
@@ -418,6 +446,7 @@ This status file is the single operator dashboard for the GA unblock path. It co
 | --- | --- | --- |
 | Local secret values | \`${localSecrets.probe.status}\` | ${localSecrets.probe.detail} |
 | Attestation secret pack | \`${attestationPack.status}\` | ${attestationPack.detail} |
+| External attestation contract | \`${externalAttestationContract.status}\` | ${externalAttestationContract.detail} |
 | Remaining external blocker closeout | \`${remainingCloseout.probe.status}\` | ${remainingCloseout.probe.detail} |
 | External blocker progress | \`${externalProgress.probe.status}\` | ${externalProgress.probe.detail} |
 | Operator execution packet | \`${operatorPacket.status}\` | ${operatorPacket.detail} |
@@ -452,6 +481,8 @@ ${mdList(remainingCloseout.openExternalBlockers)}
 - Local secret directory mode: \`${secretDirMode}\`
 - Local secret directory: \`${secretDir}\`
 - GitHub secret source: \`${githubSecretSource}\`
+- External attestation packet: \`${externalPath}\`
+- External attestation contract required for hosted trigger: \`YES\`
 - Local secret readiness is GA evidence: \`NO\`
 - Hosted strict workflow required for GA: \`YES\`
 

@@ -1,6 +1,6 @@
 # Hosted Strict Trigger Readiness
 
-Generated: `2026-07-02T19:57:49.333Z`
+Generated: `2026-07-02T20:08:26.607Z`
 
 Decision: `NOT_READY`
 
@@ -13,7 +13,7 @@ This report is a pre-trigger readiness check for `GateForge Hosted Staging Stric
 | Open P0 terminal runbook is fresh | PASS | `npm run gateforge:open-p0-runbook-check` |
 | GitHub secret names are ready | BLOCKED | `npm run gateforge:github-secrets-audit` |
 | External attestation contract is valid | BLOCKED | `npm run gateforge:external-check -- gateforge-audit/external-attestations/hosted-staging-attestation.json` |
-| Latest GA Evidence run for current HEAD succeeded | PASS | https://github.com/ramymortada-cpu/Fnnlr/actions/runs/28617441217 |
+| Latest GA Evidence run for current HEAD succeeded | PASS | https://github.com/ramymortada-cpu/Fnnlr/actions/runs/28618080178 |
 
 ## External Attestation Contract
 
@@ -23,12 +23,12 @@ This report is a pre-trigger readiness check for `GateForge Hosted Staging Stric
 
 ## GA Evidence Run
 
-- Current HEAD: `78ae593e613106a81201c10da809f6e2b25e20d1`
-- Source: `gh run list --workflow "GateForge GA Evidence" --commit 78ae593e613106a81201c10da809f6e2b25e20d1`
-- Run ID: `28617441217`
+- Current HEAD: `d2892addde03370cb12998e4500c24c50834dba6`
+- Source: `gh run list --workflow "GateForge GA Evidence" --commit d2892addde03370cb12998e4500c24c50834dba6`
+- Run ID: `28618080178`
 - Run status: `completed`
 - Run conclusion: `success`
-- Run URL: https://github.com/ramymortada-cpu/Fnnlr/actions/runs/28617441217
+- Run URL: https://github.com/ramymortada-cpu/Fnnlr/actions/runs/28618080178
 
 ## Blockers
 

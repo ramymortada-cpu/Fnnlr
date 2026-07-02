@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-02T12:14:33.184Z",
+  "generatedAt": "2026-07-02T20:08:06.241Z",
   "decision": {
     "state": "CANNOT_APPROVE_LOCAL_EVIDENCE",
     "scoreBand": "65-70/100",
@@ -14,6 +14,10 @@
     "attestationPack": {
       "status": "FAIL",
       "detail": "attestation packet is blocked until real hosted evidence exists"
+    },
+    "externalAttestationContract": {
+      "status": "FAIL",
+      "detail": "external attestation packet is missing, incomplete, or invalid: gateforge-audit/external-attestations/hosted-staging-attestation.json"
     },
     "remainingExternalBlockerCloseout": {
       "status": "PASS",
@@ -37,8 +41,8 @@
     },
     "gaEvidenceWorkflow": {
       "status": "PASS",
-      "detail": "28588834163 completed/success 75d147a531eaa48b530aa25674370970e50c3a3b",
-      "url": "https://github.com/ramymortada-cpu/Fnnlr/actions/runs/28588834163"
+      "detail": "28618080178 completed/success d2892addde03370cb12998e4500c24c50834dba6",
+      "url": "https://github.com/ramymortada-cpu/Fnnlr/actions/runs/28618080178"
     }
   },
   "blockers": {
@@ -115,6 +119,8 @@
     "localSecretDirectory": "/tmp/fnnlr-gateforge-secrets",
     "localSecretDirectoryMode": "default-local-dir",
     "githubSecretSource": "live-github",
+    "externalAttestationPacket": "gateforge-audit/external-attestations/hosted-staging-attestation.json",
+    "externalAttestationContractRequiredForHostedTrigger": true,
     "localSecretReadinessIsGaEvidence": false,
     "hostedStrictWorkflowRequiredForGa": true
   },

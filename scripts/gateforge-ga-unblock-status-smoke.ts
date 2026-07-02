@@ -59,6 +59,8 @@ const missing = run([
   path.join(os.tmpdir(), 'fnnlr-gateforge-unblock-status-missing-dir'),
   '--from-file',
   'tests/fixtures/gateforge-gh-secrets-b64-only-pass.json',
+  '--external-file',
+  'tests/fixtures/gateforge-external-pass.json',
   '--out',
   missingOut,
   '--json-out',
@@ -80,6 +82,8 @@ const ready = run([
   secretDir,
   '--from-file',
   'tests/fixtures/gateforge-gh-secrets-b64-only-pass.json',
+  '--external-file',
+  'tests/fixtures/gateforge-external-pass.json',
   '--out',
   readyOut,
   '--json-out',
@@ -93,26 +97,42 @@ if (!ready.output.includes('GateForge GA unblock status: READY_TO_TRIGGER_HOSTED
 const report = fs.readFileSync(readyOut, 'utf8');
 const parsed = JSON.parse(fs.readFileSync(readyJson, 'utf8')) as {
   decision?: { state?: string };
-  probes?: { remainingExternalBlockerCloseout?: { status?: string } };
+  probes?: {
+    externalAttestationContract?: { status?: string };
+    remainingExternalBlockerCloseout?: { status?: string };
+  };
   blockers?: { openExternalBlockers?: string[] };
   evidenceScope?: {
     localSecretDirectoryMode?: string;
     githubSecretSource?: string;
+    externalAttestationPacket?: string;
+    externalAttestationContractRequiredForHostedTrigger?: boolean;
     localSecretReadinessIsGaEvidence?: boolean;
     hostedStrictWorkflowRequiredForGa?: boolean;
   };
   safety?: { secretValuesPrinted?: boolean };
 };
 if (!report.includes('Defensible score band: `74-78/100`')) fail('ready report did not include expected score band');
+if (!report.includes('External attestation contract')) fail('ready report did not include external attestation contract probe');
 if (!report.includes('Remaining external blocker closeout')) fail('ready report did not include closeout probe');
 if (!report.includes('## Remaining External Blocker IDs')) fail('ready report did not include external blocker IDs');
 if (!report.includes('## Evidence Scope')) fail('ready report did not include evidence scope');
 if (!report.includes('Local secret readiness is GA evidence: `NO`')) fail('ready report did not distinguish local readiness from GA evidence');
+if (!report.includes('External attestation contract required for hosted trigger: `YES`')) {
+  fail('ready report did not require external attestation contract for hosted trigger');
+}
 if (parsed.decision?.state !== 'READY_TO_TRIGGER_HOSTED_STRICT') fail('ready JSON did not include expected state');
+if (parsed.probes?.externalAttestationContract?.status !== 'PASS') fail('ready JSON did not include passing external attestation contract probe');
 if (parsed.probes?.remainingExternalBlockerCloseout?.status !== 'PASS') fail('ready JSON did not include passing closeout probe');
 if (parsed.blockers?.openExternalBlockers?.length !== 16) fail('ready JSON did not include 16 external blockers');
 if (parsed.evidenceScope?.localSecretDirectoryMode !== 'explicit-dir') fail('ready JSON did not include explicit local secret directory mode');
 if (parsed.evidenceScope?.githubSecretSource !== 'fixture-file') fail('ready JSON did not include fixture GitHub secret source');
+if (parsed.evidenceScope?.externalAttestationPacket !== 'tests/fixtures/gateforge-external-pass.json') {
+  fail('ready JSON did not include external attestation packet source');
+}
+if (parsed.evidenceScope?.externalAttestationContractRequiredForHostedTrigger !== true) {
+  fail('ready JSON did not require external attestation contract for hosted trigger');
+}
 if (parsed.evidenceScope?.localSecretReadinessIsGaEvidence !== false) fail('ready JSON did not state local secret readiness is not GA evidence');
 if (parsed.evidenceScope?.hostedStrictWorkflowRequiredForGa !== true) fail('ready JSON did not require hosted strict workflow for GA');
 if (parsed.safety?.secretValuesPrinted !== false) fail('ready JSON did not state secret safety');

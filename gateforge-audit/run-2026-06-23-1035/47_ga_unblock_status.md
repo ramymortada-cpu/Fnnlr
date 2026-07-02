@@ -1,6 +1,6 @@
 # GateForge GA Unblock Status
 
-Generated: `2026-07-02T12:14:33.184Z`
+Generated: `2026-07-02T20:08:06.241Z`
 
 This status file is the single operator dashboard for the GA unblock path. It contains secret names and readiness states only; no secret values are printed.
 
@@ -17,12 +17,13 @@ This status file is the single operator dashboard for the GA unblock path. It co
 | --- | --- | --- |
 | Local secret values | `FAIL` | runtime 6/17, attestation 0/1; open runtime 11 |
 | Attestation secret pack | `FAIL` | attestation packet is blocked until real hosted evidence exists |
+| External attestation contract | `FAIL` | external attestation packet is missing, incomplete, or invalid: gateforge-audit/external-attestations/hosted-staging-attestation.json |
 | Remaining external blocker closeout | `PASS` | 16 BLOCKED_EXTERNAL items mapped in 48_remaining_external_blocker_closeout.json |
 | External blocker progress | `PASS` | 16 local, 0 GitHub-stage, 0 hosted evidence pending; 11 GitHub names missing |
 | Operator execution packet | `PASS` | 16 blockers mapped with 19 hosted secret file options |
 | GitHub Actions secret names | `FAIL` | required GitHub secret names are missing |
 | Hosted strict workflow | `UNKNOWN` | no GateForge Hosted Staging Strict run found |
-| GA evidence workflow | `PASS` | 28588834163 completed/success 75d147a531eaa48b530aa25674370970e50c3a3b (https://github.com/ramymortada-cpu/Fnnlr/actions/runs/28588834163) |
+| GA evidence workflow | `PASS` | 28618080178 completed/success d2892addde03370cb12998e4500c24c50834dba6 (https://github.com/ramymortada-cpu/Fnnlr/actions/runs/28618080178) |
 
 ## Open Runtime Secret Names
 
@@ -77,6 +78,8 @@ This status file is the single operator dashboard for the GA unblock path. It co
 - Local secret directory mode: `default-local-dir`
 - Local secret directory: `/tmp/fnnlr-gateforge-secrets`
 - GitHub secret source: `live-github`
+- External attestation packet: `gateforge-audit/external-attestations/hosted-staging-attestation.json`
+- External attestation contract required for hosted trigger: `YES`
 - Local secret readiness is GA evidence: `NO`
 - Hosted strict workflow required for GA: `YES`
 
