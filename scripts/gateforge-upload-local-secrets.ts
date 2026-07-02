@@ -9,6 +9,7 @@ const dirArgIndex = process.argv.indexOf('--dir');
 const secretDir = dirArgIndex >= 0 ? process.argv[dirArgIndex + 1] : defaultDir;
 const apply = process.argv.includes('--apply');
 const dryRun = process.argv.includes('--dry-run') || !apply;
+const checkOnly = process.argv.includes('--check');
 const reportOutIndex = process.argv.indexOf('--report-out');
 const reportPath =
   reportOutIndex >= 0
@@ -50,13 +51,30 @@ function fail(message: string): never {
   process.exit(1);
 }
 
+function normalizeGenerated(text: string): string {
+  return text
+    .replace(/^Generated: `[^`]+`$/gm, 'Generated: `<normalized>`')
+    .replace(/"generatedAt": "[^"]+"/g, '"generatedAt": "<normalized>"');
+}
+
+function assertFresh(filePath: string, expected: string): void {
+  if (!fs.existsSync(filePath)) fail(`${filePath} is missing`);
+  const actual = fs.readFileSync(filePath, 'utf8');
+  if (normalizeGenerated(actual) !== normalizeGenerated(expected)) {
+    fail(`${filePath} is stale; rerun npm run gateforge:upload-local-secrets -- --dry-run`);
+  }
+}
+
+if (checkOnly && apply) fail('--check must not be combined with --apply');
+
 const validation = run('npx', ['tsx', 'scripts/gateforge-local-secret-files-check.ts', '--dir', secretDir]);
 process.stdout.write(validation.output);
 if (validation.status !== 0) {
-  writeReport('BLOCKED_LOCAL_SECRET_VALIDATION', [], [
+  handleReport('BLOCKED_LOCAL_SECRET_VALIDATION', [], [
     'Local secret files are not ready; upload was not attempted.',
     'Run `npm run gateforge:secret-replacement-packet` and replace every missing, placeholder, empty, or invalid value with real staging values.',
   ]);
+  if (checkOnly) process.exit(0);
   fail('local secret files are not ready; upload was not attempted');
 }
 
@@ -82,7 +100,7 @@ for (const name of uploadNames) {
   const result = run('gh', ['secret', 'set', name, '--body-file', file]);
   if (result.status !== 0) {
     rows.push({ name, kind, action: 'FAILED', status: 'FAIL' });
-    writeReport('FAILED_UPLOAD', rows, [
+    handleReport('FAILED_UPLOAD', rows, [
       `GitHub secret upload failed for \`${name}\`.`,
       'No secret values were printed.',
       'Check GitHub CLI authentication, repository permissions, and network availability.',
@@ -94,17 +112,17 @@ for (const name of uploadNames) {
 }
 
 if (dryRun) {
-  writeReport('DRY_RUN_READY', rows, ['Dry run only; no GitHub secrets were written.']);
+  handleReport('DRY_RUN_READY', rows, ['Dry run only; no GitHub secrets were written.']);
   console.log('GateForge upload local secrets: dry run complete; rerun with --apply to upload.');
 } else {
-  writeReport('UPLOAD_COMPLETE', rows, [
+  handleReport('UPLOAD_COMPLETE', rows, [
     'GitHub secret upload commands completed.',
     'Run `npm run gateforge:github-secrets-audit` next.',
   ]);
   console.log('GateForge upload local secrets: upload complete; run npm run gateforge:github-secrets-audit next.');
 }
 
-function writeReport(status: string, rows: UploadRow[], details: string[]) {
+function buildReport(status: string, rows: UploadRow[], details: string[]) {
   const generatedAt = new Date().toISOString();
   const json = {
     generatedAt,
@@ -151,8 +169,24 @@ ${details.map((detail) => `- ${detail}`).join('\n')}
 - Production mutated: \`NO\`
 - Source dumps included: \`NO\`
 `;
+  return {
+    body,
+    jsonBody: `${JSON.stringify(json, null, 2)}\n`,
+  };
+}
+
+function handleReport(status: string, rows: UploadRow[], details: string[]) {
+  const { body, jsonBody } = buildReport(status, rows, details);
+  if (checkOnly) {
+    assertFresh(reportPath, body);
+    assertFresh(jsonPath, jsonBody);
+    console.log(`GateForge upload local secrets: PASS (${status})`);
+    console.log(`  checked ${reportPath}`);
+    console.log(`  checked ${jsonPath}`);
+    return;
+  }
   fs.mkdirSync(path.dirname(reportPath), { recursive: true });
   fs.writeFileSync(reportPath, body);
   fs.mkdirSync(path.dirname(jsonPath), { recursive: true });
-  fs.writeFileSync(jsonPath, `${JSON.stringify(json, null, 2)}\n`);
+  fs.writeFileSync(jsonPath, jsonBody);
 }

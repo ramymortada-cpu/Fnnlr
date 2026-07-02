@@ -82,6 +82,7 @@
     "gateforge:write-local-secret": "tsx scripts/gateforge-write-local-secret.ts",
     "gateforge:write-local-secret-smoke": "tsx scripts/gateforge-write-local-secret-smoke.ts",
     "gateforge:upload-local-secrets": "tsx scripts/gateforge-upload-local-secrets.ts",
+    "gateforge:upload-local-secrets-check": "tsx scripts/gateforge-upload-local-secrets.ts --dry-run --check",
     "gateforge:upload-local-secrets-smoke": "tsx scripts/gateforge-upload-local-secrets-smoke.ts",
     "gateforge:hosted-unblock": "tsx scripts/gateforge-hosted-unblock-runner.ts",
     "gateforge:hosted-unblock-smoke": "tsx scripts/gateforge-hosted-unblock-runner-smoke.ts",
