@@ -1,6 +1,6 @@
 # GateForge External Blocker Progress
 
-Generated: `2026-07-02T10:32:59.649Z`
+Generated: `2026-07-02T10:40:53.433Z`
 
 This progress board converts the 16 remaining external blockers into executable status. It uses secret names and readiness states only; no secret values are printed.
 
@@ -10,6 +10,8 @@ This progress board converts the 16 remaining external blockers into executable 
 - Local secret pending: `16`
 - GitHub secret pending: `0`
 - Hosted/provider evidence pending: `0`
+- Unique local secret names not ready: `11`
+- Unique GitHub secret names missing: `11`
 - Source closeout: `gateforge-audit/run-2026-06-23-1035/48_remaining_external_blocker_closeout.json`
 - Local secret directory: `/tmp/fnnlr-gateforge-secrets`
 - GitHub secret source: `gh secret list --json name`
@@ -40,6 +42,7 @@ This progress board converts the 16 remaining external blockers into executable 
 - `LOCAL_SECRET_PENDING`: a required local secret file is missing, empty, placeholder, or invalid.
 - `GITHUB_SECRET_PENDING`: local secret files are ready, but GitHub Actions secret names are not present.
 - `HOSTED_EVIDENCE_PENDING`: secret names are staged; the blocker still needs hosted/provider evidence before it can close.
+- The unique GitHub/local readiness counts are independent diagnostics; they can be non-zero even while the sequential blocker status remains `LOCAL_SECRET_PENDING`.
 
 ## Safety
 

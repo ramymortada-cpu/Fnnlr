@@ -60,6 +60,10 @@ type ExternalProgressJson = {
     GITHUB_SECRET_PENDING?: number;
     HOSTED_EVIDENCE_PENDING?: number;
   };
+  readiness?: {
+    localUnreadySecretNames?: string[];
+    githubMissingSecretNames?: string[];
+  };
   safety?: {
     secretValuesPrinted?: boolean;
     productionMutated?: boolean;
@@ -210,16 +214,25 @@ function probeRemainingCloseout(): { probe: Probe; openExternalBlockers: string[
   };
 }
 
-function probeExternalProgress(): { probe: Probe; counts: Required<NonNullable<ExternalProgressJson['counts']>> } {
+function probeExternalProgress(): {
+  probe: Probe;
+  counts: Required<NonNullable<ExternalProgressJson['counts']>>;
+  readiness: Required<NonNullable<ExternalProgressJson['readiness']>>;
+} {
   const emptyCounts = {
     LOCAL_SECRET_PENDING: 0,
     GITHUB_SECRET_PENDING: 0,
     HOSTED_EVIDENCE_PENDING: 0,
   };
+  const emptyReadiness = {
+    localUnreadySecretNames: [] as string[],
+    githubMissingSecretNames: [] as string[],
+  };
   if (!fs.existsSync(progressPath)) {
     return {
       probe: { status: 'FAIL', detail: `external blocker progress is missing: ${progressPath}` },
       counts: emptyCounts,
+      readiness: emptyReadiness,
     };
   }
 
@@ -230,6 +243,7 @@ function probeExternalProgress(): { probe: Probe; counts: Required<NonNullable<E
     return {
       probe: { status: 'FAIL', detail: 'external blocker progress JSON could not be parsed' },
       counts: emptyCounts,
+      readiness: emptyReadiness,
     };
   }
 
@@ -239,6 +253,10 @@ function probeExternalProgress(): { probe: Probe; counts: Required<NonNullable<E
     HOSTED_EVIDENCE_PENDING: parsed.counts?.HOSTED_EVIDENCE_PENDING ?? 0,
   };
   const total = counts.LOCAL_SECRET_PENDING + counts.GITHUB_SECRET_PENDING + counts.HOSTED_EVIDENCE_PENDING;
+  const readiness = {
+    localUnreadySecretNames: parsed.readiness?.localUnreadySecretNames ?? [],
+    githubMissingSecretNames: parsed.readiness?.githubMissingSecretNames ?? [],
+  };
   const safe =
     parsed.safety?.secretValuesPrinted === false &&
     parsed.safety?.productionMutated === false &&
@@ -254,9 +272,10 @@ function probeExternalProgress(): { probe: Probe; counts: Required<NonNullable<E
       status: errors.length ? 'FAIL' : 'PASS',
       detail: errors.length
         ? errors.join('; ')
-        : `${counts.LOCAL_SECRET_PENDING} local, ${counts.GITHUB_SECRET_PENDING} GitHub, ${counts.HOSTED_EVIDENCE_PENDING} hosted evidence pending`,
+        : `${counts.LOCAL_SECRET_PENDING} local, ${counts.GITHUB_SECRET_PENDING} GitHub-stage, ${counts.HOSTED_EVIDENCE_PENDING} hosted evidence pending; ${readiness.githubMissingSecretNames.length} GitHub names missing`,
     },
     counts,
+    readiness,
   };
 }
 
@@ -360,6 +379,7 @@ const json = {
     openAttestationSecrets: localSecrets.openAttestation,
     openExternalBlockers: remainingCloseout.openExternalBlockers,
     externalBlockerProgressCounts: externalProgress.counts,
+    externalBlockerReadiness: externalProgress.readiness,
   },
   evidenceScope: {
     localSecretDirectory: secretDir,
@@ -418,6 +438,8 @@ ${mdList(remainingCloseout.openExternalBlockers)}
 - Local secret pending: \`${externalProgress.counts.LOCAL_SECRET_PENDING}\`
 - GitHub secret pending: \`${externalProgress.counts.GITHUB_SECRET_PENDING}\`
 - Hosted/provider evidence pending: \`${externalProgress.counts.HOSTED_EVIDENCE_PENDING}\`
+- Unique local secret names not ready: \`${externalProgress.readiness.localUnreadySecretNames.length}\`
+- Unique GitHub secret names missing: \`${externalProgress.readiness.githubMissingSecretNames.length}\`
 - Source: \`${progressPath}\`
 - Operator packet: \`${operatorPacketPath}\`
 

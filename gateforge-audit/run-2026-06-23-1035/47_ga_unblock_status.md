@@ -1,6 +1,6 @@
 # GateForge GA Unblock Status
 
-Generated: `2026-07-02T10:33:14.376Z`
+Generated: `2026-07-02T10:40:58.532Z`
 
 This status file is the single operator dashboard for the GA unblock path. It contains secret names and readiness states only; no secret values are printed.
 
@@ -18,11 +18,11 @@ This status file is the single operator dashboard for the GA unblock path. It co
 | Local secret values | `FAIL` | runtime 6/17, attestation 0/1; open runtime 11 |
 | Attestation secret pack | `FAIL` | attestation packet is blocked until real hosted evidence exists |
 | Remaining external blocker closeout | `PASS` | 16 BLOCKED_EXTERNAL items mapped in 48_remaining_external_blocker_closeout.json |
-| External blocker progress | `PASS` | 16 local, 0 GitHub, 0 hosted evidence pending |
+| External blocker progress | `PASS` | 16 local, 0 GitHub-stage, 0 hosted evidence pending; 11 GitHub names missing |
 | Operator execution packet | `PASS` | 16 blockers mapped with 19 hosted secret file options |
 | GitHub Actions secret names | `FAIL` | required GitHub secret names are missing |
 | Hosted strict workflow | `UNKNOWN` | no GateForge Hosted Staging Strict run found |
-| GA evidence workflow | `PASS` | 28555493104 completed/success 1a9ce3a999b314b832ae842aa0664f3cc0060010 (https://github.com/ramymortada-cpu/Fnnlr/actions/runs/28555493104) |
+| GA evidence workflow | `PASS` | 28583636877 completed/success 8e3ea389877e96bdfb98bee18c1f311a26cd26b0 (https://github.com/ramymortada-cpu/Fnnlr/actions/runs/28583636877) |
 
 ## Open Runtime Secret Names
 
@@ -67,6 +67,8 @@ This status file is the single operator dashboard for the GA unblock path. It co
 - Local secret pending: `16`
 - GitHub secret pending: `0`
 - Hosted/provider evidence pending: `0`
+- Unique local secret names not ready: `11`
+- Unique GitHub secret names missing: `11`
 - Source: `gateforge-audit/run-2026-06-23-1035/49_external_blocker_progress.json`
 - Operator packet: `gateforge-audit/run-2026-06-23-1035/50_operator_execution_packet.json`
 

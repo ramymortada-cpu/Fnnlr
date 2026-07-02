@@ -1,10 +1,38 @@
 {
-  "generatedAt": "2026-07-02T10:32:59.649Z",
+  "generatedAt": "2026-07-02T10:40:53.433Z",
   "total": 16,
   "counts": {
     "LOCAL_SECRET_PENDING": 16,
     "GITHUB_SECRET_PENDING": 0,
     "HOSTED_EVIDENCE_PENDING": 0
+  },
+  "readiness": {
+    "localUnreadySecretNames": [
+      "ALERT_EMAIL_TO",
+      "ALERT_WEBHOOK_URL",
+      "ANTHROPIC_API_KEY",
+      "CONTROL_PLANE_DATABASE_URL",
+      "EMAIL_FROM",
+      "EMAIL_REPLY_TO",
+      "RESEND_API_KEY",
+      "SENTRY_DSN",
+      "TENANT_DB_ADMIN_URL",
+      "TENANT_DB_HOST",
+      "UPTIME_HEALTHCHECK_URL"
+    ],
+    "githubMissingSecretNames": [
+      "ALERT_EMAIL_TO",
+      "ALERT_WEBHOOK_URL",
+      "ANTHROPIC_API_KEY",
+      "CONTROL_PLANE_DATABASE_URL",
+      "EMAIL_FROM",
+      "EMAIL_REPLY_TO",
+      "RESEND_API_KEY",
+      "SENTRY_DSN",
+      "TENANT_DB_ADMIN_URL",
+      "TENANT_DB_HOST",
+      "UPTIME_HEALTHCHECK_URL"
+    ]
   },
   "rows": [
     {

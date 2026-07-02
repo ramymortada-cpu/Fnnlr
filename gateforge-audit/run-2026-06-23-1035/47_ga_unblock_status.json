@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-02T10:33:14.376Z",
+  "generatedAt": "2026-07-02T10:40:58.532Z",
   "decision": {
     "state": "CANNOT_APPROVE_LOCAL_EVIDENCE",
     "scoreBand": "65-70/100",
@@ -21,7 +21,7 @@
     },
     "externalBlockerProgress": {
       "status": "PASS",
-      "detail": "16 local, 0 GitHub, 0 hosted evidence pending"
+      "detail": "16 local, 0 GitHub-stage, 0 hosted evidence pending; 11 GitHub names missing"
     },
     "operatorExecutionPacket": {
       "status": "PASS",
@@ -37,8 +37,8 @@
     },
     "gaEvidenceWorkflow": {
       "status": "PASS",
-      "detail": "28555493104 completed/success 1a9ce3a999b314b832ae842aa0664f3cc0060010",
-      "url": "https://github.com/ramymortada-cpu/Fnnlr/actions/runs/28555493104"
+      "detail": "28583636877 completed/success 8e3ea389877e96bdfb98bee18c1f311a26cd26b0",
+      "url": "https://github.com/ramymortada-cpu/Fnnlr/actions/runs/28583636877"
     }
   },
   "blockers": {
@@ -81,6 +81,34 @@
       "LOCAL_SECRET_PENDING": 16,
       "GITHUB_SECRET_PENDING": 0,
       "HOSTED_EVIDENCE_PENDING": 0
+    },
+    "externalBlockerReadiness": {
+      "localUnreadySecretNames": [
+        "ALERT_EMAIL_TO",
+        "ALERT_WEBHOOK_URL",
+        "ANTHROPIC_API_KEY",
+        "CONTROL_PLANE_DATABASE_URL",
+        "EMAIL_FROM",
+        "EMAIL_REPLY_TO",
+        "RESEND_API_KEY",
+        "SENTRY_DSN",
+        "TENANT_DB_ADMIN_URL",
+        "TENANT_DB_HOST",
+        "UPTIME_HEALTHCHECK_URL"
+      ],
+      "githubMissingSecretNames": [
+        "ALERT_EMAIL_TO",
+        "ALERT_WEBHOOK_URL",
+        "ANTHROPIC_API_KEY",
+        "CONTROL_PLANE_DATABASE_URL",
+        "EMAIL_FROM",
+        "EMAIL_REPLY_TO",
+        "RESEND_API_KEY",
+        "SENTRY_DSN",
+        "TENANT_DB_ADMIN_URL",
+        "TENANT_DB_HOST",
+        "UPTIME_HEALTHCHECK_URL"
+      ]
     }
   },
   "evidenceScope": {

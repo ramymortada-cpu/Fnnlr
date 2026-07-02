@@ -108,6 +108,7 @@ function nextActionFor(status: BlockerStatus) {
 
 function renderMarkdown(generatedAt: string, rows: ReturnType<typeof buildRows>) {
   const counts = countStatuses(rows);
+  const readiness = countReadiness(rows);
   const table = rows
     .map((row) => `| \`${row.id}\` | \`${row.status}\` | ${row.action} | ${row.secrets.map((secret) => `\`${secret}\``).join('<br>')} | ${row.localStatuses.map((entry) => `\`${entry.name}\`: \`${entry.status}\``).join('<br>')} | ${row.githubStatuses.map((entry) => `\`${entry.name}\`: \`${entry.present ? 'PRESENT' : 'MISSING'}\``).join('<br>')} | ${row.nextAction} |`)
     .join('\n');
@@ -123,6 +124,8 @@ This progress board converts the 16 remaining external blockers into executable 
 - Local secret pending: \`${counts.LOCAL_SECRET_PENDING}\`
 - GitHub secret pending: \`${counts.GITHUB_SECRET_PENDING}\`
 - Hosted/provider evidence pending: \`${counts.HOSTED_EVIDENCE_PENDING}\`
+- Unique local secret names not ready: \`${readiness.localUnreadySecretNames.length}\`
+- Unique GitHub secret names missing: \`${readiness.githubMissingSecretNames.length}\`
 - Source closeout: \`${closeoutPath}\`
 - Local secret directory: \`${secretDir}\`
 - GitHub secret source: \`${fromFile || 'gh secret list --json name'}\`
@@ -138,6 +141,7 @@ ${table}
 - \`LOCAL_SECRET_PENDING\`: a required local secret file is missing, empty, placeholder, or invalid.
 - \`GITHUB_SECRET_PENDING\`: local secret files are ready, but GitHub Actions secret names are not present.
 - \`HOSTED_EVIDENCE_PENDING\`: secret names are staged; the blocker still needs hosted/provider evidence before it can close.
+- The unique GitHub/local readiness counts are independent diagnostics; they can be non-zero even while the sequential blocker status remains \`LOCAL_SECRET_PENDING\`.
 
 ## Safety
 
@@ -185,11 +189,37 @@ function countStatuses(rows: ReturnType<typeof buildRows>): Record<BlockerStatus
   };
 }
 
+function countReadiness(rows: ReturnType<typeof buildRows>) {
+  const localUnreadySecretNames = Array.from(
+    new Set(
+      rows.flatMap((row) =>
+        row.localStatuses
+          .filter((entry) => entry.status !== 'READY')
+          .map((entry) => entry.name),
+      ),
+    ),
+  ).sort();
+  const githubMissingSecretNames = Array.from(
+    new Set(
+      rows.flatMap((row) =>
+        row.githubStatuses
+          .filter((entry) => !entry.present)
+          .map((entry) => entry.name),
+      ),
+    ),
+  ).sort();
+  return {
+    localUnreadySecretNames,
+    githubMissingSecretNames,
+  };
+}
+
 function renderJson(generatedAt: string, rows: ReturnType<typeof buildRows>) {
   return {
     generatedAt,
     total: rows.length,
     counts: countStatuses(rows),
+    readiness: countReadiness(rows),
     rows,
     safety: {
       secretValuesPrinted: false,
