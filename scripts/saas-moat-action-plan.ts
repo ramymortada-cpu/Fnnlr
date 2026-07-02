@@ -486,39 +486,43 @@ function markdownEscape(value: string) {
 
 function renderMarkdown(items: Action[]) {
   const generatedAt = new Date().toISOString();
+  const rowsWithExecutionState = items.map((item) => ({ ...item, executionState: actionExecutionState(item) }));
   const phaseOrder = [...new Set(items.map((item) => item.phase))];
   const summaryRows = phaseOrder
     .map((phase) => {
       const inPhase = items.filter((item) => item.phase === phase);
+      const inPhaseExecution = rowsWithExecutionState.filter((item) => item.phase === phase);
       const p0 = inPhase.filter((item) => item.priority === 'P0').length;
       const p1 = inPhase.filter((item) => item.priority === 'P1').length;
       const blocked = inPhase.filter((item) => item.status === 'BLOCKED_EXTERNAL').length;
-      return `| ${phase} | ${inPhase.length} | ${p0} | ${p1} | ${blocked} |`;
+      const dependencyBlocked = inPhaseExecution.filter((item) => item.executionState.startsWith('BLOCKED_BY_')).length;
+      return `| ${phase} | ${inPhase.length} | ${p0} | ${p1} | ${blocked} | ${dependencyBlocked} |`;
     })
     .join('\n');
   const sections = phaseOrder
     .map((phase) => {
-      const rows = items
+      const rows = rowsWithExecutionState
         .filter((item) => item.phase === phase)
         .map(
           (item) =>
-            `| \`${item.id}\` | \`${item.priority}\` | \`${item.status}\` | ${markdownEscape(item.owner)} | ${markdownEscape(item.action)} | ${markdownEscape(item.moat)} | ${markdownEscape(item.evidence)} | ${item.command ? `\`${markdownEscape(item.command)}\`` : ''} |`,
+            `| \`${item.id}\` | \`${item.priority}\` | \`${item.status}\` | \`${item.executionState}\` | ${markdownEscape(item.owner)} | ${markdownEscape(item.action)} | ${markdownEscape(item.moat)} | ${markdownEscape(item.evidence)} | ${item.command ? `\`${markdownEscape(item.command)}\`` : ''} |`,
         )
         .join('\n');
-      return `## ${phase}\n\n| ID | Priority | Status | Owner | Action | Moat rationale | Evidence required | Command |\n| --- | --- | --- | --- | --- | --- | --- | --- |\n${rows}`;
+      return `## ${phase}\n\n| ID | Priority | Plan status | Execution state | Owner | Action | Moat rationale | Evidence required | Command |\n| --- | --- | --- | --- | --- | --- | --- | --- | --- |\n${rows}`;
     })
     .join('\n\n');
-  return `# SaaS Moat Action Plan\n\nGenerated: \`${generatedAt}\`\n\nThis is the execution board for turning fnnlr from a GateForge-blocked release candidate into a global SaaS with a defensible moat. It intentionally separates code-ready work from external hosted evidence so the team does not confuse local progress with GA approval.\n\n## Current Launch Truth\n\n- GateForge state: \`CANNOT_APPROVE_LOCAL_EVIDENCE\` until hosted staging secrets and attestation are real.\n- Current defensible score band: \`65-70/100\`.\n- Next strategic target: \`CONDITIONAL_GO\` through hosted staging proof.\n- Category target: Arabic-first AI Revenue Operations OS, not a generic funnel builder.\n\n## Moat Thesis\n\nfnnlr's moat is the combination of DB-per-tenant trust, Arabic-first revenue workflows, workflow outcome intelligence, repeatable activation, and sales/support proof. The roadmap below prioritizes work that strengthens at least one of those defenses.\n\n## Phase Summary\n\n| Phase | Actions | P0 | P1 | Externally blocked |\n| --- | ---: | ---: | ---: | ---: |\n${summaryRows}\n\n${sections}\n`;
+  return `# SaaS Moat Action Plan\n\nGenerated: \`${generatedAt}\`\n\nThis is the execution board for turning fnnlr from a GateForge-blocked release candidate into a global SaaS with a defensible moat. It intentionally separates code-ready work from external hosted evidence so the team does not confuse local progress with GA approval.\n\n## Current Launch Truth\n\n- GateForge state: \`CANNOT_APPROVE_LOCAL_EVIDENCE\` until hosted staging secrets and attestation are real.\n- Current defensible score band: \`65-70/100\`.\n- Next strategic target: \`CONDITIONAL_GO\` through hosted staging proof.\n- Category target: Arabic-first AI Revenue Operations OS, not a generic funnel builder.\n\n## Moat Thesis\n\nfnnlr's moat is the combination of DB-per-tenant trust, Arabic-first revenue workflows, workflow outcome intelligence, repeatable activation, and sales/support proof. The roadmap below prioritizes work that strengthens at least one of those defenses.\n\n## Phase Summary\n\n| Phase | Actions | P0 | P1 | Externally blocked | Dependency blocked |\n| --- | ---: | ---: | ---: | ---: | ---: |\n${summaryRows}\n\n${sections}\n`;
 }
 
 function renderCsv(items: Action[]) {
-  const header = ['id', 'phase', 'priority', 'status', 'owner', 'action', 'moat', 'evidence', 'command'];
+  const header = ['id', 'phase', 'priority', 'status', 'execution_state', 'owner', 'action', 'moat', 'evidence', 'command'];
   const rows = items.map((item) =>
     [
       item.id,
       item.phase,
       item.priority,
       item.status,
+      actionExecutionState(item),
       item.owner,
       item.action,
       item.moat,

@@ -90,6 +90,8 @@ type LocalSecretReadiness = {
 };
 
 const statusPath = 'docs/SAAS_MOAT_EXECUTION_STATUS.json';
+const actionPlanMdPath = 'docs/SAAS_MOAT_ACTION_PLAN.md';
+const actionPlanCsvPath = 'docs/SAAS_MOAT_ACTION_PLAN.csv';
 const gateForgeStatusPath = 'gateforge-audit/run-2026-06-23-1035/47_ga_unblock_status.json';
 const closeoutPath = 'gateforge-audit/run-2026-06-23-1035/48_remaining_external_blocker_closeout.json';
 const progressPath = 'gateforge-audit/run-2026-06-23-1035/49_external_blocker_progress.json';
@@ -107,6 +109,10 @@ function readJson<T>(filePath: string): T {
 }
 
 const status = readJson<MoatStatus>(statusPath);
+if (!fs.existsSync(actionPlanMdPath)) fail(`missing ${actionPlanMdPath}`);
+if (!fs.existsSync(actionPlanCsvPath)) fail(`missing ${actionPlanCsvPath}`);
+const actionPlanMd = fs.readFileSync(actionPlanMdPath, 'utf8');
+const actionPlanCsv = fs.readFileSync(actionPlanCsvPath, 'utf8');
 const gateForgeStatus = readJson<GateForgeStatus>(gateForgeStatusPath);
 const closeout = readJson<Closeout>(closeoutPath);
 const progress = readJson<Progress>(progressPath);
@@ -124,6 +130,12 @@ const blockedExternalIds = status.openP0
 const expectedPacketIds = Array.from({ length: 16 }, (_, index) => `GF-${String(index + 1).padStart(3, '0')}`);
 
 if (status.total !== 165) fail(`expected 165 moat actions, found ${status.total}`);
+if (!actionPlanMd.includes('| ID | Priority | Plan status | Execution state | Owner |')) {
+  fail('action plan markdown must expose execution state beside plan status');
+}
+if (!actionPlanCsv.startsWith('id,phase,priority,status,execution_state,owner,action,moat,evidence,command')) {
+  fail('action plan CSV must expose execution_state beside status');
+}
 if (!Array.isArray(status.rows) || status.rows.length !== 165) {
   fail(`status rows should contain 165 records, found ${status.rows?.length ?? 'unknown'}`);
 }
