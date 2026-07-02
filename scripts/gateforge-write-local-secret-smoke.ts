@@ -24,7 +24,7 @@ function fail(message: string, output = ''): never {
 
 const secretDir = fs.mkdtempSync(path.join(os.tmpdir(), 'fnnlr-gateforge-write-secret-'));
 const valueFile = path.join(os.tmpdir(), 'fnnlr-gateforge-control-url.txt');
-const controlUrl = 'postgres://control_user:control_password@db.staging.example.com:5432/fnnlr_control?sslmode=require';
+const controlUrl = 'postgres://control_user:control_password@db.staging.fnnlr.ai:5432/fnnlr_control?sslmode=require';
 fs.writeFileSync(valueFile, controlUrl);
 
 const valid = run(['--dir', secretDir, '--name', 'CONTROL_PLANE_DATABASE_URL', '--value-file', valueFile]);

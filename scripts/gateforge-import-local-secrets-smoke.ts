@@ -23,8 +23,8 @@ function fail(message: string, output = ''): never {
 
 const secretDir = fs.mkdtempSync(path.join(os.tmpdir(), 'fnnlr-gateforge-import-secret-'));
 const envFile = path.join(os.tmpdir(), 'fnnlr-gateforge-import.env');
-const controlUrl = 'postgres://control_user:control_password@db.staging.example.com:5432/fnnlr_control?sslmode=require';
-const tenantHost = 'db.staging.example.com';
+const controlUrl = 'postgres://control_user:control_password@db.staging.fnnlr.ai:5432/fnnlr_control?sslmode=require';
+const tenantHost = 'db.staging.fnnlr.ai';
 fs.writeFileSync(
   envFile,
   [
