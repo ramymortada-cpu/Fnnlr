@@ -51,6 +51,8 @@ This index defines the expected contents of the `gateforge-ga-evidence` GitHub A
 - `58_current_head_ga_evidence_proof.json`
 - `59_local_secret_files_readiness.md`
 - `59_local_secret_files_readiness.json`
+- `60_hosted_secret_acceptance_matrix.md`
+- `60_hosted_secret_acceptance_matrix.json`
 - `39_github_secrets_presence_audit.json`
 - `40_missing_github_secrets_remediation.json`
 - `41_hosted_strict_trigger_attempt.md`

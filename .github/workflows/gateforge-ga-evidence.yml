@@ -205,6 +205,12 @@ jobs:
       - name: GateForge hosted readiness contract freshness check
         run: npm run gateforge:hosted-readiness-contract-check
         if: always()
+      - name: GateForge hosted secret acceptance matrix
+        run: npm run gateforge:hosted-secret-acceptance-matrix
+        if: always()
+      - name: GateForge hosted secret acceptance matrix freshness check
+        run: npm run gateforge:hosted-secret-acceptance-matrix-check
+        if: always()
       - name: GateForge open P0 runbook
         run: npm run gateforge:open-p0-runbook
         if: always()
@@ -309,6 +315,8 @@ jobs:
             gateforge-audit/run-*/58_current_head_ga_evidence_proof.json
             gateforge-audit/run-*/59_local_secret_files_readiness.md
             gateforge-audit/run-*/59_local_secret_files_readiness.json
+            gateforge-audit/run-*/60_hosted_secret_acceptance_matrix.md
+            gateforge-audit/run-*/60_hosted_secret_acceptance_matrix.json
             gateforge-audit/external-attestations/HOSTED_STAGING_WAR_ROOM.md
             gateforge-audit/external-attestations/*.md
             gateforge-audit/external-attestations/*.json

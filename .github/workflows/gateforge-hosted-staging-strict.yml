@@ -145,6 +145,8 @@ jobs:
             gateforge-audit/run-*/56_hosted_strict_trigger_readiness.json
             gateforge-audit/run-*/57_secret_upload_attempt.md
             gateforge-audit/run-*/57_secret_upload_attempt.json
+            gateforge-audit/run-*/60_hosted_secret_acceptance_matrix.md
+            gateforge-audit/run-*/60_hosted_secret_acceptance_matrix.json
             gateforge-audit/external-attestations/HOSTED_STAGING_WAR_ROOM.md
             gateforge-audit/external-attestations/hosted-staging-secrets.manifest.json
             gateforge-audit/external-attestations/hosted-staging-attestation.json

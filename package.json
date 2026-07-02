@@ -137,6 +137,8 @@
     "gateforge:hosted-readiness-contract": "tsx scripts/gateforge-hosted-readiness-contract.ts",
     "gateforge:hosted-readiness-contract-check": "tsx scripts/gateforge-hosted-readiness-contract.ts --check",
     "gateforge:hosted-readiness-contract-smoke": "tsx scripts/gateforge-hosted-readiness-contract.ts --out /tmp/fnnlr-gateforge-hosted-readiness-contract.md --json-out /tmp/fnnlr-gateforge-hosted-readiness-contract.json",
+    "gateforge:hosted-secret-acceptance-matrix": "tsx scripts/gateforge-hosted-secret-acceptance-matrix.ts",
+    "gateforge:hosted-secret-acceptance-matrix-check": "tsx scripts/gateforge-hosted-secret-acceptance-matrix.ts --check",
     "gateforge:open-p0-runbook": "tsx scripts/gateforge-open-p0-terminal-runbook.ts",
     "gateforge:open-p0-runbook-check": "tsx scripts/gateforge-open-p0-terminal-runbook.ts --check",
     "gateforge:open-p0-runbook-smoke": "tsx scripts/gateforge-open-p0-terminal-runbook.ts --out /tmp/fnnlr-gateforge-open-p0-runbook.md --json-out /tmp/fnnlr-gateforge-open-p0-runbook.json",

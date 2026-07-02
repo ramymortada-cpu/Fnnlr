@@ -46,6 +46,8 @@ const requiredArtifacts = [
   '58_current_head_ga_evidence_proof.json',
   '59_local_secret_files_readiness.md',
   '59_local_secret_files_readiness.json',
+  '60_hosted_secret_acceptance_matrix.md',
+  '60_hosted_secret_acceptance_matrix.json',
   '39_github_secrets_presence_audit.json',
   '40_missing_github_secrets_remediation.json',
   '41_hosted_strict_trigger_attempt.md',
@@ -94,6 +96,8 @@ const hostedStrictArtifacts = [
   '56_hosted_strict_trigger_readiness.json',
   '57_secret_upload_attempt.md',
   '57_secret_upload_attempt.json',
+  '60_hosted_secret_acceptance_matrix.md',
+  '60_hosted_secret_acceptance_matrix.json',
 ];
 
 function fail(message: string): never {
