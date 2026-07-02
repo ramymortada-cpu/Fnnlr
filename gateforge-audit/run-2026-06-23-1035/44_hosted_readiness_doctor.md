@@ -1,6 +1,6 @@
 # Hosted Readiness Doctor
 
-Generated: `2026-07-01T19:43:46.909Z`
+Generated: `2026-07-02T10:33:00.818Z`
 
 This doctor checks readiness without printing secret values.
 
@@ -184,6 +184,9 @@ GateForge GitHub secrets audit: MISSING_SECRETS
   - EMAIL_REPLY_TO
   - ANTHROPIC_API_KEY
 wrote gateforge-audit/run-2026-06-23-1035/39_github_secrets_presence_audit.md
+wrote gateforge-audit/run-2026-06-23-1035/39_github_secrets_presence_audit.json
+wrote gateforge-audit/run-2026-06-23-1035/40_missing_github_secrets_remediation.md
+wrote gateforge-audit/run-2026-06-23-1035/40_missing_github_secrets_remediation.json
 ```
 
 ### Remaining External Blocker Closeout

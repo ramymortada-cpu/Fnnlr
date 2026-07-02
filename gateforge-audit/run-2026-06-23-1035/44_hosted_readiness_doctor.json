@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-01T19:43:46.909Z",
+  "generatedAt": "2026-07-02T10:33:00.818Z",
   "decision": "REPLACE_LOCAL_SECRET_PLACEHOLDERS",
   "nextCommand": "npm run gateforge:secret-replacement-packet, then replace the listed local secret values and rerun npm run gateforge:hosted-readiness-doctor.",
   "workflow": "GateForge Hosted Staging Strict",

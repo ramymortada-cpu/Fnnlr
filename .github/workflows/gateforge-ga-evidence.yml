@@ -46,6 +46,8 @@ jobs:
         run: npm run gateforge:local-secret-files-check-smoke
       - name: GateForge secret replacement packet smoke
         run: npm run gateforge:secret-replacement-packet-smoke
+      - name: GateForge scaffold ephemeral local secret files
+        run: npm run gateforge:scaffold-local-secrets
       - name: GateForge local secrets env template smoke
         run: npm run gateforge:local-secrets-env-template-smoke
       - name: GateForge import local secrets smoke

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-01T18:59:55.667Z",
+  "generatedAt": "2026-07-02T10:33:14.376Z",
   "decision": {
     "state": "CANNOT_APPROVE_LOCAL_EVIDENCE",
     "scoreBand": "65-70/100",
@@ -37,8 +37,8 @@
     },
     "gaEvidenceWorkflow": {
       "status": "PASS",
-      "detail": "28540665084 completed/success 5b615b257bd2a914eab61425340fc82212de98da",
-      "url": "https://github.com/ramymortada-cpu/Fnnlr/actions/runs/28540665084"
+      "detail": "28555493104 completed/success 1a9ce3a999b314b832ae842aa0664f3cc0060010",
+      "url": "https://github.com/ramymortada-cpu/Fnnlr/actions/runs/28555493104"
     }
   },
   "blockers": {
