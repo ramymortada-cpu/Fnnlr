@@ -21,6 +21,7 @@ export function isGateForgePlaceholder(value: string): boolean {
   if (value === 'HOST') return true;
   if (value.startsWith('value-for-')) return true;
   if (value.toLowerCase().includes('placeholder')) return true;
+  if (value.toLowerCase().includes('example.com')) return true;
   return false;
 }
 
@@ -30,12 +31,12 @@ export function invalidGateForgeSecretReason(name: string, value: string): strin
   if (name === 'CONTROL_PLANE_DATABASE_URL' || name === 'TENANT_DB_ADMIN_URL') return invalidPostgresUrlReason(value);
   if (name === 'TENANT_DB_HOST') return invalidHostReason(value);
   if (name === 'FNNLR_AI_TENANT_DAILY_USD_CAP' || name === 'FNNLR_AI_GLOBAL_DAILY_USD_CAP') return invalidPositiveNumberReason(value);
-  if (name === 'SENTRY_DSN') return invalidHttpsUrlReason(value, 'must be an https DSN');
+  if (name === 'SENTRY_DSN') return invalidSentryDsnReason(value);
   if (name === 'UPTIME_HEALTHCHECK_URL' || name === 'ALERT_WEBHOOK_URL') return invalidHttpsUrlReason(value, 'must be an https URL');
   if (name === 'ALERT_EMAIL_TO' || name === 'EMAIL_FROM' || name === 'EMAIL_REPLY_TO') return invalidEmailReason(value);
-  if (name === 'RESEND_API_KEY') return value.length < 12 ? 'must be a non-trivial provider API key' : null;
+  if (name === 'RESEND_API_KEY') return invalidResendApiKeyReason(value);
   if (name === 'ANTHROPIC_API_KEY') return invalidAnthropicApiKeyReason(value);
-  if (name.endsWith('ENCRYPTION_KEY') || name === 'FNNLR_CRON_SECRET') return value.length < 24 ? 'must be at least 24 characters' : null;
+  if (name.endsWith('ENCRYPTION_KEY') || name === 'FNNLR_CRON_SECRET') return value.length < 32 ? 'must be at least 32 characters' : null;
   return null;
 }
 
@@ -107,6 +108,7 @@ function invalidPostgresUrlReason(value: string): string | null {
   if (!['postgres:', 'postgresql:'].includes(parsed.protocol)) return 'must use postgres/postgresql protocol';
   if (!parsed.username || !parsed.password || !parsed.hostname) return 'must include username, password, and host';
   if (isLocalHostname(parsed.hostname)) return 'must target hosted staging, not localhost';
+  if (isDocumentationHostname(parsed.hostname)) return 'must target hosted staging, not documentation/example domains';
   if (parsed.searchParams.get('sslmode') !== 'require') return 'must require TLS with sslmode=require';
   return null;
 }
@@ -116,6 +118,7 @@ function invalidHostReason(value: string): string | null {
   if (!/^[a-zA-Z0-9.-]+$/.test(value)) return 'must contain only host-safe characters';
   if (!value.includes('.')) return 'must look like a real staging host';
   if (isLocalHostname(value)) return 'must target hosted staging, not localhost';
+  if (isDocumentationHostname(value)) return 'must target hosted staging, not documentation/example domains';
   return null;
 }
 
@@ -135,6 +138,23 @@ function invalidHttpsUrlReason(value: string, reason: string): string | null {
   if (parsed.protocol !== 'https:') return reason;
   if (!parsed.hostname.includes('.')) return reason;
   if (isLocalHostname(parsed.hostname)) return reason;
+  if (isDocumentationHostname(parsed.hostname)) return reason;
+  return null;
+}
+
+function invalidSentryDsnReason(value: string): string | null {
+  let parsed: URL;
+  try {
+    parsed = new URL(value);
+  } catch {
+    return 'must be a valid https Sentry DSN';
+  }
+  if (parsed.protocol !== 'https:') return 'must be a valid https Sentry DSN';
+  if (!parsed.username) return 'must include a Sentry public key';
+  if (!parsed.pathname || parsed.pathname === '/') return 'must include a Sentry project id';
+  if (!parsed.hostname.includes('.') || isLocalHostname(parsed.hostname) || isDocumentationHostname(parsed.hostname)) {
+    return 'must target a hosted Sentry DSN';
+  }
   return null;
 }
 
@@ -142,16 +162,40 @@ function invalidEmailReason(value: string): string | null {
   const angleMatch = value.match(/^.+<([^<>]+)>$/);
   const address = (angleMatch ? angleMatch[1] : value).trim();
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(address)) return 'must be a valid email address';
+  const domain = address.split('@')[1] || '';
+  if (isDocumentationHostname(domain)) return 'must use an operated email domain';
+  return null;
+}
+
+function invalidResendApiKeyReason(value: string): string | null {
+  if (!value.startsWith('re_')) return 'must use a Resend API key prefix';
+  if (value.length < 24) return 'must be a non-trivial provider API key';
   return null;
 }
 
 function invalidAnthropicApiKeyReason(value: string): string | null {
   if (!value.startsWith('sk-ant-')) return 'must use an Anthropic API key prefix';
-  if (value.length < 20) return 'must be a non-trivial provider API key';
+  if (value.length < 32) return 'must be a non-trivial provider API key';
   return null;
 }
 
 function isLocalHostname(hostname: string): boolean {
   const normalized = hostname.toLowerCase();
   return normalized === 'localhost' || normalized === '127.0.0.1' || normalized === '0.0.0.0' || normalized === '::1';
+}
+
+function isDocumentationHostname(hostname: string): boolean {
+  const normalized = hostname.toLowerCase();
+  return (
+    normalized === 'example.com' ||
+    normalized.endsWith('.example.com') ||
+    normalized === 'example.org' ||
+    normalized.endsWith('.example.org') ||
+    normalized === 'example.net' ||
+    normalized.endsWith('.example.net') ||
+    normalized === 'test' ||
+    normalized.endsWith('.test') ||
+    normalized === 'invalid' ||
+    normalized.endsWith('.invalid')
+  );
 }
