@@ -36,6 +36,11 @@ jobs:
         run: npm run gateforge:final-gate-smoke
       - name: GateForge attestation secret pack smoke
         run: npm run gateforge:attestation-secret-pack-smoke
+      - name: GateForge attestation secret pack
+        run: |
+          npm run gateforge:attestation-secret-pack || echo "::notice title=GateForge attestation pack remains blocked::Hosted staging attestation packet is still missing or incomplete."
+      - name: GateForge attestation secret pack freshness check
+        run: npm run gateforge:attestation-secret-pack-check
       - name: GateForge hosted secrets manifest smoke
         run: npm run gateforge:hosted-secrets-manifest-smoke
       - name: GateForge hosted secrets preflight smoke

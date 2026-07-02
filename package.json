@@ -67,6 +67,7 @@
     "gateforge:external-check": "tsx scripts/gateforge-external-check.ts",
     "gateforge:prepare-hosted-attestation": "tsx scripts/gateforge-prepare-hosted-attestation.ts",
     "gateforge:attestation-secret-pack": "tsx scripts/gateforge-attestation-secret-pack.ts",
+    "gateforge:attestation-secret-pack-check": "tsx scripts/gateforge-attestation-secret-pack.ts --check",
     "gateforge:attestation-secret-pack-smoke": "tsx scripts/gateforge-attestation-secret-pack-smoke.ts",
     "gateforge:hosted-secrets-preflight": "tsx scripts/gateforge-hosted-secrets-preflight.ts",
     "gateforge:scaffold-local-secrets": "tsx scripts/gateforge-scaffold-local-secrets.ts",

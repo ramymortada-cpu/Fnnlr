@@ -14,6 +14,7 @@ const outPath = outIndex >= 0 ? process.argv[outIndex + 1] : `${runDir}/46_attes
 const jsonOutIndex = process.argv.indexOf('--json-out');
 const jsonOutPath = jsonOutIndex >= 0 ? process.argv[jsonOutIndex + 1] : outPath.replace(/\.md$/, '.json');
 const writeB64 = process.argv.includes('--write-b64');
+const checkOnly = process.argv.includes('--check');
 const b64SecretPath = path.join(secretDir, 'GATEFORGE_HOSTED_STAGING_ATTESTATION_B64');
 
 function runExternalCheck() {
@@ -35,8 +36,7 @@ function unsafePacketReason(raw: string): string | null {
   return null;
 }
 
-function writeReport(status: 'READY' | 'BLOCKED', details: string[]) {
-  const generatedAt = new Date().toISOString();
+function renderReport(status: 'READY' | 'BLOCKED', details: string[], generatedAt: string) {
   const b64Written = status === 'READY' && writeB64;
   const payload = {
     generatedAt,
@@ -53,7 +53,6 @@ function writeReport(status: 'READY' | 'BLOCKED', details: string[]) {
       sourceDumpsIncluded: false,
     },
   };
-  fs.mkdirSync(path.dirname(outPath), { recursive: true });
   const body = `# GateForge Attestation Secret Pack
 
 Generated: \`${generatedAt}\`
@@ -75,6 +74,44 @@ ${details.map((detail) => `- ${detail}`).join('\n')}
 
 ${status === 'READY' ? '`npm run gateforge:local-secret-files-check` then `npm run gateforge:hosted-readiness-doctor`.' : 'Fix the attestation packet until `npm run gateforge:external-check` passes, then rerun this pack with `-- --write-b64`.'}
 `;
+  return { body, payload };
+}
+
+function normalizeMarkdownGenerated(value: string, generatedAt: string) {
+  return value.replace(/Generated: `[^`]+`/, `Generated: \`${generatedAt}\``);
+}
+
+function writeReport(status: 'READY' | 'BLOCKED', details: string[]) {
+  const generatedAt = new Date().toISOString();
+  const { body, payload } = renderReport(status, details, generatedAt);
+
+  if (checkOnly) {
+    const expectedGeneratedAt = 'CHECK_TIMESTAMP';
+    const expected = renderReport(status, details, expectedGeneratedAt);
+    const expectedJson = `${JSON.stringify(expected.payload, null, 2)}\n`;
+    const currentMd = fs.existsSync(outPath) ? normalizeMarkdownGenerated(fs.readFileSync(outPath, 'utf8'), expectedGeneratedAt) : '';
+    const currentJson = fs.existsSync(jsonOutPath)
+      ? `${JSON.stringify({ ...JSON.parse(fs.readFileSync(jsonOutPath, 'utf8')), generatedAt: expectedGeneratedAt }, null, 2)}\n`
+      : '';
+    const errors: string[] = [];
+
+    if (!currentMd) errors.push(`missing generated markdown: ${outPath}`);
+    else if (currentMd !== expected.body) errors.push(`stale generated markdown: ${outPath}`);
+    if (!currentJson) errors.push(`missing generated json: ${jsonOutPath}`);
+    else if (currentJson !== expectedJson) errors.push(`stale generated json: ${jsonOutPath}`);
+
+    if (errors.length) {
+      console.error('GateForge attestation secret pack: FAIL');
+      errors.forEach((error) => console.error(`  - ${error}`));
+      console.error('Run: npm run gateforge:attestation-secret-pack');
+      process.exit(1);
+    }
+
+    console.log(`GateForge attestation secret pack: PASS (${status})`);
+    process.exit(0);
+  }
+
+  fs.mkdirSync(path.dirname(outPath), { recursive: true });
   fs.writeFileSync(outPath, body);
   fs.mkdirSync(path.dirname(jsonOutPath), { recursive: true });
   fs.writeFileSync(jsonOutPath, `${JSON.stringify(payload, null, 2)}\n`);
