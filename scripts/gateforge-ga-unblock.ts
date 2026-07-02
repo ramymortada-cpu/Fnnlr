@@ -15,6 +15,7 @@ type CommandResult = {
 
 const runDir = path.resolve('gateforge-audit/run-2026-06-23-1035');
 const evidenceDir = path.join(runDir, 'ga-unblock-evidence');
+const checkOnly = process.argv.includes('--check');
 fs.mkdirSync(evidenceDir, { recursive: true });
 
 const requiredEnv = [
@@ -102,6 +103,139 @@ function write(file: string, body: string) {
 function table(rows: string[][]): string {
   return rows.map((r) => `| ${r.join(' | ')} |`).join('\n');
 }
+
+function failCheck(message: string): never {
+  console.error(`GateForge GA unblock evidence check: FAIL - ${message}`);
+  process.exit(1);
+}
+
+function readRequired(filePath: string): string {
+  if (!fs.existsSync(filePath)) failCheck(`${filePath} is missing`);
+  return fs.readFileSync(filePath, 'utf8');
+}
+
+function assertNoSecretDump(filePath: string, content: string): void {
+  if (/postgres(?:ql)?:\/\/[^\s'")]+/i.test(content)) failCheck(`${filePath} contains an unredacted database URL`);
+  if (/sk-[A-Za-z0-9_-]{8,}/.test(content)) failCheck(`${filePath} contains an unredacted API-key-like value`);
+  if (/Bearer\s+[A-Za-z0-9._-]+/i.test(content)) failCheck(`${filePath} contains an unredacted bearer token`);
+}
+
+function assertMarkdownGeneratedAt(filePath: string, content: string, generatedAt: string): void {
+  if (!content.includes(`Generated: \`${generatedAt}\``)) {
+    failCheck(`${filePath} does not match summary generatedAt ${generatedAt}`);
+  }
+}
+
+function runCheckOnly(): never {
+  const artifactNames = [
+    '24_ga_unblock_evidence_pack.md',
+    '25_live_command_results.md',
+    '26_remaining_blockers.md',
+    '27_recomputed_score.md',
+    '28_conditional_go_request.md',
+  ];
+  const summaryPath = path.join(evidenceDir, 'summary.json');
+  const summaryContent = readRequired(summaryPath);
+  assertNoSecretDump(summaryPath, summaryContent);
+
+  let summary: {
+    generatedAt?: string;
+    evidenceContext?: string;
+    gate?: string;
+    score?: string;
+    env?: { name?: string; present?: boolean }[];
+    results?: {
+      name?: string;
+      command?: string;
+      status?: CommandResult['status'];
+      exitCode?: number | null;
+      evidenceClass?: CommandResult['evidenceClass'];
+      notes?: string;
+      log?: string;
+    }[];
+  };
+  try {
+    summary = JSON.parse(summaryContent);
+  } catch (error) {
+    failCheck(`summary.json is not valid JSON: ${String(error)}`);
+  }
+
+  if (!summary.generatedAt) failCheck('summary.json missing generatedAt');
+  if (!summary.evidenceContext) failCheck('summary.json missing evidenceContext');
+  if (!summary.gate) failCheck('summary.json missing gate');
+  if (!summary.score) failCheck('summary.json missing score');
+  if (!Array.isArray(summary.env) || summary.env.length !== requiredEnv.length) {
+    failCheck(`summary.json env list must contain ${requiredEnv.length} required inputs`);
+  }
+  const envNames = new Set(summary.env.map((entry) => entry.name));
+  for (const name of requiredEnv) {
+    if (!envNames.has(name)) failCheck(`summary.json missing env status for ${name}`);
+  }
+
+  if (!Array.isArray(summary.results) || summary.results.length !== commands.length) {
+    failCheck(`summary.json results list must contain ${commands.length} commands`);
+  }
+
+  const resultNames = new Set(summary.results.map((entry) => entry.name));
+  for (const command of commands) {
+    if (!resultNames.has(command.name)) failCheck(`summary.json missing result for ${command.name}`);
+  }
+
+  const liveResults = summary.results.filter((entry) => entry.evidenceClass === 'STAGING_LIVE');
+  const localResults = summary.results.filter((entry) => entry.evidenceClass === 'LOCAL');
+  if (liveResults.length === 0) failCheck('summary.json does not include staging/live checks');
+  if (localResults.length === 0) failCheck('summary.json does not include local checks');
+
+  const localPass = localResults.every((entry) => entry.status === 'PASS');
+  const livePass = liveResults.every((entry) => entry.status === 'PASS');
+  const hardFails = summary.results.filter((entry) => entry.status === 'FAIL');
+  const expectedGate = 'CANNOT_APPROVE';
+  const commandsCouldRequestConditionalGo = localPass && livePass && hardFails.length === 0;
+  if (summary.gate !== expectedGate) {
+    failCheck(`summary.json gate is ${summary.gate}; expected ${expectedGate} until human attestation can be proven`);
+  }
+  if (commandsCouldRequestConditionalGo && !summary.score.includes('pending legal')) {
+    failCheck('summary.json score must keep legal/provider attestation pending when runtime commands pass');
+  }
+
+  for (const result of summary.results) {
+    if (!result.name || !result.command || !result.status || !result.evidenceClass || !result.log) {
+      failCheck('summary.json contains an incomplete command result');
+    }
+    if (!['PASS', 'FAIL', 'SKIPPED', 'BLOCKED_BY_ENVIRONMENT'].includes(result.status)) {
+      failCheck(`summary.json has invalid status for ${result.name}: ${result.status}`);
+    }
+    const logPath = path.join(runDir, result.log);
+    const logContent = readRequired(logPath);
+    assertNoSecretDump(logPath, logContent);
+  }
+
+  for (const artifactName of artifactNames) {
+    const artifactPath = path.join(runDir, artifactName);
+    const content = readRequired(artifactPath);
+    assertNoSecretDump(artifactPath, content);
+    assertMarkdownGeneratedAt(artifactPath, content, summary.generatedAt);
+  }
+
+  const evidencePack = readRequired(path.join(runDir, '24_ga_unblock_evidence_pack.md'));
+  if (!evidencePack.includes(`Gate decision: \`${summary.gate}\``)) {
+    failCheck('24_ga_unblock_evidence_pack.md gate does not match summary.json');
+  }
+  if (!evidencePack.includes(`Score movement: \`${summary.score}\``)) {
+    failCheck('24_ga_unblock_evidence_pack.md score does not match summary.json');
+  }
+  const conditionalRequest = readRequired(path.join(runDir, '28_conditional_go_request.md'));
+  if (!conditionalRequest.includes('## Conditions To Approve')) {
+    failCheck('28_conditional_go_request.md is missing Conditions To Approve');
+  }
+
+  console.log(`GateForge GA unblock evidence check: PASS (${summary.gate})`);
+  console.log(`  checked ${artifactNames.length} markdown artifacts`);
+  console.log(`  checked ${summary.results.length} command logs`);
+  process.exit(0);
+}
+
+if (checkOnly) runCheckOnly();
 
 const restoreManifest = path.join(evidenceDir, 'control-restore-manifest.json');
 if (!fs.existsSync(restoreManifest)) {

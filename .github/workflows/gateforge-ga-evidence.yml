@@ -146,6 +146,8 @@ jobs:
       - name: GateForge GA unblock evidence
         run: |
           npm run gateforge:ga-unblock || echo "::notice title=GateForge GA evidence remains blocked::Local evidence artifact generation completed with CANNOT_APPROVE because hosted staging/runtime evidence is still missing."
+      - name: GateForge GA unblock evidence consistency check
+        run: npm run gateforge:ga-unblock-check
       - name: GateForge war room
         run: npm run gateforge:war-room
         if: always()
