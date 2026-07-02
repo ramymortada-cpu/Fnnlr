@@ -22,6 +22,11 @@ const secretsFromFileIndex = process.argv.indexOf('--secrets-from-file');
 const secretsFromFile = secretsFromFileIndex >= 0 ? process.argv[secretsFromFileIndex + 1] : '';
 const gaRunFromFileIndex = process.argv.indexOf('--ga-run-from-file');
 const gaRunFromFile = gaRunFromFileIndex >= 0 ? process.argv[gaRunFromFileIndex + 1] : '';
+const externalFileIndex = process.argv.indexOf('--external-file');
+const externalFile =
+  externalFileIndex >= 0
+    ? process.argv[externalFileIndex + 1]
+    : 'gateforge-audit/external-attestations/hosted-staging-attestation.json';
 const allowNotReady = process.argv.includes('--allow-not-ready');
 const checkOnly = process.argv.includes('--check');
 
@@ -121,14 +126,17 @@ if (secretsFromFile) {
   );
 }
 const secrets = run('npx', secretAuditArgs);
+const external = run('npx', ['tsx', 'scripts/gateforge-external-check.ts', externalFile]);
 const gaRun = loadLatestGaRun();
 const gaOk = gaRun.lookupStatus === 0 && gaRun.row?.status === 'completed' && gaRun.row?.conclusion === 'success';
 const runbookOk = runbook.status === 0;
 const secretsOk = secrets.status === 0;
-const decision = runbookOk && secretsOk && gaOk ? 'READY_TO_TRIGGER' : 'NOT_READY';
+const externalOk = external.status === 0;
+const decision = runbookOk && secretsOk && externalOk && gaOk ? 'READY_TO_TRIGGER' : 'NOT_READY';
 const blockers = [
   ...(runbookOk ? [] : ['OPEN_P0_RUNBOOK_NOT_FRESH']),
   ...(secretsOk ? [] : ['GITHUB_SECRETS_NOT_READY']),
+  ...(externalOk ? [] : ['EXTERNAL_ATTESTATION_CONTRACT_NOT_READY']),
   ...(gaOk ? [] : ['GA_EVIDENCE_NOT_SUCCESSFUL_FOR_HEAD']),
 ];
 const json = {
@@ -138,9 +146,15 @@ const json = {
   prerequisites: {
     openP0Runbook: statusLabel(runbookOk, 'BLOCKED'),
     githubSecrets: statusLabel(secretsOk, 'BLOCKED'),
+    externalAttestationContract: statusLabel(externalOk, 'BLOCKED'),
     gaEvidenceForCurrentHead: statusLabel(gaOk, 'BLOCKED'),
   },
   blockers,
+  externalAttestation: {
+    source: externalFile,
+    status: external.status,
+    valid: externalOk,
+  },
   gaEvidence: {
     source: gaRun.source,
     lookupStatus: gaRun.lookupStatus,
@@ -167,7 +181,14 @@ This report is a pre-trigger readiness check for \`GateForge Hosted Staging Stri
 | --- | --- | --- |
 | Open P0 terminal runbook is fresh | ${json.prerequisites.openP0Runbook} | \`npm run gateforge:open-p0-runbook-check\` |
 | GitHub secret names are ready | ${json.prerequisites.githubSecrets} | \`npm run gateforge:github-secrets-audit\` |
+| External attestation contract is valid | ${json.prerequisites.externalAttestationContract} | \`npm run gateforge:external-check -- ${externalFile}\` |
 | Latest GA Evidence run for current HEAD succeeded | ${json.prerequisites.gaEvidenceForCurrentHead} | ${gaRun.row?.url || gaRun.source} |
+
+## External Attestation Contract
+
+- Source: \`${externalFile}\`
+- Status: \`${external.status}\`
+- Valid: \`${externalOk ? 'YES' : 'NO'}\`
 
 ## GA Evidence Run
 

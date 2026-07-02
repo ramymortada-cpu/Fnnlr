@@ -1,25 +1,32 @@
 {
-  "generatedAt": "2026-07-02T10:59:24.688Z",
+  "generatedAt": "2026-07-02T19:57:49.333Z",
   "decision": "NOT_READY",
   "workflowToTrigger": "GateForge Hosted Staging Strict",
   "prerequisites": {
     "openP0Runbook": "PASS",
     "githubSecrets": "BLOCKED",
+    "externalAttestationContract": "BLOCKED",
     "gaEvidenceForCurrentHead": "PASS"
   },
   "blockers": [
-    "GITHUB_SECRETS_NOT_READY"
+    "GITHUB_SECRETS_NOT_READY",
+    "EXTERNAL_ATTESTATION_CONTRACT_NOT_READY"
   ],
+  "externalAttestation": {
+    "source": "gateforge-audit/external-attestations/hosted-staging-attestation.json",
+    "status": 1,
+    "valid": false
+  },
   "gaEvidence": {
-    "source": "gh run list --workflow \"GateForge GA Evidence\" --commit f23eda8ff7071221856e979b62d1c7878b2e11ef",
+    "source": "gh run list --workflow \"GateForge GA Evidence\" --commit 78ae593e613106a81201c10da809f6e2b25e20d1",
     "lookupStatus": 0,
-    "currentHead": "f23eda8ff7071221856e979b62d1c7878b2e11ef",
+    "currentHead": "78ae593e613106a81201c10da809f6e2b25e20d1",
     "run": {
       "conclusion": "success",
-      "databaseId": 28584672420,
-      "headSha": "f23eda8ff7071221856e979b62d1c7878b2e11ef",
+      "databaseId": 28617441217,
+      "headSha": "78ae593e613106a81201c10da809f6e2b25e20d1",
       "status": "completed",
-      "url": "https://github.com/ramymortada-cpu/Fnnlr/actions/runs/28584672420"
+      "url": "https://github.com/ramymortada-cpu/Fnnlr/actions/runs/28617441217"
     }
   },
   "safety": {

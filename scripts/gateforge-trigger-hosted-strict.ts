@@ -8,6 +8,11 @@ const evidenceWorkflow = 'GateForge GA Evidence';
 const dryRun = process.argv.includes('--dry-run');
 const fromFileIndex = process.argv.indexOf('--from-file');
 const fromFile = fromFileIndex >= 0 ? process.argv[fromFileIndex + 1] : '';
+const externalFileIndex = process.argv.indexOf('--external-file');
+const externalPath =
+  externalFileIndex >= 0
+    ? process.argv[externalFileIndex + 1]
+    : 'gateforge-audit/external-attestations/hosted-staging-attestation.json';
 const reportOutIndex = process.argv.indexOf('--report-out');
 const reportPath =
   reportOutIndex >= 0
@@ -66,10 +71,23 @@ if (audit.status !== 0) {
   process.exit(audit.status);
 }
 
+const external = run('npx', ['tsx', 'scripts/gateforge-external-check.ts', externalPath]);
+process.stdout.write(external.output);
+if (external.status !== 0) {
+  writeReport('BLOCKED_BY_EXTERNAL_ATTESTATION_CONTRACT', [
+    'The strict hosted staging workflow was not triggered.',
+    `External attestation packet failed validation: \`${externalPath}\``,
+    'Run `npm run gateforge:external-check -- gateforge-audit/external-attestations/hosted-staging-attestation.json` with real hosted evidence, then rerun this trigger.',
+  ]);
+  console.error('GateForge hosted strict trigger: BLOCKED_BY_EXTERNAL_ATTESTATION_CONTRACT');
+  process.exit(external.status);
+}
+
 if (dryRun) {
   writeReport('DRY_RUN_READY', [
     'Open P0 terminal runbook preflight passed.',
     'Secret-name audit passed for the provided input.',
+    'External attestation contract passed for the provided packet.',
     'GA Evidence success preflight skipped because this is a dry run.',
     `Dry run only; workflow was not triggered. Command would be: gh workflow run "${workflow}"`,
   ]);
@@ -139,6 +157,7 @@ if (trigger.status !== 0) {
 writeReport('TRIGGERED', [
   'Open P0 terminal runbook preflight passed.',
   'Secret-name audit passed.',
+  `External attestation contract passed: ${externalPath}`,
   `GA Evidence preflight passed: ${evidenceRun.url || `run ${evidenceRun.databaseId || 'unknown'}`}`,
   `Triggered workflow: ${workflow}`,
   'Monitor with: gh run list --workflow "GateForge Hosted Staging Strict" --limit 1',
@@ -168,6 +187,7 @@ function writeReport(status: string, details: string[]) {
     workflow,
     dryRun,
     source,
+    externalPath,
     details,
     safety: {
       secretValuesRead: false,
