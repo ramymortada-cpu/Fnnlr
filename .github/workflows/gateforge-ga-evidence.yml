@@ -140,8 +140,14 @@ jobs:
       - name: GateForge external closeout validator
         run: npm run gateforge:external-closeout-validator -- --allow-failures
         if: always()
+      - name: GateForge external closeout validator freshness check
+        run: npm run gateforge:external-closeout-validator-check
+        if: always()
       - name: GateForge hosted dependency chain
         run: npm run gateforge:hosted-dependency-chain
+        if: always()
+      - name: GateForge hosted dependency chain freshness check
+        run: npm run gateforge:hosted-dependency-chain-check
         if: always()
       - name: GateForge hosted readiness contract
         run: npm run gateforge:hosted-readiness-contract
@@ -151,6 +157,9 @@ jobs:
         if: always()
       - name: GateForge open P0 runbook
         run: npm run gateforge:open-p0-runbook
+        if: always()
+      - name: GateForge open P0 runbook freshness check
+        run: npm run gateforge:open-p0-runbook-check
         if: always()
       - name: GateForge hosted strict trigger readiness
         run: npm run gateforge:hosted-strict-trigger-readiness -- --allow-not-ready
