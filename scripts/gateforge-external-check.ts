@@ -11,6 +11,7 @@ type EvidenceItem = {
   evidenceRefs: string[];
   owner: string;
   notes?: string;
+  blockerIdsClosed?: string[];
 };
 
 type EvidencePacket = {
@@ -26,10 +27,12 @@ const requiredIds = [
   'provider_webhook_replay_idempotency',
   'monitoring_alerting_proof',
   'hosted_restore_drill',
+  'email_deliverability_runtime_proof',
   'legal_commercial_final_approval',
   'admin_mfa_runtime_proof',
   'ai_budget_runtime_proof',
 ];
+const requiredBlockerIds = Array.from({ length: 16 }, (_, index) => `GF-${String(index + 1).padStart(3, '0')}`);
 
 function fail(message: string): never {
   console.error(`GateForge external evidence: FAIL — ${message}`);
@@ -75,6 +78,22 @@ for (const id of requiredIds) {
   for (const ref of item.evidenceRefs) {
     if (!validateRef(ref)) failures.push(`${id}: unsafe or unsupported evidence ref "${ref}"`);
   }
+}
+
+const closedBlockerIds: string[] = [];
+for (const item of packet.items) {
+  const itemBlockers = item.blockerIdsClosed ?? [];
+  for (const blockerId of itemBlockers) {
+    if (!requiredBlockerIds.includes(blockerId)) failures.push(`${item.id}: unsupported blockerIdsClosed value ${blockerId}`);
+  }
+  if (item.status !== 'PASS' && itemBlockers.length) {
+    failures.push(`${item.id}: blockerIdsClosed can only be claimed by PASS items`);
+  }
+  if (item.status === 'PASS') closedBlockerIds.push(...itemBlockers);
+}
+
+for (const blockerId of requiredBlockerIds) {
+  if (!closedBlockerIds.includes(blockerId)) failures.push(`${blockerId}: missing explicit PASS blocker closure mapping`);
 }
 
 const extraHuman = packet.items.filter((item) => item.status === 'HUMAN_ATTESTATION_REQUIRED');

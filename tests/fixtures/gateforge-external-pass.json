@@ -8,7 +8,8 @@
       "title": "Hosted staging GateForge run",
       "status": "PASS",
       "evidenceRefs": ["https://github.com/ramymortada-cpu/Fnnlr/actions/runs/example"],
-      "owner": "Engineering/operator"
+      "owner": "Engineering/operator",
+      "blockerIdsClosed": ["GF-001", "GF-002", "GF-003", "GF-004", "GF-005"]
     },
     {
       "id": "provider_webhook_replay_idempotency",
@@ -22,7 +23,8 @@
       "title": "Monitoring and alerting proof",
       "status": "PASS",
       "evidenceRefs": ["screenshot:sentry-test-alert"],
-      "owner": "Engineering/operator"
+      "owner": "Engineering/operator",
+      "blockerIdsClosed": ["GF-006", "GF-007", "GF-008", "GF-009", "GF-010", "GF-011"]
     },
     {
       "id": "hosted_restore_drill",
@@ -30,6 +32,14 @@
       "status": "PASS",
       "evidenceRefs": ["artifact:hosted-restore-verify-pass"],
       "owner": "Engineering/operator"
+    },
+    {
+      "id": "email_deliverability_runtime_proof",
+      "title": "Hosted email deliverability runtime proof",
+      "status": "PASS",
+      "evidenceRefs": ["artifact:email-deliverability-provider-test", "screenshot:spf-dkim-dmarc-verified"],
+      "owner": "Engineering/operator",
+      "blockerIdsClosed": ["GF-012", "GF-013", "GF-014", "GF-015"]
     },
     {
       "id": "legal_commercial_final_approval",
@@ -50,7 +60,8 @@
       "title": "Hosted AI budget runtime proof",
       "status": "PASS",
       "evidenceRefs": ["artifact:ai-budget-hosted-proof"],
-      "owner": "Engineering/operator"
+      "owner": "Engineering/operator",
+      "blockerIdsClosed": ["GF-016"]
     }
   ]
 }

@@ -1,5 +1,8 @@
 #!/usr/bin/env tsx
 import { spawnSync } from 'node:child_process';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
 
 type SmokeCase = {
   name: string;
@@ -22,6 +25,24 @@ const cases: SmokeCase[] = [
     expectedText: 'hosted_staging_gateforge_run: status is MISSING, expected PASS',
   },
 ];
+
+const partialPacketPath = path.join(os.tmpdir(), 'fnnlr-gateforge-external-partial-pass.json');
+const partialPacket = JSON.parse(fs.readFileSync('tests/fixtures/gateforge-external-pass.json', 'utf8')) as {
+  items: { id: string; blockerIdsClosed?: string[] }[];
+};
+const aiItem = partialPacket.items.find((item) => item.id === 'ai_budget_runtime_proof');
+if (!aiItem) {
+  console.error('GateForge external smoke failed: missing ai_budget_runtime_proof fixture item');
+  process.exit(1);
+}
+aiItem.blockerIdsClosed = [];
+fs.writeFileSync(partialPacketPath, `${JSON.stringify(partialPacket, null, 2)}\n`);
+cases.push({
+  name: 'PASS packet without every GF blocker mapping fails',
+  args: ['scripts/gateforge-external-check.ts', partialPacketPath],
+  expectExit: 1,
+  expectedText: 'GF-016: missing explicit PASS blocker closure mapping',
+});
 
 for (const c of cases) {
   const result = spawnSync(process.execPath, ['--import', 'tsx', ...c.args], { encoding: 'utf8' });
