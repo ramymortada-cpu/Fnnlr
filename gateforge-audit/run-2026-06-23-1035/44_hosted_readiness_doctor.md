@@ -1,6 +1,6 @@
 # Hosted Readiness Doctor
 
-Generated: `2026-07-02T18:39:53.858Z`
+Generated: `2026-07-02T19:43:03.944Z`
 
 This doctor checks readiness without printing secret values.
 
@@ -15,6 +15,7 @@ This doctor checks readiness without printing secret values.
 | --- | --- | --- |
 | Local secret files | `FAIL` | local secret files exist but placeholders remain |
 | Attestation secret pack | `FAIL` | attestation packet is not ready for B64 secret packaging |
+| External attestation contract | `FAIL` | external attestation packet does not yet satisfy the strict hosted evidence contract |
 | Remaining external blocker closeout | `PASS` | 16 external blockers are mapped for operator closeout |
 | GitHub secret names | `FAIL` | GitHub secret names are missing |
 | Hosted strict workflow | `UNKNOWN` | no hosted strict workflow run found |
@@ -45,6 +46,7 @@ This doctor checks readiness without printing secret values.
 - Workflow: `GateForge Hosted Staging Strict`
 - Secret replacement packet: `gateforge-audit/run-2026-06-23-1035/45_secret_replacement_packet.md`
 - Attestation secret pack: `gateforge-audit/run-2026-06-23-1035/46_attestation_secret_pack.md`
+- External attestation packet: `gateforge-audit/external-attestations/hosted-staging-attestation.json`
 - Remaining blocker closeout: `gateforge-audit/run-2026-06-23-1035/48_remaining_external_blocker_closeout.json`
 
 ## Sanitized Probe Output
@@ -216,6 +218,12 @@ GF-013
 GF-014
 GF-015
 GF-016
+```
+
+### External Attestation Contract
+
+```text
+GateForge external evidence: FAIL — packet not found: gateforge-audit/external-attestations/hosted-staging-attestation.json
 ```
 
 ### Attestation Secret Pack

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-02T18:39:53.858Z",
+  "generatedAt": "2026-07-02T19:43:03.944Z",
   "decision": "REPLACE_LOCAL_SECRET_PLACEHOLDERS",
   "nextCommand": "npm run gateforge:secret-replacement-packet, then replace the listed local secret values and rerun npm run gateforge:hosted-readiness-doctor.",
   "workflow": "GateForge Hosted Staging Strict",
@@ -16,6 +16,10 @@
     "attestationSecretPack": {
       "status": "FAIL",
       "detail": "attestation packet is not ready for B64 secret packaging"
+    },
+    "externalAttestationContract": {
+      "status": "FAIL",
+      "detail": "external attestation packet does not yet satisfy the strict hosted evidence contract"
     },
     "remainingExternalBlockerCloseout": {
       "status": "PASS",
@@ -53,6 +57,7 @@
     "json": "gateforge-audit/run-2026-06-23-1035/44_hosted_readiness_doctor.json",
     "secretReplacementPacket": "gateforge-audit/run-2026-06-23-1035/45_secret_replacement_packet.md",
     "attestationSecretPack": "gateforge-audit/run-2026-06-23-1035/46_attestation_secret_pack.md",
+    "externalAttestationPacket": "gateforge-audit/external-attestations/hosted-staging-attestation.json",
     "remainingBlockerCloseout": "gateforge-audit/run-2026-06-23-1035/48_remaining_external_blocker_closeout.json"
   },
   "safety": {

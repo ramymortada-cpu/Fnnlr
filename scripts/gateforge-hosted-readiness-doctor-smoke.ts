@@ -103,6 +103,9 @@ if ((result.status ?? 1) !== 1) fail('fixture mode should stop before claiming h
 if (!output.includes('GateForge hosted readiness doctor: TRIGGER_HOSTED_STRICT')) fail('doctor did not pick trigger next step');
 if (!report.includes('| Local secret files | `PASS` |')) fail('report did not mark local secrets PASS');
 if (!report.includes('| GitHub secret names | `PASS` |')) fail('report did not mark GitHub secrets PASS');
+if (!report.includes('| External attestation contract | `FAIL` | external attestation packet does not yet satisfy the strict hosted evidence contract |')) {
+  fail('report did not expose failing external attestation contract');
+}
 if (!report.includes('| Remaining external blocker closeout | `PASS` | 16 external blockers are mapped for operator closeout |')) {
   fail('report did not include passing remaining closeout probe');
 }
@@ -115,6 +118,7 @@ if (report.includes('postgres://') || report.includes('sk-ant-fixture') || repor
   fail('report leaked fixture secret values');
 }
 if (!jsonReport.includes('"decision": "TRIGGER_HOSTED_STRICT"')) fail('JSON report did not expose the trigger decision');
+if (!jsonReport.includes('"externalAttestationContract"')) fail('JSON report did not expose external attestation contract probe');
 if (!jsonReport.includes('"status": "PASS"')) fail('JSON report did not expose passing probes');
 if (!jsonReport.includes('"secretValuesPrinted": false')) fail('JSON report did not include safety flags');
 if (jsonReport.includes('postgres://') || jsonReport.includes('sk-ant-fixture') || jsonReport.includes(fixtureValueFor(attestationSecrets[1]))) {

@@ -13,6 +13,9 @@ const checkOnly = process.argv.includes('--check');
 const replacementPacketPath = `${runDir}/45_secret_replacement_packet.md`;
 const attestationPackPath = `${runDir}/46_attestation_secret_pack.md`;
 const closeoutPath = `${runDir}/48_remaining_external_blocker_closeout.json`;
+const externalIndex = process.argv.indexOf('--external-file');
+const externalPath =
+  externalIndex >= 0 ? process.argv[externalIndex + 1] : 'gateforge-audit/external-attestations/hosted-staging-attestation.json';
 const dirIndex = process.argv.indexOf('--dir');
 const secretDir = dirIndex >= 0 ? process.argv[dirIndex + 1] : '/tmp/fnnlr-gateforge-secrets';
 const fromFileIndex = process.argv.indexOf('--from-file');
@@ -226,6 +229,18 @@ function probeRemainingCloseout(): { probe: Probe; blockerIds: string[] } {
   };
 }
 
+function probeExternalAttestationContract(): Probe {
+  const result = run('npx', ['tsx', 'scripts/gateforge-external-check.ts', externalPath]);
+  return {
+    status: result.status === 0 ? 'PASS' : 'FAIL',
+    detail:
+      result.status === 0
+        ? 'external attestation packet satisfies the strict hosted evidence contract'
+        : 'external attestation packet does not yet satisfy the strict hosted evidence contract',
+    output: normalizeProbeOutput(result.output),
+  };
+}
+
 function mdList(values: string[]) {
   return values.length ? values.map((value) => `- \`${value}\``).join('\n') : '- None';
 }
@@ -235,6 +250,7 @@ const attestationPack = probeAttestationPack();
 const githubSecrets = probeGithubSecrets();
 const strictRun = probeLatestStrictRun();
 const remainingCloseout = probeRemainingCloseout();
+const externalAttestationContract = probeExternalAttestationContract();
 const decision =
   localSecrets.status !== 'PASS'
     ? localSecrets.localState === 'PLACEHOLDERS' || localSecrets.localState === 'EMPTY_FILES' || localSecrets.localState === 'INVALID_FILES'
@@ -242,8 +258,10 @@ const decision =
       : 'SCAFFOLD_LOCAL_SECRET_FILES'
     : githubSecrets.status !== 'PASS'
       ? 'UPLOAD_GITHUB_SECRETS'
-      : strictRun.status !== 'PASS'
-        ? 'TRIGGER_HOSTED_STRICT'
+    : strictRun.status !== 'PASS'
+      ? 'TRIGGER_HOSTED_STRICT'
+      : externalAttestationContract.status !== 'PASS'
+        ? 'PREPARE_HOSTED_ATTESTATION'
         : 'REVIEW_HOSTED_STRICT_EVIDENCE';
 const nextCommand =
   decision === 'SCAFFOLD_LOCAL_SECRET_FILES'
@@ -256,6 +274,8 @@ const nextCommand =
       ? 'npm run gateforge:hosted-unblock -- --apply'
       : decision === 'TRIGGER_HOSTED_STRICT'
         ? 'npm run gateforge:trigger-hosted-strict'
+        : decision === 'PREPARE_HOSTED_ATTESTATION'
+          ? 'npm run gateforge:external-check, then npm run gateforge:attestation-secret-pack -- --write-b64'
         : 'npm run gateforge:final-gate && npm run gateforge:final-report';
 
 const now = new Date().toISOString();
@@ -276,6 +296,7 @@ This doctor checks readiness without printing secret values.
 | --- | --- | --- |
 | Local secret files | \`${localSecrets.status}\` | ${localSecrets.detail} |
 | Attestation secret pack | \`${attestationPack.status}\` | ${attestationPack.detail} |
+| External attestation contract | \`${externalAttestationContract.status}\` | ${externalAttestationContract.detail} |
 | Remaining external blocker closeout | \`${remainingCloseout.probe.status}\` | ${remainingCloseout.probe.detail} |
 | GitHub secret names | \`${githubSecrets.status}\` | ${githubSecrets.detail} |
 | Hosted strict workflow | \`${strictRun.status}\` | ${strictRun.detail} |
@@ -291,6 +312,7 @@ ${mdList(remainingCloseout.blockerIds)}
 - Workflow: \`${workflow}\`
 - Secret replacement packet: \`${replacementPacketPath}\`
 - Attestation secret pack: \`${attestationPackPath}\`
+- External attestation packet: \`${externalPath}\`
 - Remaining blocker closeout: \`${closeoutPath}\`
 
 ## Sanitized Probe Output
@@ -311,6 +333,12 @@ ${githubSecrets.output.trim() || '(no output)'}
 
 \`\`\`text
 ${remainingCloseout.probe.output.trim() || '(no output)'}
+\`\`\`
+
+### External Attestation Contract
+
+\`\`\`text
+${externalAttestationContract.output.trim() || '(no output)'}
 \`\`\`
 
 ### Attestation Secret Pack
@@ -345,6 +373,10 @@ const jsonPayload = {
       status: attestationPack.status,
       detail: attestationPack.detail,
     },
+    externalAttestationContract: {
+      status: externalAttestationContract.status,
+      detail: externalAttestationContract.detail,
+    },
     remainingExternalBlockerCloseout: {
       status: remainingCloseout.probe.status,
       detail: remainingCloseout.probe.detail,
@@ -364,6 +396,7 @@ const jsonPayload = {
     json: jsonOutPath,
     secretReplacementPacket: replacementPacketPath,
     attestationSecretPack: attestationPackPath,
+    externalAttestationPacket: externalPath,
     remainingBlockerCloseout: closeoutPath,
   },
   safety: {
