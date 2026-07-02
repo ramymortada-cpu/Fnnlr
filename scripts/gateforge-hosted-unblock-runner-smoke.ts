@@ -118,6 +118,8 @@ const result = spawnSync(
     '--dry-run',
     '--dir',
     secretDir,
+    '--packet',
+    'tests/fixtures/gateforge-external-pass.json',
     '--from-file',
     'tests/fixtures/gateforge-gh-secrets-b64-only-pass.json',
   ],

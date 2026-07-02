@@ -68,7 +68,13 @@ if (dryRun) {
     '--dir',
     secretDir,
   ]);
-  const triggerArgs = ['tsx', 'scripts/gateforge-trigger-hosted-strict.ts', '--dry-run'];
+  const triggerArgs = [
+    'tsx',
+    'scripts/gateforge-trigger-hosted-strict.ts',
+    '--dry-run',
+    '--external-file',
+    packetPath,
+  ];
   if (fromFile) triggerArgs.push('--from-file', fromFile);
   step('Plan hosted strict trigger', 'npx', triggerArgs);
   console.log('\nGateForge hosted unblock runner: dry run complete; rerun with --apply to upload and trigger.');
@@ -77,7 +83,12 @@ if (dryRun) {
 
 step('Upload local secrets', 'npx', ['tsx', 'scripts/gateforge-upload-local-secrets.ts', '--apply', '--dir', secretDir]);
 step('Audit GitHub secret names', 'npx', ['tsx', 'scripts/gateforge-github-secrets-audit.ts']);
-step('Trigger hosted strict workflow', 'npx', ['tsx', 'scripts/gateforge-trigger-hosted-strict.ts']);
+step('Trigger hosted strict workflow', 'npx', [
+  'tsx',
+  'scripts/gateforge-trigger-hosted-strict.ts',
+  '--external-file',
+  packetPath,
+]);
 
 if (watch) {
   step('Watch hosted strict workflow', 'gh', ['run', 'watch', '--exit-status']);
