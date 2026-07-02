@@ -95,6 +95,8 @@ jobs:
       - name: GateForge external blocker progress
         run: npm run gateforge:external-blocker-progress
         continue-on-error: true
+      - name: GateForge external blocker progress freshness check
+        run: npm run gateforge:external-blocker-progress-check
       - name: GateForge operator execution packet
         run: npm run gateforge:operator-execution-packet
         continue-on-error: true
