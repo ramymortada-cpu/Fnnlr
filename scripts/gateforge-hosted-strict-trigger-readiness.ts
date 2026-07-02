@@ -23,6 +23,12 @@ const secretsFromFile = secretsFromFileIndex >= 0 ? process.argv[secretsFromFile
 const gaRunFromFileIndex = process.argv.indexOf('--ga-run-from-file');
 const gaRunFromFile = gaRunFromFileIndex >= 0 ? process.argv[gaRunFromFileIndex + 1] : '';
 const allowNotReady = process.argv.includes('--allow-not-ready');
+const checkOnly = process.argv.includes('--check');
+
+function fail(message: string): never {
+  console.error(`GateForge hosted strict trigger readiness: FAIL - ${message}`);
+  process.exit(1);
+}
 
 function run(command: string, args: string[]) {
   const result = spawnSync(command, args, {
@@ -85,6 +91,20 @@ function loadLatestGaRun(): { headSha: string; row: RunRow | null; source: strin
 
 function statusLabel(ok: boolean, blocked: string) {
   return ok ? 'PASS' : blocked;
+}
+
+function normalizeGenerated(text: string): string {
+  return text
+    .replace(/^Generated: `[^`]+`$/gm, 'Generated: `<normalized>`')
+    .replace(/"generatedAt": "[^"]+"/g, '"generatedAt": "<normalized>"');
+}
+
+function assertFresh(filePath: string, expected: string): void {
+  if (!fs.existsSync(filePath)) fail(`${filePath} is missing`);
+  const actual = fs.readFileSync(filePath, 'utf8');
+  if (normalizeGenerated(actual) !== normalizeGenerated(expected)) {
+    fail(`${filePath} is stale; rerun npm run gateforge:hosted-strict-trigger-readiness`);
+  }
 }
 
 const generatedAt = new Date().toISOString();
@@ -174,8 +194,19 @@ ${decision === 'READY_TO_TRIGGER' ? '`npm run gateforge:trigger-hosted-strict`' 
 `;
 
 fs.mkdirSync(path.dirname(outPath), { recursive: true });
+const jsonBody = `${JSON.stringify(json, null, 2)}\n`;
+
+if (checkOnly) {
+  assertFresh(outPath, body);
+  assertFresh(jsonOutPath, jsonBody);
+  console.log(`GateForge hosted strict trigger readiness: PASS (${decision})`);
+  console.log(`  checked ${outPath}`);
+  console.log(`  checked ${jsonOutPath}`);
+  process.exit(0);
+}
+
 fs.writeFileSync(outPath, body);
-fs.writeFileSync(jsonOutPath, `${JSON.stringify(json, null, 2)}\n`);
+fs.writeFileSync(jsonOutPath, jsonBody);
 
 console.log(`GateForge hosted strict trigger readiness: ${decision}`);
 console.log(`  blockers: ${blockers.length}`);

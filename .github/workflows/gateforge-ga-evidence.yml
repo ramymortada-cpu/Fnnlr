@@ -151,6 +151,11 @@ jobs:
         if: always()
         env:
           GH_TOKEN: ${{ github.token }}
+      - name: GateForge hosted strict trigger readiness freshness check
+        run: npm run gateforge:hosted-strict-trigger-readiness-check
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
       - name: GateForge current-head GA proof
         run: npm run gateforge:current-head-ga-proof -- --allow-not-ready
         if: always()

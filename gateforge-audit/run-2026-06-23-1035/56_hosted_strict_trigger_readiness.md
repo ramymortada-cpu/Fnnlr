@@ -1,6 +1,6 @@
 # Hosted Strict Trigger Readiness
 
-Generated: `2026-07-01T20:30:04.787Z`
+Generated: `2026-07-02T10:59:24.688Z`
 
 Decision: `NOT_READY`
 
@@ -12,16 +12,16 @@ This report is a pre-trigger readiness check for `GateForge Hosted Staging Stric
 | --- | --- | --- |
 | Open P0 terminal runbook is fresh | PASS | `npm run gateforge:open-p0-runbook-check` |
 | GitHub secret names are ready | BLOCKED | `npm run gateforge:github-secrets-audit` |
-| Latest GA Evidence run for current HEAD succeeded | PASS | https://github.com/ramymortada-cpu/Fnnlr/actions/runs/28545524546 |
+| Latest GA Evidence run for current HEAD succeeded | PASS | https://github.com/ramymortada-cpu/Fnnlr/actions/runs/28584672420 |
 
 ## GA Evidence Run
 
-- Current HEAD: `8292db9367eb6c965831d1d4c6c1ff15010aebbf`
-- Source: `gh run list --workflow "GateForge GA Evidence" --commit 8292db9367eb6c965831d1d4c6c1ff15010aebbf`
-- Run ID: `28545524546`
+- Current HEAD: `f23eda8ff7071221856e979b62d1c7878b2e11ef`
+- Source: `gh run list --workflow "GateForge GA Evidence" --commit f23eda8ff7071221856e979b62d1c7878b2e11ef`
+- Run ID: `28584672420`
 - Run status: `completed`
 - Run conclusion: `success`
-- Run URL: https://github.com/ramymortada-cpu/Fnnlr/actions/runs/28545524546
+- Run URL: https://github.com/ramymortada-cpu/Fnnlr/actions/runs/28584672420
 
 ## Blockers
 

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-01T20:30:04.787Z",
+  "generatedAt": "2026-07-02T10:59:24.688Z",
   "decision": "NOT_READY",
   "workflowToTrigger": "GateForge Hosted Staging Strict",
   "prerequisites": {
@@ -11,15 +11,15 @@
     "GITHUB_SECRETS_NOT_READY"
   ],
   "gaEvidence": {
-    "source": "gh run list --workflow \"GateForge GA Evidence\" --commit 8292db9367eb6c965831d1d4c6c1ff15010aebbf",
+    "source": "gh run list --workflow \"GateForge GA Evidence\" --commit f23eda8ff7071221856e979b62d1c7878b2e11ef",
     "lookupStatus": 0,
-    "currentHead": "8292db9367eb6c965831d1d4c6c1ff15010aebbf",
+    "currentHead": "f23eda8ff7071221856e979b62d1c7878b2e11ef",
     "run": {
       "conclusion": "success",
-      "databaseId": 28545524546,
-      "headSha": "8292db9367eb6c965831d1d4c6c1ff15010aebbf",
+      "databaseId": 28584672420,
+      "headSha": "f23eda8ff7071221856e979b62d1c7878b2e11ef",
       "status": "completed",
-      "url": "https://github.com/ramymortada-cpu/Fnnlr/actions/runs/28545524546"
+      "url": "https://github.com/ramymortada-cpu/Fnnlr/actions/runs/28584672420"
     }
   },
   "safety": {
