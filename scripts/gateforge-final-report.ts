@@ -15,9 +15,12 @@ type ExternalPacket = {
 };
 
 const runDir = 'gateforge-audit/run-2026-06-23-1035';
-const summaryPath = process.argv[2] || `${runDir}/ga-unblock-evidence/summary.json`;
-const externalPath = process.argv[3] || 'gateforge-audit/external-attestations/hosted-staging-attestation.json';
-const outPath = process.argv[4] || `${runDir}/34_final_gate_current_decision.md`;
+const args = process.argv.slice(2);
+const checkOnly = args.includes('--check');
+const positionalArgs = args.filter((arg) => !arg.startsWith('--'));
+const summaryPath = positionalArgs[0] || `${runDir}/ga-unblock-evidence/summary.json`;
+const externalPath = positionalArgs[1] || 'gateforge-audit/external-attestations/hosted-staging-attestation.json';
+const outPath = positionalArgs[2] || `${runDir}/34_final_gate_current_decision.md`;
 const requiredExternalIds = [
   'hosted_staging_gateforge_run',
   'provider_webhook_replay_idempotency',
@@ -63,9 +66,11 @@ if (!external) {
 
 const decision = reasons.length ? 'CANNOT_APPROVE' : 'CONDITIONAL_GO';
 const now = new Date().toISOString();
-const body = `# Final Gate Current Decision
 
-Generated: \`${now}\`
+function renderReport(generatedAt: string) {
+  return `# Final Gate Current Decision
+
+Generated: \`${generatedAt}\`
 
 Decision: \`${decision}\`
 
@@ -91,6 +96,28 @@ npm run gateforge:final-gate
 
 This report is archival and always writes a current decision. The strict gate remains \`npm run gateforge:final-gate\`, which exits non-zero unless the decision can become \`CONDITIONAL_GO\`.
 `;
+}
+
+const body = renderReport(now);
+
+if (checkOnly) {
+  const expectedGeneratedAt = 'CHECK_TIMESTAMP';
+  const expected = renderReport(expectedGeneratedAt);
+  const current = fs.existsSync(outPath)
+    ? fs.readFileSync(outPath, 'utf8').replace(/Generated: `[^`]+`/, `Generated: \`${expectedGeneratedAt}\``)
+    : '';
+
+  if (current !== expected) {
+    console.error('GateForge final report: FAIL');
+    if (!current) console.error(`  - missing generated report: ${outPath}`);
+    else console.error(`  - stale generated report: ${outPath}`);
+    console.error('Run: npm run gateforge:final-report');
+    process.exit(1);
+  }
+
+  console.log(`GateForge final report: PASS (${decision})`);
+  process.exit(0);
+}
 
 fs.mkdirSync(path.dirname(outPath), { recursive: true });
 fs.writeFileSync(outPath, body);

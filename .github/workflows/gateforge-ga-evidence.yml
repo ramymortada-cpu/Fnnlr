@@ -132,6 +132,9 @@ jobs:
       - name: GateForge final decision report
         run: npm run gateforge:final-report
         if: always()
+      - name: GateForge final decision report freshness check
+        run: npm run gateforge:final-report-check
+        if: always()
       - name: GateForge GA evidence run audit
         run: npm run gateforge:ga-evidence-run-audit -- --allow-failures
         if: always()
