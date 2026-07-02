@@ -73,11 +73,28 @@ type OperatorPacket = {
   };
 };
 
+type LocalSecretReadiness = {
+  status?: string;
+  ok?: boolean;
+  attestationReady?: number;
+  attestationRequired?: number;
+  attestationOptions?: { name: string; status: string }[];
+  runtimeReady?: number;
+  runtimeRequired?: number;
+  runtime?: { name: string; status: string }[];
+  safety?: {
+    secretValuesPrinted?: boolean;
+    productionMutated?: boolean;
+    sourceDumpsIncluded?: boolean;
+  };
+};
+
 const statusPath = 'docs/SAAS_MOAT_EXECUTION_STATUS.json';
 const gateForgeStatusPath = 'gateforge-audit/run-2026-06-23-1035/47_ga_unblock_status.json';
 const closeoutPath = 'gateforge-audit/run-2026-06-23-1035/48_remaining_external_blocker_closeout.json';
 const progressPath = 'gateforge-audit/run-2026-06-23-1035/49_external_blocker_progress.json';
 const packetPath = 'gateforge-audit/run-2026-06-23-1035/50_operator_execution_packet.json';
+const localSecretReadinessPath = 'gateforge-audit/run-2026-06-23-1035/59_local_secret_files_readiness.json';
 
 function fail(message: string): never {
   console.error(`SaaS moat status consistency smoke: FAIL - ${message}`);
@@ -94,6 +111,7 @@ const gateForgeStatus = readJson<GateForgeStatus>(gateForgeStatusPath);
 const closeout = readJson<Closeout>(closeoutPath);
 const progress = readJson<Progress>(progressPath);
 const packet = readJson<OperatorPacket>(packetPath);
+const localSecretReadiness = readJson<LocalSecretReadiness>(localSecretReadinessPath);
 const openP0ById = new Map(status.openP0.map((row) => [row.id, row]));
 const packetIds = packet.rows.map((row) => row.id).sort();
 const closeoutIds = [...(closeout.blockerIds || [])].sort();
@@ -197,6 +215,34 @@ if (attestationSecrets.join(',') !== expectedAttestationSecrets.join(',')) {
   fail(`expected hosted attestation secret options ${expectedAttestationSecrets.join(',')}, found ${attestationSecrets.join(',')}`);
 }
 
+if (localSecretReadiness.status !== 'BLOCKED' || localSecretReadiness.ok !== false) {
+  fail(`local secret readiness should remain BLOCKED/ok=false, found ${localSecretReadiness.status}/${localSecretReadiness.ok}`);
+}
+if (localSecretReadiness.runtimeReady !== 6 || localSecretReadiness.runtimeRequired !== 17) {
+  fail(
+    `local secret readiness should report runtime 6/17, found ${localSecretReadiness.runtimeReady}/${localSecretReadiness.runtimeRequired}`,
+  );
+}
+if (localSecretReadiness.attestationReady !== 0 || localSecretReadiness.attestationRequired !== 1) {
+  fail(
+    `local secret readiness should report attestation 0/1, found ${localSecretReadiness.attestationReady}/${localSecretReadiness.attestationRequired}`,
+  );
+}
+const localRuntimeOpen = (localSecretReadiness.runtime || [])
+  .filter((entry) => entry.status !== 'READY')
+  .map((entry) => entry.name)
+  .sort();
+const localAttestationOpen = (localSecretReadiness.attestationOptions || [])
+  .filter((entry) => entry.status !== 'READY')
+  .map((entry) => entry.name)
+  .sort();
+if (localRuntimeOpen.join(',') !== runtimeSecrets.join(',')) {
+  fail('local secret readiness open runtime names do not match GateForge open runtime secrets');
+}
+if (localAttestationOpen.join(',') !== expectedAttestationSecrets.join(',')) {
+  fail('local secret readiness open attestation names do not match expected hosted attestation options');
+}
+
 const dependencyExpectations: Record<string, { state: string; nextCommand: string }> = {
   'GF-017': {
     state: 'BLOCKED_BY_SECRET_READINESS',
@@ -239,6 +285,9 @@ if (
   progress.safety?.secretValuesPrinted !== false ||
   progress.safety?.productionMutated !== false ||
   progress.safety?.sourceDumpsIncluded !== false ||
+  localSecretReadiness.safety?.secretValuesPrinted !== false ||
+  localSecretReadiness.safety?.productionMutated !== false ||
+  localSecretReadiness.safety?.sourceDumpsIncluded !== false ||
   packet.safety?.secretValuesPrinted !== false ||
   packet.safety?.productionMutated !== false ||
   packet.safety?.sourceDumpsIncluded !== false
