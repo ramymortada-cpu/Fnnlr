@@ -59,6 +59,10 @@ function run(command: string, args: string[]) {
   };
 }
 
+function normalizeProbeOutput(output: string): string {
+  return output.replace(/"generatedAt": "[^"]+"/g, '"generatedAt": "<normalized>"');
+}
+
 function probeLocalSecrets(): LocalSecretProbe {
   const result = run('npx', ['tsx', 'scripts/gateforge-local-secret-files-check.ts', '--dir', secretDir, '--json']);
   let localState: Probe['localState'] = 'MISSING_FILES';
@@ -90,7 +94,7 @@ function probeLocalSecrets(): LocalSecretProbe {
   return {
     status: result.status === 0 ? 'PASS' : 'FAIL',
     detail,
-    output: result.output,
+    output: normalizeProbeOutput(result.output),
     localState,
     attestationReady,
     runtimeReady,

@@ -1,6 +1,6 @@
 # Hosted Readiness Doctor
 
-Generated: `2026-07-02T12:27:03.301Z`
+Generated: `2026-07-02T13:55:47.017Z`
 
 This doctor checks readiness without printing secret values.
 
@@ -53,6 +53,8 @@ This doctor checks readiness without printing secret values.
 
 ```text
 {
+  "generatedAt": "<normalized>",
+  "status": "BLOCKED",
   "ok": false,
   "directory": "/tmp/fnnlr-gateforge-secrets",
   "attestationReady": 0,
@@ -157,7 +159,12 @@ This doctor checks readiness without printing secret values.
       "kind": "runtime",
       "status": "PLACEHOLDER"
     }
-  ]
+  ],
+  "safety": {
+    "secretValuesPrinted": false,
+    "productionMutated": false,
+    "sourceDumpsIncluded": false
+  }
 }
 ```
 
