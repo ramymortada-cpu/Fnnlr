@@ -1,6 +1,6 @@
 # Hosted Readiness Doctor
 
-Generated: `2026-07-02T10:33:00.818Z`
+Generated: `2026-07-02T12:22:15.214Z`
 
 This doctor checks readiness without printing secret values.
 

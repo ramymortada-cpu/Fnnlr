@@ -89,6 +89,10 @@ jobs:
         run: npm run gateforge:current-head-ga-proof-smoke
       - name: GateForge hosted readiness doctor smoke
         run: npm run gateforge:hosted-readiness-doctor-smoke
+      - name: GateForge hosted readiness doctor
+        run: npm run gateforge:hosted-readiness-doctor
+      - name: GateForge hosted readiness doctor freshness check
+        run: npm run gateforge:hosted-readiness-doctor-check
       - name: GateForge external blocker progress smoke
         run: npm run gateforge:external-blocker-progress-smoke
       - name: GateForge operator execution packet smoke

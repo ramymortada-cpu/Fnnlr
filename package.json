@@ -99,6 +99,7 @@
     "gateforge:current-head-ga-proof-check": "tsx scripts/gateforge-current-head-ga-proof.ts --check --allow-not-ready",
     "gateforge:current-head-ga-proof-smoke": "tsx scripts/gateforge-current-head-ga-proof-smoke.ts",
     "gateforge:hosted-readiness-doctor": "tsx scripts/gateforge-hosted-readiness-doctor.ts",
+    "gateforge:hosted-readiness-doctor-check": "tsx scripts/gateforge-hosted-readiness-doctor.ts --check",
     "gateforge:hosted-readiness-doctor-smoke": "tsx scripts/gateforge-hosted-readiness-doctor-smoke.ts",
     "gateforge:hosted-secrets-manifest-smoke": "tsx scripts/gateforge-hosted-secrets-manifest-smoke.ts",
     "gateforge:hosted-secrets-preflight-smoke": "tsx scripts/gateforge-hosted-secrets-preflight-smoke.ts",

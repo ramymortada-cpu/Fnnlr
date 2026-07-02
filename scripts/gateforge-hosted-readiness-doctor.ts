@@ -9,6 +9,7 @@ const outPath = outIndex >= 0 ? process.argv[outIndex + 1] : `${runDir}/44_hoste
 const jsonOutIndex = process.argv.indexOf('--json-out');
 const jsonOutPath =
   jsonOutIndex >= 0 ? process.argv[jsonOutIndex + 1] : outIndex >= 0 ? `${outPath}.json` : `${runDir}/44_hosted_readiness_doctor.json`;
+const checkOnly = process.argv.includes('--check');
 const replacementPacketPath = `${runDir}/45_secret_replacement_packet.md`;
 const attestationPackPath = `${runDir}/46_attestation_secret_pack.md`;
 const closeoutPath = `${runDir}/48_remaining_external_blocker_closeout.json`;
@@ -317,60 +318,86 @@ ${strictRun.output.trim() || '(no output)'}
 \`\`\`
 `;
 
+const jsonPayload = {
+  generatedAt: now,
+  decision,
+  nextCommand,
+  workflow,
+  secretDir,
+  fromFile: fromFile || null,
+  probes: {
+    localSecretFiles: {
+      status: localSecrets.status,
+      detail: localSecrets.detail,
+      localState: localSecrets.localState,
+      attestationReady: localSecrets.attestationReady,
+      runtimeReady: localSecrets.runtimeReady,
+    },
+    attestationSecretPack: {
+      status: attestationPack.status,
+      detail: attestationPack.detail,
+    },
+    remainingExternalBlockerCloseout: {
+      status: remainingCloseout.probe.status,
+      detail: remainingCloseout.probe.detail,
+      blockerIds: remainingCloseout.blockerIds,
+    },
+    githubSecretNames: {
+      status: githubSecrets.status,
+      detail: githubSecrets.detail,
+    },
+    hostedStrictWorkflow: {
+      status: strictRun.status,
+      detail: strictRun.detail,
+    },
+  },
+  artifactRefs: {
+    markdown: outPath,
+    json: jsonOutPath,
+    secretReplacementPacket: replacementPacketPath,
+    attestationSecretPack: attestationPackPath,
+    remainingBlockerCloseout: closeoutPath,
+  },
+  safety: {
+    secretValuesPrinted: false,
+    productionMutated: false,
+  },
+};
+
+if (checkOnly) {
+  const expectedGeneratedAt = 'CHECK_TIMESTAMP';
+  const expectedMd = body.replace(/Generated: `[^`]+`/, `Generated: \`${expectedGeneratedAt}\``);
+  const expectedJson = `${JSON.stringify({ ...jsonPayload, generatedAt: expectedGeneratedAt }, null, 2)}\n`;
+  const currentMd = fs.existsSync(outPath)
+    ? fs.readFileSync(outPath, 'utf8').replace(/Generated: `[^`]+`/, `Generated: \`${expectedGeneratedAt}\``)
+    : '';
+  const currentJson = fs.existsSync(jsonOutPath)
+    ? `${JSON.stringify({ ...JSON.parse(fs.readFileSync(jsonOutPath, 'utf8')), generatedAt: expectedGeneratedAt }, null, 2)}\n`
+    : '';
+  const errors: string[] = [];
+
+  if (!currentMd) errors.push(`missing generated markdown: ${outPath}`);
+  else if (currentMd !== expectedMd) errors.push(`stale generated markdown: ${outPath}`);
+  if (!currentJson) errors.push(`missing generated json: ${jsonOutPath}`);
+  else if (currentJson !== expectedJson) errors.push(`stale generated json: ${jsonOutPath}`);
+
+  if (errors.length) {
+    console.error('GateForge hosted readiness doctor: FAIL');
+    errors.forEach((error) => console.error(`  - ${error}`));
+    console.error('Run: npm run gateforge:hosted-readiness-doctor');
+    process.exit(1);
+  }
+
+  console.log(`GateForge hosted readiness doctor: PASS (${decision})`);
+  process.exit(0);
+}
+
 fs.mkdirSync(path.dirname(outPath), { recursive: true });
 fs.writeFileSync(outPath, body);
 fs.mkdirSync(path.dirname(jsonOutPath), { recursive: true });
 fs.writeFileSync(
   jsonOutPath,
-  `${JSON.stringify(
-    {
-      generatedAt: now,
-      decision,
-      nextCommand,
-      workflow,
-      secretDir,
-      fromFile: fromFile || null,
-      probes: {
-        localSecretFiles: {
-          status: localSecrets.status,
-          detail: localSecrets.detail,
-          localState: localSecrets.localState,
-          attestationReady: localSecrets.attestationReady,
-          runtimeReady: localSecrets.runtimeReady,
-        },
-        attestationSecretPack: {
-          status: attestationPack.status,
-          detail: attestationPack.detail,
-        },
-        remainingExternalBlockerCloseout: {
-          status: remainingCloseout.probe.status,
-          detail: remainingCloseout.probe.detail,
-          blockerIds: remainingCloseout.blockerIds,
-        },
-        githubSecretNames: {
-          status: githubSecrets.status,
-          detail: githubSecrets.detail,
-        },
-        hostedStrictWorkflow: {
-          status: strictRun.status,
-          detail: strictRun.detail,
-        },
-      },
-      artifactRefs: {
-        markdown: outPath,
-        json: jsonOutPath,
-        secretReplacementPacket: replacementPacketPath,
-        attestationSecretPack: attestationPackPath,
-        remainingBlockerCloseout: closeoutPath,
-      },
-      safety: {
-        secretValuesPrinted: false,
-        productionMutated: false,
-      },
-    },
-    null,
-    2,
-  )}\n`,
+  `${JSON.stringify(jsonPayload, null, 2)}\n`,
 );
 
 console.log(`GateForge hosted readiness doctor: ${decision}`);
