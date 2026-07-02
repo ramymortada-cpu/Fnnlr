@@ -137,6 +137,11 @@ jobs:
         if: always()
         env:
           GH_TOKEN: ${{ github.token }}
+      - name: GateForge GA evidence run audit freshness check
+        run: npm run gateforge:ga-evidence-run-audit-check -- --allow-failures
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
       - name: GateForge external closeout validator
         run: npm run gateforge:external-closeout-validator -- --allow-failures
         if: always()

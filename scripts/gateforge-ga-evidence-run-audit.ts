@@ -30,6 +30,7 @@ const outPath = outIndex >= 0 ? process.argv[outIndex + 1] : `${runDir}/51_ga_ev
 const jsonOutIndex = process.argv.indexOf('--json-out');
 const jsonOutPath = jsonOutIndex >= 0 ? process.argv[jsonOutIndex + 1] : `${runDir}/51_ga_evidence_run_audit.json`;
 const allowFailures = process.argv.includes('--allow-failures');
+const checkOnly = process.argv.includes('--check');
 
 function run(command: string, args: string[]) {
   const result = spawnSync(command, args, {
@@ -98,31 +99,36 @@ const noticeAnnotations = annotations.filter((annotation) => annotation.annotati
 const runPass = input.run?.status === 'completed' && input.run?.conclusion === 'success';
 const decision = runPass && failureAnnotations.length === 0 ? 'PASS' : 'FAIL';
 const generatedAt = new Date().toISOString();
-const json = {
-  generatedAt,
-  workflow,
-  decision,
-  run: input.run ?? null,
-  counts: {
-    failureAnnotations: failureAnnotations.length,
-    warningAnnotations: warningAnnotations.length,
-    noticeAnnotations: noticeAnnotations.length,
-    totalAnnotations: annotations.length,
-  },
-  failureAnnotations: failureAnnotations.map((annotation) => ({
-    path: annotation.path ?? 'unknown',
-    startLine: annotation.start_line ?? null,
-    message: annotation.message ?? '',
-  })),
-  safety: {
-    secretValuesPrinted: false,
-    productionMutated: false,
-    sourceDumpsIncluded: false,
-  },
-};
-const body = `# GateForge GA Evidence Run Audit
 
-Generated: \`${generatedAt}\`
+function renderJson(renderedAt: string) {
+  return {
+    generatedAt: renderedAt,
+    workflow,
+    decision,
+    run: input.run ?? null,
+    counts: {
+      failureAnnotations: failureAnnotations.length,
+      warningAnnotations: warningAnnotations.length,
+      noticeAnnotations: noticeAnnotations.length,
+      totalAnnotations: annotations.length,
+    },
+    failureAnnotations: failureAnnotations.map((annotation) => ({
+      path: annotation.path ?? 'unknown',
+      startLine: annotation.start_line ?? null,
+      message: annotation.message ?? '',
+    })),
+    safety: {
+      secretValuesPrinted: false,
+      productionMutated: false,
+      sourceDumpsIncluded: false,
+    },
+  };
+}
+
+function renderMarkdown(renderedAt: string) {
+  return `# GateForge GA Evidence Run Audit
+
+Generated: \`${renderedAt}\`
 
 This audit checks the latest successful completed \`${workflow}\` run status and annotations. It validates workflow evidence quality only; it does not read or print secret values.
 
@@ -152,6 +158,42 @@ ${mdList(failureAnnotations.map((annotation) => `\`${annotation.path ?? 'unknown
 - Production mutated: \`NO\`
 - Source dumps included: \`NO\`
 `;
+}
+
+const json = renderJson(generatedAt);
+const body = renderMarkdown(generatedAt);
+
+if (checkOnly) {
+  const expectedGeneratedAt = 'CHECK_TIMESTAMP';
+  const expectedMarkdown = renderMarkdown(expectedGeneratedAt);
+  const expectedJson = `${JSON.stringify(renderJson(expectedGeneratedAt), null, 2)}\n`;
+  const errors: string[] = [];
+
+  if (!fs.existsSync(outPath)) {
+    errors.push(`missing generated markdown: ${outPath}`);
+  } else {
+    const currentMarkdown = fs.readFileSync(outPath, 'utf8').replace(/Generated: `[^`]+`/, `Generated: \`${expectedGeneratedAt}\``);
+    if (currentMarkdown !== expectedMarkdown) errors.push(`stale generated markdown: ${outPath}`);
+  }
+
+  if (!fs.existsSync(jsonOutPath)) {
+    errors.push(`missing generated json: ${jsonOutPath}`);
+  } else {
+    const currentJson = JSON.parse(fs.readFileSync(jsonOutPath, 'utf8')) as ReturnType<typeof renderJson>;
+    const normalizedJson = `${JSON.stringify({ ...currentJson, generatedAt: expectedGeneratedAt }, null, 2)}\n`;
+    if (normalizedJson !== expectedJson) errors.push(`stale generated json: ${jsonOutPath}`);
+  }
+
+  if (errors.length) {
+    console.error('GateForge GA evidence run audit: FAIL');
+    errors.forEach((error) => console.error(`  - ${error}`));
+    console.error('Run: npm run gateforge:ga-evidence-run-audit -- --allow-failures');
+    process.exit(1);
+  }
+
+  console.log(`GateForge GA evidence run audit: PASS (${decision})`);
+  process.exit(0);
+}
 
 fs.mkdirSync(path.dirname(outPath), { recursive: true });
 fs.writeFileSync(outPath, body);

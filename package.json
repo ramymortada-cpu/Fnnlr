@@ -89,6 +89,7 @@
     "gateforge:ga-unblock-status": "tsx scripts/gateforge-ga-unblock-status.ts",
     "gateforge:ga-unblock-status-smoke": "tsx scripts/gateforge-ga-unblock-status-smoke.ts",
     "gateforge:ga-evidence-run-audit": "tsx scripts/gateforge-ga-evidence-run-audit.ts",
+    "gateforge:ga-evidence-run-audit-check": "tsx scripts/gateforge-ga-evidence-run-audit.ts --check",
     "gateforge:ga-evidence-run-audit-smoke": "tsx scripts/gateforge-ga-evidence-run-audit-smoke.ts",
     "gateforge:current-head-ga-proof": "tsx scripts/gateforge-current-head-ga-proof.ts",
     "gateforge:current-head-ga-proof-check": "tsx scripts/gateforge-current-head-ga-proof.ts --check --allow-not-ready",
