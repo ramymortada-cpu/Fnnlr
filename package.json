@@ -75,6 +75,8 @@
     "gateforge:scaffold-local-secrets": "tsx scripts/gateforge-scaffold-local-secrets.ts",
     "gateforge:scaffold-local-secrets-smoke": "tsx scripts/gateforge-scaffold-local-secrets-smoke.ts",
     "gateforge:local-secret-files-check": "tsx scripts/gateforge-local-secret-files-check.ts",
+    "gateforge:local-secret-files-readiness": "tsx scripts/gateforge-local-secret-files-check.ts",
+    "gateforge:local-secret-files-readiness-check": "tsx scripts/gateforge-local-secret-files-check.ts --check",
     "gateforge:local-secret-files-check-smoke": "tsx scripts/gateforge-local-secret-files-check-smoke.ts",
     "gateforge:secret-replacement-packet": "tsx scripts/gateforge-secret-replacement-packet.ts",
     "gateforge:secret-replacement-packet-check": "tsx scripts/gateforge-secret-replacement-packet.ts --check",

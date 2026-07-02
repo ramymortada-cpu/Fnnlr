@@ -58,6 +58,11 @@ jobs:
         run: npm run gateforge:secret-replacement-packet-smoke
       - name: GateForge scaffold ephemeral local secret files
         run: npm run gateforge:scaffold-local-secrets
+      - name: GateForge local secret files readiness
+        run: |
+          npm run gateforge:local-secret-files-readiness || echo "::notice title=GateForge local secret files remain blocked::Local placeholder secret files still need real staging values."
+      - name: GateForge local secret files readiness freshness check
+        run: npm run gateforge:local-secret-files-readiness-check
       - name: GateForge secret replacement packet
         run: |
           npm run gateforge:secret-replacement-packet || echo "::notice title=GateForge secret replacement remains blocked::Local placeholder secret files were converted into a sanitized replacement packet; real staging values are still required."
@@ -302,6 +307,8 @@ jobs:
             gateforge-audit/run-*/57_secret_upload_attempt.json
             gateforge-audit/run-*/58_current_head_ga_evidence_proof.md
             gateforge-audit/run-*/58_current_head_ga_evidence_proof.json
+            gateforge-audit/run-*/59_local_secret_files_readiness.md
+            gateforge-audit/run-*/59_local_secret_files_readiness.json
             gateforge-audit/external-attestations/HOSTED_STAGING_WAR_ROOM.md
             gateforge-audit/external-attestations/*.md
             gateforge-audit/external-attestations/*.json
