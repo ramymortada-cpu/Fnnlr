@@ -1,6 +1,7 @@
 #!/usr/bin/env tsx
 import fs from 'node:fs';
 import path from 'node:path';
+import { spawnSync } from 'node:child_process';
 
 type EvidenceStatus = 'PASS' | 'FAIL' | 'MISSING' | 'HUMAN_ATTESTATION_REQUIRED';
 
@@ -81,6 +82,36 @@ function hasRequiredRef(refs: string[], pattern: RegExp): boolean {
   return refs.some((ref) => pattern.test(ref));
 }
 
+function verifyGithubRunRef(ref: string): string | null {
+  const match = ref.match(/^https:\/\/github\.com\/ramymortada-cpu\/Fnnlr\/actions\/runs\/([0-9]+)$/);
+  if (!match) return null;
+  const runId = match[1];
+  const result = spawnSync('gh', ['run', 'view', runId, '--json', 'status,conclusion,headSha,url'], {
+    encoding: 'utf8',
+    maxBuffer: 1024 * 1024,
+    stdio: ['ignore', 'pipe', 'pipe'],
+  });
+  if ((result.status ?? 1) !== 0) {
+    return `could not verify GitHub Actions run ${runId}`;
+  }
+  try {
+    const parsed = JSON.parse(result.stdout || '{}') as {
+      status?: string;
+      conclusion?: string;
+      url?: string;
+    };
+    if (parsed.status !== 'completed' || parsed.conclusion !== 'success') {
+      return `GitHub Actions run ${runId} is ${parsed.status || 'unknown'}/${parsed.conclusion || 'none'}, expected completed/success`;
+    }
+    if (parsed.url && parsed.url !== ref) {
+      return `GitHub Actions run ${runId} URL mismatch`;
+    }
+  } catch {
+    return `could not parse GitHub Actions run ${runId}`;
+  }
+  return null;
+}
+
 const packet = loadPacket(packetPath);
 const byId = new Map(packet.items.map((item) => [item.id, item]));
 const failures: string[] = [];
@@ -104,6 +135,8 @@ for (const id of requiredIds) {
   if (!item.evidenceRefs.length) failures.push(`${id}: evidenceRefs missing`);
   for (const ref of item.evidenceRefs) {
     if (!validateRef(ref)) failures.push(`${id}: unsafe or unsupported evidence ref "${ref}"`);
+    const githubRunFailure = id === 'hosted_staging_gateforge_run' ? verifyGithubRunRef(ref) : null;
+    if (githubRunFailure) failures.push(`${id}: ${githubRunFailure}`);
   }
   for (const pattern of requiredEvidenceRefPatterns[id] ?? []) {
     if (!hasRequiredRef(item.evidenceRefs, pattern)) failures.push(`${id}: missing required evidence ref pattern ${pattern}`);

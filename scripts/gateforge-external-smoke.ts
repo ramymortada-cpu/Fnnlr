@@ -62,6 +62,27 @@ cases.push({
   expectedText: 'hosted_staging_gateforge_run: missing required evidence ref pattern',
 });
 
+const missingRunPacketPath = path.join(os.tmpdir(), 'fnnlr-gateforge-external-missing-run-url.json');
+const missingRunPacket = JSON.parse(fs.readFileSync('tests/fixtures/gateforge-external-pass.json', 'utf8')) as {
+  items: { id: string; evidenceRefs?: string[] }[];
+};
+const missingRunItem = missingRunPacket.items.find((item) => item.id === 'hosted_staging_gateforge_run');
+if (!missingRunItem) {
+  console.error('GateForge external smoke failed: missing hosted_staging_gateforge_run fixture item');
+  process.exit(1);
+}
+missingRunItem.evidenceRefs = [
+  'https://github.com/ramymortada-cpu/Fnnlr/actions/runs/999999999999999',
+  'artifact:hosted-staging-ga-evidence-summary',
+];
+fs.writeFileSync(missingRunPacketPath, `${JSON.stringify(missingRunPacket, null, 2)}\n`);
+cases.push({
+  name: 'PASS packet with unverifiable GitHub run evidence fails',
+  args: ['scripts/gateforge-external-check.ts', missingRunPacketPath],
+  expectExit: 1,
+  expectedText: 'hosted_staging_gateforge_run: could not verify GitHub Actions run',
+});
+
 for (const c of cases) {
   const result = spawnSync(process.execPath, ['--import', 'tsx', ...c.args], { encoding: 'utf8' });
   const output = `${result.stdout}\n${result.stderr}`;
