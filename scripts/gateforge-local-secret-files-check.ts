@@ -19,6 +19,7 @@ const jsonPath =
   jsonOutIndex >= 0
     ? process.argv[jsonOutIndex + 1]
     : 'gateforge-audit/run-2026-06-23-1035/59_local_secret_files_readiness.json';
+const shouldWriteReport = secretDir === defaultDir || reportOutIndex >= 0 || jsonOutIndex >= 0;
 const { attestationSecrets, runtimeSecrets } = loadHostedSecretsManifest();
 
 type CheckResult = {
@@ -142,7 +143,7 @@ if (checkOnly) {
   process.exit(0);
 }
 
-if (!json || reportOutIndex >= 0 || jsonOutIndex >= 0) {
+if (shouldWriteReport && (!json || reportOutIndex >= 0 || jsonOutIndex >= 0)) {
   const { body, jsonBody } = buildReport();
   fs.mkdirSync(path.dirname(reportPath), { recursive: true });
   fs.writeFileSync(reportPath, body);
