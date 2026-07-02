@@ -1,6 +1,6 @@
 # Hosted Staging War Room
 
-Generated: `2026-07-02T19:36:58.418Z`
+Generated: `2026-07-02T19:49:55.669Z`
 
 Purpose: close the remaining GateForge external evidence blockers without weakening the gate.
 
@@ -11,6 +11,7 @@ Purpose: close the remaining GateForge external evidence blockers without weaken
 - Runtime score: `78-84/100 pending legal/provider attestation`
 - Runtime checks: `13/13 PASS`
 - External packet: `MISSING`
+- External contract: `FAIL` - External packet does not satisfy the strict evidence contract.
 
 ## Emergency Rule
 

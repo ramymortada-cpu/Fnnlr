@@ -34,6 +34,8 @@ jobs:
         run: npm run gateforge:external-smoke
       - name: GateForge final gate evaluator smoke
         run: npm run gateforge:final-gate-smoke
+      - name: GateForge war room smoke
+        run: npm run gateforge:war-room-smoke
       - name: GateForge attestation secret pack smoke
         run: npm run gateforge:attestation-secret-pack-smoke
       - name: GateForge hosted attestation dispatch

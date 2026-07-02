@@ -1,6 +1,7 @@
 #!/usr/bin/env tsx
 import fs from 'node:fs';
 import path from 'node:path';
+import { spawnSync } from 'node:child_process';
 
 type GateSummary = {
   evidenceContext?: string;
@@ -18,10 +19,17 @@ type ExternalPacket = {
 
 const runDir = 'gateforge-audit/run-2026-06-23-1035';
 const summaryPath = `${runDir}/ga-unblock-evidence/summary.json`;
-const externalPath = 'gateforge-audit/external-attestations/hosted-staging-attestation.json';
-const templatePath = 'gateforge-audit/external-attestations/hosted-staging-attestation.template.json';
-const runbookPath = 'gateforge-audit/external-attestations/HOSTED_STAGING_WAR_ROOM.md';
-const reportPath = `${runDir}/36_life_or_death_war_room.md`;
+const externalIndex = process.argv.indexOf('--external-file');
+const externalPath =
+  externalIndex >= 0 ? process.argv[externalIndex + 1] : 'gateforge-audit/external-attestations/hosted-staging-attestation.json';
+const templateIndex = process.argv.indexOf('--template-file');
+const templatePath =
+  templateIndex >= 0 ? process.argv[templateIndex + 1] : 'gateforge-audit/external-attestations/hosted-staging-attestation.template.json';
+const runbookOutIndex = process.argv.indexOf('--runbook-out');
+const runbookPath =
+  runbookOutIndex >= 0 ? process.argv[runbookOutIndex + 1] : 'gateforge-audit/external-attestations/HOSTED_STAGING_WAR_ROOM.md';
+const reportOutIndex = process.argv.indexOf('--report-out');
+const reportPath = reportOutIndex >= 0 ? process.argv[reportOutIndex + 1] : `${runDir}/36_life_or_death_war_room.md`;
 const checkOnly = process.argv.includes('--check');
 
 const requiredItems = [
@@ -99,6 +107,21 @@ function packetRefs(packet: ExternalPacket | null, id: string): string {
   return item.evidenceRefs.join('; ');
 }
 
+function externalContractStatus(): { status: 'PASS' | 'FAIL'; detail: string } {
+  const result = spawnSync('npx', ['tsx', 'scripts/gateforge-external-check.ts', externalPath], {
+    encoding: 'utf8',
+    maxBuffer: 1024 * 1024,
+    stdio: ['ignore', 'pipe', 'pipe'],
+  });
+  return {
+    status: result.status === 0 ? 'PASS' : 'FAIL',
+    detail:
+      result.status === 0
+        ? 'External packet satisfies the strict evidence contract.'
+        : 'External packet does not satisfy the strict evidence contract.',
+  };
+}
+
 const summary = readJson<GateSummary>(summaryPath);
 const packet = readJson<ExternalPacket>(externalPath);
 const template = readJson<ExternalPacket>(templatePath);
@@ -113,7 +136,8 @@ const externalRows = requiredItems.map((item) => {
   };
 });
 const openExternal = externalRows.filter((item) => item.status !== 'PASS');
-const decision = runtimeFailures.length || openExternal.length ? 'CANNOT_APPROVE' : 'CONDITIONAL_GO';
+const externalContract = externalContractStatus();
+const decision = runtimeFailures.length || openExternal.length || externalContract.status !== 'PASS' ? 'CANNOT_APPROVE' : 'CONDITIONAL_GO';
 const now = new Date().toISOString();
 
 const table = externalRows
@@ -137,6 +161,7 @@ Purpose: close the remaining GateForge external evidence blockers without weaken
 - Runtime score: \`${summary?.score || 'NOT_RECOMPUTED'}\`
 - Runtime checks: \`${runtimeResults.filter((result) => result.status === 'PASS').length}/${runtimeResults.length} PASS\`
 - External packet: \`${packet ? externalPath : 'MISSING'}\`
+- External contract: \`${externalContract.status}\` - ${externalContract.detail}
 
 ## Emergency Rule
 
@@ -201,6 +226,7 @@ The code-side rescue path is in place. The remaining blocker is external product
 - Runtime score: \`${summary?.score || 'NOT_RECOMPUTED'}\`
 - Runtime checks: \`${runtimeResults.filter((result) => result.status === 'PASS').length}/${runtimeResults.length} PASS\`
 - External blockers: \`${openExternal.length}\`
+- External contract: \`${externalContract.status}\` - ${externalContract.detail}
 
 ## Non-Negotiable Blockers
 

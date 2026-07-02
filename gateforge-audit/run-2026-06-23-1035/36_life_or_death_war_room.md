@@ -1,6 +1,6 @@
 # Life or Death GateForge War Room
 
-Generated: `2026-07-02T19:36:58.418Z`
+Generated: `2026-07-02T19:49:55.669Z`
 
 ## Situation
 
@@ -13,6 +13,7 @@ The code-side rescue path is in place. The remaining blocker is external product
 - Runtime score: `78-84/100 pending legal/provider attestation`
 - Runtime checks: `13/13 PASS`
 - External blockers: `8`
+- External contract: `FAIL` - External packet does not satisfy the strict evidence contract.
 
 ## Non-Negotiable Blockers
 
