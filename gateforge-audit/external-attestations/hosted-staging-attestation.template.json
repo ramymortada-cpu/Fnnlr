@@ -8,7 +8,8 @@
       "title": "Hosted staging GateForge run",
       "status": "MISSING",
       "evidenceRefs": [
-        "https://github.com/ramymortada-cpu/Fnnlr/actions/runs/REPLACE_ME"
+        "https://github.com/ramymortada-cpu/Fnnlr/actions/runs/REPLACE_WITH_NUMERIC_RUN_ID",
+        "artifact:hosted-staging-ga-evidence-summary"
       ],
       "owner": "Engineering/operator",
       "blockerIdsClosed": [
@@ -25,7 +26,8 @@
       "title": "Provider webhook replay and idempotency proof",
       "status": "MISSING",
       "evidenceRefs": [
-        "artifact:provider-webhook-replay-proof"
+        "artifact:provider-webhook-replay-proof",
+        "log:webhook-replay-idempotency-pass"
       ],
       "owner": "Engineering/operator",
       "notes": "Signed provider event accepted once, duplicate is idempotent, stale/replay rejected."
@@ -36,7 +38,8 @@
       "status": "MISSING",
       "evidenceRefs": [
         "screenshot:sentry-test-alert",
-        "screenshot:uptime-health-check"
+        "screenshot:uptime-health-check",
+        "artifact:alert-delivery-proof"
       ],
       "owner": "Engineering/operator",
       "blockerIdsClosed": [
@@ -54,7 +57,8 @@
       "title": "Hosted restore drill",
       "status": "MISSING",
       "evidenceRefs": [
-        "artifact:hosted-restore-verify-pass"
+        "artifact:hosted-restore-verify-pass",
+        "log:deploy-verify-restore-pass"
       ],
       "owner": "Engineering/operator",
       "notes": "Backup, restore into disposable hosted restore DB, deploy:verify-restore PASS."
@@ -81,7 +85,8 @@
       "title": "Legal and commercial final approval",
       "status": "HUMAN_ATTESTATION_REQUIRED",
       "evidenceRefs": [
-        "docs/LEGAL_READINESS_STATUS.md"
+        "docs/LEGAL_READINESS_STATUS.md",
+        "ticket:legal-final-approved-REPLACE_ME"
       ],
       "owner": "Founder/legal",
       "notes": "Terms, Privacy, DPA, subprocessors, retention policy, security contact final approved."
@@ -91,7 +96,8 @@
       "title": "Hosted admin MFA runtime proof",
       "status": "MISSING",
       "evidenceRefs": [
-        "artifact:admin-mfa-hosted-proof"
+        "artifact:admin-mfa-hosted-proof",
+        "log:admin-sensitive-route-mfa-reject-pass"
       ],
       "owner": "Engineering/operator",
       "notes": "Hosted admin setup/verify plus admin-sensitive route rejects non-MFA session."
@@ -101,7 +107,8 @@
       "title": "Hosted AI budget runtime proof",
       "status": "MISSING",
       "evidenceRefs": [
-        "artifact:ai-budget-hosted-proof"
+        "artifact:ai-budget-hosted-proof",
+        "log:ai-budget-kill-switch-cap-pass"
       ],
       "owner": "Engineering/operator",
       "blockerIdsClosed": [

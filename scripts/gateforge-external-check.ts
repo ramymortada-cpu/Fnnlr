@@ -33,6 +33,29 @@ const requiredIds = [
   'ai_budget_runtime_proof',
 ];
 const requiredBlockerIds = Array.from({ length: 16 }, (_, index) => `GF-${String(index + 1).padStart(3, '0')}`);
+const requiredEvidenceRefPatterns: Record<string, RegExp[]> = {
+  hosted_staging_gateforge_run: [
+    /^https:\/\/github\.com\/ramymortada-cpu\/Fnnlr\/actions\/runs\/[0-9]+$/,
+    /^artifact:hosted-staging-ga-evidence-summary$/,
+  ],
+  provider_webhook_replay_idempotency: [
+    /^artifact:provider-webhook-replay-proof$/,
+    /^log:webhook-replay-idempotency-pass$/,
+  ],
+  monitoring_alerting_proof: [
+    /^screenshot:sentry-test-alert$/,
+    /^screenshot:uptime-health-check$/,
+    /^artifact:alert-delivery-proof$/,
+  ],
+  hosted_restore_drill: [/^artifact:hosted-restore-verify-pass$/, /^log:deploy-verify-restore-pass$/],
+  email_deliverability_runtime_proof: [
+    /^artifact:email-deliverability-provider-test$/,
+    /^screenshot:spf-dkim-dmarc-verified$/,
+  ],
+  legal_commercial_final_approval: [/^docs\/LEGAL_READINESS_STATUS\.md$/, /^ticket:legal-final-approved-[A-Za-z0-9._-]+$/],
+  admin_mfa_runtime_proof: [/^artifact:admin-mfa-hosted-proof$/, /^log:admin-sensitive-route-mfa-reject-pass$/],
+  ai_budget_runtime_proof: [/^artifact:ai-budget-hosted-proof$/, /^log:ai-budget-kill-switch-cap-pass$/],
+};
 
 function fail(message: string): never {
   console.error(`GateForge external evidence: FAIL — ${message}`);
@@ -52,6 +75,10 @@ function loadPacket(file: string): EvidencePacket {
 function validateRef(ref: string): boolean {
   if (/secret|password|token|private[_-]?key/i.test(ref)) return false;
   return /^(https:\/\/github\.com\/|gateforge-audit\/|docs\/|artifact:|ticket:|screenshot:|log:)/.test(ref);
+}
+
+function hasRequiredRef(refs: string[], pattern: RegExp): boolean {
+  return refs.some((ref) => pattern.test(ref));
 }
 
 const packet = loadPacket(packetPath);
@@ -77,6 +104,9 @@ for (const id of requiredIds) {
   if (!item.evidenceRefs.length) failures.push(`${id}: evidenceRefs missing`);
   for (const ref of item.evidenceRefs) {
     if (!validateRef(ref)) failures.push(`${id}: unsafe or unsupported evidence ref "${ref}"`);
+  }
+  for (const pattern of requiredEvidenceRefPatterns[id] ?? []) {
+    if (!hasRequiredRef(item.evidenceRefs, pattern)) failures.push(`${id}: missing required evidence ref pattern ${pattern}`);
   }
 }
 

@@ -44,6 +44,24 @@ cases.push({
   expectedText: 'GF-016: missing explicit PASS blocker closure mapping',
 });
 
+const weakRunUrlPacketPath = path.join(os.tmpdir(), 'fnnlr-gateforge-external-weak-run-url.json');
+const weakRunUrlPacket = JSON.parse(fs.readFileSync('tests/fixtures/gateforge-external-pass.json', 'utf8')) as {
+  items: { id: string; evidenceRefs?: string[] }[];
+};
+const hostedRunItem = weakRunUrlPacket.items.find((item) => item.id === 'hosted_staging_gateforge_run');
+if (!hostedRunItem) {
+  console.error('GateForge external smoke failed: missing hosted_staging_gateforge_run fixture item');
+  process.exit(1);
+}
+hostedRunItem.evidenceRefs = ['https://github.com/ramymortada-cpu/Fnnlr/actions/runs/example', 'artifact:hosted-staging-ga-evidence-summary'];
+fs.writeFileSync(weakRunUrlPacketPath, `${JSON.stringify(weakRunUrlPacket, null, 2)}\n`);
+cases.push({
+  name: 'PASS packet with non-numeric GitHub run evidence fails',
+  args: ['scripts/gateforge-external-check.ts', weakRunUrlPacketPath],
+  expectExit: 1,
+  expectedText: 'hosted_staging_gateforge_run: missing required evidence ref pattern',
+});
+
 for (const c of cases) {
   const result = spawnSync(process.execPath, ['--import', 'tsx', ...c.args], { encoding: 'utf8' });
   const output = `${result.stdout}\n${result.stderr}`;
